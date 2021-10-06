@@ -1,16 +1,22 @@
-# baytree_mobile
+# Baytree Project
 
-A new Flutter application.
+The Baytree App is designed to facilitate the tracking of each volunteers' progress with each client.
 
-## Getting Started
+## Members  (Team Jupiter): 
 
-This project is a starting point for a Flutter application.
+<dl>
+<dt>Scrum Master:</dt>
+<dd>Shubham Joon</dd>
 
-A few resources to get you started if this is your first Flutter project:
+<dt>Product Owner:</dt>
+<dd>Ashvinder Grewal</dd>
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+<dt>Repo Manager:</dt> 
+<dd>Jake Kim</dd>
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<dt>Team Members:</dt> 
+<dd>Jack Ren</dd> 
+<dd>Herman Luo</dd>
+<dd>Jasim Khan Pathan</dd>
+<dd>Yanze Zheng</dd>
+</dl>
