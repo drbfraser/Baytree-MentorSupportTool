@@ -1,32 +1,23 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-
-import 'package:baytree_mobile/main.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-
-
+import 'home_page.dart';
+import 'main.dart';
+import 'navigation_bar.dart';
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
-
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   bool _isLoading = false;
   String error = "";
 
-
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
-
 
   @override
   Widget build(BuildContext context) {
@@ -39,55 +30,56 @@ class _LoginPageState extends State<LoginPage> {
         decoration: const BoxDecoration(
           color: Color(0xedffffff),
         ),
-        child: _isLoading ? Center(child: CircularProgressIndicator()) : ListView(
-          children: <Widget>[
-
-            headerSection(),
-            headerImage(),
-            userInput(),
-            resetPassword(),
-            errorMessasge(error),
-            loginButton(),
-          ],
-        ),
+        child: _isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView(
+                children: <Widget>[
+                  headerSection(),
+                  headerImage(),
+                  userInput(),
+                  resetPassword(),
+                  errorMessasge(error),
+                  loginButton(),
+                ],
+              ),
       ),
     );
   }
 
   register() async {
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => MainPage()), (Route<dynamic> route) => false);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+            builder: (BuildContext context) => MyBottomNavigationBar()),
+        (Route<dynamic> route) => false);
   }
 
-  signIn(String username,  email, pass) async {
+  signIn(String username, email, pass) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    Map data = {
-      'username': username,
-      'email': email,
-      'password': pass
-    };
+    Map data = {'username': username, 'email': email, 'password': pass};
     var jsonResponse = null;
-    //print("Test 1");
-    var response = await http.post(Uri.parse("http://192.170.4.249:8000/rest-auth/login/"), body: data);
+    var response = await http.post(
+        Uri.parse("http://192.170.4.249:8111/rest-auth/login/"),
+        body: data);
 
-    if(response.statusCode == 400) {
-
+    if (response.statusCode == 400) {
       error = "Invalid Credentials";
 
       setState(() {
         _isLoading = false;
       });
-    }
-    else if(response.statusCode == 200) {
+    } else if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
-      if(jsonResponse != null) {
+      if (jsonResponse != null) {
         setState(() {
           _isLoading = false;
         });
         sharedPreferences.setString("token", jsonResponse['key']);
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => MainPage()), (Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (BuildContext context) => MyBottomNavigationBar()),
+            (Route<dynamic> route) => false);
       }
-    }
-    else {
+    } else {
       setState(() {
         _isLoading = false;
       });
@@ -126,7 +118,8 @@ class _LoginPageState extends State<LoginPage> {
   Container userInput() {
     return Container(
       child: Form(
-        autovalidateMode: AutovalidateMode.always, key: formkey,
+        autovalidateMode: AutovalidateMode.always,
+        key: formkey,
         child: Column(
           children: <Widget>[
             Padding(
@@ -134,13 +127,12 @@ class _LoginPageState extends State<LoginPage> {
               child: TextFormField(
                   controller: emailController,
                   cursorColor: const Color(0xff5ab031),
-
                   style: TextStyle(color: const Color(0xff5ab031)),
                   decoration: InputDecoration(
                     icon: Icon(Icons.email, color: const Color(0xff5ab031)),
                     hintText: "Email",
-                    border: UnderlineInputBorder(borderSide: BorderSide(color: const Color(
-                        0xff5ab031))),
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: const Color(0xff5ab031))),
                     hintStyle: TextStyle(color: const Color(0xff319004)),
                   ),
                   validator: MultiValidator([
@@ -155,11 +147,12 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                   controller: passwordController,
                   cursorColor: const Color(0xff5ab031),
-                  style: TextStyle(color:const Color(0xff5ab031)),
+                  style: TextStyle(color: const Color(0xff5ab031)),
                   decoration: InputDecoration(
                     icon: Icon(Icons.lock, color: const Color(0xff5ab031)),
                     hintText: "Password",
-                    border: UnderlineInputBorder(borderSide: BorderSide(color:const Color(0xff5ab031))),
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: const Color(0xff5ab031))),
                     hintStyle: TextStyle(color: const Color(0xff319004)),
                   ),
                   validator: MultiValidator([
@@ -168,10 +161,10 @@ class _LoginPageState extends State<LoginPage> {
                         errorText: "Password should be atleast 6 characters"),
                     MaxLengthValidator(15,
                         errorText:
-                        "Password should not be greater than 15 characters")
+                            "Password should not be greater than 15 characters")
                   ])
-                //validatePassword,        //Function to check validation
-              ),
+                  //validatePassword,        //Function to check validation
+                  ),
             ),
           ],
         ),
@@ -180,23 +173,22 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Container resetPassword() {
-    return Container (
+    return Container(
         child: FlatButton(
-          onPressed: () {
-            //TODO FORGOT PASSWORD PAGE
-          },
-          child: const Text(
-            'Reset Password',
-            style: TextStyle(color: const Color(0xfff61d81), fontSize: 17),
-          ),
-        )
-    );
+      onPressed: () {
+        //TODO FORGOT PASSWORD PAGE
+      },
+      child: const Text(
+        'Reset Password',
+        style: TextStyle(color: const Color(0xfff61d81), fontSize: 17),
+      ),
+    ));
   }
 
   Container newAccount() {
-    return Container (
-      //TODO NEW ACCOUNT PAGE
-    );
+    return Container(
+        //TODO NEW ACCOUNT PAGE
+        );
   }
 
   Container errorMessasge(String message) {
@@ -210,13 +202,12 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Container loginButton () {
+  Container loginButton() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
-
       child: RaisedButton(
         onPressed: () {
           if (formkey.currentState!.validate()) {
@@ -228,16 +219,15 @@ class _LoginPageState extends State<LoginPage> {
         },
         elevation: 0.0,
         color: const Color(0xff378e0c),
-        child: Text("Sign In",
-            style: new TextStyle(
-              fontSize: 20.0,
-              color: Colors.white,
-            ),
+        child: Text(
+          "Sign In",
+          style: new TextStyle(
+            fontSize: 20.0,
+            color: Colors.white,
+          ),
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
   }
-
 }
-
