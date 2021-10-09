@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     'users',
-    'mentors.apps.MentorsConfig'
+    'worklogs.apps.WorklogsConfig'
 ]
 
 MIDDLEWARE = [
@@ -86,8 +86,12 @@ WSGI_APPLICATION = 'baytree_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Baytree',
+        'USER': 'Baytree',
+        'PASSWORD': 'Baytree123',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
     }
 }
 
