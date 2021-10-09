@@ -157,5 +157,3 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'users.serializers.UserSerializer',
 }
-
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
