@@ -11,4 +11,6 @@ class MentorWorkLog(models.Model):
     clock_out = models.DateTimeField(blank=True, null=True)
     notes = models.CharField(blank=True, max_length=1000)
 
-
+    def __str__(self):
+        result = str(self.id) + ", " + self.mentor.email + ", " + self.mentee.email + ", " + str(self.clock_in) + ", " + str(self.clock_out) + ", " + self.notes
+        return result
