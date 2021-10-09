@@ -2,14 +2,14 @@ from datetime import datetime
 from django import forms
 from django.forms.widgets import SelectDateWidget
 
-date_range = 2
-current_year = datetime.now().year
+AVAILABLE_YEAR_RANGE = 2
+CURRENT_YEAR = datetime.now().year
 
 class QuestionnaireForm(forms.Form):
     date = forms.DateField(
         label='Date', 
         initial=datetime.now(), 
-        widget=SelectDateWidget(years=range(current_year - date_range, current_year + date_range)))
+        widget=SelectDateWidget(years=range(CURRENT_YEAR - AVAILABLE_YEAR_RANGE, CURRENT_YEAR + AVAILABLE_YEAR_RANGE)))
     time = forms.TimeField(
         label='Time (Hours:Minutes)',
         input_formats=['%H:%M'])
