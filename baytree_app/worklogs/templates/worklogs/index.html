@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Worklogs</title>
+</head>
+<body>
+{% if worklogs %}
+    <ul>
+        {% for worklog in worklogs %}
+            <li><a href="/worklogs/{{worklog.id}}/">{{worklog}}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No worklogs yet.</p>
+{% endif %}
+</body>
+</html>
