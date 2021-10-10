@@ -1,3 +1,5 @@
+.idea
+*.iml
 ### Django ###
 *.log
 *.pot
