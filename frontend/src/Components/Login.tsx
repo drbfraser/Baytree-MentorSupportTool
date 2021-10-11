@@ -5,8 +5,10 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import Card from '@mui/material/Card';
 
 import Logo from '../Assets/baytree-logo.png';
+import { CardContent } from '@mui/material';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -57,6 +59,8 @@ const Login = () => {
     return (
         <div>
             <Container component="main" maxWidth="xs">
+                <Card>
+                <CardContent style = {{padding: "30px"}}>
                 {loading === false && 
                 <Box   
                 display = "flex"
@@ -100,6 +104,8 @@ const Login = () => {
                         </Button>
                     </Box>
                 )}
+                </CardContent>
+                </Card>
             </Container>
         </div>
     );
