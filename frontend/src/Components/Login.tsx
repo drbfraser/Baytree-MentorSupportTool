@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+
+import Logo from '../Assets/baytree-logo.png';
+
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,7 +23,7 @@ const Login = () => {
         }
     }, []);
 
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
 
         const user = {
@@ -48,31 +56,51 @@ const Login = () => {
 
     return (
         <div>
-          {loading === false && <h1>Login</h1>}
-          {errors === true && <h2>Cannot log in with provided credentials</h2>}
-          {loading === false && (
-            <form onSubmit = {onSubmit}>
-              <label htmlFor = 'email'>Email address:</label> <br />
-              <input
-                name='email'
-                type='email'
-                value={email}
-                required
-                onChange={e => setEmail(e.target.value)}
-              />{' '}
-              <br />
-              <label htmlFor='password'>Password:</label> <br />
-              <input
-                name='password'
-                type='password'
-                value={password}
-                required
-                onChange={e => setPassword(e.target.value)}
-              />{' '}
-              <br />
-              <input type='submit' value='Login' />
-            </form>
-          )}
+            <Container component="main" maxWidth="xs">
+                {loading === false && 
+                <Box   
+                display = "flex"
+                alignItems = "center"
+                justifyContent = "center"
+                margin = "30px">
+                    <img src = {Logo} alt = "Logo" width = "null" height = "200" />
+                </Box>}
+                {errors === true && <Alert severity="warning">Invalid email or password</Alert>}
+                {loading === false && (
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx = {{ mt: 1 }}>
+                        <TextField
+                        margin = "normal"
+                        required
+                        fullWidth
+                        id = "email"
+                        label = "Email Address"
+                        name = "email"
+                        autoComplete = "email"
+                        value = {email}
+                        autoFocus
+                        onChange={e => setEmail(e.target.value)}
+                        />
+                        <TextField
+                        margin = "normal"
+                        required
+                        fullWidth
+                        name = "password"
+                        label = "Password"
+                        type = "password"
+                        id = "password"
+                        value = {password}
+                        autoComplete = "current-password"
+                        onChange={e => setPassword(e.target.value)}
+                        />
+                        <Button 
+                        type = "submit" 
+                        value = "Login" 
+                        fullWidth variant="contained" 
+                        sx={{ mt: 3, mb: 2 }}> Sign In
+                        </Button>
+                    </Box>
+                )}
+            </Container>
         </div>
     );
 };
