@@ -96,6 +96,8 @@ const Login = () => {
                         autoComplete = "current-password"
                         onChange={e => setPassword(e.target.value)}
                         />
+                        <a href="">Forgot Password?</a>
+                        <br/>
                         <Button 
                         type = "submit" 
                         value = "Login" 
