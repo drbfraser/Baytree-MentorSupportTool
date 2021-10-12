@@ -28,7 +28,7 @@ import Inbox from './Inbox';
 import Logo from '../Assets/baytree-logo-horizontal.png';
 import Logout from './Logout';
 import Profile from './Profile';
-import Questionairre from './Questionairre';
+import Questionnaire from './Questionnaire';
 import Reporting from './Reporting';
 import Resources from './Resources';
 
@@ -44,7 +44,7 @@ export default function Navigation() {
       <AppBar position="fixed" style={{ background: '#79914e' }} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
             <Grid container spacing={12}>
-                <Grid item xs={9}>
+                <Grid item xs = {9}>
                     <Box   
                     display = "flex"
                     alignItems = "left"
@@ -89,7 +89,7 @@ export default function Navigation() {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            {['Inbox', 'Reporting', 'Resources', 'Questionairre'].map((text, index) => (
+            {['Inbox', 'Reporting', 'Resources', 'Questionnaire'].map((text, index) => (
             <Link to = {`${match.url}/${text}`} style={{ textDecoration: 'none', color: 'black' }}>
               <ListItem button key={text}>
                 <ListItemIcon>
@@ -98,7 +98,7 @@ export default function Navigation() {
                             case "Inbox": return <MailIcon />;
                             case "Reporting": return <CreateIcon />;
                             case "Resources": return <LibraryBooksIcon />;
-                            case "Questionairre": return <QuestionAnswerIcon/>;                        }
+                            case "Questionnaire": return <QuestionAnswerIcon/>;                        }
                         })()}
                 </ListItemIcon>
                 <ListItemText primary={text} />
@@ -131,8 +131,8 @@ export default function Navigation() {
             <Route path={`${match.path}/reporting`}>
                 <Reporting />
             </Route>
-            <Route path={`${match.path}/questionairre`}>
-                <Questionairre />
+            <Route path={`${match.path}/questionnaire`}>
+                <Questionnaire />
             </Route>
             <Route path={`${match.path}/profile`}>
                 <Profile />
