@@ -25,7 +25,7 @@ const Login = () => {
         }
     }, []);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const user = {
@@ -45,7 +45,7 @@ const Login = () => {
             if (data.key){
                 localStorage.clear();
                 localStorage.setItem('token', data.key);
-                window.location.replace('http://localhost:3000/dashboard');
+                window.location.replace('http://localhost:3000/dashboard'); 
             } 
             else {
                 setEmail('');

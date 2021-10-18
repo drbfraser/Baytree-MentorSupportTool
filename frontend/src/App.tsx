@@ -13,7 +13,7 @@ function App() {
         <div>
           <div className="content">
             <Switch>
-              <PublicRoute exact path = '/' component = {Dashboard} />
+              <PublicRoute exact path = '/' component = {Login} />
               <PublicRoute exact path = "/login" component = {Login} />
               <PrivateRoute path = "/dashboard" component = {Dashboard} />
             </Switch>

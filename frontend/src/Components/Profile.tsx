@@ -1,8 +1,7 @@
 const Profile = () => {
-  
     return (
       <div>
-        <h3>Profile</h3>
+        <h3>{localStorage.getItem('firstname')} {localStorage.getItem('lastname')}</h3>
       </div>
     )
   };
