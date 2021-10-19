@@ -6,22 +6,45 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
 <dl>
 <dt>Scrum Master:</dt>
-<dd>Shubham Joon</dd>
+<dd>Jack Ren</dd>
 
 <dt>Product Owner:</dt>
-<dd>Ashvinder Grewal</dd>
+<dd>Jasim Khan Pathan</dd>
 
 <dt>Repo Manager:</dt> 
-<dd>Jake Kim</dd>
+<dd>Herman Luo</dd>
 
 <dt>Team Members:</dt> 
-<dd>Jack Ren</dd> 
-<dd>Herman Luo</dd>
-<dd>Jasim Khan Pathan</dd>
+<dd>Jake Kim</dd> 
+<dd>Ashvinder Grewal</dd>
+<dd>Shubham Joon</dd>
 <dd>Yanze Zheng</dd>
 </dl>
 
 <br>
+
+# How to use Docker to run the app:
+
+
+1. Install Docker at this link: https://www.docker.com/get-started
+2. After Docker is installed, navigate to the directory containing the ***docker-compose.yaml*** file
+3. Run:
+
+        $ docker-compose build
+
+4. To start the application, run: 
+
+        $ docker-compose up -d
+
+5. The stop the app, run:
+        
+        $ docker-compose down
+
+<br>
+
+If you want to open a terminal within an app use the command: 
+
+        $ docker exec -it [container-id] bash
 
 # Backend - Baytree_App: 
 
@@ -62,7 +85,6 @@ enter superuser credentials in step 5
 
 <br>
 <br>
-# 
 
 # Frontend - Getting Started with a React App
 

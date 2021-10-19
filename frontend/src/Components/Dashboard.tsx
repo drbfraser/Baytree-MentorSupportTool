@@ -1,9 +1,11 @@
+import retrieveProfile from '../Utils/retreiveProfile';
 import Navigation from './Navigation';
 
 const Dashboard = () => {
-  
-  return (
 
+  retrieveProfile();
+
+  return (
     <div>
       <Navigation />
     </div>

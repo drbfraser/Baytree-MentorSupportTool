@@ -1,4 +1,4 @@
-import { Switch, Route, NavLink, useRouteMatch, Link } from 'react-router-dom';
+import { Switch, Route, useRouteMatch, Link } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -6,7 +6,6 @@ import AppBar from '@mui/material/AppBar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -16,19 +15,24 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import BookIcon from '@mui/icons-material/Book';
 import CreateIcon from '@mui/icons-material/Create';
+import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import UploadIcon from '@mui/icons-material/Upload';
 
-import Inbox from './Inbox';
+import Home from './Home';
+import Goals from './Goals';
 import Logo from '../Assets/baytree-logo-horizontal.png';
 import Logout from './Logout';
+import Messages from './Messages';
+import Notifications from './Notifications';
 import Profile from './Profile';
 import Questionnaire from './Questionnaire';
+import Records from './Records';
 import Reporting from './Reporting';
 import Resources from './Resources';
 
@@ -54,18 +58,20 @@ export default function Navigation() {
                     </Box>
                 </Grid>
                 <Grid item style = {{marginTop: "7px"}}>
-                    <Link to = {`${match.url}/inbox`} style={{ textDecoration: 'none', color: 'white' }}> 
+                    <Link to = {`${match.url}/messages`} style={{ textDecoration: 'none', color: 'white' }}> 
                         <IconButton size="large" color="inherit">
                             <Badge badgeContent={4} color="error">
                                 <MailIcon />
                             </Badge>
                         </IconButton>
                     </Link>
-                    <IconButton size="large" color="inherit">
-                        <Badge badgeContent={17} color="error">
-                            <NotificationsIcon />
-                        </Badge>
-                    </IconButton>
+                    <Link to = {`${match.url}/notifications`} style={{ textDecoration: 'none', color: 'white' }}>
+                        <IconButton size="large" color="inherit">
+                            <Badge badgeContent={17} color="error">
+                                <NotificationsIcon />
+                            </Badge>
+                        </IconButton>
+                    </Link>
                     <Link to = {`${match.url}/profile`} style={{ textDecoration: 'none', color: 'white' }}>
                         <IconButton color = "inherit" size = "large">
                             <AccountBoxIcon />
@@ -89,32 +95,32 @@ export default function Navigation() {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            {['Inbox', 'Reporting', 'Resources', 'Questionnaire'].map((text, index) => (
-            <Link to = {`${match.url}/${text}`} style={{ textDecoration: 'none', color: 'black' }}>
-              <ListItem button key={text}>
+            {['Home', 'Reporting', 'Resources', 'Questionnaire', 'Goals', 'Records'].map((text, index) => (
+            <Link to = {`${match.url}/${text}`} style={{ textDecoration: 'none', color: 'black' }} key = {text}>
+              <ListItem button>
                 <ListItemIcon>
                         {(() => {
                         switch(text) {
-                            case "Inbox": return <MailIcon />;
+                            case "Home": return <HomeIcon />;
                             case "Reporting": return <CreateIcon />;
                             case "Resources": return <LibraryBooksIcon />;
-                            case "Questionnaire": return <QuestionAnswerIcon/>;                        }
+                            case "Questionnaire": return <QuestionAnswerIcon/>;  
+                            case "Goals": return <AutoGraphIcon />;
+                            case "Records": return <BookIcon/>;                       
+                          }
                         })()}
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText>
+                        {(() => {
+                        switch(text) {
+                            case "Reporting": return 'Create Session';
+                            case "Questionnaire": return 'Progress Report';   
+                            default: return (text);
+                          }
+                        })()}
+                </ListItemText>
               </ListItem>
             </Link>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {['Clock In', 'Upload Sessions'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <AccessTimeIcon /> : <UploadIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
             ))}
           </List>
         </Box>
@@ -122,8 +128,8 @@ export default function Navigation() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         <Switch>
-            <Route path={`${match.path}/inbox`}>
-                <Inbox />
+            <Route path={`${match.path}/home`}>
+                <Home />
             </Route>
             <Route path={`${match.path}/resources`}>
                 <Resources />
@@ -137,6 +143,19 @@ export default function Navigation() {
             <Route path={`${match.path}/profile`}>
                 <Profile />
             </Route>
+            <Route path={`${match.path}/goals`}>
+                <Goals />
+            </Route>
+            <Route path={`${match.path}/records`}>
+                <Records />
+            </Route>
+            <Route path={`${match.path}/messages`}>
+                <Messages />
+            </Route>
+            <Route path={`${match.path}/notifications`}>
+                <Notifications />
+            </Route>
+
         </Switch>
       </Box>
     </Box>
