@@ -1,0 +1,79 @@
+/* LOGIN FORM */
+
+.login {
+    height: auto;
+    text-align: center;
+    background: white url("backgound.png") no-repeat;
+    background-size: 100%;
+}
+
+.login #header {
+    height: auto;
+    padding: 1px 1px;
+    justify-content: left;
+    background-color: white;
+}
+
+.login #header h1 {
+    font-size: 40px;
+    font-family: verdana;
+    margin-top: -30px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.login #header h1 a {
+    color: #27CE12;
+    text-align: left;
+}
+
+.login #content {
+    padding: 20px 20px 0;
+}
+
+.login #container {
+    background: var(--body-bg);
+    border-radius: 4px;
+    overflow: hidden;
+    width: 28em;
+    min-width: 300px;
+    margin: 100px auto;
+    height: auto;
+    background-color: white;
+}
+
+.login .form-row {
+    padding: 4px 0;
+    background-color: white;
+    color: #27CE12;
+    font-size: 15px;
+    font-family: verdana;
+    text-align: left;
+}
+
+.login .form-row label {
+    display: block;
+    line-height: 2em;
+}
+
+.login .form-row #id_username,
+.login .form-row #id_password {
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #C0F9C0;
+    margin-bottom: 5px;
+    color: black;
+}
+
+.login .submit-row {
+    padding: 1em 0 0 0;
+    margin: 0;
+    text-align: center;
+    background-color: white;
+    margin-top: 5px;
+}
+
+.login .password-reset-link {
+    text-align: center;
+}
