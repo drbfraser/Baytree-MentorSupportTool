@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'users',
     'questionnaires',
-    'worklogs.apps.WorklogsConfig'
+    'worklogs.apps.WorklogsConfig',
+    'api_app',
 ]
 
 MIDDLEWARE = [
