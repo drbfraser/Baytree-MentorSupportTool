@@ -1,7 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load i18n static %} 
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "baytree/admin/login.css" %}"> 
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin_login/admin/login.css" %}"> 
 {{ form.media }} 
 {% endblock %}
 {% block bodyclass %}{{ block.super }} login{% endblock %} 
@@ -30,7 +30,7 @@
 {% endfor %} {% endif %}
 
 <p>
-    {% load static %} <img src="{% static "baytree/media/baytree.png" %}" alt="baytreelogin" height="180" width="180"/>
+    {% load static %} <img src="{% static "admin_login/media/baytree.png" %}" alt="baytreelogin" height="100" width="100"/>
 </p> 
 
 <div id="content-main">

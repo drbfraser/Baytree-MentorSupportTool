@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'users',
     'questionnaires',
     'worklogs.apps.WorklogsConfig',
-    'baytree',
+    'admin_login',
 ]
 
 MIDDLEWARE = [

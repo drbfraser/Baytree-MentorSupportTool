@@ -2,14 +2,14 @@ from allauth.account.views import confirm_email
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
-from baytree.admin import blog_site
+from admin_login.admin import blog_site
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('baytreeadmin/', blog_site.urls),
+    # path('admin/', admin.site.urls),
+    path('admin/', blog_site.urls),
     path('questionnaires/', include('questionnaires.urls')),
     path('worklogs/', include('worklogs.urls')),
     url(r'^rest-auth/', include('rest_auth.urls')),
@@ -19,6 +19,7 @@ urlpatterns = [
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
-admin.site.index_title = "Baytree center"
-admin.site.site_header = "Baytree center"
-admin.site.site_title = "The Baytree Admin"
+admin.site.index_title = "The Baytree center"
+admin.site.site_header = "The Baytree center"
+admin.site.site_title = "The Baytree center Administration"
+

@@ -10,4 +10,4 @@ from django.apps import AppConfig
     
 class BaytreeConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'baytree'
+    name = 'admin_login'
