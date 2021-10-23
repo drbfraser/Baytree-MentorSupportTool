@@ -1,26 +1,22 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import MonthlyReportSerializer
-from .models import MonthlyReport
+import requests
+from django.http import HttpResponse
+
+url = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/10/questions?allquestions=1.json'
+headers = {'Accept:application/json'}
 
 # Create your views here.
-class MonthlyReportViews(APIView):
-    def post(self, request):
-        serializer = MonthlyReportSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
-        else:
-            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+def index(request):
+    return HttpResponse('index')
 
-    def get(self, request, id=None):
-        if id:
-            item = MonthlyReport.objects.get(id=id)
-            serializer = MonthlyReportSerializer(item)
-            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
 
-        items = MonthlyReport.objects.all()
-        serializer = MonthlyReportSerializer(items, many=True)
-        return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
-
+def report(request):
+    if request.method == 'POST':
+        return Response({"error": "Method not allowed"}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        r = requests.get(
+            url,
+            auth=('group.jupiter', 'Wethebest01!'))
+        print(r.content)
+        return HttpResponse(r)
