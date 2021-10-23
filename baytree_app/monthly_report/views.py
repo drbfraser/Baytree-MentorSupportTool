@@ -10,8 +10,7 @@ headers = {'Accept:application/json'}
 def index(request):
     return HttpResponse('index')
 
-
-def report(request):
+def get_report(request):
     if request.method == 'POST':
         return Response({"error": "Method not allowed"}, status=status.HTTP_400_BAD_REQUEST)
     else:

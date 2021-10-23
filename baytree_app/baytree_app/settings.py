@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'users',
     'questionnaires',
     'worklogs.apps.WorklogsConfig',
-    'api_app',
+    'monthly_report',
 ]
 
 MIDDLEWARE = [
