@@ -86,19 +86,14 @@ WSGI_APPLICATION = 'baytree_app.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'Baytree',
-    #     'USER': 'Baytree',
-    #     'PASSWORD': 'Baytree123',
-    #     'HOST': 'db',  
-    #     'PORT': '3306',
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Baytree',
+        'USER': 'Baytree',
+        'PASSWORD': 'Baytree123',
+        'HOST': 'db',  
+        'PORT': '3306',
     }
-
 }
 
 
@@ -173,5 +168,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
     ]
 }
