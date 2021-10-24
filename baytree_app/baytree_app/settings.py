@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'users',
     'questionnaires',
-    'worklogs.apps.WorklogsConfig',
+    'sessions.apps.SessionsConfig',
     'admin_login',
 ]
 
