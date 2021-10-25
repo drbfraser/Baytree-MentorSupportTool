@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'users',
     'questionnaires',
     'worklogs.apps.WorklogsConfig',
+    'monthly_report',
     'admin_login',
 ]
 
