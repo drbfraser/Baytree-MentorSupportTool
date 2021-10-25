@@ -100,8 +100,12 @@ const Login = () => {
                         type = "submit" 
                         value = "Login" 
                         fullWidth variant="contained" 
+                        color = "success"
                         sx={{ mt: 3, mb: 2 }}> Sign In
                         </Button>
+                        <div>
+                            In case of Login error please contact <b>help@TheBaytreeCentre.com.</b>
+                        </div>
                     </Box>
                 )}
                 </CardContent>
