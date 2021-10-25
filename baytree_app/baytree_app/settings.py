@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'users',
     'worklogs.apps.WorklogsConfig',
+    'monthly_report',
     'admin_login',
 ]
 
@@ -172,5 +173,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
     ]
 }
