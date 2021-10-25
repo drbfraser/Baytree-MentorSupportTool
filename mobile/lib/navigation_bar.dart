@@ -14,6 +14,9 @@ import 'package:baytree_mobile/mentoring_page.dart';
 import 'package:baytree_mobile/records_page.dart';
 import 'package:baytree_mobile/resources_page.dart';
 import 'package:baytree_mobile/messages_page.dart';
+import 'package:baytree_mobile/monthlyProgress_page.dart';
+import 'package:titled_navigation_bar/titled_navigation_bar.dart';
+
 
 class MyBottomNavigationBar extends StatefulWidget {
 
@@ -45,6 +48,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   final List<Widget> _children = [
     HomePage(),
     MentoringPage(),
+    MonthlyProgressPage(),
     RecordsPage(),
     ResourcesPage(),
     MessagesPage()
@@ -56,9 +60,9 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -74,8 +78,12 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.group),
-            label: 'Mentoring',
+            icon: Icon(Icons.add_circle_outline),
+            label: 'Sessions',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.library_books_outlined),
+            label: 'Progress',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.perm_media),
@@ -85,14 +93,41 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
             icon: Icon(Icons.perm_data_setting_outlined),
             label: 'Resources',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Messages',
-          ),
         ],
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white,
+
       ),
     );
   }
+
+/*
+  final List<TitledNavigationBarItem> items = [
+  TitledNavigationBarItem(title: Text('Home'), icon: Icons.home),
+  TitledNavigationBarItem(title: Text('Create Session'), icon: Icons.add_circle_outline ),
+  TitledNavigationBarItem(title: Text('Monthly Progress'), icon: Icons.library_books_outlined),
+  TitledNavigationBarItem(title: Text('Records'), icon: Icons.perm_media),
+  TitledNavigationBarItem(title: Text('Resources'), icon: Icons.perm_data_setting_outlined),
+  ];
+
+  bool navBarMode = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _children[_currentIndex],
+      bottomNavigationBar: TitledBottomNavigationBar(
+        onTap: onTappedBar,
+        currentIndex: _currentIndex,
+        reverse: navBarMode,
+        curve: Curves.easeInBack,
+        items: items,
+        activeColor: const Color(0xff5ab031),
+        inactiveColor: Colors.blueGrey,
+      ),
+    );
+  }
+*/
+
+
 }

@@ -32,6 +32,7 @@ dependencies:
   http: any
   shared_preferences: any
   form_field_validator: any
+  titled_navigation_bar: ^4.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
