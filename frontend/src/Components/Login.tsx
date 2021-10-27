@@ -57,7 +57,7 @@ const Login = () => {
     };
 
     return (
-        <div>
+        <div className="content">
             <Container component="main" maxWidth="xs">
                 <Card>
                 <CardContent style = {{padding: "30px"}}>
