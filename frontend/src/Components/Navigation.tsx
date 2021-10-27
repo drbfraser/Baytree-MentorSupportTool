@@ -26,7 +26,8 @@ import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 
 import Home from './Home';
 import Goals from './Goals';
-import Logo from '../Assets/baytree-logo-horizontal.png';
+import Logo from '../Assets/baytree-logo.png';
+import SideLogo from '../Assets/changing-aspirations.png';
 import Logout from './Logout';
 import Messages from './Messages';
 import Notifications from './Notifications';
@@ -35,6 +36,8 @@ import Questionnaire from './Questionnaire';
 import Records from './Records';
 import Reporting from './Reporting';
 import Resources from './Resources';
+import {pink } from '@mui/material/colors';
+import React from 'react';
 
 const drawerWidth = 240;
 
@@ -45,39 +48,40 @@ export default function Navigation() {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" style={{ background: '#79914e' }} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar position="fixed" style={{ background: 'white' }} sx={{ zIndex: (theme) => theme.zIndex.drawer + 5 }}>
         <Toolbar>
-            <Grid container spacing={12}>
+            <Grid container spacing={5}>
                 <Grid item xs = {9}>
                     <Box   
                     display = "flex"
                     alignItems = "left"
                     justifyContent = "left"
-                    margin = "0px">
-                        <img src = {Logo} alt = "Logo" width = "null" height = "60" />
+                    margin = "6px">
+                        <img src = {Logo} alt = "Logo" width = "null" height = "80" />
+                        <img src = {SideLogo} alt = "Logo" width = "null" height = "80" />
                     </Box>
                 </Grid>
-                <Grid item style = {{marginTop: "7px"}}>
-                    <Link to = {`${match.url}/messages`} style={{ textDecoration: 'none', color: 'white' }}> 
+                <Grid item style = {{marginTop: "20px"}}>
+                    <Link to = {`${match.url}/messages`} style={{ textDecoration: 'none', color: 'black' }}> 
                         <IconButton size="large" color="inherit">
                             <Badge badgeContent={4} color="error">
                                 <MailIcon />
                             </Badge>
                         </IconButton>
                     </Link>
-                    <Link to = {`${match.url}/notifications`} style={{ textDecoration: 'none', color: 'white' }}>
+                    <Link to = {`${match.url}/notifications`} style={{ textDecoration: 'none', color: 'black' }}>
                         <IconButton size="large" color="inherit">
                             <Badge badgeContent={17} color="error">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
                     </Link>
-                    <Link to = {`${match.url}/profile`} style={{ textDecoration: 'none', color: 'white' }}>
+                    <Link to = {`${match.url}/profile`} style={{ textDecoration: 'none', color: 'black' }}>
                         <IconButton color = "inherit" size = "large">
                             <AccountBoxIcon />
                         </IconButton>
                     </Link>
-                    <IconButton onClick = {Logout} color = "inherit" size = "large">
+                    <IconButton onClick = {Logout} color = "error" size = "large">
                         <LogoutIcon />
                     </IconButton>
                 </Grid>
@@ -93,6 +97,7 @@ export default function Navigation() {
         }}
       >
         <Toolbar />
+        <Grid item style = {{marginTop: "30px"}}>
         <Box sx={{ overflow: 'auto' }}>
           <List>
             {['Home', 'Reporting', 'Resources', 'Questionnaire', 'Goals', 'Records'].map((text, index) => (
@@ -101,12 +106,12 @@ export default function Navigation() {
                 <ListItemIcon>
                         {(() => {
                         switch(text) {
-                            case "Home": return <HomeIcon />;
-                            case "Reporting": return <CreateIcon />;
-                            case "Resources": return <LibraryBooksIcon />;
-                            case "Questionnaire": return <QuestionAnswerIcon/>;  
-                            case "Goals": return <AutoGraphIcon />;
-                            case "Records": return <BookIcon/>;                       
+                            case "Home": return <HomeIcon sx={{ color: pink[500]}}/>;
+                            case "Reporting": return <CreateIcon sx={{ color: pink[500]}}/>;
+                            case "Resources": return <LibraryBooksIcon sx={{ color: pink[500]}}/>;
+                            case "Questionnaire": return <QuestionAnswerIcon sx={{ color: pink[500]}}/>;  
+                            case "Goals": return <AutoGraphIcon sx={{ color: pink[500]}}/>;
+                            case "Records": return <BookIcon sx={{ color: pink[500]}}/>;                       
                           }
                         })()}
                 </ListItemIcon>
@@ -124,6 +129,7 @@ export default function Navigation() {
             ))}
           </List>
         </Box>
+        </Grid>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
