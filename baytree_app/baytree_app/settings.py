@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'users',
     'questionnaires',
+    'monthly_report',
     'sessions.apps.SessionsConfig',
     'admin_login',
 ]
@@ -173,5 +174,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
     ]
 }
