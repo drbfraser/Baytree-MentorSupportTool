@@ -88,7 +88,7 @@ body {
     padding: 0;
     font-size: 14px;
     font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
-    color: var(--body-fg);
+    color: black;
     background: var(--body-bg);
 }
 
@@ -97,14 +97,14 @@ body {
 
 a:link,
 a:visited {
-    color: var(--link-fg);
+    color: #27CE12;
     text-decoration: none;
     transition: color 0.15s, background 0.15s;
 }
 
 a:focus,
 a:hover {
-    color: var(--link-hover-color);
+    color: green;
 }
 
 a:focus {
@@ -153,7 +153,7 @@ h1 {
     margin: 0 0 20px;
     font-weight: 300;
     font-size: 20px;
-    color: var(--body-quiet-color);
+    color: black;
 }
 
 h2 {
@@ -325,7 +325,9 @@ a.quiet:visited {
 
 table {
     border-collapse: collapse;
-    border-color: var(--border-color);
+    border-color: green;
+    background-color: #27CE12;
+    color: green;
 }
 
 td,
@@ -335,6 +337,7 @@ th {
     border-bottom: 1px solid var(--hairline-color);
     vertical-align: top;
     padding: 8px;
+    background-color: #264b5d;
 }
 
 th {
@@ -347,7 +350,7 @@ tfoot td {
     color: var(--body-quiet-color);
     padding: 5px 10px;
     font-size: 11px;
-    background: var(--body-bg);
+    background: green;
     border: none;
     border-top: 1px solid var(--hairline-color);
     border-bottom: 1px solid var(--hairline-color);
@@ -359,7 +362,8 @@ tfoot td {
 }
 
 thead th.required {
-    color: var(--body-loud-color);
+    color: green;
+    background-color: #27CE12;
 }
 
 tr.alt {
@@ -1082,7 +1086,7 @@ table#change-history tbody th {
 #content-related p {
     padding-left: 16px;
     padding-right: 16px;
-    background: green;
+    background: rgb(6, 218, 34);
 }
 
 #content-related .actionlist {
