@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
@@ -47,9 +46,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     'users',
-    'questionnaires',
-    'worklogs.apps.WorklogsConfig',
     'monthly_report',
+    'sessions',
     'admin_login',
 ]
 

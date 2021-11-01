@@ -4,7 +4,7 @@ from django.db import models
 from users.models import CustomUser
 
 
-class MentorWorkLog(models.Model):
+class MentorSession(models.Model):
     mentor = models.ForeignKey(CustomUser, related_name="mentor", on_delete=models.PROTECT, null=True)
     mentee = models.ForeignKey(CustomUser, related_name="mentee", on_delete=models.PROTECT, null=True)
     clock_in = models.DateTimeField(blank=True, null=True)

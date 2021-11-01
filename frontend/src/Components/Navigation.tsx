@@ -162,7 +162,6 @@ export default function Navigation() {
               <Route path={`${match.path}/notifications`}>
                   <Notifications />
               </Route>
-
           </Switch>
         </Box>
       </Box>
