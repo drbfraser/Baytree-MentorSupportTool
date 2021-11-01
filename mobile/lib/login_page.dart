@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
     Map data = {'username': username, 'email': email, 'password': pass};
     var jsonResponse = null;
     var response = await http.post(
-        Uri.parse("http://192.170.4.249:8111/rest-auth/login/"),
+        Uri.parse("http://192.168.4.251:8000/rest-auth/login/"),
         body: data);
 
     if (response.statusCode == 400) {
