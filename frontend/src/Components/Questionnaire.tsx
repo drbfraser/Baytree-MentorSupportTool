@@ -13,6 +13,9 @@ import { Typography } from "@mui/material";
 const Questionnaire = () => {
 
   const [formData, setFormData] = useState([] as any[]);
+  const [answers, setAnswers] = useState({answer: ''});
+
+  let values: { [key: string]: string } = {};
 
   useEffect(() => {
     fetch('http://localhost:8000/monthly-report/get-report/', {
@@ -28,6 +31,18 @@ const Questionnaire = () => {
     });
   }, []);
 
+  useEffect(() => {
+    
+
+    for (let entry in formData) {
+      values = {...values, entry: ''};
+      console.log(entry)
+      console.log(values);
+    }
+  }, [formData]);
+
+  console.log(values);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     alert('A name was submitted:');
     const formData = new FormData(e.currentTarget);
@@ -37,13 +52,11 @@ const Questionnaire = () => {
     // }
     console.log(formData.entries())
   }
-
-  console.log(formData);
   
   return (
     <Container 
       maxWidth = "md" 
-      sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, pt: 2}}
+      sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, pt: 2, mt: 3}}
       style={{ background: '#ffffff' }}>
       <h3>Monthly Progress Report</h3>
       <Divider />
@@ -66,7 +79,10 @@ const Questionnaire = () => {
                         variant="outlined"
                         sx = {{mt: 0, pt: 0, mb: 5}}
                         required
-                        margin="normal"/>
+                        value = {values[index]}
+                        margin="normal"
+                        onChange = {e => setAnswers(Object.assign({}, answers, { answer: e.target.value }))}
+                      />
                     );
                   case 'number':
                     return (
