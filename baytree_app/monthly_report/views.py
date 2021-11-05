@@ -15,9 +15,10 @@ def get_report(request):
         r = requests.get(
             url,
             auth=('group.jupiter', 'Wethebest01!'))
-        print(r.content)
+        #print(r.content)
         return HttpResponse(r)
     elif request.method == 'POST':
+        #TODO: POST to Views
         return HttpResponse('successful POST')
     else:
         return Response({"error": "Method not allowed"}, status=status.HTTP_400_BAD_REQUEST)
