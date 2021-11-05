@@ -11,11 +11,13 @@ def index(request):
     return HttpResponse('index')
 
 def get_report(request):
-    if request.method == 'POST':
-        return Response({"error": "Method not allowed"}, status=status.HTTP_400_BAD_REQUEST)
-    else:
+    if request.method == 'GET':
         r = requests.get(
             url,
             auth=('group.jupiter', 'Wethebest01!'))
         print(r.content)
         return HttpResponse(r)
+    elif request.method == 'POST':
+        return HttpResponse('successful POST')
+    else:
+        return Response({"error": "Method not allowed"}, status=status.HTTP_400_BAD_REQUEST)
