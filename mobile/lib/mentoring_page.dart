@@ -19,7 +19,11 @@ Future<String?> getTokenPreference() async {
 
 extension TimeOfDayExtension on TimeOfDay {
   TimeOfDay addHour(int hour) {
-    return this.replacing(hour: this.hour + hour, minute: this.minute);
+    if(this.hour!=23) {
+      return this.replacing(hour: this.hour + hour, minute: this.minute);
+    } else {
+      return this.replacing(hour: this.hour, minute: this.minute);
+    }
   }
 }
 
