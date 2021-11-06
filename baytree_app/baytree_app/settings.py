@@ -26,6 +26,9 @@ SECRET_KEY = 'django-insecure-%bw7ei*$^qt%1tappq&+r)l@!6p&dg#=80400^^+--k16tqt8q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #development only
+
 ALLOWED_HOSTS = []
 
 
@@ -49,7 +52,10 @@ INSTALLED_APPS = [
     'monthly_report',
     'sessions',
     'admin_login',
+    'django.contrib.sessions',
+    'crispy_forms',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -86,17 +92,22 @@ WSGI_APPLICATION = 'baytree_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'Baytree',
+#         'USER': 'Baytree',
+#         'PASSWORD': 'Baytree123',
+#         'HOST': 'db',  
+#         'PORT': '3306',
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Baytree',
-        'USER': 'Baytree',
-        'PASSWORD': 'Baytree123',
-        'HOST': 'db',  
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
