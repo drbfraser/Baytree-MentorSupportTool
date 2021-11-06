@@ -89,6 +89,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'baytree_app.wsgi.application'
 
 
+
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -188,3 +190,4 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ]
 }
+
