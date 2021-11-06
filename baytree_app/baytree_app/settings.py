@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'monthly_report',
     'sessions',
     'admin_login',
-    'django.contrib.sessions',
     'crispy_forms',
 ]
 
@@ -105,6 +104,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
 
 
 # Password validation
