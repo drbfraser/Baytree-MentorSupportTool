@@ -1,7 +1,8 @@
 from django.urls import path
 
-from .views import SessionViews
+from .views import SessionView
 
 urlpatterns = [
-    path('sessions/<int:id>', SessionViews.as_view())
+    path('', SessionView.as_view()),
+    path('<int:id>', SessionView.as_view())
 ]
