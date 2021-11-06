@@ -14,7 +14,7 @@ import 'package:baytree_mobile/mentoring_page.dart';
 import 'package:baytree_mobile/records_page.dart';
 import 'package:baytree_mobile/resources_page.dart';
 import 'package:baytree_mobile/messages_page.dart';
-import 'package:baytree_mobile/monthlyProgress_page.dart';
+import 'package:baytree_mobile/monthlyProgressReport_page.dart';
 import 'package:titled_navigation_bar/titled_navigation_bar.dart';
 
 
