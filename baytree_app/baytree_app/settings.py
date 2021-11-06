@@ -26,6 +26,9 @@ SECRET_KEY = 'django-insecure-%bw7ei*$^qt%1tappq&+r)l@!6p&dg#=80400^^+--k16tqt8q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #development only
+
 ALLOWED_HOSTS = []
 
 
@@ -50,7 +53,9 @@ INSTALLED_APPS = [
     'monthly_report',
     'sessions',
     'admin_login',
+    'crispy_forms',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -84,6 +89,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'baytree_app.wsgi.application'
 
 
+
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -97,6 +104,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
 
 
 # Password validation
