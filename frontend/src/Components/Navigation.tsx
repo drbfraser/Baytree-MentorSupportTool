@@ -25,6 +25,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 import Home from './Home';
 import Goals from './Goals';
@@ -38,6 +39,7 @@ import Questionnaire from './Questionnaire';
 import Records from './Records';
 import Reporting from './Reporting';
 import Resources from './Resources';
+import CreateGoals from './CreateGoals';
 
 const drawerWidth = 240;
 
@@ -101,7 +103,7 @@ export default function Navigation() {
           <Grid item style = {{marginTop: "30px"}}>
           <Box sx={{ overflow: 'auto' }}>
             <List>
-              {['Home', 'Reporting', 'Resources', 'Questionnaire', 'Goals', 'Records'].map((text, index) => (
+              {['Home', 'Reporting', 'Resources', 'Questionnaire','newGoal', 'Goals', 'Records'].map((text, index) => (
               <Link to = {`${match.url}/${text}`} style={{ textDecoration: 'none', color: 'black' }} key = {text}>
                 <ListItem button>
                   <ListItemIcon>
@@ -111,6 +113,7 @@ export default function Navigation() {
                             case "Reporting": return <CreateIcon sx={{ color: pink[500]}}/>;
                             case "Resources": return <LibraryBooksIcon sx={{ color: pink[500]}}/>;
                             case "Questionnaire": return <QuestionAnswerIcon sx={{ color: pink[500]}}/>;  
+                            case "newGoal": return <AssignmentIcon sx={{ color: pink[500]}}/>;
                             case "Goals": return <AutoGraphIcon sx={{ color: pink[500]}}/>;
                             case "Records": return <BookIcon sx={{ color: pink[500]}}/>;         
                             }
@@ -120,7 +123,8 @@ export default function Navigation() {
                           {(() => {
                           switch(text) {
                               case "Reporting": return 'Create Session';
-                              case "Questionnaire": return 'Progress Report';   
+                              case "Questionnaire": return 'Progress Report'; 
+                              case "newGoal": return 'Create a new Goal';    
                               default: return (text);
                             }
                           })()}
@@ -149,6 +153,9 @@ export default function Navigation() {
               </Route>
               <Route path={`${match.path}/profile`}>
                   <Profile />
+              </Route>
+              <Route path={`${match.path}/newGoal`}>
+                <CreateGoals />
               </Route>
               <Route path={`${match.path}/goals`}>
                   <Goals />
