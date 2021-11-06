@@ -15,7 +15,7 @@ class SessionView(APIView):
             try:
                 queryset = MentorSession.objects.get(id=id)
             except MentorSession.DoesNotExist:
-                return Response({'errors': 'This todo item does not exist.'}, status=400)
+                return Response({'errors': 'This session does not exist.'}, status=400)
             read_serializer = SessionSerializer(queryset)
         else:
             queryset = MentorSession.objects.all()
@@ -25,7 +25,7 @@ class SessionView(APIView):
     def post(self, request):
         create_serializer = SessionSerializer(data=request.data)
         if create_serializer.is_valid():
-            todo_item_object = create_serializer.save()
-            read_serializer = SessionSerializer(todo_item_object)
+            session_object = create_serializer.save()
+            read_serializer = SessionSerializer(session_object)
             return Response(read_serializer.data, status=201)
         return Response(create_serializer.errors, status=400)
