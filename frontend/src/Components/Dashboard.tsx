@@ -1,4 +1,5 @@
-import retrieveProfile from '../Utils/RetreiveProfile'
+
+import retrieveProfile from '../Utils/retreiveProfile';
 import Navigation from './Navigation';
 
 const Dashboard = () => {
