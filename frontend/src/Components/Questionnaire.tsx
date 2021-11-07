@@ -8,7 +8,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
-import { Typography } from "@mui/material";
+import Typography  from "@mui/material/Typography";
 
 const Questionnaire = () => {
 
@@ -32,8 +32,6 @@ const Questionnaire = () => {
   }, []);
 
   useEffect(() => {
-    
-
     for (let entry in formData) {
       values = {...values, entry: ''};
       console.log(entry)
@@ -44,7 +42,7 @@ const Questionnaire = () => {
   console.log(values);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    alert('A name was submitted:');
+    alert('Thank you! Your answers have been submitted');
     const formData = new FormData(e.currentTarget);
     e.preventDefault();
     // for (let [key, value] of formData.entries()) {
