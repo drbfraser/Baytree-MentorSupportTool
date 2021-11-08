@@ -11,6 +11,7 @@ export default function retrieveProfile (): void {
         .then(data => {
             localStorage.setItem('firstname', data.first_name);
             localStorage.setItem('lastname', data.last_name);
+            localStorage.setItem('id', data.id);
         });
     }
 }

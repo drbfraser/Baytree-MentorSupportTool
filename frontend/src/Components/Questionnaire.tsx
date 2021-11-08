@@ -56,7 +56,9 @@ const Questionnaire = () => {
       maxWidth = "md" 
       sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, pt: 2, mt: 3}}
       style={{ background: '#ffffff' }}>
-      <h3>Monthly Progress Report</h3>
+      <Typography component="h2" variant="h6" color="text.secondary" gutterBottom>
+          Monthly Progress Report
+      </Typography>
       <Divider />
 
       <Box component="form"
@@ -67,7 +69,7 @@ const Questionnaire = () => {
           
         {Object.values(formData).map((data, index) => 
             <FormControl fullWidth>
-              <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}}>{index + 1}. {data.Question}</Typography>
+              <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{index + 1}. {data.Question}</Typography>
               {(function () {
                 switch (data.inputType) {
                   case 'text':

@@ -6,6 +6,8 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography'
 import { DeleteOutline } from '@mui/icons-material';
 
+import {lightGreen} from '@mui/material/colors';
+
 interface goal {
     goalName: string;
     details: string;
@@ -15,7 +17,7 @@ interface goal {
 export default function NoteCard( {} ) {
   return (
     <div>
-      <Card elevation={1}>
+      <Card elevation={1} sx = {{bgcolor: lightGreen[200]}}>
         <CardHeader
           action={
             <IconButton >

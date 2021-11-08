@@ -1,36 +1,62 @@
 import React, { useEffect, useState } from 'react'
+
+import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import NoteCard from './Notecard';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
+import NoteCard from './Notecard';
+import GoalsStatistics from './GoalsStatistics';
 
 export default function Goals() {
-  const [goals, setGoals] = useState([]);
+    const [goals, setGoals] = useState([]);
+    const [tabValue, setTabValue] = React.useState(0);
 
-  useEffect(() => {
-    fetch('http://localhost:8000/goals')
-      .then(res => res.json())
-      .then(data => setGoals(data))
-  }, [])
+    const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: number) => {
+      setTabValue(newValue);
+    };
 
-  /*
-  const handleDelete = async (id: string) => {
-    await fetch('http://localhost:8000/goals' + id, {
-      method: 'DELETE'
-    })
-    const newGoals = goals.filter(goals => goals.id != id)
-    setGoals(newGoals)
-  }
-*/
-  return (
-    <Container>
-      <Grid container spacing={3}>
-        {goals.map(goals => (
-          <Grid item xs={12} md={6} lg={4}>
-           <NoteCard />
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
-  )
+    useEffect(() => {
+      fetch('http://localhost:8000/goals/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then (response => response.json())
+      .then (data => setGoals(data.data))
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }, []);
+
+    console.log(goals);
+
+    /*
+    const handleDelete = async (id: string) => {
+      await fetch('http://localhost:8000/goals' + id, {
+        method: 'DELETE'
+      })
+      const newGoals = goals.filter(goals => goals.id != id)
+      setGoals(newGoals)
+    }
+    */
+    return (
+      <Container maxWidth = "lg" sx = {{mt: 10}}>
+        <Tabs value={tabValue} onChange={handleChange} centered sx = {{mb: 3}}>
+            <Tab label="Active" />
+            <Tab label="Completed" />
+            <Tab label="All" />
+        </Tabs>
+        <Grid container spacing={3} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "55vh"}}>
+          {goals.map(goals => (
+            <Grid item xs={12} md={6} lg={4}>
+                <NoteCard />
+            </Grid>
+          ))}
+        </Grid>
+        <GoalsStatistics />
+      </Container>
+    )
 }
