@@ -6,6 +6,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
 
 import Logo from '../Assets/baytree-logo.png';
 import { CardContent } from '@mui/material';
@@ -18,7 +19,7 @@ const Login = () => {
 
     useEffect(() => {
         if (localStorage.getItem('token') !== null) {
-            window.location.replace('http://localhost:3000/dashboard');
+            window.location.replace('http://localhost:3000/dashboard/home');
         }
         else {
             setLoading(false);
@@ -45,7 +46,7 @@ const Login = () => {
             if (data.key){
                 localStorage.clear();
                 localStorage.setItem('token', data.key);
-                window.location.replace('http://localhost:3000/dashboard'); 
+                window.location.replace('http://localhost:3000/dashboard/home'); 
             } 
             else {
                 setEmail('');
@@ -103,9 +104,9 @@ const Login = () => {
                         color = "success"
                         sx={{ mt: 3, mb: 2 }}> Sign In
                         </Button>
-                        <div>
-                            In case of Login error please contact <b>help@TheBaytreeCentre.com.</b>
-                        </div>
+                        <Typography variant = "caption" display = "block" align = "center">
+                            In case of Login error please contact <a href="help@TheBaytreeCentre.com">help@TheBaytreeCentre.com</a>
+                        </Typography>
                     </Box>
                 )}
                 </CardContent>

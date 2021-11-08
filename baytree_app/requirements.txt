@@ -4,5 +4,6 @@ djangorestframework
 django-rest-auth
 django-allauth
 mysqlclient
+django-crispy-forms
 
 
