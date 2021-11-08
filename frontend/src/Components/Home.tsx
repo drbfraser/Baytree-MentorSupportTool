@@ -1,6 +1,8 @@
+import CreateGoals from './CreateGoals'
 import Statistics from './Statistics'
 import Scheduler from './Scheduler'
 import MenteeInfo from './MenteeInfo'
+
 
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
@@ -17,6 +19,7 @@ const Home = () => {
             </Grid>
             <Grid item xs = {4}>
               <MenteeInfo />
+              <CreateGoals />
             </Grid>
           </Grid>
         </Container>

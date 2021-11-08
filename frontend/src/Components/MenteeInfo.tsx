@@ -24,7 +24,7 @@ export default function MenteeInfo() {
 
     return (
         <div>
-            <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, pl: 5, pr: 5}}>
+            <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, pl: 5, pr: 5, mb: 5}}>
                 <Typography component="h2" variant="h6" color="text.secondary" gutterBottom>
                     Mentee Information
                 </Typography>
