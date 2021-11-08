@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'monthly_report',
     'sessions',
     'admin_login',
+    'goals',
     'crispy_forms',
 ]
 

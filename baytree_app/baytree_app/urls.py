@@ -15,6 +15,7 @@ urlpatterns = [
     path('sessions/', include('sessions.urls')),
     path('users/', include('users.urls')),
     path('monthly-report/', include('monthly_report.urls')),
+    path('goals/', include('goals.urls')),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^account/', include('allauth.urls')),
