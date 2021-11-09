@@ -11,7 +11,7 @@ const Home = () => {
   
     return (
       <div>
-        <Container maxWidth = "xl" sx = {{pt: 2, mt: 3}}>
+        <Container maxWidth = "xl" sx = {{pt: 0.5, mt: 0}}>
           <Grid container spacing = {5}>
             <Grid item xs = {8}>
               <Scheduler />

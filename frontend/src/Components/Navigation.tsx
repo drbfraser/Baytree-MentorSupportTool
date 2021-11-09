@@ -64,28 +64,32 @@ export default function Navigation() {
                       </Box>
                   </Grid>
                   <Grid item style = {{marginTop: "20px"}}>
-                      <Link to = {`${match.url}/messages`} style={{ textDecoration: 'none', color: 'black' }}> 
-                          <IconButton size="large" color="inherit">
-                              <Badge badgeContent={4} color="error">
-                                  <MailIcon />
-                              </Badge>
-                          </IconButton>
-                      </Link>
-                      <Link to = {`${match.url}/notifications`} style={{ textDecoration: 'none', color: 'black' }}>
-                          <IconButton size="large" color="inherit">
-                              <Badge badgeContent={17} color="error">
-                                  <NotificationsIcon />
-                              </Badge>
-                          </IconButton>
-                      </Link>
-                      <Link to = {`${match.url}/profile`} style={{ textDecoration: 'none', color: 'black' }}>
-                          <IconButton color = "inherit" size = "large">
-                              <AccountBoxIcon />
-                          </IconButton>
-                      </Link>
-                      <IconButton onClick = {Logout} style = {{color: "black"}} size = "large">
-                          <LogoutIcon />
-                      </IconButton>
+                      <Grid container spacing = {2}> 
+                        <Grid item xs = {3}>
+                        <Link to = {`${match.url}/messages`} style={{ textDecoration: 'none', color: 'black' }}> 
+                            <IconButton size="large" color="inherit">
+                                <Badge badgeContent={4} color="error">
+                                    <MailIcon />
+                                </Badge>
+                            </IconButton>
+                        </Link>
+                        </Grid>
+                        <Grid item xs = {3}>
+                        <Notifications />
+                        </Grid>
+                        <Grid item xs = {3}>
+                        <Link to = {`${match.url}/profile`} style={{ textDecoration: 'none', color: 'black' }}>
+                            <IconButton color = "inherit" size = "large">
+                                <AccountBoxIcon />
+                            </IconButton>
+                        </Link>
+                        </Grid>
+                        <Grid item xs = {3}>
+                        <IconButton onClick = {Logout} style = {{color: "black"}} size = "large">
+                            <LogoutIcon />
+                        </IconButton>
+                        </Grid>
+                      </Grid>
                   </Grid>
               </Grid>
           </Toolbar>  
@@ -159,9 +163,6 @@ export default function Navigation() {
               </Route>
               <Route path={`${match.path}/messages`}>
                   <Messages />
-              </Route>
-              <Route path={`${match.path}/notifications`}>
-                  <Notifications />
               </Route>
           </Switch>
         </Box>
