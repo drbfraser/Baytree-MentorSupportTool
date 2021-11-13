@@ -4,4 +4,4 @@ from .models import Goal
 class GoalsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goal
-        fields = ['title', 'details', 'id']
+        fields = ['user', 'date', 'goal_review_date', 'content', 'status']
