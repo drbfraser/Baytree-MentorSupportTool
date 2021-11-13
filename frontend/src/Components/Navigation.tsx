@@ -10,8 +10,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
-import Badge from '@mui/material/Badge';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import pink from '@mui/material/colors/pink';
@@ -19,13 +17,10 @@ import pink from '@mui/material/colors/pink';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import BookIcon from '@mui/icons-material/Book';
-import CreateIcon from '@mui/icons-material/Create';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 
 import Home from './Home';
 import Goals from './Goals';
@@ -37,7 +32,6 @@ import Notifications from './Notifications';
 import Profile from './Profile';
 import Questionnaire from './Questionnaire';
 import Records from './Records';
-import Reporting from './Reporting';
 import Resources from './Resources';
 
 const drawerWidth = 240;
@@ -66,13 +60,7 @@ export default function Navigation() {
                   <Grid item style = {{marginTop: "20px"}}>
                       <Grid container spacing = {2}> 
                         <Grid item xs = {3}>
-                        <Link to = {`${match.url}/messages`} style={{ textDecoration: 'none', color: 'black' }}> 
-                            <IconButton size="large" color="inherit">
-                                <Badge badgeContent={4} color="error">
-                                    <MailIcon />
-                                </Badge>
-                            </IconButton>
-                        </Link>
+                        <Messages />
                         </Grid>
                         <Grid item xs = {3}>
                         <Notifications />
@@ -106,14 +94,13 @@ export default function Navigation() {
           <Grid item style = {{marginTop: "30px"}}>
           <Box sx={{ overflow: 'auto' }}>
             <List>
-              {['Home', 'Reporting', 'Resources', 'Questionnaire','Goals', 'Records'].map((text, index) => (
+              {['Home', 'Resources', 'Questionnaire','Goals', 'Records'].map((text, index) => (
               <Link to = {`${match.url}/${text}`} style={{ textDecoration: 'none', color: 'black' }} key = {text}>
                 <ListItem button>
                   <ListItemIcon>
                           {(() => {
                           switch(text) {
                             case "Home": return <HomeIcon sx={{ color: pink[500]}}/>;
-                            case "Reporting": return <CreateIcon sx={{ color: pink[500]}}/>;
                             case "Resources": return <LibraryBooksIcon sx={{ color: pink[500]}}/>;
                             case "Questionnaire": return <QuestionAnswerIcon sx={{ color: pink[500]}}/>;  
                             case "Goals": return <AutoGraphIcon sx={{ color: pink[500]}}/>;
@@ -124,7 +111,6 @@ export default function Navigation() {
                   <ListItemText>
                           {(() => {
                           switch(text) {
-                              case "Reporting": return 'Create Session';
                               case "Questionnaire": return 'Progress Report';  
                               default: return (text);
                             }
@@ -145,9 +131,6 @@ export default function Navigation() {
               </Route>
               <Route path={`${match.path}/resources`}>
                   <Resources />
-              </Route>
-              <Route path={`${match.path}/reporting`}>
-                  <Reporting />
               </Route>
               <Route path={`${match.path}/questionnaire`}>
                   <Questionnaire />
