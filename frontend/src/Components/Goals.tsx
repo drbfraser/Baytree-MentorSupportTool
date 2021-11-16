@@ -33,17 +33,9 @@ export default function Goals() {
 
     console.log(goals);
 
-    /*
-    const handleDelete = async (id: string) => {
-      await fetch('http://localhost:8000/goals' + id, {
-        method: 'DELETE'
-      })
-      const newGoals = goals.filter(goals => goals.id != id)
-      setGoals(newGoals)
-    }
-    */
+
     return (
-      <Container maxWidth = "lg" sx = {{mt: 10}}>
+      <Container maxWidth = "lg" sx = {{mt: 5}}>
         <Tabs value={tabValue} onChange={handleChange} centered sx = {{mb: 3}}>
             <Tab label="Active" />
             <Tab label="Completed" />
