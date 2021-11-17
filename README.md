@@ -6,19 +6,19 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
 <dl>
 <dt>Scrum Master:</dt>
-<dd>Jack Ren</dd>
+<dd>Yanze Zheng</dd>
 
 <dt>Product Owner:</dt>
-<dd>Jasim Khan Pathan</dd>
+<dd>Shubham Joon</dd>
 
 <dt>Repo Manager:</dt> 
-<dd>Herman Luo</dd>
+<dd>Ashvinder Grewal</dd>
 
 <dt>Team Members:</dt> 
 <dd>Jake Kim</dd> 
-<dd>Ashvinder Grewal</dd>
-<dd>Shubham Joon</dd>
-<dd>Yanze Zheng</dd>
+<dd>Herman Luo</dd>
+<dd>Jasim Khan Pathan</dd>
+<dd>Jack Ren</dd>
 </dl>
 
 <br>

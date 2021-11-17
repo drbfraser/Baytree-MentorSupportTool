@@ -43,7 +43,7 @@ export default function Goals() {
     }
     */
     return (
-      <Container maxWidth = "lg" sx = {{mt: 10}}>
+      <Container maxWidth = "lg" sx = {{mt: 5}}>
         <Tabs value={tabValue} onChange={handleChange} centered sx = {{mb: 3}}>
             <Tab label="Active" />
             <Tab label="Completed" />
