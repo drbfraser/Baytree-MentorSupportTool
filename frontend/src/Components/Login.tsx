@@ -97,6 +97,9 @@ const Login = () => {
                         autoComplete = "current-password"
                         onChange={e => setPassword(e.target.value)}
                         />
+                        <Typography variant = "caption" color = "error" >
+                            <a href="Reset Password">Reset Password</a>
+                        </Typography>
                         <Button 
                         type = "submit" 
                         value = "Login" 
@@ -104,9 +107,7 @@ const Login = () => {
                         color = "success"
                         sx={{ mt: 3, mb: 2 }}> Sign In
                         </Button>
-                        <Typography variant = "caption" display = "block" align = "center">
-                            In case of Login error please contact <a href="help@TheBaytreeCentre.com">help@TheBaytreeCentre.com</a>
-                        </Typography>
+                        
                     </Box>
                 )}
                 </CardContent>

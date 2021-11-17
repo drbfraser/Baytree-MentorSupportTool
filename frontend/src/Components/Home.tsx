@@ -19,7 +19,6 @@ const Home = () => {
             </Grid>
             <Grid item xs = {4}>
               <MenteeInfo />
-              <CreateGoals />
             </Grid>
           </Grid>
         </Container>

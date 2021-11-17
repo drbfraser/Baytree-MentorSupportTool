@@ -8,6 +8,7 @@ import Tab from '@mui/material/Tab';
 
 import NoteCard from './Notecard';
 import GoalsStatistics from './GoalsStatistics';
+import CreateGoals from './CreateGoals';
 
 export default function Goals() {
     const [goals, setGoals] = useState([]);
@@ -44,6 +45,9 @@ export default function Goals() {
     */
     return (
       <Container maxWidth = "lg" sx = {{mt: 5}}>
+        <Grid item xs = {4}>
+             <CreateGoals />
+        </Grid>
         <Tabs value={tabValue} onChange={handleChange} centered sx = {{mb: 3}}>
             <Tab label="Active" />
             <Tab label="Completed" />
