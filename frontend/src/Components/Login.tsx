@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 
 import Logo from '../Assets/baytree-logo.png';
+import Photo from '../Assets/baytree-photo.jpg';
 import { CardContent } from '@mui/material';
 
 const Login = () => {
@@ -59,9 +60,23 @@ const Login = () => {
 
     return (
         <div className="content">
-            <Container component="main" maxWidth="xs">
+            <Grid container component="main" sx={{ height: '95vh' }}>
+            <Grid
+            item
+            xs={false}
+            sm={4}
+            md={7}
+            sx={{
+                backgroundImage: `url(${Photo})`,
+                backgroundColor: (t) =>
+                t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            }}
+            />
+            <Grid item xs={12} sm={8} md={5}>
                 <Card>
-                <CardContent style = {{padding: "30px"}}>
+                <CardContent style = {{padding: "60px", height: "81vh"}}>
                 {loading === false && 
                 <Box   
                 display = "flex"
@@ -105,13 +120,14 @@ const Login = () => {
                         sx={{ mt: 3, mb: 2 }}> Sign In
                         </Button>
                         <Typography variant = "caption" display = "block" align = "center">
-                            In case of Login error please contact <a href="help@TheBaytreeCentre.com">help@TheBaytreeCentre.com</a>
+                            <a href="http://localhost:3000/ResetPassword">Forgot Password?</a>
                         </Typography>
                     </Box>
                 )}
                 </CardContent>
                 </Card>
-            </Container>
+                </Grid>
+            </Grid>
         </div>
     );
 };
