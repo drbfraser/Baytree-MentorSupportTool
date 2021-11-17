@@ -34,8 +34,8 @@ class _LoginPageState extends State<LoginPage> {
             ? Center(child: CircularProgressIndicator())
             : ListView(
                 children: <Widget>[
-                  headerSection(),
                   headerImage(),
+                  headerSection(),
                   userInput(),
                   resetPassword(),
                   errorMessasge(error),
@@ -88,12 +88,13 @@ class _LoginPageState extends State<LoginPage> {
 
   Container headerSection() {
     return Container(
-      margin: EdgeInsets.only(top: 10.0),
+      margin: EdgeInsets.only(top: 0.0, bottom: 0),
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-      child: Text("Baytree Centre App",
+      child: Text("Mentor Portal",
+          textAlign: TextAlign.center,
           style: TextStyle(
               color: Colors.black,
-              fontSize: 36.0,
+              fontSize: 24.0,
               fontWeight: FontWeight.bold)),
     );
   }
@@ -101,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
   Container headerImage() {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.only(top: 5.0, bottom: 35.0),
+        padding: const EdgeInsets.only(top: 60.0, bottom: 0.0),
         child: Center(
           child: Container(
               width: 200,
