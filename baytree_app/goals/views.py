@@ -1,5 +1,4 @@
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import filters
 from rest_framework import generics
@@ -18,7 +17,6 @@ class GoalViews(generics.ListAPIView):
     serializer_class = GoalSerializer
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['mentee', 'title', 'date', 'goal_review_date', 'status']
-
 
     def post(self, request):
         serializer = GoalSerializer(data=request.data)
