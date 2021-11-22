@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
+import 'global_variables.dart' as global;
 import 'navigation_bar.dart';
 
 class MonthlyProgressPage extends StatefulWidget {
@@ -164,7 +164,7 @@ class _MonthlyProgressPageState extends State<MonthlyProgressPage> {
 
   // Drop down menu to select mentees
   Container DropDownMenteeList() {
-    List<String> mentees = ["Select a mentee", "User Name 1", _token ?? " "];
+    List<String> mentees = ["Select a mentee"] + global.menteeList; // global variable
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
       child: Row(

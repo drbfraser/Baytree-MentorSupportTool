@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'navigation_bar.dart';
+import 'global_variables.dart' as global;
 
 class MentoringPage extends StatefulWidget {
   @override
@@ -158,13 +159,11 @@ class _MentoringPageState extends State<MentoringPage> {
     );
   }
 
-  //List <String> mentees = ['One', "token" ?? " ", 'Free', 'Four'];
-  //List <String> mentees = [token]
-
   // Drop down menu to select mentee
-  // Change "List<String> mentees" to a POST request for mentee names
   Container DropDownMenu() {
-    List<String> mentees = ["Select a mentee", "User Name 1", _token ?? " "];
+
+    List<String> mentees = ["Select a mentee"] + global.menteeList; // global variables
+
     return Container(
       margin: const EdgeInsets.only(bottom: 20.0),
       child: Row(

@@ -7,6 +7,7 @@ import 'package:baytree_mobile/login_page.dart';
 import 'package:baytree_mobile/messages_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
+import 'global_variables.dart' as global;
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,10 +20,43 @@ Future<String?> getTokenPreference() async {
   return token;
 }
 
+
+Future<List<String>?> getMenteeList() async {
+  List<String> mentees = [];
+
+  var url = Uri.parse('http://192.168.4.251:8000/users/mentors/2');
+  http.Response response = await http.get(url);
+  try {
+
+    if (response.statusCode == 200) {
+
+      String data = response.body;
+      var decodedJson = json.decode(data);
+      global.Record recordFromJson(String str) => global.Record.fromJson(json.decode(data));
+      String jsonString = decodedJson.toString();
+
+      global.Record record = recordFromJson(jsonString);
+      int num = record.data.menteeUser.length;
+      for(int i = 0; i < num; i++) {
+        mentees.add(record.data.menteeUser[i].user.firstName + " " + record.data.menteeUser[i].user.lastName);
+      }
+
+      return mentees;
+      // return decodedData;
+    }
+  } catch (e) {
+    return mentees;
+  }
+}
+
+
 class _HomePageState extends State<HomePage> {
 
   String? _token = "";
   SharedPreferences? sharedPreferences;
+
+  List<String> menteeList = [" "];
+
 
   void updateToken(String? token) {
     setState(() {
@@ -30,9 +64,19 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void updateMenteeList(List<String>? token) {
+    setState(() {
+      menteeList = token!;
+      global.menteeList = menteeList; // assign global variable
+    });
+  }
+
+
   @override
   void initState() {
     getTokenPreference().then(updateToken);
+    getMenteeList().then(updateMenteeList);
+
     super.initState();
   }
 
@@ -50,6 +94,8 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Text('Key:'),
             Text(_token ?? " "),
+            test(),
+
           ],
         ),
       ),
@@ -91,6 +137,23 @@ class _HomePageState extends State<HomePage> {
 
   }
 
+  Container test() {
+    return Container(
+      child: Padding(
+        padding: EdgeInsets.only(top: 30, left: 0, right: 10),
+        child: Column (
+          crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for ( var i in menteeList ) Text(i.toString(),
+            textAlign: TextAlign.left,
+            style: new TextStyle(
+              fontSize: 16.0,
+            ),)
+    ],
+    ),
+      ),
+    );
+  }
 
 
 }
