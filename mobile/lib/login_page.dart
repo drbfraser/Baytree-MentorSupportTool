@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'home_page.dart';
 import 'main.dart';
 import 'navigation_bar.dart';
+import 'global_variables.dart' as global;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -74,6 +76,17 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false;
         });
         sharedPreferences.setString("token", jsonResponse['key']);
+
+        // Get user ID
+        String basicAuth = 'Basic ' + base64Encode(utf8.encode('$email:$pass'));
+        Response r = await get(
+            Uri.parse('http://192.168.4.251:8000/rest-auth/user'),
+            headers: <String, String>{'authorization': basicAuth});
+        if (r.statusCode == 200 || r.statusCode == 201) {
+          var decodedJson = jsonDecode(r.body);
+          sharedPreferences.setInt("id", decodedJson['id']);
+        }
+
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
                 builder: (BuildContext context) => MyBottomNavigationBar()),

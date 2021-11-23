@@ -1,7 +1,11 @@
 
 library mobile.global_variables;
 
+int mentorID = 0;
+int currentMenteeID = 0;
+
 List<String> menteeList = [" "]; // Assign mentees in the home page
+List<int> menteeIdList = [];
 
 
 class Record {
@@ -23,9 +27,6 @@ class Record {
     "data": data.toJson(),
   };
 }
-
-
-
 
 
 class Data {

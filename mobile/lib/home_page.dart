@@ -20,11 +20,19 @@ Future<String?> getTokenPreference() async {
   return token;
 }
 
+Future<int?> getIDPreference() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int? id = prefs.getInt("id");
+  return id;
+}
 
-Future<List<String>?> getMenteeList() async {
+
+Future<List<List<String>>?> getMenteeList() async {
   List<String> mentees = [];
+  List<String> id = [];
+  String urlMentorID = "http://192.168.4.251:8000/users/mentors/" + global.mentorID.toString();
 
-  var url = Uri.parse('http://192.168.4.251:8000/users/mentors/2');
+  var url = Uri.parse(urlMentorID);
   http.Response response = await http.get(url);
   try {
 
@@ -39,23 +47,28 @@ Future<List<String>?> getMenteeList() async {
       int num = record.data.menteeUser.length;
       for(int i = 0; i < num; i++) {
         mentees.add(record.data.menteeUser[i].user.firstName + " " + record.data.menteeUser[i].user.lastName);
+        id.add(record.data.menteeUser[i].user.id.toString());
       }
 
-      return mentees;
+      return [mentees, id ];
       // return decodedData;
     }
   } catch (e) {
-    return mentees;
+    return [mentees, id ];
   }
 }
 
 
 class _HomePageState extends State<HomePage> {
 
-  String? _token = "";
   SharedPreferences? sharedPreferences;
 
+  // Initialize variables
+  String? _token = "";
+  int? _id = 0;
+
   List<String> menteeList = [" "];
+  List<int> menteeIdList = [];
 
 
   void updateToken(String? token) {
@@ -64,10 +77,22 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void updateMenteeList(List<String>? token) {
+  void updateID(int? id) {
     setState(() {
-      menteeList = token!;
-      global.menteeList = menteeList; // assign global variable
+      _id = id;
+      global.mentorID = id!;
+    });
+  }
+
+
+  void updateMenteeList(List<List<String>>? token) {
+    setState(() {
+
+      menteeList = token![0];
+      global.menteeList = token[0]; // assign global variable
+      menteeIdList = token[1].map((data) => int.parse(data)).toList();
+      global.menteeIdList = token[1].map((data) => int.parse(data)).toList();
+
     });
   }
 
@@ -75,6 +100,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     getTokenPreference().then(updateToken);
+    getIDPreference().then(updateID);
     getMenteeList().then(updateMenteeList);
 
     super.initState();
@@ -94,6 +120,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Text('Key:'),
             Text(_token ?? " "),
+            Text('${_id}'),
             test(),
 
           ],
@@ -145,6 +172,11 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for ( var i in menteeList ) Text(i.toString(),
+            textAlign: TextAlign.left,
+            style: new TextStyle(
+              fontSize: 16.0,
+            ),),
+          for ( var i in menteeIdList ) Text(i.toString(),
             textAlign: TextAlign.left,
             style: new TextStyle(
               fontSize: 16.0,
