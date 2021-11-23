@@ -136,7 +136,7 @@ export default function Navigation() {
               <Route path={`${match.path}/resources`}>
                   <Resources />
               </Route>
-              <Route path={`${match.path}/questionnaire`}>
+              <Route path={`${match.path}/questionnaires`}>
                   <Questionnaire />
               </Route>
               <Route path={`${match.path}/profile`}>

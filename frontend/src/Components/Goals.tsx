@@ -45,15 +45,16 @@ export default function Goals() {
     */
     return (
       <Container maxWidth = "lg" sx = {{mt: 5}}>
-        <Grid item xs = {4}>
-             <CreateGoals />
-        </Grid>
+        
         <Tabs value={tabValue} onChange={handleChange} centered sx = {{mb: 3}}>
             <Tab label="Active" />
             <Tab label="Completed" />
             <Tab label="All" />
         </Tabs>
         <Grid container spacing={3} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "55vh"}}>
+        <Grid item xs = {4}>
+             <CreateGoals />
+        </Grid>
           {goals.map(goals => (
             <Grid item xs={12} md={6} lg={4}>
                 <NoteCard />
