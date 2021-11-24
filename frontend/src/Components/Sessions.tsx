@@ -1,15 +1,15 @@
 import {useState} from 'react'
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TextField from '@mui/material/TextField';
 import TimePicker from '@mui/lab/TimePicker';
 import Typography  from "@mui/material/Typography";
@@ -28,6 +28,8 @@ const Sessions = () => {
     alert('Thank you! Your answers have been submitted');
     e.preventDefault();
   }
+
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   return (
     <Container 
@@ -53,10 +55,41 @@ const Sessions = () => {
               required
               margin="normal"
             />
+            <Grid container spacing = {2}>
+              <Grid item xs = {6}>
+                <Grid container spacing = {1}>
+                  <Grid item xs = {10}>
+                    <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Did the mentor attend the session?</Typography>
+                  </Grid>
+                  <Grid item xs = {2} sx = {{mt: 1.8}}>
+                    <Checkbox {...label} />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs = {6}>
+                <Grid container spacing = {1}>
+                  <Grid item xs = {10}>
+                    <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Did the mentee attend the session?</Typography>
+                  </Grid>
+                  <Grid item xs = {2} sx = {{mt: 1.8}}>
+                    <Checkbox {...label} />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
             
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Grid container spacing = {10}>
-                <Grid item xs = {6}>
+              <Grid container spacing = {1}>
+                <Grid item xs = {4}>
+                  <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Date</Typography>
+                  <DesktopDatePicker
+                    inputFormat="MM/dd/yyyy"
+                    value={value}
+                    onChange={handleChange}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </Grid>
+                <Grid item xs = {4}>
                   <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Clock In Time</Typography>
                   <TimePicker
                     value={value}
@@ -64,7 +97,7 @@ const Sessions = () => {
                     renderInput={(params) => <TextField {...params} />}
                   />
                 </Grid>
-                <Grid item xs = {6}>
+                <Grid item xs = {4}>
                   <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Clock Out Time</Typography>
                   <TimePicker
                     value={value}
