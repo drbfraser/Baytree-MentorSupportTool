@@ -1,10 +1,22 @@
 import {useState, useEffect} from 'react';
+import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography';
 
 export default function MenteeInfo() {
     const [menteeInfo, setMenteeInfo] = useState([] as any[]);
+    const [currentMentee, setCurrentMentee] = useState(0);
+
+    const handleClick = (event: any) => {
+        var len: number = Object.values(menteeInfo).length;
+        var newValue: number = currentMentee + 1;
+
+        if (newValue >= len){
+            newValue = 0;
+        }
+        setCurrentMentee(newValue);
+    };
     
     useEffect(() => {
         fetch('http://localhost:8000/users/mentors/1', {
@@ -28,8 +40,9 @@ export default function MenteeInfo() {
                 <Typography component="h2" variant="h6" color="text.secondary" gutterBottom>
                     Mentee Information
                 </Typography>
-                {Object.values(menteeInfo).map((data) => 
-                    <div>
+                {Object.values(menteeInfo).map((data, index: number, arr) => (
+                    index == currentMentee ?
+                    (<div>
                         <Typography variant = "overline" align = "left" sx = {{mt: 1}} color="text.secondary">
                             Name:
                         </Typography>
@@ -71,8 +84,11 @@ export default function MenteeInfo() {
                         <Typography align = "right" sx = {{mt: -1, mb: 1}}>
                             N/A
                         </Typography>
-                    </div>
-                )}
+                    </div>)
+                    : null
+                ))}
+            <Divider/>
+            <Button variant="text" onClick = {handleClick} sx = {{ml: 9}}>Next Mentee</Button>
             </Card>
         </div>
     );

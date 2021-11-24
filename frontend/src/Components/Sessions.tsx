@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Box from '@mui/material/Box';
@@ -10,6 +10,8 @@ import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import TimePicker from '@mui/lab/TimePicker';
 import Typography  from "@mui/material/Typography";
@@ -19,6 +21,7 @@ const Sessions = () => {
   const [value, setValue] = useState<Date | null>(
     new Date('2014-08-18T21:11:54'),
   );
+  const [menteeList, setMenteeList] = useState([] as any[]);
 
   const handleChange = (newValue: Date | null) => {
     setValue(newValue);
@@ -30,6 +33,20 @@ const Sessions = () => {
   }
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
+  useEffect(() => {
+    fetch('http://localhost:8000/users/mentors/1', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then (response => response.json())
+    .then (data => setMenteeList(data.data.menteeuser))
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }, []);
 
   return (
     <Container 
@@ -49,12 +66,15 @@ const Sessions = () => {
         
           <FormControl fullWidth>
             <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Mentee Name</Typography>
-            <TextField 
-              variant="outlined"
-              sx = {{mt: 0, pt: 0, mb: 5}}
-              required
-              margin="normal"
-            />
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value="John"
+            >
+            {Object.values(menteeList).map((data) => 
+              <MenuItem value={data.user.first_name}>{data.user.first_name} {data.user.last_name}</MenuItem>
+            )}
+            </Select>
             <Grid container spacing = {2}>
               <Grid item xs = {6}>
                 <Grid container spacing = {1}>
