@@ -11,7 +11,6 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('baytreeadmin/', blog_site.urls),
     path('sessions/', include('sessions.urls')),
     path('users/', include('users.urls')),
     path('monthly-report/', include('monthly_report.urls')),
