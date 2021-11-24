@@ -18,18 +18,49 @@ import Typography  from "@mui/material/Typography";
 
 const Sessions = () => {
 
-  const [value, setValue] = useState<Date | null>(
-    new Date('2014-08-18T21:11:54'),
-  );
+  const [mentee, setMentee] = useState('');
+  const [mentorAttendance, setMentorAttendance] = useState(false);
+  const [menteeAttendance, setMenteeAttendance] = useState(false);
+  const [date, setDate] = useState<Date | null>(null);
+  const [clockInTime, setClockInTime] = useState<Date | null>(null);
+  const [clockOutTime, setClockOutTime] = useState<Date | null>(null);
+  const [notes, setNotes] = useState('');
   const [menteeList, setMenteeList] = useState([] as any[]);
-
-  const handleChange = (newValue: Date | null) => {
-    setValue(newValue);
+  
+  const handleDateChange = (newValue: Date | null) => {
+    setDate(newValue);
+  };
+  const handleClockInChange = (newValue: Date | null) => {
+    setClockInTime(newValue);
+  };
+  const handleClockOutChange = (newValue: Date | null) => {
+    setClockOutTime(newValue);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     alert('Thank you! Your answers have been submitted');
     e.preventDefault();
+
+    const session = {
+      mentor: localStorage.getItem('id'),
+      mentee: mentee,
+      attended_by_mentor: mentorAttendance,
+      attended_by_mentee: menteeAttendance,
+      clock_in: clockInTime,
+      clock_out: clockOutTime,
+      notes: notes
+    };
+
+    fetch('http://localhost:8000/sessions/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(session)
+    })
+    .then(response => response.json())
+
+    window.location.replace('http://localhost:3000/dashboard/home'); 
   }
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
@@ -59,7 +90,7 @@ const Sessions = () => {
         <Divider />
 
         <Box component="form"
-          sx = {{margin: 5}}
+          sx = {{margin: 5, mt: 2}}
           onSubmit = {handleSubmit} 
           noValidate
           autoComplete="off">
@@ -69,12 +100,15 @@ const Sessions = () => {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value="John"
+              value={mentee}
+              onChange={e => setMentee(e.target.value)}
             >
             {Object.values(menteeList).map((data) => 
-              <MenuItem value={data.user.first_name}>{data.user.first_name} {data.user.last_name}</MenuItem>
+              <MenuItem value={data.user.id}>{data.user.first_name} {data.user.last_name}</MenuItem>
             )}
             </Select>
+            <Divider sx = {{pt: 2, pb: 2}}/>
+
             <Grid container spacing = {2}>
               <Grid item xs = {6}>
                 <Grid container spacing = {1}>
@@ -82,7 +116,7 @@ const Sessions = () => {
                     <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Did the mentor attend the session?</Typography>
                   </Grid>
                   <Grid item xs = {2} sx = {{mt: 1.8}}>
-                    <Checkbox {...label} />
+                    <Checkbox checked={mentorAttendance} onChange={e => setMentorAttendance(e.target.checked)} {...label} />
                   </Grid>
                 </Grid>
               </Grid>
@@ -92,11 +126,12 @@ const Sessions = () => {
                     <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Did the mentee attend the session?</Typography>
                   </Grid>
                   <Grid item xs = {2} sx = {{mt: 1.8}}>
-                    <Checkbox {...label} />
+                    <Checkbox checked={menteeAttendance} onChange={e => setMenteeAttendance(e.target.checked)} {...label} />
                   </Grid>
                 </Grid>
               </Grid>
             </Grid>
+            <Divider sx = {{pt: 2, pb: 2}}/>
             
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid container spacing = {1}>
@@ -104,29 +139,30 @@ const Sessions = () => {
                   <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Date</Typography>
                   <DesktopDatePicker
                     inputFormat="MM/dd/yyyy"
-                    value={value}
-                    onChange={handleChange}
+                    value={date}
+                    onChange={handleDateChange}
                     renderInput={(params) => <TextField {...params} />}
                   />
                 </Grid>
                 <Grid item xs = {4}>
                   <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Clock In Time</Typography>
                   <TimePicker
-                    value={value}
-                    onChange={handleChange}
+                    value={clockInTime}
+                    onChange={handleClockInChange}
                     renderInput={(params) => <TextField {...params} />}
                   />
                 </Grid>
                 <Grid item xs = {4}>
                   <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Clock Out Time</Typography>
                   <TimePicker
-                    value={value}
-                    onChange={handleChange}
+                    value={clockOutTime}
+                    onChange={handleClockOutChange}
                     renderInput={(params) => <TextField {...params} />}
                   />
                 </Grid>
               </Grid>
             </LocalizationProvider>
+            <Divider sx = {{pt: 2, pb: 2}}/>
 
             <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Session Notes. If you or the mentee did not attend the session, please explain why</Typography>
             <TextField 
@@ -136,8 +172,9 @@ const Sessions = () => {
               rows={8}
               required
               margin="normal"
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
             />
-
 
           <Divider />
           </FormControl>
