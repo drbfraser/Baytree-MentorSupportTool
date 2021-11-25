@@ -17,6 +17,7 @@ import pink from '@mui/material/colors/pink';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import BookIcon from '@mui/icons-material/Book';
+import CreateIcon from '@mui/icons-material/Create';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -31,6 +32,7 @@ import Messages from './Messages';
 import Notifications from './Notifications';
 import Profile from './Profile';
 import Questionnaire from './Questionnaire';
+import Sessions from './Sessions';
 import Records from './Records';
 import Resources from './Resources';
 
@@ -94,13 +96,14 @@ export default function Navigation() {
           <Grid item style = {{marginTop: "30px"}}>
           <Box sx={{ overflow: 'auto' }}>
             <List>
-              {['Home', 'Resources', 'Questionnaire','Goals', 'Records'].map((text, index) => (
+              {['Home', 'Sessions', 'Resources', 'Questionnaire','Goals', 'Records'].map((text, index) => (
               <Link to = {`${match.url}/${text}`} style={{ textDecoration: 'none', color: 'black' }} key = {text}>
                 <ListItem button>
                   <ListItemIcon>
                           {(() => {
                           switch(text) {
                             case "Home": return <HomeIcon sx={{ color: pink[500]}}/>;
+                            case "Sessions": return <CreateIcon sx={{ color: pink[500]}}/>;
                             case "Resources": return <LibraryBooksIcon sx={{ color: pink[500]}}/>;
                             case "Questionnaire": return <QuestionAnswerIcon sx={{ color: pink[500]}}/>;  
                             case "Goals": return <AutoGraphIcon sx={{ color: pink[500]}}/>;
@@ -112,6 +115,7 @@ export default function Navigation() {
                           {(() => {
                           switch(text) {
                               case "Questionnaire": return 'Progress Report';  
+                              case "Sessions": return 'Create Session'
                               default: return (text);
                             }
                           })()}
@@ -131,6 +135,9 @@ export default function Navigation() {
               </Route>
               <Route path={`${match.path}/resources`}>
                   <Resources />
+              </Route>
+              <Route path={`${match.path}/sessions`}>
+                  <Sessions />
               </Route>
               <Route path={`${match.path}/questionnaire`}>
                   <Questionnaire />
