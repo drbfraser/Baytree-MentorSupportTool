@@ -30,6 +30,10 @@ export default function Scheduler(){
     })
     const [sessionList, setSessionList] = useState([] as any[]);
     var events: any = [];
+
+    const handleEventClick = (e: React.SyntheticEvent) => {
+        alert("hi")
+    }
     
     useEffect(() => {
     fetch('http://localhost:8000/sessions/', {
@@ -61,8 +65,8 @@ export default function Scheduler(){
             <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mb: 5}} style = {{height: "55vh"}}>
                 <Calendar
                 localizer={localizer}
-                allDayAccessor = "false"
                 events = {sessionList}
+                onSelectEvent = {handleEventClick}
                 />
             </Card>
         </div>
