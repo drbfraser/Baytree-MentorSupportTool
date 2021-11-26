@@ -37,6 +37,7 @@ import Records from './Records';
 import Resources from './Resources';
 
 const drawerWidth = 240;
+const resourcesURL = 'https://thebaytreecentre.sharepoint.com/Shared%20Documents/Forms/AllItems.aspx?id=%2FShared%20Documents%2FYouth%20Service%2FMentoring%20Resources&p=true';
 
 export default function Navigation() {
 
@@ -96,7 +97,7 @@ export default function Navigation() {
           <Grid item style = {{marginTop: "30px"}}>
           <Box sx={{ overflow: 'auto' }}>
             <List>
-              {['Home', 'Sessions', 'Resources', 'Questionnaire','Goals', 'Records'].map((text, index) => (
+              {['Home', 'Sessions', 'Questionnaire','Goals', 'Records'].map((text, index) => (
               <Link to = {`${match.url}/${text}`} style={{ textDecoration: 'none', color: 'black' }} key = {text}>
                 <ListItem button>
                   <ListItemIcon>
@@ -104,7 +105,6 @@ export default function Navigation() {
                           switch(text) {
                             case "Home": return <HomeIcon sx={{ color: pink[500]}}/>;
                             case "Sessions": return <CreateIcon sx={{ color: pink[500]}}/>;
-                            case "Resources": return <LibraryBooksIcon sx={{ color: pink[500]}}/>;
                             case "Questionnaire": return <QuestionAnswerIcon sx={{ color: pink[500]}}/>;  
                             case "Goals": return <AutoGraphIcon sx={{ color: pink[500]}}/>;
                             case "Records": return <BookIcon sx={{ color: pink[500]}}/>;         
@@ -123,6 +123,14 @@ export default function Navigation() {
                 </ListItem>
               </Link>
               ))}
+              <ListItem button component="a" href={resourcesURL} target="_blank">
+                <ListItemIcon>
+                  <LibraryBooksIcon sx={{ color: pink[500]}}/>
+                </ListItemIcon>
+                <ListItemText>
+                  Resources
+                </ListItemText>
+              </ListItem>
             </List>
           </Box>
           </Grid>
@@ -132,9 +140,6 @@ export default function Navigation() {
           <Switch>
               <Route path={`${match.path}/home`}>
                   <Home />
-              </Route>
-              <Route path={`${match.path}/resources`}>
-                  <Resources />
               </Route>
               <Route path={`${match.path}/sessions`}>
                   <Sessions />
