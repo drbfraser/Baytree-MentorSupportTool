@@ -995,14 +995,15 @@ table#change-history tbody th {
     justify-content: space-between;
     align-items: center;
     padding: 10px 40px;
-    background: #27CE12;
-    color: white;
+    background: white;
+    color: black;
     overflow: hidden;
 }
 
 #header a:link,
 #header a:visited {
-    color: var(--header-link-color);
+    /* color: var(--header-link-color); */
+    color: black;
 }
 
 #header a:focus,
@@ -1074,7 +1075,7 @@ table#change-history tbody th {
 }
 
 #content-related h3 {
-    color: black;
+    color: white;
     padding: 0 16px;
     margin: 0 0 16px;
 }
@@ -1106,7 +1107,7 @@ table#change-history tbody th {
     margin-bottom: 16px;
     border-bottom: 1px solid var(--hairline-color);
     font-size: 18px;
-    color: black;
+    color: white;
 }
 
 .delete-confirmation form input[type="submit"] {
