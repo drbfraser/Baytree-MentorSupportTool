@@ -1,8 +1,7 @@
 from django.urls import path
-from . import views
+from .views import MonthlyReportView
 
 urlpatterns = [
-    path('', views.index),
-    path('get-report/', views.get_report),
-    path('get-report/<str:id>', views.get_report)
+    # path('', MonthlyReportView.as_view()),
+    path('monthlyreport', MonthlyReportView.as_view())
 ]

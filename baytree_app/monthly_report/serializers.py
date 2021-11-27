@@ -5,7 +5,7 @@ from .models import MonthlyReport
 class MonthlyReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = MonthlyReport
-        fields = ['id', 'created_at', 'updated_at', 'mentor', 'mentee', 'attended_by_mentor', 'attended_by_mentee', 'clock_in', 'clock_out', 'notes']
+        fields = ['id', 'created_at', 'updated_at', 'mentor', 'mentee', 'question_and_response_list']
 
     def create(self, validated_data):
         return MonthlyReport.objects.create(
@@ -13,5 +13,7 @@ class MonthlyReportSerializer(serializers.ModelSerializer):
             created_at=validated_data.get('created_at'),
             updated_at=validated_data.get('updated_at'),
             mentor=validated_data.get('mentor'),
-            mentee=validated_data.get('mentee')
+            mentee=validated_data.get('mentee'),
+            question_and_response_list=validated_data.get('question_and_response_list')
+
         )
