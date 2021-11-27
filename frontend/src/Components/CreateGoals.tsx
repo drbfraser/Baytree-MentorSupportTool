@@ -14,6 +14,7 @@ import Fab from '@mui/material/Fab';
 import TextField from '@mui/material/TextField';
 
 
+
 import DateFnsUtils from '@date-io/date-fns';
 import {
     KeyboardDatePicker,
@@ -72,16 +73,19 @@ export default function CreateGoals() {
 
     return (
         <div>
-            <Card sx={{ border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mb: 5 }}>
+            <Card sx={{ border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mb: 5}}>
                 {submit === true && <Alert severity="success" sx={{ mb: 2 }}>Goal Successfully Set</Alert>}
                 <Fab color="primary" variant="extended" aria-label="add" onClick={handleClickOpen}>
                     <AddIcon />
                     Add New Goal
                 </Fab>
             </Card>
+            
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>New Goal</DialogTitle>
                 <DialogContent>
+                
+                
 
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <Stack spacing={3}>
@@ -110,11 +114,12 @@ export default function CreateGoals() {
                         onChange={(e) => setDetails(e.target.value)}
                         id="Contents"
                         label="Contents"
+                        autoFocus
                         variant="outlined"
+                        fullWidth
                         required
                         multiline
                         rows={4}
-                        fullWidth
                     />
                 </DialogContent>
                 <DialogActions>
