@@ -1,32 +1,52 @@
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-import requests
-from django.http import HttpResponse
+from .models import MonthlyReport
+from .serializers import MonthlyReportSerializer
+from .permissions import *
 
 
+class MonthlyReportView(APIView):
+    permission_classes = [IsOwner]
 
-# Create your views here.
-def index(request):
-    return HttpResponse('index')
-
-def get_report(request, id=None):
-    
-    url = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/10/questions?allquestions=1.json'
-    url_head = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/'
-    url_tail = '/questions?allquestions=1.json'
-
-    if request.method == 'GET':
+    def get(self, request, id=None):
         if id:
-            url = url_head + id + url_tail
-        r = requests.get(
-            url,
-            auth=('group.jupiter', 'Wethebest01!'))
-        #print(r.content)
-        return HttpResponse(r)
+            try:
+                queryset = MonthlyReport.objects.get(id=id)
+            except MonthlyReport.DoesNotExist:
+                return Response({'errors': 'This report does not exist.'}, status=400)
+            read_serializer = MonthlyReportSerializer(queryset)
+        else:
+            queryset = MonthlyReport.objects.all()
+            read_serializer = MonthlyReportSerializer(queryset, many=True)
+        return Response(read_serializer.data)
 
-    elif request.method == 'POST':
-        #TODO: POST to Views
-        return HttpResponse('successful POST')
+    def post(self, request):
+        create_serializer = MonthlyReportSerializer(data=request.data)
+        if create_serializer.is_valid():
+            report_object = create_serializer.save()
+            read_serializer = MonthlyReportSerializer(report_object)
+            return Response(read_serializer.data, status=201)
+        return Response(create_serializer.errors, status=400)
 
-    else:
-        return Response({"error": "Method not allowed"}, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, id=None):
+        try:
+            report = MonthlyReport.objects.get(id=id)
+        except MonthlyReport.DoesNotExist:
+            return Response({'errors': 'This report does not exist.'}, status=400)
+        update_serializer = MonthlyReportSerializer(report, data=request.data)
+
+        if update_serializer.is_valid():
+            report_object = update_serializer.save()
+            read_serializer = MonthlyReportSerializer(report_object)
+            return Response(read_serializer.data, status=200)
+        return Response(update_serializer.errors, status=400)
+
+    def delete(self, request, id=None):
+        try:
+            report = MonthlyReport.objects.get(id=id)
+        except MonthlyReport.DoesNotExist:
+            return Response({'errors': 'This report does not exist.'}, status=400)
+
+        report.delete()
+
+        return Response(status=204)
