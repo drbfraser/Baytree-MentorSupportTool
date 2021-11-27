@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Goal
 
-class GoalsSerializer(serializers.ModelSerializer):
+class GoalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goal
-        fields = ['title', 'details', 'id']
+        fields = ['mentor', 'mentee', 'title', 'date', 'goal_review_date', 'content', 'status']

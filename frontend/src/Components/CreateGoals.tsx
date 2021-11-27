@@ -59,13 +59,9 @@ export default function CreateGoals() {
 
     return (
         <div>
-            <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mb: 5}}>
             {submit === true && <Alert severity="success" sx = {{mb: 2}}>Goal Successfully Set</Alert>}
-                <Fab color = "primary" variant="extended" aria-label="add" onClick={handleClickOpen}>
-                    <AddIcon />
-                    Add New Goal
-                </Fab>
-            </Card>
+            <Button variant="contained" size="large" onClick={handleClickOpen}><AddIcon  /> Add New Goal </Button>
+        
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>New Goal</DialogTitle>
                 <DialogContent>

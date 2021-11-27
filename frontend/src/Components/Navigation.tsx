@@ -43,11 +43,11 @@ export default function Navigation() {
 
   return (
     <div className="content" style={{ background: '#faf6ed'}}>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', width:'100%', height: 'auto', margin: 'auto' }}>
         <CssBaseline />
-        <AppBar position="fixed" style={{ background: 'white' }} sx={{ zIndex: (theme) => theme.zIndex.drawer + 5 }}>
-          <Toolbar>
-              <Grid container spacing={5}>
+        <AppBar position="fixed" style={{ background: 'white', width:'100%', height: 'auto', margin: 'auto' }} sx={{ zIndex: (theme) => theme.zIndex.drawer + 5 }}>
+          <Toolbar style={{ }}>
+              <Grid container spacing={'auto'}>
                   <Grid item xs = {9}>
                       <Box   
                       display = "flex"
@@ -76,7 +76,7 @@ export default function Navigation() {
                         </Link>
                         </Grid>
                         <Grid item xs = {3}>
-                        <IconButton onClick = {Logout} style = {{color: "black"}} size = "large">
+                        <IconButton onClick = {Logout} style = {{color: "red"}} size = "large">
                             <LogoutIcon />
                         </IconButton>
                         </Grid>

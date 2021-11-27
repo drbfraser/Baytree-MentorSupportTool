@@ -1,18 +1,28 @@
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import filters
+from rest_framework import generics
 
-from .serializers import GoalsSerializer
+from .serializers import GoalSerializer
 from .models import Goal
 from .permissions import *
 
+#adapted from https://stackabuse.com/creating-a-rest-api-with-django-rest-framework/
 
-class GoalViews(APIView):
+class GoalViews(generics.ListAPIView):
 
     permission_classes = [IsOwner]
 
-    def get(self, request, id=None):
-        item = Goal.objects.all()
-        serializer = GoalsSerializer(item, many=True)
-        return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+    queryset = Goal.objects.all()
+    serializer_class = GoalSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['mentee', 'title', 'date', 'goal_review_date', 'status']
+
+    def post(self, request):
+        serializer = GoalSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+      
