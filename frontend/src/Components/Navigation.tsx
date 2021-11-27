@@ -100,7 +100,7 @@ export default function Navigation() {
           <Box sx={{ overflow: 'auto' }}>
             <List>
 
-              {['Home', 'Sessions', 'Questionnaire','Goals', 'Records'].map((text, index) => (
+              {['Home', 'Sessions', 'Questionnaires','Goals', 'Records'].map((text, index) => (
 
               <Link to = {`${match.url}/${text}`} style={{ textDecoration: 'none', color: 'black' }} key = {text}>
                 <ListItem button>
@@ -109,7 +109,7 @@ export default function Navigation() {
                           switch(text) {
                             case "Home": return <HomeIcon sx={{ color: pink[500]}}/>;
                             case "Sessions": return <CreateIcon sx={{ color: pink[500]}}/>;
-                            case "Questionnaire": return <QuestionAnswerIcon sx={{ color: pink[500]}}/>;  
+                            case "Questionnaires": return <QuestionAnswerIcon sx={{ color: pink[500]}}/>;  
                             case "Goals": return <AutoGraphIcon sx={{ color: pink[500]}}/>;
                             case "Records": return <BookIcon sx={{ color: pink[500]}}/>;         
                             }
@@ -118,8 +118,7 @@ export default function Navigation() {
                   <ListItemText>
                           {(() => {
                           switch(text) {
-
-                              case "Questionnaire": return 'Progress Report';  
+ 
                               case "Sessions": return 'Create Session'
                               default: return (text);
                             }
