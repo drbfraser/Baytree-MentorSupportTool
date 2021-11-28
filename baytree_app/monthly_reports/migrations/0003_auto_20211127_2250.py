@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('monthly_report', '0002_auto_20211127_2244'),
+        ('monthly_reports', '0002_auto_20211127_2244'),
     ]
 
     operations = [
@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='monthlyreport',
             name='question_and_response_list',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='monthly_report.questionandresponse'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='monthly_reports.questionandresponse'),
         ),
     ]

@@ -46,7 +46,6 @@ class MonthlyReportView(APIView):
             report = MonthlyReport.objects.get(id=id)
         except MonthlyReport.DoesNotExist:
             return Response({'errors': 'This report does not exist.'}, status=400)
-
         report.delete()
-
         return Response(status=204)
+

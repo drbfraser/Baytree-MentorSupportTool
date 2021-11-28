@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('monthly_report', '0001_initial'),
+        ('monthly_reports', '0001_initial'),
     ]
 
     operations = [
@@ -24,6 +24,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='monthlyreport',
             name='question_and_response_list',
-            field=models.ManyToManyField(to='monthly_report.QuestionAndResponse'),
+            field=models.ManyToManyField(to='monthly_reports.QuestionAndResponse'),
         ),
     ]
