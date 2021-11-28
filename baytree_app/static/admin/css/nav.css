@@ -1,0 +1,19 @@
+.mr-2 {
+    color: black;
+    padding-top: 16px;
+    font-size: 19px;
+}
+
+.dropdown-item {
+    font-size: 19px;
+    background-color: rgb(226, 11, 137);
+    color: white;
+    margin-top: -15px;
+}
+
+.dropdown-menu {
+    font-size: 19px;
+    background-color: rgb(226, 11, 137);
+    color: white;
+    padding-top: -10px;
+}
