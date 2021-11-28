@@ -29,3 +29,26 @@ class SessionView(APIView):
             read_serializer = SessionSerializer(session_object)
             return Response(read_serializer.data, status=201)
         return Response(create_serializer.errors, status=400)
+
+    def put(self, request, id=None):
+        try:
+            session = MentorSession.objects.get(id=id)
+        except MentorSession.DoesNotExist:
+            return Response({'errors': 'This session does not exist.'}, status=400)
+        update_serializer = SessionSerializer(session, data=request.data)
+
+        if update_serializer.is_valid():
+            session_object = update_serializer.save()
+            read_serializer = SessionSerializer(session_object)
+            return Response(read_serializer.data, status=200)
+        return Response(update_serializer.errors, status=400)
+
+    def delete(self, request, id=None):
+        try:
+            session = MentorSession.objects.get(id=id)
+        except MentorSession.DoesNotExist:
+            return Response({'errors': 'This session does not exist.'}, status=400)
+
+        session.delete()
+
+        return Response(status=204)
