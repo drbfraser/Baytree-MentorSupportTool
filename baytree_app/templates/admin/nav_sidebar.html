@@ -1,1 +1,2 @@
-{% include 'admin/app_list.html' with app_list=available_apps show_changelinks=False %}
+{% load i18n static %}
+<link rel="stylesheet" type="text/css" href="{% static " admin/css/nav_sidebar.css " %}"> {% include 'admin/app_list.html' with app_list=available_apps show_changelinks=False %}
