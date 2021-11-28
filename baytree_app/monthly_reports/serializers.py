@@ -15,6 +15,5 @@ class MonthlyReportSerializer(serializers.ModelSerializer):
             mentor=validated_data.get('mentor'),
             mentee=validated_data.get('mentee'),
             question_and_response_list=validated_data.get('question_and_response_list')
-
         )
 
