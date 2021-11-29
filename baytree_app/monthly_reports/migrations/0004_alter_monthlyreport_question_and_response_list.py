@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='monthlyreport',
-            name='question_and_response_list',
+            name='question_and_answer_list',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='QARs_in_monthly_report', to='monthly_reports.questionandresponse'),
         ),
     ]

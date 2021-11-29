@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='monthlyreport',
-            name='question_and_response_list',
+            name='question_and_answer_list',
             field=models.ManyToManyField(to='monthly_reports.QuestionAndResponse'),
         ),
     ]
