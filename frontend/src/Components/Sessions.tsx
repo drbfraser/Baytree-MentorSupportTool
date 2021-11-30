@@ -9,6 +9,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
+import Grow from '@mui/material/Grow'
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -80,6 +81,7 @@ const Sessions = () => {
   }, []);
 
   return (
+    <Grow in={true}>
     <Container 
         maxWidth = "md" 
         sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, pt: 2, mt: 3}}
@@ -181,6 +183,7 @@ const Sessions = () => {
         <Button variant="contained" type = "submit" sx = {{mt: 3}}>Submit</Button>
       </Box>
     </Container>
+    </Grow>
     )
   };
   

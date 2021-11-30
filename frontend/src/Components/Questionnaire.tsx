@@ -5,6 +5,7 @@ import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Grow from '@mui/material/Grow'
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Skeleton from '@mui/material/Skeleton';
@@ -55,6 +56,7 @@ const Questionnaire = () => {
   }
   
   return (
+    <Grow in={true}>
     <Container 
       maxWidth = "md" 
       sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, pt: 2, mt: 3}}
@@ -130,6 +132,7 @@ const Questionnaire = () => {
       }
       </Box>
     </Container>
+    </Grow>
   )
 };
   
