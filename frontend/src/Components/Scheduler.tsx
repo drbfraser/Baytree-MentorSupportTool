@@ -13,7 +13,11 @@ import Card from '@mui/material/Card'
 
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
-export default function Scheduler(){
+type Props = {
+    height: string;
+}
+
+const Scheduler: React.FC<Props> = ({height}) => {
     const locales = {
         'en-US': enUS,
       }
@@ -62,7 +66,7 @@ export default function Scheduler(){
 
     return (
         <div>
-            <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mb: 5}} style = {{height: "55vh"}}>
+            <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mb: 1}} style = {{height: height}}>
                 <Calendar
                 localizer={localizer}
                 events = {sessionList}
@@ -72,3 +76,5 @@ export default function Scheduler(){
         </div>
     )
 }
+
+export default Scheduler;

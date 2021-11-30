@@ -1,8 +1,12 @@
 import {useState, useEffect} from 'react';
+
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography';
+
+import Tree from '../Assets/baytree.png';
 
 export default function MenteeInfo() {
     const [menteeInfo, setMenteeInfo] = useState([] as any[]);
@@ -89,6 +93,14 @@ export default function MenteeInfo() {
                 ))}
             <Divider/>
             <Button variant="text" onClick = {handleClick} sx = {{ml: 9}}>Next Mentee</Button>
+            <Box  
+                display="flex" 
+                alignItems="center"
+                justifyContent="center"
+                height={200}
+                sx = {{pl: 5}}>
+                <img src = {Tree} width = "null" height = "150" />
+            </Box>
             </Card>
         </div>
     );
