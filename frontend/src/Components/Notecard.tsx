@@ -9,11 +9,6 @@ import Button from '@mui/material/Button';
 
 import {lightGreen} from '@mui/material/colors';
 
-interface goal {
-    goalName: string;
-    details: string;
-   
-  }
 
 export default function NoteCard( {} ) {
   return (

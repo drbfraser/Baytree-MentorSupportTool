@@ -18,7 +18,6 @@ import TextField from '@mui/material/TextField';
 import DateFnsUtils from '@date-io/date-fns';
 import {
     KeyboardDatePicker,
-    KeyboardDateTimePicker,
     MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 import Stack from '@mui/material/Stack';
@@ -27,11 +26,11 @@ import Stack from '@mui/material/Stack';
 
 export default function CreateGoals() {
 
-    const [goalName, setGoalName] = useState('');
-    const [details, setDetails] = useState('');
+    const [contents, setContents] = useState('');
+    const [goal_review_date, setGoal_review_date ] = useState(new Date("2021-11-15"));
     const history = useHistory();
     const [errors, setErrors] = useState(false);
-    const [currentDate, setCurrentDate] = useState(new Date("2021-11-15T12:00:00"));
+    const [date, setDate] = useState(new Date("2021-11-15T12:00:00"));
 
     const [submit, setSubmit] = useState(false);
     const [open, setOpen] = useState(false);
@@ -45,30 +44,37 @@ export default function CreateGoals() {
     }
 
     const handleDateChange = (date: any) => {
-        setCurrentDate(date);
+        setDate(date);
     }
+
+    const handlereviewDateChange = (date: any) => {
+        setGoal_review_date(date);
+    }
+
+    const goal = {
+        date: date,
+        goal_review_date: goal_review_date,
+        content: contents
+      };
 
 
 
     const handleSubmit = () => {
-        // if ( goalName == '' || details == ''){
-        //     setErrors(true);
-        // }
-        // else {
-        setSubmit(true);
-        setTimeout(() => {
-            setSubmit(false);
-        }, 5000);
-        //     fetch('http://localhost:8000/goals', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ goalName, details })
-        // })
-        //     .then(response => response.json())
-        //     .then(() => history.push('/'))
-        // }
+         if ( contents == ''){
+             setErrors(true);
+         }
+         else {
+             fetch('http://localhost:8000/goals/goal', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+             },
+            
+             body: JSON.stringify({ goal })
+         })
+             .then(response => response.json())
+             .then(() => history.push('/goals'))
+         }
     }
 
     return (
@@ -89,10 +95,10 @@ export default function CreateGoals() {
 
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <Stack spacing={3}>
-                            <KeyboardDateTimePicker
+                            <KeyboardDatePicker
                                 id="Date"
                                 label="Date"
-                                value={currentDate}
+                                value={date}
                                 onChange={handleDateChange}
 
                             />
@@ -101,8 +107,8 @@ export default function CreateGoals() {
                                 id="Date"
                                 label="Goal Review Date"
                                 format="MM/dd/yyyy"
-                                value={currentDate}
-                                onChange={handleDateChange}
+                                value={goal_review_date}
+                                onChange={handlereviewDateChange}
                             />
 
                         </Stack>
@@ -111,7 +117,7 @@ export default function CreateGoals() {
 
 
                     <TextField
-                        onChange={(e) => setDetails(e.target.value)}
+                        onChange={(e) => setContents(e.target.value)}
                         id="Contents"
                         label="Contents"
                         autoFocus

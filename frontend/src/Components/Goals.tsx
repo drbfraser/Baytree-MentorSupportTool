@@ -18,7 +18,7 @@ export default function Goals() {
     };
 
     useEffect(() => {
-      fetch('http://localhost:8000/goals/', {
+      fetch('http://localhost:8000/goals/goal', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
