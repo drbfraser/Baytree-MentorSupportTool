@@ -1,18 +1,21 @@
 from rest_framework import serializers
 from .models import MonthlyReport
+from questions_and_answers.models import QuestionAndAnswer
+from questions_and_answers.serializers import QuestionAndAnswerSerializer
 
 
 class MonthlyReportSerializer(serializers.ModelSerializer):
+    questions_and_answers = QuestionAndAnswerSerializer(many=True)
+
     class Meta:
         model = MonthlyReport
-        fields = ['id', 'created_at', 'updated_at', 'mentor', 'mentee']
+        fields = ['id', 'created_at', 'updated_at', 'mentor', 'mentee', 'questions_and_answers']
 
     def create(self, validated_data):
-        return MonthlyReport.objects.create(
-            id=validated_data.get('id'),
-            created_at=validated_data.get('created_at'),
-            updated_at=validated_data.get('updated_at'),
-            mentor=validated_data.get('mentor'),
-            mentee=validated_data.get('mentee')
-        )
+        questions_and_answers_data = validated_data.pop('questions_and_answers')
+        monthly_report = MonthlyReport.objects.create(**validated_data)
+        for question_and_answer_data in questions_and_answers_data:
+            QuestionAndAnswer.objects.create(monthly_report=monthly_report, **question_and_answer_data)
+        return monthly_report
+
 

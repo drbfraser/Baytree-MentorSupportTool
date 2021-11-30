@@ -12,5 +12,5 @@ class QuestionAndAnswerSerializer(serializers.ModelSerializer):
             id=validated_data.get('id'),
             monthly_report=validated_data.get('monthly_report'),
             question=validated_data.get('question'),
-            response=validated_data.get('answer')
+            answer=validated_data.get('answer')
         )
