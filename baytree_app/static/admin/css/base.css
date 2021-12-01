@@ -512,6 +512,7 @@ form .button {
     font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
     font-weight: normal;
     font-size: 13px;
+    height: 15px;
 }
 
 .form-row div.help {

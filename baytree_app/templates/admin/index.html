@@ -2,10 +2,10 @@
 <link rel="stylesheet" type="text/css" href="{% static " admin/css/dashboard.css " %}">{% endblock %} {% block coltype %}colMS{% endblock %} {% block bodyclass %}{{ block.super }} dashboard{% endblock %} {% block breadcrumbs %}{% endblock %} {% block nav-sidebar %}{% endblock %} {% block content %} {% endblock %} {% block sidebar %}
 
 <div style="width: 100%;">
-    <div style="width: 100%;height: 700px;" id="main">
+    <div style="width: 50%;height: 500px;float:left; display:inline" id="main" >
 
     </div>
-    <div style="width: 100%;height: 700px;" id="main1">
+    <div style="width: 50%;height: 500px;float:right; display:inline" id="main1">
 
     </div>
 </div>
@@ -49,6 +49,9 @@
     var option;
 
     option = {
+        title: {
+            text: 'User registration in the last ten days'
+          },
         xAxis: {
             type: 'category',
             data: {% linechart True %}
