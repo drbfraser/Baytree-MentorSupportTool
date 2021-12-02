@@ -7,16 +7,16 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('monthly_reports', '0002_auto_20211127_2244'),
+        ('questionnaires', '0002_auto_20211127_2244'),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='monthlyreport',
+            model_name='questionnaire',
             name='question_and_answer_list',
         ),
         migrations.AddField(
-            model_name='monthlyreport',
+            model_name='questionnaire',
             name='question_and_answer_list',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='monthly_reports.questionandresponse'),
         ),

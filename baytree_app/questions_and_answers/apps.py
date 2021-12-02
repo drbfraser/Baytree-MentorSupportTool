@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class MonthlyReportConfig(AppConfig):
+class QuestionsAndAnswersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'questions_and_answers'

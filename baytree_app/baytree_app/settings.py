@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     'users',
-    'monthly_reports',
+    'questionnaires',
     'questions_and_answers',
     'sessions',
     'admin_login',

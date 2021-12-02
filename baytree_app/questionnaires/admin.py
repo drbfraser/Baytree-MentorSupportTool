@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MonthlyReport
+from .models import Questionnaire
 from questions_and_answers.models import QuestionAndAnswer
 
 
@@ -8,8 +8,8 @@ class QuestionInline(admin.StackedInline):
     extra = 1
 
 
-class MonthlyReportAdmin(admin.ModelAdmin):
+class QuestionnaireAdmin(admin.ModelAdmin):
     inlines = [QuestionInline]
 
 
-admin.site.register(MonthlyReport, MonthlyReportAdmin)
+admin.site.register(Questionnaire, QuestionnaireAdmin)

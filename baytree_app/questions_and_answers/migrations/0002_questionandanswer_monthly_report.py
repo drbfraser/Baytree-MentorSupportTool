@@ -7,14 +7,14 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('monthly_reports', '0007_remove_monthlyreport_question_and_answer_list'),
+        ('questionnaires', '0007_remove_monthlyreport_question_and_answer_list'),
         ('questions_and_answers', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='questionandanswer',
-            name='monthly_report',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='monthly_reports.monthlyreport'),
+            name='questionnaire',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='questionnaires.questionnaire'),
         ),
     ]

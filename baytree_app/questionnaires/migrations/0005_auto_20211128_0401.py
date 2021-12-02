@@ -8,12 +8,12 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('questions_and_answers', '__first__'),
-        ('monthly_reports', '0004_alter_monthlyreport_question_and_response_list'),
+        ('questionnaires', '0004_alter_monthlyreport_question_and_response_list'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='monthlyreport',
+            model_name='questionnaire',
             name='question_and_answer_list',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='QARs_in_monthly_report', to='questions_and_answers.questionandanswer'),
         ),

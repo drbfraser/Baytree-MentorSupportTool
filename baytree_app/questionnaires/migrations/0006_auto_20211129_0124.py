@@ -7,17 +7,17 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('questions_and_answers', '0001_initial'),
-        ('monthly_reports', '0005_auto_20211128_0401'),
+        ('questionnaires', '0005_auto_20211128_0401'),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='monthlyreport',
+            model_name='questionnaire',
             name='question_and_answer_list',
         ),
         migrations.AddField(
-            model_name='monthlyreport',
+            model_name='questionnaire',
             name='question_and_answer_list',
-            field=models.ManyToManyField(related_name='QAs_in_monthly_report', to='questions_and_answers.QuestionAndAnswer'),
+            field=models.ManyToManyField(related_name='QAs_in_questionnaire', to='questions_and_answers.QuestionAndAnswer'),
         ),
     ]

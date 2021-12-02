@@ -14,7 +14,7 @@ urlpatterns = [
     path('baytreeadmin/', blog_site.urls),
     path('sessions/', include('sessions.urls')),
     path('users/', include('users.urls')),
-    path('monthly-reports/', include('monthly_reports.urls')),
+    path('questionnaires/', include('questionnaires.urls')),
     path('questions/', include('questions_and_answers.urls')),
     path('goals/', include('goals.urls')),
     url(r'^rest-auth/', include('rest_auth.urls')),
