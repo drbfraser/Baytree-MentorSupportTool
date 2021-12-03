@@ -5,9 +5,21 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardContent from '@mui/material/CardContent'
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography'
+import DoneIcon from '@mui/icons-material/DoneOutline';
+import Button from '@mui/material/Button';
+import { positions } from '@mui/system';
+
+import {lightGreen} from '@mui/material/colors';
 
 import NoteCard from './Notecard';
 import GoalsStatistics from './GoalsStatistics';
+import { getJSDocClassTag } from 'typescript';
+import { AlignHorizontalLeft } from '@mui/icons-material';
 
 export default function Goals() {
     const [goals, setGoals] = useState([]);
@@ -18,7 +30,7 @@ export default function Goals() {
     };
 
     useEffect(() => {
-      fetch('http://localhost:8000/goals/goal', {
+      fetch('http://localhost:8000/goals/goal/', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -40,15 +52,24 @@ export default function Goals() {
             <Tab label="Active" />
             <Tab label="Completed" />
             <Tab label="All" />
-        </Tabs>
-        <Grid container spacing={3} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "55vh"}}>
-          {goals.map(goals => (
-            <Grid item xs={12} md={6} lg={4}>
-                <NoteCard />
-            </Grid>
-          ))}
-        </Grid>
+            </Tabs>
+
+ <Grid container spacing={3} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "55vh"}}>
+  <Card elevation={1} sx = {{bgcolor: lightGreen[200]}}>
+        <CardHeader
+          
+        />
+        <CardContent>
+        <Button sx = {{}} variant="contained" color="success" endIcon={<DoneIcon/>}></Button>
+          <Typography variant="body2" color="textSecondary">
+            
+          this is a new goal and needs to be completed asap
+          </Typography>
+        </CardContent>
+      </Card>
+      </Grid>
         <GoalsStatistics />
       </Container>
+  
     )
 }

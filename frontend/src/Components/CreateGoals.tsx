@@ -21,16 +21,19 @@ import {
     MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 import Stack from '@mui/material/Stack';
+import { Box, minWidth } from '@mui/system';
+import { Grid } from '@material-ui/core';
 
 
 
 export default function CreateGoals() {
 
+
     const [contents, setContents] = useState('');
     const [goal_review_date, setGoal_review_date ] = useState(new Date("2021-11-15"));
     const history = useHistory();
     const [errors, setErrors] = useState(false);
-    const [date, setDate] = useState(new Date("2021-11-15T12:00:00"));
+    const [date, setDate] = useState(new Date("2021-11-15"));
 
     const [submit, setSubmit] = useState(false);
     const [open, setOpen] = useState(false);
@@ -52,6 +55,7 @@ export default function CreateGoals() {
     }
 
     const goal = {
+        mentor: localStorage.getItem('id'),
         date: date,
         goal_review_date: goal_review_date,
         content: contents
@@ -64,18 +68,18 @@ export default function CreateGoals() {
              setErrors(true);
          }
          else {
-             fetch('http://localhost:8000/goals/goal', {
+             fetch('http://localhost:8000/goals/goal/', {
              method: 'POST',
              headers: {
                  'Content-Type': 'application/json',
              },
             
-             body: JSON.stringify({ goal })
+             body: JSON.stringify(goal)
          })
              .then(response => response.json())
-             .then(() => history.push('/goals'))
-         }
-    }
+             .then(() => history.push('/dashboard/Goals'))
+         
+    }}
 
     return (
         <div>
@@ -86,9 +90,11 @@ export default function CreateGoals() {
                     Add New Goal
                 </Fab>
             </Card>
-            
+            <Grid item style = {{minWidth: "500px"}}> 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>New Goal</DialogTitle>
+                
+               
+                <DialogTitle color = "success"> <u>Create New Goal</u></DialogTitle>
                 <DialogContent>
                 
                 
@@ -100,6 +106,7 @@ export default function CreateGoals() {
                                 label="Date"
                                 value={date}
                                 onChange={handleDateChange}
+                                fullWidth
 
                             />
 
@@ -107,6 +114,7 @@ export default function CreateGoals() {
                                 id="Date"
                                 label="Goal Review Date"
                                 format="MM/dd/yyyy"
+                                fullWidth
                                 value={goal_review_date}
                                 onChange={handlereviewDateChange}
                             />
@@ -115,17 +123,20 @@ export default function CreateGoals() {
                     </MuiPickersUtilsProvider>
                     <br />
 
-
+                
                     <TextField
-                        onChange={(e) => setContents(e.target.value)}
+                        sx = {{ml: 5, p: '5px', mb: 5, width: 100}}
                         id="Contents"
                         label="Contents"
-                        autoFocus
                         variant="outlined"
                         fullWidth
                         required
                         multiline
-                        rows={4}
+                        rows={6}
+                        margin="normal"
+                        
+                        value = {contents}
+                        onChange={(e) => setContents(e.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -133,6 +144,7 @@ export default function CreateGoals() {
                     <Button onClick={() => { handleClose(); handleSubmit(); }}>Submit</Button>
                 </DialogActions>
             </Dialog>
+            </Grid> 
         </div>
     )
 };

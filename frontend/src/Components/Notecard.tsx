@@ -15,7 +15,7 @@ export default function NoteCard( {} ) {
     <div>
       <Card elevation={1} sx = {{bgcolor: lightGreen[200]}}>
         <CardHeader
-          title="New Goal"
+          
         />
         <CardContent>
         <Button variant="contained" color="success" endIcon={<DoneIcon/>}></Button>
