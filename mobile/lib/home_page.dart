@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'global_variables.dart' as global;
 import 'package:intl/intl.dart';
+import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'navigation_bar.dart';
 
@@ -113,6 +115,16 @@ class GoalsData {
       );
 }
 
+// Reference: https://help.syncfusion.com/flutter/circular-charts/getting-started
+// Model for pie chart data
+class ChartData {
+  ChartData(this.x, this.y, this.text, [this.color]);
+  final String x;
+  final double y;
+  final Color? color;
+  final String text;
+}
+
 class _HomePageState extends State<HomePage> {
   SharedPreferences? sharedPreferences;
 
@@ -134,7 +146,41 @@ class _HomePageState extends State<HomePage> {
   final goalDetailsController = TextEditingController();
   final goalNameController = TextEditingController();
 
-  bool attendance = true;
+  DateTime _currentDate = DateTime.now();
+
+
+  // Update chartData values using GET request
+
+  // Sample Data to Test
+  List<int> totalSessions = [19, 13];
+  List<int> currentSessions = [10, 6];
+  List<int> missedSessions = [3, 1];
+  List<int> upcomingSessions = [6, 6];
+
+  final List<List<ChartData>> chartData = [
+    [
+      ChartData('Current Sessions', 10, ((10 / 19) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(9, 0, 136, 1.0)),
+      ChartData('Missed Sessions', 3, ((3 / 19) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(228, 0, 124, 1)),
+      ChartData('Upcoming Sessions', 6, ((6 / 19) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(255, 189, 57, 1))
+    ],
+    [
+      ChartData('Current Sessions', 6, ((6 / 13) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(9, 0, 136, 1.0)),
+      ChartData('Missed Sessions', 1, ((1 / 13) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(228, 0, 124, 1)),
+      ChartData('Upcoming Sessions', 6, ((6 / 13) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(255, 189, 57, 1))
+    ]
+  ];
+
+  void updatePieChartData() {
+    for (int i = 0; i < global.menteeList.length; i++) {
+      chartData[i].add(ChartData('Current Sessions', currentSessions[i].toDouble(),
+          ((currentSessions[i] / totalSessions[i]) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(9, 0, 136, 1.0)));
+      chartData[i].add(ChartData('Missed Sessions', missedSessions[i].toDouble(),
+          ((missedSessions[i] / totalSessions[i]) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(228, 0, 124, 1)));
+      chartData[i].add(ChartData('Upcoming Sessions', upcomingSessions[i].toDouble(),
+          ((upcomingSessions[i] / totalSessions[i]) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(255, 189, 57, 1)));
+    }
+  }
+  // END sample data
 
   void updateToken(String? token) {
     setState(() {
@@ -169,9 +215,6 @@ class _HomePageState extends State<HomePage> {
         GoalsData fact = GoalsData.fromJson(data[i]);
 
         if (fact.mentor == global.mentorID) {
-          print(fact.title);
-          print(fact.status);
-
           if (fact.status == "IN PROGRESS") {
             goalNameList.add(fact.title);
             goalDescriptionList.add(fact.content);
@@ -216,10 +259,14 @@ class _HomePageState extends State<HomePage> {
         child: ListView(
           padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
           children: <Widget>[
-            Text('Key:'),
-            Text(_token ?? " "),
-            Text('${_id}'),
-            test(),
+            //Text('Key:'),
+            //Text(_token ?? " "),
+            //Text('${_id}'),
+            //test(),
+            welcomeText(),
+            Calender(),
+            menteeTitle(),
+            menteePieChart(),
             goals(),
             goalsPopup(),
             completedGoals(),
@@ -255,21 +302,177 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container innerTitles(String title) {
+  Container welcomeText() {
     return Container(
         child: Padding(
-            padding: EdgeInsets.only(top: 45, bottom: 10),
+            padding: EdgeInsets.only(top: 5, bottom: 10),
             child: Text(
-              title,
+              "Welcome " + global.mentorID.toString() + "!",
+              style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
+            )));
+  }
+
+  Container Calender() {
+    return Container(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        DatePicker(
+          DateTime.now(),
+          initialSelectedDate: DateTime.now(),
+          selectionColor: Colors.pinkAccent,
+          selectedTextColor: Colors.white,
+          onDateChange: (date) {
+            // New date selected
+            setState(() {
+              _currentDate = date;
+            });
+          },
+        ),
+      ],
+    ));
+  }
+
+  Container menteeTitle() {
+    return Container(
+        child: Padding(
+            padding: EdgeInsets.only(top: 35, bottom: 10),
+            child: Text(
+              "My Mentee: ",
               style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),
             )));
+  }
+
+  // Pie chart to show session statistics
+  Container buildChart(int i) {
+    return Container(
+      child: SfCircularChart(margin: EdgeInsets.only(top: 0),
+          //borderColor: Colors.blue,
+          annotations: <CircularChartAnnotation>[
+            CircularChartAnnotation(
+                widget: Container(child: Text('Total: ' + totalSessions[i].toString(), style: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5), fontSize: 25))))
+          ], series: <CircularSeries>[
+        DoughnutSeries<ChartData, String>(
+            dataSource: chartData[i],
+            pointColorMapper: (ChartData data, _) => data.color,
+            xValueMapper: (ChartData data, _) => data.x,
+            yValueMapper: (ChartData data, _) => data.y,
+            dataLabelMapper: (ChartData data, _) => data.text,
+            dataLabelSettings: DataLabelSettings(
+                isVisible: true,
+                labelPosition: ChartDataLabelPosition.outside,
+                // Renders background rectangle and fills it with series color
+                useSeriesColor: true),
+            // Radius of doughnut
+            innerRadius: '80%',
+            radius: '70%')
+      ]),
+    );
+  }
+
+  // Expansion drop down with pie chart
+  Container menteePieChart() {
+    return Container(
+        child: Column(
+      children: [
+        for (var i = 0; i < global.menteeList.length; i++)
+          new Column(
+            children: [
+              Divider(
+                height: 2,
+                color: Colors.grey,
+              ),
+              ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                //backgroundColor: Colors.yellow[50],
+                backgroundColor: Color(0xffedfae5),
+                initiallyExpanded: false,
+                //backgroundColor: Colors.yellow[50],
+                title: Text(
+                  global.menteeList[i],
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 19,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                children: [
+                  buildChart(i),
+                  pieChartLabels(i),
+                  Padding(padding: EdgeInsets.only(bottom: 10)),
+                ],
+              ),
+              Divider(
+                height: 2,
+                color: Colors.grey,
+              ),
+              Padding(padding: EdgeInsets.only(bottom: 10)),
+            ],
+          ),
+      ],
+    ));
+  }
+
+  Container pieChartLabels(int i) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          box("Current:", Color.fromRGBO(9, 0, 136, 1), currentSessions[i]),
+          box("Missed:", Color.fromRGBO(228, 0, 124, 1), missedSessions[i]),
+          box("Upcoming:", Color.fromRGBO(255, 189, 57, 1), upcomingSessions[i]),
+        ],
+      ),
+    );
+  }
+
+  // Box for labels
+  Container box(String text, Color color, int value) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topLeft,
+            child: Container(
+              child: Text(
+                text,
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ),
+          Container(
+            height: 40.0,
+            width: (MediaQuery.of(context).size.width / 3) - 30,
+            color: Colors.transparent,
+            child: new Container(
+                decoration: new BoxDecoration(
+                    color: color,
+                    borderRadius: new BorderRadius.only(
+                      topLeft: const Radius.circular(8.0),
+                      topRight: const Radius.circular(8.0),
+                      bottomRight: const Radius.circular(8.0),
+                      bottomLeft: const Radius.circular(8.0),
+                    )),
+                child: new Center(
+                  child: new Text(
+                    value.toString(),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                )),
+          ),
+        ],
+      ),
+    );
   }
 
   // Create new goal
   Container goals() {
     return Container(
       child: Padding(
-        padding: EdgeInsets.only(right: 0),
+        padding: EdgeInsets.only(top: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -422,16 +625,9 @@ class _HomePageState extends State<HomePage> {
       //Uri.parse("http://ptsv2.com/t/70iw7-1635724230/post"),
       Uri.parse("http://192.168.4.249:8000" + "/goals/goal/"),
       body: jsonEncode(
-          {'mentor': mentor,
-            'mentee': null,
-            'title': goalName,
-            'date': date,
-            'goal_review_date': date,
-            'content': goalDetail,
-            'status': "IN PROGRESS"}),
+          {'mentor': mentor, 'mentee': null, 'title': goalName, 'date': date, 'goal_review_date': date, 'content': goalDetail, 'status': "IN PROGRESS"}),
       headers: {'Content-Type': 'application/json'},
     );
-    print(response.statusCode);
     if (response.statusCode == 400) {
       print("Error 400");
     } else if (response.statusCode == 200 || response.statusCode == 201) {
@@ -605,8 +801,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               Align(
                                                 alignment: Alignment.center,
-                                                child:
-                                                  markGoalAsCompleted(),
+                                                child: markGoalAsCompleted(),
                                               ),
                                             ],
                                           ),
@@ -642,20 +837,22 @@ class _HomePageState extends State<HomePage> {
 
   Container markGoalAsCompleted() {
     return Container(
-       child: OutlinedButton(
-         onPressed: () {
-           showGoalAlertDialog(context);
-         },
-         child: Text('Mark as Complete?', style: new TextStyle(
-             color: Colors.pinkAccent,
-         ), ),
-         style: OutlinedButton.styleFrom(
-           shape: StadiumBorder(),
-         ),
-       ),
+      child: OutlinedButton(
+        onPressed: () {
+          showGoalAlertDialog(context);
+        },
+        child: Text(
+          'Mark as Complete?',
+          style: new TextStyle(
+            color: Colors.pinkAccent,
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          shape: StadiumBorder(),
+        ),
+      ),
     );
   }
-
 
   // Popup for completed goals
   Container completedGoalsPopup() {
@@ -761,11 +958,12 @@ class _HomePageState extends State<HomePage> {
       //   ),
     );
   }
+
   // Display completed goals
   Container completedGoals() {
     return Container(
       child: Padding(
-        padding: EdgeInsets.only(top: 10, left: 5, right: 5),
+        padding: EdgeInsets.only(top: 10, left: 5, right: 5, bottom: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
