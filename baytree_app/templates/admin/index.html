@@ -1,11 +1,11 @@
 {% extends "admin/base_site.html" %} {% load i18n static %} {% block extrastyle %}{{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static " admin/css/dashboard.css " %}">{% endblock %} {% block coltype %}colMS{% endblock %} {% block bodyclass %}{{ block.super }} dashboard{% endblock %} {% block breadcrumbs %}{% endblock %} {% block nav-sidebar %}{% endblock %} {% block content %} {% endblock %} {% block sidebar %}
 
-<div style="width: 100%;">
-    <div style="width: 50%;height: 500px;float:left; display:inline" id="main" >
+<div style="width: 100%;display: flex">
+    <div style="width: 50%;height: 500px;float:left" id="main" >
 
     </div>
-    <div style="width: 50%;height: 500px;float:right; display:inline" id="main1">
+    <div style="width: 50%;height: 500px;float:right" id="main1">
 
     </div>
 </div>
@@ -68,3 +68,11 @@
     option && myChart.setOption(option);
 </script>
 {% endblock %} {% endblock %}
+
+{%block style%}
+<style>
+    .colMS{
+        margin-right: 0
+    }
+</style>
+{%endblock%}

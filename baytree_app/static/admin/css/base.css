@@ -188,7 +188,7 @@ h5 {
 }
 
 ul>li {
-    list-style-type: square;
+    list-style-type: none;
     padding: 1px 0;
 }
 
@@ -512,7 +512,7 @@ form .button {
     font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
     font-weight: normal;
     font-size: 13px;
-    height: 15px;
+    /* height: 15px; */
 }
 
 .form-row div.help {
@@ -937,9 +937,7 @@ table#change-history tbody th {
     max-width: 100%;
 }
 
-#content {
-    padding: 20px 40px;
-}
+#content {}
 
 .dashboard #content {
     width: 600px;
@@ -1163,4 +1161,8 @@ table#change-history tbody th {
 
 .popup #header {
     padding: 10px 20px;
+}
+
+li {
+    list-style: none;
 }
