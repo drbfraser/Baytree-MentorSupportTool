@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 
 
 
+
 import DateFnsUtils from '@date-io/date-fns';
 import {
     KeyboardDatePicker,
@@ -23,13 +24,15 @@ import {
 import Stack from '@mui/material/Stack';
 import { Box, minWidth } from '@mui/system';
 import { Grid } from '@material-ui/core';
+import { title } from 'process';
 
 
 
-export default function CreateGoals() {
+const  CreateGoals = () =>   {
 
 
     const [contents, setContents] = useState('');
+    const [Title, setTitle] = useState('');
     const [goal_review_date, setGoal_review_date ] = useState(new Date("2021-11-15"));
     const history = useHistory();
     const [errors, setErrors] = useState(false);
@@ -54,8 +57,11 @@ export default function CreateGoals() {
         setGoal_review_date(date);
     }
 
+
+
     const goal = {
         mentor: localStorage.getItem('id'),
+        title: title,
         date: date,
         goal_review_date: goal_review_date,
         content: contents
@@ -96,6 +102,19 @@ export default function CreateGoals() {
                
                 <DialogTitle color = "success"> <u>Create New Goal</u></DialogTitle>
                 <DialogContent>
+
+                <TextField 
+                    id="Title"
+                    label="Title"
+                    variant="outlined"
+                    sx = {{mt: 0, pt: 0, mb: 5}}
+                    required
+                    fullWidth
+                    margin="normal"
+
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
                 
                 
 
@@ -152,3 +171,4 @@ function setValue(newValue: Date | null) {
     throw new Error('Function not implemented.');
 }
 
+export default CreateGoals;
