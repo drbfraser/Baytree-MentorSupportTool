@@ -149,8 +149,7 @@ class _HomePageState extends State<HomePage> {
   DateTime _currentDate = DateTime.now();
 
 
-  // Update chartData values using GET request
-
+  // TODO: Update chartData values using GET request when backend is implemented
   // Sample Data to Test
   List<int> totalSessions = [19, 13];
   List<int> currentSessions = [10, 6];
@@ -635,6 +634,32 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // update id
+  updateGoal(int mentor, String goalName, goalDetail, date) async {
+    DateFormat format = new DateFormat("MMMM dd, yyyy");
+    String formattedDate = DateFormat('yyyy-MM-dd').format(format.parse(date));
+    var response = await http.patch(
+      //Uri.parse("http://ptsv2.com/t/70iw7-1635724230/post"),
+      Uri.parse("http://192.168.4.249:8000" + "/goals/goal/1"),
+      body: jsonEncode(
+          {'mentor': mentor,
+            'mentee': null,
+            'title': goalName,
+            'date': formattedDate,
+            'goal_review_date': formattedDate,
+            'content': goalDetail,
+            'status': "ACHIEVED"}),
+      headers: {'Content-Type': 'application/json'},
+    );
+    print(response.statusCode);
+    if (response.statusCode == 400) {
+      print("Error 400");
+    } else if (response.statusCode == 200 || response.statusCode == 201) {
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => MyBottomNavigationBar()), (Route<dynamic> route) => false);
+    }
+  }
+
+
   // Confirm dialog when creating a new goal
   showAlertDialog(BuildContext context, int Mentor, String Date) {
     // set up the buttons
@@ -668,7 +693,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Confirm dialog when setting goal as complete
-  showGoalAlertDialog(BuildContext context) {
+  showGoalAlertDialog(BuildContext context, int mentor, String goalName, goalDetail, date) {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
@@ -679,6 +704,7 @@ class _HomePageState extends State<HomePage> {
       onPressed: () {
         // TO DO: IMPLEMENT: Change Goal from In-Progress to Achieved
         // submitGoalData(Mentor);
+        updateGoal(mentor, goalName, goalDetail, date);
       },
     );
     // set up the AlertDialog
@@ -801,7 +827,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               Align(
                                                 alignment: Alignment.center,
-                                                child: markGoalAsCompleted(),
+                                                child: markGoalAsCompleted(global.mentorID, goalNameList[i], goalDescriptionList[i], goalDateList[i]),
                                               ),
                                             ],
                                           ),
@@ -835,11 +861,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container markGoalAsCompleted() {
+  Container markGoalAsCompleted(int mentor, String goalName, goalDetail, date) {
     return Container(
       child: OutlinedButton(
         onPressed: () {
-          showGoalAlertDialog(context);
+          showGoalAlertDialog(context, mentor, goalName, goalDetail, date);
         },
         child: Text(
           'Mark as Complete?',
