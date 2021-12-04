@@ -34,7 +34,7 @@ Future<int?> getIDPreference() async {
 Future<List<List<String>>?> getMenteeList() async {
   List<String> mentees = [];
   List<String> id = [];
-  String urlMentorID = "http://192.168.4.249:8000" + "/users/mentors/" + global.mentorID.toString();
+  String urlMentorID = global.host + "/users/mentors/" + global.mentorID.toString();
 
   var url = Uri.parse(urlMentorID);
   http.Response response = await http.get(url);
@@ -61,12 +61,12 @@ Future<List<List<String>>?> getMenteeList() async {
 }
 
 // Get goals data with GET request
-Future<List<dynamic>?> getSessions() async {
+Future<List<dynamic>?> getGoals() async {
   List<dynamic> list = [];
 
-  var url = Uri.parse('http://192.168.4.249:8000/goals/goal');
+  var url = Uri.parse(global.host + '/goals/goal');
   http.Response response = await http.get(url);
-  //print(response.statusCode);
+  print(response.statusCode);
   try {
     if (response.statusCode == 200) {
       String data = response.body;
@@ -233,7 +233,7 @@ class _HomePageState extends State<HomePage> {
     getTokenPreference().then(updateToken);
     getIDPreference().then(updateID);
     getMenteeList().then(updateMenteeList);
-    getSessions().then(updateSessionsData);
+    getGoals().then(updateSessionsData);
 
     super.initState();
   }
@@ -622,7 +622,7 @@ class _HomePageState extends State<HomePage> {
   submitData(int mentor, String goalName, goalDetail, date) async {
     var response = await http.post(
       //Uri.parse("http://ptsv2.com/t/70iw7-1635724230/post"),
-      Uri.parse("http://192.168.4.249:8000" + "/goals/goal/"),
+      Uri.parse(global.host + "/goals/goal/"),
       body: jsonEncode(
           {'mentor': mentor, 'mentee': null, 'title': goalName, 'date': date, 'goal_review_date': date, 'content': goalDetail, 'status': "IN PROGRESS"}),
       headers: {'Content-Type': 'application/json'},
@@ -640,7 +640,7 @@ class _HomePageState extends State<HomePage> {
     String formattedDate = DateFormat('yyyy-MM-dd').format(format.parse(date));
     var response = await http.patch(
       //Uri.parse("http://ptsv2.com/t/70iw7-1635724230/post"),
-      Uri.parse("http://192.168.4.249:8000" + "/goals/goal/1"),
+      Uri.parse(global.host + "/goals/goal/1"),
       body: jsonEncode(
           {'mentor': mentor,
             'mentee': null,
