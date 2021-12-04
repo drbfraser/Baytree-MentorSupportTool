@@ -1,18 +1,11 @@
 .mr-2 {
-    color: black;
-    padding-top: 16px;
-    font-size: 19px;
+    color: white;
 }
 
-.dropdown-item {
-    font-size: 19px;
-    background-color: rgb(226, 11, 137);
+.fas {
     color: white;
-    margin-top: -15px;
 }
 
-.dropdown-menu {
-    font-size: 19px;
-    color: white;
-    padding-top: -10px;
+.navbar {
+    background-color: rgba(90, 176, 49, 0.7);
 }

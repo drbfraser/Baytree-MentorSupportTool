@@ -3,7 +3,7 @@
 }
 
 .sidebar-brand {
-    background-color: rgb(226, 11, 137);
+    background-color: #ff1d89;
     color: rgb(126, 226, 86);
     margin-bottom: 30px;
 }
@@ -14,6 +14,8 @@
     font-size: 20px;
     margin-bottom: 30px;
 }
+
+.nav-link {}
 
 
 /* .nav-link {
