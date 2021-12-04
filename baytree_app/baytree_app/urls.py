@@ -17,6 +17,7 @@ urlpatterns = [
     path('questionnaires/', include('questionnaires.urls')),
     path('questions/', include('questions_and_answers.urls')),
     path('goals/', include('goals.urls')),
+    path('mentor-stats/', include('mentor_stats.urls')),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^account/', include('allauth.urls')),

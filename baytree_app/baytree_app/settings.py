@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'questionnaires',
     'questions_and_answers',
     'sessions',
+    'mentor_stats',
     'admin_login',
     'goals',
     'crispy_forms',
