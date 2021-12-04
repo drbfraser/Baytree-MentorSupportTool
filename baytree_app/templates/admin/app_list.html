@@ -1,5 +1,9 @@
 {% load i18n static %} 
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/app_list.css" %}"> 
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
     <div>
         <img src="{% static 'image/baytree.png' %}" height='210'/>
@@ -14,7 +18,7 @@
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#{{app.app_label}}" aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-cog"></i>
+            <i class="fas fa-cog"></i>
             <span>{{app.name}}</span>
         </a>
         <div id="{{app.app_label}}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
