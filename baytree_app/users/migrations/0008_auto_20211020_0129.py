@@ -6,6 +6,7 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
         ('users', '0007_menteeprofile'),
     ]
