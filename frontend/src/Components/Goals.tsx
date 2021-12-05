@@ -8,6 +8,8 @@ import Tab from '@mui/material/Tab';
 
 import NoteCard from './Notecard';
 import GoalsStatistics from './GoalsStatistics';
+import CreateGoals from './CreateGoals';
+import { LabelImportantTwoTone } from '@mui/icons-material';
 
 export default function Goals() {
     const [goals, setGoals] = useState([]);
@@ -43,13 +45,16 @@ export default function Goals() {
     }
     */
     return (
-      <Container maxWidth = "lg" sx = {{mt: 5}}>
-        <Tabs value={tabValue} onChange={handleChange} centered sx = {{mb: 3}}>
+      <Container >
+        
+        <Tabs value={tabValue} onChange={handleChange} centered sx = {{mb: 3}}> 
             <Tab label="Active" />
             <Tab label="Completed" />
             <Tab label="All" />
+            
         </Tabs>
-        <Grid container spacing={3} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "55vh"}}>
+        <Grid sx = {{ position: 'absolute', top: 110, right: 55,}}><CreateGoals /></Grid>
+        <Grid container spacing={1} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "55vh"}}>
           {goals.map(goals => (
             <Grid item xs={12} md={6} lg={4}>
                 <NoteCard />

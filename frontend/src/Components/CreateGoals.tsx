@@ -14,6 +14,7 @@ import Fab from '@mui/material/Fab';
 import { lightGreen } from '@mui/material/colors';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Popover from '@mui/material/Popover';
 
 
 
@@ -59,13 +60,12 @@ export default function CreateGoals() {
 
     return (
         <div>
-            <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mb: 5}}>
-            {submit === true && <Alert severity="success" sx = {{mb: 2}}>Goal Successfully Set</Alert>}
-                <Fab color = "primary" variant="extended" aria-label="add" onClick={handleClickOpen}>
-                    <AddIcon />
-                    Add New Goal
-                </Fab>
-            </Card>
+            
+            <Button color = "success" variant="contained" size="large" onClick={handleClickOpen}><AddIcon  /> Add New Goal </Button>
+            {submit === true && <Alert severity="success" sx = {{ position: 'absolute', top: 250, right: 500,}}><strong>Goal Successfully Set</strong></Alert>}
+            
+            
+        
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>New Goal</DialogTitle>
                 <DialogContent>

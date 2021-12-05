@@ -15,9 +15,9 @@ import IconButton from '@mui/material/IconButton';
 import pink from '@mui/material/colors/pink';
 
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import CreateIcon from '@mui/icons-material/Create';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import BookIcon from '@mui/icons-material/Book';
-import CreateIcon from '@mui/icons-material/Create';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -45,19 +45,21 @@ export default function Navigation() {
 
   return (
     <div className="content" style={{ background: '#faf6ed'}}>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', width:'100%', height: 'auto', margin: 'auto' }}>
         <CssBaseline />
-        <AppBar position="fixed" style={{ background: 'white' }} sx={{ zIndex: (theme) => theme.zIndex.drawer + 5 }}>
-          <Toolbar>
-              <Grid container spacing={5}>
+        <AppBar position="fixed" style={{ background: 'white', width:'100%', height: 'auto', margin: 'auto' }} sx={{ zIndex: (theme) => theme.zIndex.drawer + 5 }}>
+          <Toolbar style={{ }}>
+              <Grid container spacing={'auto'}>
                   <Grid item xs = {9}>
                       <Box   
                       display = "flex"
                       alignItems = "left"
                       justifyContent = "left"
-                      margin = "6px">
+                      margin = "6px"
+                      color = "green">
                           <img src = {Logo} alt = "Logo" width = "null" height = "80" />
                           <img src = {SideLogo} alt = "Logo" width = "null" height = "80" />
+                          <h3>Mentor Portal</h3>
                       </Box>
                   </Grid>
                   <Grid item style = {{marginTop: "20px"}}>
@@ -76,7 +78,7 @@ export default function Navigation() {
                         </Link>
                         </Grid>
                         <Grid item xs = {3}>
-                        <IconButton onClick = {Logout} style = {{color: "black"}} size = "large">
+                        <IconButton onClick = {Logout} style = {{color: "red"}} size = "large">
                             <LogoutIcon />
                         </IconButton>
                         </Grid>
@@ -97,7 +99,9 @@ export default function Navigation() {
           <Grid item style = {{marginTop: "30px"}}>
           <Box sx={{ overflow: 'auto' }}>
             <List>
-              {['Home', 'Sessions', 'Questionnaire','Goals', 'Records'].map((text, index) => (
+
+              {['Home', 'Sessions', 'Questionnaires','Goals', 'Records'].map((text, index) => (
+
               <Link to = {`${match.url}/${text}`} style={{ textDecoration: 'none', color: 'black' }} key = {text}>
                 <ListItem button>
                   <ListItemIcon>
@@ -105,7 +109,7 @@ export default function Navigation() {
                           switch(text) {
                             case "Home": return <HomeIcon sx={{ color: pink[500]}}/>;
                             case "Sessions": return <CreateIcon sx={{ color: pink[500]}}/>;
-                            case "Questionnaire": return <QuestionAnswerIcon sx={{ color: pink[500]}}/>;  
+                            case "Questionnaires": return <QuestionAnswerIcon sx={{ color: pink[500]}}/>;  
                             case "Goals": return <AutoGraphIcon sx={{ color: pink[500]}}/>;
                             case "Records": return <BookIcon sx={{ color: pink[500]}}/>;         
                             }
@@ -114,7 +118,7 @@ export default function Navigation() {
                   <ListItemText>
                           {(() => {
                           switch(text) {
-                              case "Questionnaire": return 'Progress Report';  
+ 
                               case "Sessions": return 'Create Session'
                               default: return (text);
                             }
@@ -144,7 +148,7 @@ export default function Navigation() {
               <Route path={`${match.path}/sessions`}>
                   <Sessions />
               </Route>
-              <Route path={`${match.path}/questionnaire`}>
+              <Route path={`${match.path}/questionnaires`}>
                   <Questionnaire />
               </Route>
               <Route path={`${match.path}/profile`}>
