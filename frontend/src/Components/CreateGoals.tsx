@@ -62,9 +62,7 @@ export default function CreateGoals() {
         <div>
             
             <Button color = "success" variant="contained" size="large" onClick={handleClickOpen}><AddIcon  /> Add New Goal </Button>
-            {submit === true && <Alert severity="success" sx = {{ position: 'absolute',
-  top: 250,
-  right: 500,}}><strong>Goal Successfully Set</strong></Alert>}
+            {submit === true && <Alert severity="success" sx = {{ position: 'absolute', top: 250, right: 500,}}><strong>Goal Successfully Set</strong></Alert>}
             
             
         
