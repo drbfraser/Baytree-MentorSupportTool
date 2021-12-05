@@ -34,8 +34,6 @@ import Profile from './Profile';
 import Questionnaire from './Questionnaire';
 import Sessions from './Sessions';
 import Records from './Records';
-import Resources from './Resources';
-
 const drawerWidth = 240;
 const resourcesURL = 'https://thebaytreecentre.sharepoint.com/Shared%20Documents/Forms/AllItems.aspx?id=%2FShared%20Documents%2FYouth%20Service%2FMentoring%20Resources&p=true';
 

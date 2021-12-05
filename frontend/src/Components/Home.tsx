@@ -1,16 +1,13 @@
 import {useState} from 'react'
 
-import CreateGoals from './CreateGoals'
 import Statistics from './Statistics'
 import Scheduler from './Scheduler'
 import MenteeInfo from './MenteeInfo'
 
 import IconButton from '@mui/material/IconButton'
 import Container from '@mui/material/Container'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import Grid from '@mui/material/Grid'
 import Grow from '@mui/material/Grow'
-import Switch from '@mui/material/Switch'
 
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';

@@ -5,8 +5,10 @@ import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Grow from '@mui/material/Grow'
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import Skeleton from '@mui/material/Skeleton';
 import TextField from '@mui/material/TextField';
 import Typography  from "@mui/material/Typography";
 
@@ -14,6 +16,7 @@ const Questionnaire = () => {
 
   const [formData, setFormData] = useState([] as any[]);
   const [answers, setAnswers] = useState({answer: ''});
+  const [loading, setLoading] = useState(true);
 
   let values: { [key: string]: string } = {};
 
@@ -26,6 +29,7 @@ const Questionnaire = () => {
     })
     .then (response => response.json())
     .then (data => setFormData(data))
+    .then (() => setLoading(false))
     .catch((error) => {
       console.error('Error:', error);
     });
@@ -52,6 +56,7 @@ const Questionnaire = () => {
   }
   
   return (
+    <Grow in={true}>
     <Container 
       maxWidth = "md" 
       sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, pt: 2, mt: 3}}
@@ -66,7 +71,23 @@ const Questionnaire = () => {
         onSubmit = {handleSubmit} 
         noValidate
         autoComplete="off">
-          
+        
+        {loading === true &&
+        <div>
+          <Skeleton variant="rectangular" width={200} height={30} sx = {{mb: 3}}/>
+          <Skeleton variant="rectangular" width={750} height={80} sx = {{mb: 3}}/>
+          <Divider sx = {{mb: 3}}/>
+          <Skeleton variant="rectangular" width={200} height={30} sx = {{mb: 3}}/>
+          <Skeleton variant="rectangular" width={750} height={80} sx = {{mb: 3}}/>
+          <Divider sx = {{mb: 3}}/>
+          <Skeleton variant="rectangular" width={200} height={30} sx = {{mb: 3}}/>
+          <Skeleton variant="rectangular" width={750} height={80} sx = {{mb: 3}}/>
+          <Divider sx = {{mb: 3}}/>
+        </div>
+        }
+        
+        {loading === false &&
+        <div>
         {Object.values(formData).map((data, index) => 
             <FormControl fullWidth>
               <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{index + 1}. {data.Question}</Typography>
@@ -107,8 +128,11 @@ const Questionnaire = () => {
             </FormControl>
         )}
         <Button variant="contained" type = "submit" sx = {{mt: 3}}>Submit</Button>
+        </div>
+      }
       </Box>
     </Container>
+    </Grow>
   )
 };
   
