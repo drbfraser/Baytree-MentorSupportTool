@@ -1,0 +1,43 @@
+.sidebar-brand-text {
+    color: white;
+}
+
+.sidebar-brand {
+    background-color: #ff1d89;
+    color: rgb(126, 226, 86);
+    margin-bottom: 30px;
+}
+
+.navbar-nav {}
+
+.nav-item {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.nav-link {}
+
+
+/* .nav-link {
+    color: rgb(126, 226, 86);
+    background-color: rgb(126, 226, 86)
+}
+
+.sidebar-brand {
+    background-color: rgb(226, 11, 137);
+    color: rgb(126, 226, 86)
+}
+
+
+.collapse-item {
+    font-size: 15px;
+}
+
+
+/* .bg-white {
+    background-color: rgb(126, 226, 86);
+}
+
+body {
+    background-color: rgb(126, 226, 86);
+} */

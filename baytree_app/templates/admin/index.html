@@ -1,0 +1,78 @@
+{% extends "admin/base_site.html" %} {% load i18n static %} {% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static " admin/css/dashboard.css " %}">{% endblock %} {% block coltype %}colMS{% endblock %} {% block bodyclass %}{{ block.super }} dashboard{% endblock %} {% block breadcrumbs %}{% endblock %} {% block nav-sidebar %}{% endblock %} {% block content %} {% endblock %} {% block sidebar %}
+
+<div style="width: 100%;display: flex">
+    <div style="width: 50%;height: 500px;float:left" id="main" >
+
+    </div>
+    <div style="width: 50%;height: 500px;float:right" id="main1">
+
+    </div>
+</div>
+{% load admintags %} {% block js %}
+<script>
+    var chartDom = document.getElementById('main');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+        title: {
+            text: 'Mentor And Mentee',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left'
+        },
+        series: [{
+            name: 'User count',
+            type: 'pie',
+            radius: '50%',
+            data: {% piechart %},
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    };
+
+    option && myChart.setOption(option);
+
+    var chartDom = document.getElementById('main1');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+        title: {
+            text: 'User Registration In The Last Ten Days'
+          },
+        xAxis: {
+            type: 'category',
+            data: {% linechart True %}
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: {% linechart False %},
+            type: 'line'
+        }]
+    };
+
+    option && myChart.setOption(option);
+</script>
+{% endblock %} {% endblock %}
+
+{%block style%}
+<style>
+    .colMS{
+        margin-right: 0
+    }
+</style>
+{%endblock%}

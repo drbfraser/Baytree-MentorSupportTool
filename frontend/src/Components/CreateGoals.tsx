@@ -12,6 +12,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Fab from '@mui/material/Fab';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Popover from '@mui/material/Popover';
 
 
 
@@ -93,11 +95,11 @@ const  CreateGoals = () =>   {
     return (
         <div>
             <Card sx={{ border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mb: 5}}>
-                {submit === true && <Alert severity="success" sx={{ mb: 2 }}>Goal Successfully Set</Alert>}
-                <Fab color="primary" variant="extended" aria-label="add" onClick={handleClickOpen}>
-                    <AddIcon />
-                    Add New Goal
-                </Fab>
+             <Button color = "success" variant="contained" size="large" onClick={handleClickOpen}><AddIcon  /> Add New Goal </Button>
+            {submit === true && <Alert severity="success" sx = {{ position: 'absolute', top: 250, right: 500,}}><strong>Goal Successfully Set</strong></Alert>}
+            
+            
+        
 
                 
             </Card>

@@ -1,0 +1,68 @@
+{% load i18n static %}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/nav.css" %}">
+
+<nav class="navbar navbar-expand navbar-light topbar mb-4  shadow">
+
+    <!-- Topbar Navbar -->
+    <ul class="navbar-nav ml-auto">
+
+
+        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+        <li class="nav-item dropdown no-arrow d-sm-none">
+
+            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+            </a>
+        </li>
+
+        <!-- Nav Item - Alerts -->
+        <li class="nav-item dropdown no-arrow mx-1" style="display: flex;align-items: center;">
+            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bell fa-fw"></i>
+            </a>
+            <!-- Dropdown - Alerts -->
+            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                {% load log %} {% get_admin_log 10 as admin_log for_user user %} {% if not admin_log %}
+                <p>{% translate 'None available' %}</p>
+                {% else %}
+                <ul class="actionlist">
+                    {% for entry in admin_log %}
+                    <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                        {% if entry.is_deletion or not entry.get_admin_url %} {{ entry.object_repr }} {% else %}
+                        <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a> {% endif %}
+                        <br> {% if entry.content_type %}
+                        <span class="mini quiet">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span> {% else %}
+                        <span class="mini quiet">{% translate 'Unknown content' %}</span> {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </li>
+
+
+        <!-- Nav Item - Messages -->
+
+
+
+        <!-- Nav Item - User Information -->
+        <li class="nav-item dropdown no-arrow">
+
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2">{{ request.user.email }}</span>
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="{% url 'admin:password_change' %}">
+                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i> Change password
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'admin:logout' %}" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Log out
+                </a>
+            </div>
+        </li>
+
+    </ul>
+
+</nav>

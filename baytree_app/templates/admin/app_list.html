@@ -1,0 +1,50 @@
+{% load i18n static %} 
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/app_list.css" %}"> 
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <div>
+        <img src="{% static 'image/baytree.png' %}" height='210'/>
+    <div>
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin">
+        <div class="sidebar-brand-text mx-3">Dashborad</div>
+    </a>
+
+    {% if app_list %}
+    <!-- Divider -->{% for app in app_list %}
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#{{app.app_label}}" aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-cog"></i>
+            <span>{{app.name}}</span>
+        </a>
+        <div id="{{app.app_label}}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                {% for model in app.models %}
+                <a class="collapse-item" href="{{model.admin_url}}">{{model.name}}</a> {% endfor %}
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->{% endfor %}
+{% else %}
+
+{% for app in available_apps %}
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#{{app.app_label}}" aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>{{app.name}}</span>
+        </a>
+        <div id="{{app.app_label}}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                {% for model in app.models %}
+                <a class="collapse-item" href="{{model.admin_url}}">{{model.name}}</a> {% endfor %}
+            </div>
+        </div>
+    </li>{% endfor %}
+{% endif %}
+</ul>

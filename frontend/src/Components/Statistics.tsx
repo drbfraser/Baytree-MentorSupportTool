@@ -12,7 +12,7 @@ function preventDefault(event: React.MouseEvent) {
 export default function Statistics() {
   return (
       <div>
-        <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3}}>
+        <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mt: 4}}>
             <Grid style = {{ display: 'flex'}}>
                 <Grid item xs = {4} sx = {{m: 0, p: 0}}>
                     <Typography component="h2" variant="h6" color="text.secondary" gutterBottom>

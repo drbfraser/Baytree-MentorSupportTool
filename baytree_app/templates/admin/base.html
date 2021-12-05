@@ -1,72 +1,197 @@
-{% load i18n static %}
-<!DOCTYPE html> {% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
-<html lang="{{ LANGUAGE_CODE|default:" en-us " }}" dir="{{ LANGUAGE_BIDI|yesno:'rtl,ltr,auto' }}">
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
     <title>{% block title %}{% endblock %}</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="{% static 'sb_admin2/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{% static 'sb_admin2/css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+
     <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}"> {% if not is_popup and is_nav_sidebar_enabled %}
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/nav_sidebar.css" %}">
     <script src="{% static 'admin/js/nav_sidebar.js' %}" defer></script>
     {% endif %} {% block extrastyle %}{% endblock %} {% if LANGUAGE_BIDI %}
-    <link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}">{% endif %} {% block extrahead %}{% endblock %} {% block responsive %}
+    <link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css " %}{% endblock %}">{% endif %} {% block extrahead %}{% endblock %} {% block responsive %}
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/responsive.css" %}"> {% if LANGUAGE_BIDI %}
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/responsive_rtl.css" %}">{% endif %} {% endblock %} {% block blockbots %}
-    <meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
-</head>
- 
-<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" data-admin-utc-offset="{% now " Z " %}">
-    <!-- Container -->
-    <div id="container">
-        {% if not is_popup %}
-        <!-- Header -->
-        {% block header %}
-        <div id="header">
-            <div id="branding">
-                {% block branding %}{% endblock %}
-            </div>
-            {% block usertools %} {% if has_permission %}
-            <div id="user-tools">
-                {% block welcome-msg %} {% translate 'Welcome,' %}
-                <strong>{% firstof user.get_short_name user.get_username %}</strong>. {% endblock %} {% block userlinks %} {% if site_url %}
-                <a href="{{ site_url }}">{% translate 'View site' %}</a> / {% endif %} {% if user.is_active and user.is_staff %} {% url 'django-admindocs-docroot' as docsroot %} {% if docsroot %}
-                <a href="{{ docsroot }}">{% translate 'Documentation' %}</a> / {% endif %} {% endif %} {% if user.has_usable_password %}
-                <a href="{% url 'admin:password_change' %}">{% translate 'Change password' %}</a> / {% endif %}
-                <a href="{% url 'admin:logout' %}">{% translate 'Log out' %}</a> {% endblock %}
-            </div>
-            {% endif %} {% endblock %} {% block nav-global %}{% endblock %}
-        </div>
-        {% endblock %}
-        <!-- END Header -->
-        {% block breadcrumbs %}
-        <div class="breadcrumbs">
-            <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a> {% if title %} &rsaquo; {{ title }}{% endif %}
-        </div>
-        {% endblock %} {% endif %}
+    <meta name="robots" content="NONE,NOARCHIVE">{% endblock %} {% comment %}
+    <style>
+        a.deletelink {
+            height: 15px;
+        }
+    </style> {% endcomment %}
+    <style>
+        
+        
+        .bg-gradient-primary {
+            background-color: rgba(90, 176, 49, 0.7);
+            color: black;
+            background-image: none
+        }
+        
+        .nav-link {
+            color: black;
+        }
 
-        <div class="main" id="main">
-            
-            {% if not is_popup and is_nav_sidebar_enabled %} {% block nav-sidebar %} {% include "admin/nav_sidebar.html" %} {% endblock %} {% endif %}
-            <div class="content">
-                {% block messages %} {% if messages %}
-                <ul class="messagelist">{% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message|capfirst }}</li>
-                        {% endfor %}</ul>
-                {% endif %} {% endblock messages %}
-                <!-- Content -->
-                <div id="content" class="{% block coltype %}colM{% endblock %}">
-                    {% block pretitle %}{% endblock %} {% block content_title %}{% if title %}
-                    <h1>{{ title }}</h1>{% endif %}{% endblock %} {% block content_subtitle %}{% if subtitle %}
-                    <h2>{{ subtitle }}</h2>{% endif %}{% endblock %} {% block content %} {% block object-tools %}{% endblock %} {{ content }} {% endblock %} {% block sidebar %}{% endblock %}
-                    <br class="clear">
+        .btn-primary {
+            color: #fff;
+            background-color: #ff1d89;
+            border-color: #ff1d89;
+        }
+    </style>
+    {% block style %} {%endblock%}
+
+</head>
+
+<body id="page-top">
+
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+
+        <!-- Sidebar -->
+        {% include "admin/app_list.html" %}
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+
+                {% include "admin/nav.html" %} {% comment %} Bootstrap carousel: https://getbootstrap.com/docs/5.1/components/carousel/ {% endcomment %}
+                <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="http://source.unsplash.com/1400x240/?kids,mentor" class="d-block w-100" alt="kids and mentors">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h1 style="background-color:rgb(226, 11, 137);color:white;text-align:center;">Changing aspirations</h1>
+                                <h2 style="background-color:rgb(226, 11, 137);color:white;text-align:center;">into realities</h2>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="http://source.unsplash.com/1400x240/?kids,mentor" class="d-block w-100" alt="kids and mentors">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h1 style="background-color:rgb(226, 11, 137);color:white;text-align:center;">Changing aspirations</h1>
+                                <h2 style="background-color:rgb(226, 11, 137);color:white;text-align:center;">into realities</h2>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="http://source.unsplash.com/1400x240/?kids,mentor" class="d-block w-100" alt="kids and mentors">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h1 style="background-color:rgb(226, 11, 137);color:white;text-align:center;">Changing aspirations</h1>
+                                <h2 style="background-color:rgb(226, 11, 137);color:white;text-align:center;">into realities</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
                 </div>
-                <!-- END Content -->
-                {% block footer %}
-                <div id="footer"></div>{% endblock %}
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800">{% block content_title %}{% if title %}{{ title }}{% endif %}{% endblock %}</h1>
+                    {% block messages %} {% if messages %}
+                    <ul class="messagelist">{% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message|capfirst }}</li>
+                            {% endfor %}</ul>
+                    {% endif %} {% endblock messages %}
+                    <!--  Recent Action -->>
+                    <div id="content" class="{% block coltype %}colM{% endblock %}">
+                        {% block pretitle %}{% endblock %} {% block content_subtitle %}{% if subtitle %}
+                        <h2>{{ subtitle }}</h2>{% endif %}{% endblock %} {% block content %} {% block object-tools %}{% endblock %} {{ content }} {% endblock %} {% block sidebar %}{% endblock %}
+                        <br class="clear">
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        {% block footer %}
+                        <div id="footer"></div>{% endblock %}
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="{% url 'admin:logout' %}" style="color: white">Logout</a>
+                </div>
             </div>
         </div>
     </div>
-    <!-- END Container -->
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'sb_admin2/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'sb_admin2/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'sb_admin2/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'sb_admin2/js/sb-admin-2.min.js' %}"></script>
+    <script src="{% static 'echarts/echarts.min.js' %}"></script>
+    {% block js %} {% endblock %}
 </body>
 
 </html>

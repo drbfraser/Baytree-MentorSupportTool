@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
     Map data = {'username': username, 'email': email, 'password': pass};
     var jsonResponse = null;
     var response = await http.post(
-        Uri.parse("http://192.168.4.251:8000/rest-auth/login/"),
+        Uri.parse(global.host + "/rest-auth/login/"),
         body: data);
 
     if (response.statusCode == 400) {
@@ -80,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
         // Get user ID
         String basicAuth = 'Basic ' + base64Encode(utf8.encode('$email:$pass'));
         Response r = await get(
-            Uri.parse('http://192.168.4.251:8000/rest-auth/user'),
+            Uri.parse(global.host + '/rest-auth/user'),
             headers: <String, String>{'authorization': basicAuth});
         if (r.statusCode == 200 || r.statusCode == 201) {
           var decodedJson = jsonDecode(r.body);
