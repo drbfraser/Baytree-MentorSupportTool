@@ -21,7 +21,7 @@ Future<String?> getTokenPreference() async {
 Future<List<dynamic>?> getSessions() async {
   List<dynamic> list = [];
 
-  var url = Uri.parse('http://192.168.4.251:8000/sessions/');
+  var url = Uri.parse(global.host + '/sessions/');
   http.Response response = await http.get(url);
   //print(response.statusCode);
   try {
