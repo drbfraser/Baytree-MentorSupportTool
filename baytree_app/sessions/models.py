@@ -19,3 +19,4 @@ class MentorSession(models.Model):
         result = str(self.id) + ", " + self.mentor.email + ", " + self.mentee.email
         return result
 
+
