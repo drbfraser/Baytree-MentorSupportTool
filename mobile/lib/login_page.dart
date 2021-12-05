@@ -79,6 +79,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Get user ID
         String basicAuth = 'Basic ' + base64Encode(utf8.encode('$email:$pass'));
+        global.basicAuth = basicAuth;
         Response r = await get(
             Uri.parse(global.host + '/rest-auth/user'),
             headers: <String, String>{'authorization': basicAuth});

@@ -66,7 +66,7 @@ Future<List<dynamic>?> getGoals() async {
 
   var url = Uri.parse(global.host + '/goals/goal');
   http.Response response = await http.get(url);
-  print(response.statusCode);
+  //print(response.statusCode);
   try {
     if (response.statusCode == 200) {
       String data = response.body;
@@ -115,6 +115,96 @@ class GoalsData {
       );
 }
 
+// Get goals data with GET request
+Future<StatisticsData?> getStatistics(int i, id, List<int> totalSessions, currentSessions, missedSessions, upcomingSessions) async {
+  List<dynamic> list = [];
+  //String basicAuth = 'Basic ' + base64Encode(utf8.encode('${global.basicAuth}'));
+  var url = Uri.parse(global.host + '/users/statistics/mentee/' + id.toString());
+  http.Response response = await http.get(url, headers: <String, String>{'authorization': global.basicAuth});
+  print(response.statusCode);
+  try {
+    if (response.statusCode == 200) {
+      String data = response.body;
+      var decodedJson = json.decode(data);
+      StatisticsData recordFromJson(String str) => StatisticsData.fromJson(json.decode(data));
+      String jsonString = decodedJson.toString();
+      StatisticsData record = recordFromJson(jsonString);
+
+    //  print(record.status);
+      if(i < 2) {
+        totalSessions[i] = record.sessionsData.totalSessions + record.sessionsData.sessionsRemaining;
+        currentSessions[i] = record.sessionsData.sessionsAttended;
+        missedSessions[i] = record.sessionsData.sessionsMissed;
+        upcomingSessions[i] = record.sessionsData.sessionsRemaining;
+      } else {
+        totalSessions.add(record.sessionsData.totalSessions + record.sessionsData.sessionsRemaining);
+        currentSessions.add(record.sessionsData.sessionsAttended);
+        missedSessions.add(record.sessionsData.sessionsMissed);
+        upcomingSessions.add(record.sessionsData.sessionsRemaining);
+      }
+
+      return record;
+      // return decodedData;
+    }
+  } catch (e) {
+    return null;
+  }
+}
+
+
+
+// Model for statistics
+class StatisticsData {
+  String status;
+  SessionsData sessionsData;
+
+  StatisticsData({
+    required this.sessionsData,
+    required this.status,
+  });
+
+  factory StatisticsData.fromJson(Map<String, dynamic> json) => StatisticsData(
+    status: json["status"],
+    sessionsData: SessionsData.fromJson(json["data"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "status": status,
+    "data": sessionsData.toJson(),
+
+  };
+}
+
+class SessionsData  {
+  int totalSessions;
+  int sessionsAttended;
+  int sessionsMissed;
+  int sessionsRemaining;
+
+
+  SessionsData({
+    required this.totalSessions,
+    required this.sessionsAttended,
+    required this.sessionsMissed,
+    required this.sessionsRemaining,
+  });
+
+  factory SessionsData.fromJson(Map<String, dynamic> json) => SessionsData(
+    totalSessions: json["sessions_total"],
+    sessionsAttended: json["sessions_attended"],
+    sessionsMissed: json["sessions_missed"],
+    sessionsRemaining: json["sessions_remaining"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "sessions_total": totalSessions,
+    "sessions_attended": sessionsAttended,
+    "sessions_missed": sessionsMissed,
+    "sessions_remaining": sessionsRemaining,
+  };
+}
+
+
 // Reference: https://help.syncfusion.com/flutter/circular-charts/getting-started
 // Model for pie chart data
 class ChartData {
@@ -151,14 +241,15 @@ class _HomePageState extends State<HomePage> {
   DateTime _currentDate = DateTime.now();
 
 
-  // TODO: Update chartData values using GET request when backend is implemented
   // Sample Data to Test
-  List<int> totalSessions = [19, 13];
-  List<int> currentSessions = [10, 6];
-  List<int> missedSessions = [3, 1];
-  List<int> upcomingSessions = [6, 6];
+  // Values are updated with GET request
+  List<int> totalSessions = [1,1];
+  List<int> currentSessions = [1,1];
+  List<int> missedSessions = [1,1];
+  List<int> upcomingSessions = [1,1];
 
-  final List<List<ChartData>> chartData = [
+
+   final List<List<ChartData>> chartData = [
     [
       ChartData('Current Sessions', 10, ((10 / 19) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(9, 0, 136, 1.0)),
       ChartData('Missed Sessions', 3, ((3 / 19) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(228, 0, 124, 1)),
@@ -173,12 +264,12 @@ class _HomePageState extends State<HomePage> {
 
   void updatePieChartData() {
     for (int i = 0; i < global.menteeList.length; i++) {
-      chartData[i].add(ChartData('Current Sessions', currentSessions[i].toDouble(),
-          ((currentSessions[i] / totalSessions[i]) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(9, 0, 136, 1.0)));
-      chartData[i].add(ChartData('Missed Sessions', missedSessions[i].toDouble(),
-          ((missedSessions[i] / totalSessions[i]) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(228, 0, 124, 1)));
-      chartData[i].add(ChartData('Upcoming Sessions', upcomingSessions[i].toDouble(),
-          ((upcomingSessions[i] / totalSessions[i]) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(255, 189, 57, 1)));
+      chartData[i] = [(ChartData('Current Sessions', currentSessions[i].toDouble(),
+          ((currentSessions[i] / totalSessions[i]) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(9, 0, 136, 1.0))),
+      (ChartData('Missed Sessions', missedSessions[i].toDouble(),
+          ((missedSessions[i] / totalSessions[i]) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(228, 0, 124, 1))),
+      (ChartData('Upcoming Sessions', upcomingSessions[i].toDouble(),
+          ((upcomingSessions[i] / totalSessions[i]) * 100).toStringAsFixed(1) + " %", Color.fromRGBO(255, 189, 57, 1)))];
     }
   }
   // END sample data
@@ -232,12 +323,21 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void updateStatistics(StatisticsData? data) {
+    setState(() {
+      updatePieChartData();
+    });
+  }
+
   @override
   void initState() {
     getTokenPreference().then(updateToken);
     getIDPreference().then(updateID);
     getMenteeList().then(updateMenteeList);
     getGoals().then(updateSessionsData);
+    for(int i = 0; i < global.menteeIdList.length; i++) {
+      getStatistics(i, global.menteeIdList[i], totalSessions, currentSessions, missedSessions, upcomingSessions).then(updateStatistics);
+    }
 
     super.initState();
   }
@@ -655,7 +755,7 @@ class _HomePageState extends State<HomePage> {
             'status': "ACHIEVED"}),
       headers: {'Content-Type': 'application/json'},
     );
-    print(response.statusCode);
+    //print(response.statusCode);
     if (response.statusCode == 400) {
       print("Error 400");
     } else if (response.statusCode == 200 || response.statusCode == 201) {
