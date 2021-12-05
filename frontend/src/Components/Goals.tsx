@@ -18,13 +18,10 @@ import {lightGreen} from '@mui/material/colors';
 
 import NoteCard from './Notecard';
 import GoalsStatistics from './GoalsStatistics';
-<<<<<<< HEAD
 import { getJSDocClassTag } from 'typescript';
 import { AlignHorizontalLeft } from '@mui/icons-material';
-=======
 import CreateGoals from './CreateGoals';
 import { LabelImportantTwoTone } from '@mui/icons-material';
->>>>>>> master
 
 export default function Goals() {
     const [goals, setGoals] = useState([]);
@@ -59,41 +56,6 @@ export default function Goals() {
             <Tab label="Active" />
             <Tab label="Completed" />
             <Tab label="All" />
-<<<<<<< HEAD
-            </Tabs>
-
-
- <Grid container spacing={3} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "55vh"}}>
- <NoteCard />
-  <Card elevation={2} sx = {{bgcolor: lightGreen[200], m: 2}}>
-        <CardHeader
-          
-        />
-        <CardContent>
-        <Button sx = {{}} variant="contained" color="success" endIcon={<DoneIcon/>}></Button>
-          <Typography variant="body2" color="textSecondary">
-            
-          this is a new goal and needs to be completed asap
-          </Typography>
-        </CardContent>
-        
-      </Card>
-      <Card elevation={1} sx = {{bgcolor: lightGreen[200]}}>
-        <CardHeader
-          
-        />
-        <CardContent>
-        <Button sx = {{}} variant="contained" color="success" endIcon={<DoneIcon/>}></Button>
-          <Typography variant="body2" color="textSecondary">
-            
-          this is a new goal and needs to be completed asap
-          </Typography>
-        </CardContent>
-        
-      </Card>
-      
-      </Grid>
-=======
             
         </Tabs>
         <Grid sx = {{ position: 'absolute', top: 110, right: 55,}}><CreateGoals /></Grid>
@@ -104,7 +66,6 @@ export default function Goals() {
             </Grid>
           ))}
         </Grid>
->>>>>>> master
         <GoalsStatistics />
       </Container>
   
