@@ -60,7 +60,7 @@ export default function CreateGoals() {
     return (
         <div>
             {submit === true && <Alert severity="success" sx = {{mb: 2}}>Goal Successfully Set</Alert>}
-            <Button variant="contained" size="large" onClick={handleClickOpen}><AddIcon  /> Add New Goal </Button>
+            <Button color = "success" variant="contained" size="large" onClick={handleClickOpen}><AddIcon  /> Add New Goal </Button>
         
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>New Goal</DialogTitle>
