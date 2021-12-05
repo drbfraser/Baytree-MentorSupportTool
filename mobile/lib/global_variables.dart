@@ -4,6 +4,8 @@ library mobile.global_variables;
 int mentorID = 0;
 int currentMenteeID = 0;
 
+String host = "http://192.168.4.249:8000";
+
 List<String> menteeList = [" "]; // Assign mentees in the home page
 List<int> menteeIdList = [];
 

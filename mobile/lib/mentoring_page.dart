@@ -495,7 +495,7 @@ class _MentoringPageState extends State<MentoringPage> {
 
     var response = await http.post(
       //Uri.parse("http://ptsv2.com/t/70iw7-1635724230/post"),
-      Uri.parse("http://192.168.4.251:8000/sessions/"),
+      Uri.parse(global.host + "/sessions/"),
       body: jsonEncode({
         'id': 1,
         'created_at': date.toString(),
