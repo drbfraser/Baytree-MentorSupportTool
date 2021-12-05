@@ -319,6 +319,40 @@ class _RecordsPageState extends State<RecordsPage> {
       centerTitle: true,
       backgroundColor: const Color(0xff5ab031),
       automaticallyImplyLeading: false,
+      actions: [
+        IconButton(
+          icon: Icon(Icons.edit_sharp),
+          onPressed: ()  {
+            showErrorDialog(context);
+            }
+        ),
+      ],
+    );
+  }
+
+  // Dialog for editing record
+  showErrorDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Dismiss"),
+      onPressed: () => Navigator.pop(context),
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      //title: Text("Error!"),
+      content: Text("Contact the admin to make changes to any records."),
+      actions: [
+        cancelButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 
@@ -726,7 +760,7 @@ class _RecordsPageState extends State<RecordsPage> {
   Container monthlyReports() {
     return Container(
       child: Text(
-        'Monthly Progress Reports:',
+        'Questionnaires:',
         style: new TextStyle(
           fontSize: 18.0,
           fontWeight: FontWeight.bold,

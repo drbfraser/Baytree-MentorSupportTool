@@ -365,7 +365,6 @@ class _HomePageState extends State<HomePage> {
             //Text('Key:'),
             //Text(_token ?? " "),
             //Text('${_id}'),
-            //test(),
             welcomeText(),
             Calender(),
             menteeTitle(),
@@ -1132,33 +1131,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // TO BE DELETED .......
-  Container test() {
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.only(top: 30, left: 0, right: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (var i in menteeList)
-              Text(
-                i.toString(),
-                textAlign: TextAlign.left,
-                style: new TextStyle(
-                  fontSize: 16.0,
-                ),
-              ),
-            for (var i in menteeIdList)
-              Text(
-                i.toString(),
-                textAlign: TextAlign.left,
-                style: new TextStyle(
-                  fontSize: 16.0,
-                ),
-              )
-          ],
-        ),
-      ),
-    );
-  }
 }

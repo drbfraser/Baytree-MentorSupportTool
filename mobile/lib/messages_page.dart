@@ -40,13 +40,44 @@ class _MessagesPageState extends State<MessagesPage> {
         decoration: const BoxDecoration(
           color: Color(0xedffffff),
         ),
-        child: ListView(
-          padding: EdgeInsets.only(top: 10, left: 10),
-          children: <Widget>[
-            Text('Key:'),
-            Text(_token ?? " "),
-          ],
-        ),
+        child:    DefaultTabController(
+          length: 2,
+          child: Column(
+            children: <Widget>[
+              Material(
+                 //color: Colors.grey,
+                  child: TabBar(
+                    indicatorColor: Colors.grey,
+                    labelColor: Colors.black,
+                    unselectedLabelColor: Colors.grey,
+                    tabs: [
+                      Tab(text: "Notifications"),
+                      Tab(text: "Community Messages"),
+                    ],
+                  )),
+              Expanded(
+                flex: 1,
+                child: TabBarView(
+                  children: [
+                    ListView(
+                      padding: EdgeInsets.only(top: 10, left: 10),
+                      children: <Widget>[
+                        Text('Notifications ....'),
+                      ],
+                    ),
+                    ListView(
+                      padding: EdgeInsets.only(top: 10, left: 10),
+                      children: <Widget>[
+                        Text('Community Messages ....'),
+                       // Text('Key:'),
+                       // Text(_token ?? " "),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ))
       ),
     );
   }
