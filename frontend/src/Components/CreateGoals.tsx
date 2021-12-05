@@ -32,11 +32,13 @@ const  CreateGoals = () =>   {
 
 
     const [contents, setContents] = useState('');
+    const [mentee, setMentee] = useState('');
     const [Title, setTitle] = useState('');
     const [goal_review_date, setGoal_review_date ] = useState(new Date("2021-11-15"));
     const history = useHistory();
     const [errors, setErrors] = useState(false);
     const [date, setDate] = useState(new Date("2021-11-15"));
+    
 
     const [submit, setSubmit] = useState(false);
     const [open, setOpen] = useState(false);
@@ -61,7 +63,8 @@ const  CreateGoals = () =>   {
 
     const goal = {
         mentor: localStorage.getItem('id'),
-        title: title,
+        mentee: localStorage.getItem('id'),
+        title: Title,
         date: date,
         goal_review_date: goal_review_date,
         content: contents
@@ -95,12 +98,14 @@ const  CreateGoals = () =>   {
                     <AddIcon />
                     Add New Goal
                 </Fab>
+
+                
             </Card>
-            <Grid item style = {{minWidth: "500px"}}> 
+            
             <Dialog open={open} onClose={handleClose}>
                 
                
-                <DialogTitle color = "success"> <u>Create New Goal</u></DialogTitle>
+                <DialogTitle color = "success"> Create New Goal</DialogTitle>
                 <DialogContent>
 
                 <TextField 
@@ -163,7 +168,7 @@ const  CreateGoals = () =>   {
                     <Button onClick={() => { handleClose(); handleSubmit(); }}>Submit</Button>
                 </DialogActions>
             </Dialog>
-            </Grid> 
+            
         </div>
     )
 };

@@ -24,6 +24,7 @@ import { AlignHorizontalLeft } from '@mui/icons-material';
 export default function Goals() {
     const [goals, setGoals] = useState([]);
     const [tabValue, setTabValue] = React.useState(0);
+    const [goalList, setGoalList] = useState([] as any[]);
 
     const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: number) => {
       setTabValue(newValue);
@@ -37,7 +38,7 @@ export default function Goals() {
         },
       })
       .then (response => response.json())
-      .then (data => setGoals(data.data))
+      .then (data => setGoalList(data.data))
       .catch((error) => {
         console.error('Error:', error);
       });
@@ -54,8 +55,10 @@ export default function Goals() {
             <Tab label="All" />
             </Tabs>
 
+
  <Grid container spacing={3} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "55vh"}}>
-  <Card elevation={1} sx = {{bgcolor: lightGreen[200]}}>
+ <NoteCard />
+  <Card elevation={2} sx = {{bgcolor: lightGreen[200], m: 2}}>
         <CardHeader
           
         />
@@ -66,7 +69,22 @@ export default function Goals() {
           this is a new goal and needs to be completed asap
           </Typography>
         </CardContent>
+        
       </Card>
+      <Card elevation={1} sx = {{bgcolor: lightGreen[200]}}>
+        <CardHeader
+          
+        />
+        <CardContent>
+        <Button sx = {{}} variant="contained" color="success" endIcon={<DoneIcon/>}></Button>
+          <Typography variant="body2" color="textSecondary">
+            
+          this is a new goal and needs to be completed asap
+          </Typography>
+        </CardContent>
+        
+      </Card>
+      
       </Grid>
         <GoalsStatistics />
       </Container>
