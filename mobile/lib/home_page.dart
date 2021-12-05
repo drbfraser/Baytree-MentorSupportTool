@@ -83,7 +83,7 @@ Future<List<dynamic>?> getGoals() async {
 
 // Model for goals data
 class GoalsData {
-  //int id;
+  int id;
   int mentor;
   int mentee;
   String title;
@@ -93,7 +93,7 @@ class GoalsData {
   String status;
 
   GoalsData({
-    //required this.id,
+    required this.id,
     required this.mentor,
     required this.mentee,
     required this.title,
@@ -104,7 +104,7 @@ class GoalsData {
   });
 
   factory GoalsData.fromJson(Map<String, dynamic> json) => GoalsData(
-        //id: json["id"],
+        id: json["id"],
         mentor: json["mentor"],
         mentee: json["mentee"],
         title: json["title"],
@@ -134,6 +134,8 @@ class _HomePageState extends State<HomePage> {
 
   List<String> menteeList = [" "];
   List<int> menteeIdList = [];
+
+  List<int> goalIdList = [];
 
   List<String> goalNameList = [];
   List<String> goalDescriptionList = [];
@@ -213,11 +215,13 @@ class _HomePageState extends State<HomePage> {
       for (int i = 0; i < data!.length; i++) {
         GoalsData fact = GoalsData.fromJson(data[i]);
 
+
         if (fact.mentor == global.mentorID) {
           if (fact.status == "IN PROGRESS") {
             goalNameList.add(fact.title);
             goalDescriptionList.add(fact.content);
             goalDateList.add(DateFormat('MMMM dd, yyyy').format(fact.date).toString());
+            goalIdList.add(fact.id);
           } else if (fact.status == "ACHIEVED") {
             completedGoalNameList.add(fact.title);
             completedGoalDescriptionList.add(fact.content);
@@ -635,12 +639,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   // update id
-  updateGoal(int mentor, String goalName, goalDetail, date) async {
+  updateGoal(int id, mentor, String goalName, goalDetail, date) async {
     DateFormat format = new DateFormat("MMMM dd, yyyy");
     String formattedDate = DateFormat('yyyy-MM-dd').format(format.parse(date));
     var response = await http.patch(
       //Uri.parse("http://ptsv2.com/t/70iw7-1635724230/post"),
-      Uri.parse(global.host + "/goals/goal/1"),
+      Uri.parse(global.host + "/goals/goal/" + id.toString()),
       body: jsonEncode(
           {'mentor': mentor,
             'mentee': null,
@@ -693,7 +697,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Confirm dialog when setting goal as complete
-  showGoalAlertDialog(BuildContext context, int mentor, String goalName, goalDetail, date) {
+  showGoalAlertDialog(BuildContext context, int id, mentor, String goalName, goalDetail, date) {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
@@ -704,7 +708,7 @@ class _HomePageState extends State<HomePage> {
       onPressed: () {
         // TO DO: IMPLEMENT: Change Goal from In-Progress to Achieved
         // submitGoalData(Mentor);
-        updateGoal(mentor, goalName, goalDetail, date);
+        updateGoal(id, mentor, goalName, goalDetail, date);
       },
     );
     // set up the AlertDialog
@@ -827,7 +831,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               Align(
                                                 alignment: Alignment.center,
-                                                child: markGoalAsCompleted(global.mentorID, goalNameList[i], goalDescriptionList[i], goalDateList[i]),
+                                                child: markGoalAsCompleted(goalIdList[i], global.mentorID, goalNameList[i], goalDescriptionList[i], goalDateList[i]),
                                               ),
                                             ],
                                           ),
@@ -861,11 +865,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container markGoalAsCompleted(int mentor, String goalName, goalDetail, date) {
+  Container markGoalAsCompleted(int id, int mentor, String goalName, goalDetail, date) {
     return Container(
       child: OutlinedButton(
         onPressed: () {
-          showGoalAlertDialog(context, mentor, goalName, goalDetail, date);
+          showGoalAlertDialog(context, id, mentor, goalName, goalDetail, date);
         },
         child: Text(
           'Mark as Complete?',
