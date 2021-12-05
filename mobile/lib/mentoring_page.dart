@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'navigation_bar.dart';
+import 'global_variables.dart' as global;
 
 class MentoringPage extends StatefulWidget {
   @override
@@ -19,7 +20,7 @@ Future<String?> getTokenPreference() async {
 
 extension TimeOfDayExtension on TimeOfDay {
   TimeOfDay addHour(int hour) {
-    if(this.hour!=23) {
+    if (this.hour != 23) {
       return this.replacing(hour: this.hour + hour, minute: this.minute);
     } else {
       return this.replacing(hour: this.hour, minute: this.minute);
@@ -28,12 +29,13 @@ extension TimeOfDayExtension on TimeOfDay {
 }
 
 class _MentoringPageState extends State<MentoringPage> {
-
   // Variables:
   String? _token = "";
   SharedPreferences? sharedPreferences;
 
   final notesController = TextEditingController();
+
+  String dropDownValueAttendance = "Mentee did not attend";
 
   bool attendance = true;
 
@@ -45,8 +47,7 @@ class _MentoringPageState extends State<MentoringPage> {
   DateTime pickedDate = DateTime.now();
 
   // Starting value for drop down menu
-  String dropdownValue = "Select a mentee";
-
+  var dropdownValue;
 
   // Controller for text input in Notes
   @override
@@ -109,7 +110,6 @@ class _MentoringPageState extends State<MentoringPage> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -158,13 +158,10 @@ class _MentoringPageState extends State<MentoringPage> {
     );
   }
 
-  //List <String> mentees = ['One', "token" ?? " ", 'Free', 'Four'];
-  //List <String> mentees = [token]
-
   // Drop down menu to select mentee
-  // Change "List<String> mentees" to a POST request for mentee names
   Container DropDownMenu() {
-    List<String> mentees = ["Select a mentee", "User Name 1", _token ?? " "];
+    List<String> mentees = global.menteeList; // global variables
+
     return Container(
       margin: const EdgeInsets.only(bottom: 20.0),
       child: Row(
@@ -185,6 +182,7 @@ class _MentoringPageState extends State<MentoringPage> {
                 height: 50,
                 child: DropdownButton<String>(
                   isExpanded: true,
+                  hint: Text("Select a mentee"),
                   value: dropdownValue,
                   icon: const Icon(Icons.arrow_drop_down),
                   iconSize: 25,
@@ -238,7 +236,7 @@ class _MentoringPageState extends State<MentoringPage> {
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 18),
                     padding:
-                    EdgeInsets.only(left: 10, right: 0, top: 0, bottom: 0),
+                        EdgeInsets.only(left: 10, right: 0, top: 0, bottom: 0),
                   ),
                   onPressed: () {
                     _pickDate();
@@ -256,7 +254,7 @@ class _MentoringPageState extends State<MentoringPage> {
                   alignment: Alignment.topRight,
                   child: IconButton(
                     padding:
-                    EdgeInsets.only(left: 0, right: 8, top: 0, bottom: 0),
+                        EdgeInsets.only(left: 0, right: 8, top: 0, bottom: 0),
                     constraints: BoxConstraints(),
                     icon: Icon(Icons.date_range),
                     onPressed: () {
@@ -295,7 +293,7 @@ class _MentoringPageState extends State<MentoringPage> {
                     alignment: Alignment.topLeft,
                     textStyle: const TextStyle(fontSize: 18),
                     padding:
-                    EdgeInsets.only(left: 10, right: 0, top: 0, bottom: 0),
+                        EdgeInsets.only(left: 10, right: 0, top: 0, bottom: 0),
                   ),
                   onPressed: () {
                     selectStartTime(context);
@@ -315,7 +313,7 @@ class _MentoringPageState extends State<MentoringPage> {
                   alignment: Alignment.topRight,
                   child: IconButton(
                     padding:
-                    EdgeInsets.only(left: 0, right: 8, top: 0, bottom: 0),
+                        EdgeInsets.only(left: 0, right: 8, top: 0, bottom: 0),
                     constraints: BoxConstraints(),
                     icon: Icon(Icons.alarm),
                     onPressed: () {
@@ -353,7 +351,7 @@ class _MentoringPageState extends State<MentoringPage> {
                   style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 18),
                     padding:
-                    EdgeInsets.only(left: 10, right: 0, top: 0, bottom: 0),
+                        EdgeInsets.only(left: 10, right: 0, top: 0, bottom: 0),
                   ),
                   onPressed: () {
                     selectEndTime(context);
@@ -373,7 +371,7 @@ class _MentoringPageState extends State<MentoringPage> {
                   alignment: Alignment.topRight,
                   child: IconButton(
                     padding:
-                    EdgeInsets.only(left: 0, right: 8, top: 0, bottom: 0),
+                        EdgeInsets.only(left: 0, right: 8, top: 0, bottom: 0),
                     constraints: BoxConstraints(),
                     icon: Icon(Icons.alarm),
                     onPressed: () {
@@ -409,6 +407,7 @@ class _MentoringPageState extends State<MentoringPage> {
   // Checkbox for mentee attendance
   // Default value: attendance = true
   Container attendanceCheckBox() {
+    List<String> dropDownOptions = ["Mentee did not attend", "Mentor did not attend"];
     return Container(
         margin: const EdgeInsets.only(top: 1.0, bottom: 0.0, left: 0.0),
         child: FlatButton(
@@ -431,34 +430,90 @@ class _MentoringPageState extends State<MentoringPage> {
                             setState(() => attendance = value!);
                           }))),
               SizedBox(width: 10.0),
-              Text(
-                "  Mentee Attendence",
-                style: TextStyle(fontSize: 16),
-              )
+              if (attendance)
+                Text(
+                  "  Attendence",
+                  style: TextStyle(fontSize: 16),
+                )
+              else
+              Container(
+                  margin: EdgeInsets.only(left: 10.0),
+                    child: DropdownButton<String>(
+
+                      hint: Text("Select a mentee"),
+                      value: dropDownValueAttendance,
+                      icon: const Icon(Icons.arrow_drop_down),
+                      iconSize: 25,
+                      elevation: 16,
+                      style: const TextStyle(color: Colors.black, fontSize: 14.0),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          dropDownValueAttendance = newValue!;
+                        });
+                      },
+                      items: dropDownOptions.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    )),
             ])));
   }
 
   // Submit data to online server
   // Change URL to project server
-  submitData(
-      String token, mentee, notes, date, start, end, menteeAttendance) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    Map data = {
-      'token': token,
-      'mentee': mentee,
-      'notes': notes,
-      'date': date,
-      'start': start,
-      'end': end,
-      'attendance': menteeAttendance
-    };
+  submitData(String token, mentee, notes, date, start, end,
+      bool attendance) async {
+    String startFormatted =
+        DateFormat("HH:mm").format(DateFormat.jm().parse(start)).toString();
+    String endFormatted =
+        DateFormat("HH:mm").format(DateFormat.jm().parse(end)).toString();
+    DateFormat format = new DateFormat("MMMM dd, yyyy");
+
+    String formattedDate = DateFormat('yyyy-MM-dd').format(format.parse(date));
+
+    String startTimeDate = formattedDate + " " + startFormatted + ":00";
+    String endTimeDate = formattedDate + " " + endFormatted + ":00";
+
+    bool menteeAttendance = true;
+    bool mentorAttendance = true;
+
+    print(attendance);
+
+    if(attendance == false) {
+      if(dropDownValueAttendance.contains("Mentee")){
+        menteeAttendance = false;
+      } else {
+        mentorAttendance = false;
+      }
+    }
+
+    print(mentorAttendance);
+    print(menteeAttendance);
+    int index = global.menteeList.indexOf(mentee);
+
     var response = await http.post(
-        Uri.parse("http://ptsv2.com/t/70iw7-1635724230/post"),
-        body: data);
+      //Uri.parse("http://ptsv2.com/t/70iw7-1635724230/post"),
+      Uri.parse(global.host + "/sessions/"),
+      body: jsonEncode({
+        'id': 1,
+        'created_at': date.toString(),
+        'updated_at': "",
+        'mentor': global.mentorID,
+        'mentee': global.menteeIdList[index],
+        'attended_by_mentor': mentorAttendance,
+        'attended_by_mentee': menteeAttendance,
+        'clock_in': startTimeDate,
+        'clock_out': endTimeDate,
+        'notes': notes
+      }),
+      headers: {'Content-Type': 'application/json'},
+    );
 
     if (response.statusCode == 400) {
       print("Error 400");
-    } else if (response.statusCode == 200) {
+    } else if (response.statusCode == 200 || response.statusCode == 201) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (BuildContext context) => MyBottomNavigationBar()),
@@ -477,8 +532,8 @@ class _MentoringPageState extends State<MentoringPage> {
     Widget continueButton = TextButton(
       child: Text("Submit"),
       onPressed: () {
-        submitData(Token, Mentee, notesController.text, Date, start, end,
-            attendance.toString());
+        submitData(
+            Token, Mentee, notesController.text, Date, start, end, attendance);
       },
     );
     // set up the AlertDialog
@@ -549,7 +604,7 @@ class _MentoringPageState extends State<MentoringPage> {
         alignment: Alignment.bottomCenter,
         child: RaisedButton(
           onPressed: () {
-            if (Mentee == "Select a mentee") {
+            if (Mentee == null) {
               showErrorDialog(context, "Select a mentee");
             } else if (notesController.text.isEmpty) {
               showErrorDialog(context, "Missing Notes!");
@@ -567,6 +622,4 @@ class _MentoringPageState extends State<MentoringPage> {
       ),
     );
   }
-
-
 } // end

@@ -7,8 +7,8 @@
 /* VARIABLE DEFINITIONS */
 
 :root {
-    --primary: #79aec8;
-    --secondary: #417690;
+    --primary: rgb(226, 11, 137);
+    --secondary: #da08a5;
     --accent: #f5dd5d;
     --primary-fg: #fff;
     --body-fg: #333;
@@ -38,12 +38,12 @@
     --selected-row: #ffc;
     --button-fg: #fff;
     --button-bg: var(--primary);
-    --button-hover-bg: #609ab6;
+    --button-hover-bg: #58eb7c;
     --default-button-bg: var(--secondary);
-    --default-button-hover-bg: #205067;
-    --close-button-bg: #888;
+    --default-button-hover-bg: #58eb7c;
+    --close-button-bg: rgb(226, 11, 137);
     /* Previously #bbb, contrast 1.92 */
-    --close-button-hover-bg: #747474;
+    --close-button-hover-bg: #58eb7c;
     --delete-button-bg: #ba2121;
     --delete-button-hover-bg: #a41515;
     --object-tools-fg: var(--button-fg);
@@ -97,7 +97,7 @@ body {
 
 a:link,
 a:visited {
-    color: #27CE12;
+    color: black;
     text-decoration: none;
     transition: color 0.15s, background 0.15s;
 }
@@ -188,7 +188,7 @@ h5 {
 }
 
 ul>li {
-    list-style-type: square;
+    list-style-type: none;
     padding: 1px 0;
 }
 
@@ -325,9 +325,9 @@ a.quiet:visited {
 
 table {
     border-collapse: collapse;
-    border-color: green;
+    border-color: white;
     background-color: #27CE12;
-    color: green;
+    color: white;
 }
 
 td,
@@ -337,7 +337,8 @@ th {
     border-bottom: 1px solid var(--hairline-color);
     vertical-align: top;
     padding: 8px;
-    background-color: #264b5d;
+    /* background-color: rgb(226, 11, 137); */
+    background-color: white;
 }
 
 th {
@@ -362,7 +363,7 @@ tfoot td {
 }
 
 thead th.required {
-    color: green;
+    color: white;
     background-color: #27CE12;
 }
 
@@ -511,6 +512,7 @@ form .button {
     font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
     font-weight: normal;
     font-size: 13px;
+    /* height: 15px; */
 }
 
 .form-row div.help {
@@ -935,9 +937,7 @@ table#change-history tbody th {
     max-width: 100%;
 }
 
-#content {
-    padding: 20px 40px;
-}
+#content {}
 
 .dashboard #content {
     width: 600px;
@@ -953,6 +953,7 @@ table#change-history tbody th {
     width: 260px;
     position: relative;
     margin-right: -300px;
+    color: white;
 }
 
 #footer {
@@ -995,14 +996,15 @@ table#change-history tbody th {
     justify-content: space-between;
     align-items: center;
     padding: 10px 40px;
-    background: #27CE12;
-    color: white;
+    background: white;
+    color: black;
     overflow: hidden;
 }
 
 #header a:link,
 #header a:visited {
-    color: var(--header-link-color);
+    /* color: var(--header-link-color); */
+    color: black;
 }
 
 #header a:focus,
@@ -1066,32 +1068,38 @@ table#change-history tbody th {
 /* SIDEBAR */
 
 #content-related {
-    background: green;
+    background: rgb(226, 11, 137);
+    color: white;
 }
 
 #content-related .module {
-    background: green;
+    background: rgb(226, 11, 137);
+    color: white;
 }
 
 #content-related h3 {
-    color: black;
+    color: white;
     padding: 0 16px;
     margin: 0 0 16px;
+    color: white;
 }
 
 #content-related h4 {
     font-size: 13px;
+    color: white;
 }
 
 #content-related p {
     padding-left: 16px;
     padding-right: 16px;
-    background: rgb(6, 218, 34);
+    background: white;
 }
 
 #content-related .actionlist {
     padding: 0;
     margin: 16px;
+    font-size: 20px;
+    color: white;
 }
 
 #content-related .actionlist li {
@@ -1106,14 +1114,14 @@ table#change-history tbody th {
     margin-bottom: 16px;
     border-bottom: 1px solid var(--hairline-color);
     font-size: 18px;
-    color: black;
+    color: white;
 }
 
 .delete-confirmation form input[type="submit"] {
     background: var(--delete-button-bg);
     border-radius: 4px;
     padding: 10px 15px;
-    color: #27CE12;
+    color: white;
 }
 
 .delete-confirmation form input[type="submit"]:active,
@@ -1153,4 +1161,8 @@ table#change-history tbody th {
 
 .popup #header {
     padding: 10px 20px;
+}
+
+li {
+    list-style: none;
 }

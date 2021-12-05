@@ -11,7 +11,6 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('baytreeadmin/', blog_site.urls),
     path('sessions/', include('sessions.urls')),
     path('users/', include('users.urls')),
     path('questionnaires/', include('questionnaires.urls')),
@@ -40,7 +39,7 @@ urlpatterns = [
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
-admin.site.index_title = "The Baytree center Administration"
-admin.site.site_header = "The Baytree center"
-admin.site.site_title = "The Baytree center Administration"
+admin.site.index_title = "The Baytree Center Administration"
+admin.site.site_header = "The Baytree Center"
+admin.site.site_title = "The Baytree Center Administration"
 
