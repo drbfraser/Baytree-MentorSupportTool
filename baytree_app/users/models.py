@@ -3,8 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from .managers import CustomUserManager
 
-class CustomUser(AbstractUser):
 
+class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
 
@@ -16,8 +16,8 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
-class MentorUser(models.Model):
 
+class MentorUser(models.Model):
     STATUS = (
         ('Active', 'Active'),
         ('Withdrawn', 'Withdrawn'),
@@ -29,15 +29,15 @@ class MentorUser(models.Model):
     )
 
     user = models.OneToOneField(CustomUser, on_delete=models.PROTECT, primary_key=True, related_name='mentoruser')
-    status = models.CharField(max_length = 30, choices = STATUS)
+    status = models.CharField(max_length=30, choices=STATUS)
 
     def __str__(self):
-         return self.user.last_name + ', ' + self.user.first_name
+        return self.user.last_name + ', ' + self.user.first_name
 
 
 class MenteeUser(models.Model):
-     user = models.OneToOneField(CustomUser, on_delete=models.PROTECT, primary_key=True)
-     mentorid = models.ForeignKey(MentorUser, on_delete=models.PROTECT, related_name='menteeuser')
+    user = models.OneToOneField(CustomUser, on_delete=models.PROTECT, primary_key=True)
+    mentorid = models.ForeignKey(MentorUser, on_delete=models.PROTECT, related_name='menteeuser')
 
-     def __str__(self):
-         return self.user.last_name + ', ' + self.user.first_name
+    def __str__(self):
+        return self.user.last_name + ', ' + self.user.first_name

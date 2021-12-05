@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('users', '0011_auto_20211020_0429'),
     ]
@@ -15,16 +14,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='menteeuser',
             name='mentorid',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='menteeuser', to='users.mentoruser'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='menteeuser',
+                                    to='users.mentoruser'),
         ),
         migrations.AlterField(
             model_name='menteeuser',
             name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, primary_key=True, serialize=False,
+                                       to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name='mentoruser',
             name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, primary_key=True, related_name='mentoruser', serialize=False, to=settings.AUTH_USER_MODEL),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, primary_key=True,
+                                       related_name='mentoruser', serialize=False, to=settings.AUTH_USER_MODEL),
         ),
     ]
