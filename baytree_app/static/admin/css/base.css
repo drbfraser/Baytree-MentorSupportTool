@@ -665,8 +665,8 @@ input[type=button][disabled].default {
     font-weight: 400;
     font-size: 13px;
     text-align: left;
-    background: var(--primary);
-    color: var(--header-link-color);
+    background: #ff1d89;
+    color: #ff1d89;
 }
 
 .module caption,
