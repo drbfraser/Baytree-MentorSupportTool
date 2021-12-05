@@ -75,6 +75,10 @@ const  CreateGoals = () =>   {
 
 
     const handleSubmit = () => {
+            setSubmit(true);
+            setTimeout(() => {
+                setSubmit(false);
+             }, 5000);
          if ( contents == ''){
              setErrors(true);
          }

@@ -22,6 +22,7 @@ import { getJSDocClassTag } from 'typescript';
 import { AlignHorizontalLeft } from '@mui/icons-material';
 import CreateGoals from './CreateGoals';
 import { LabelImportantTwoTone } from '@mui/icons-material';
+import Fab from '@mui/material/Fab';
 
 export default function Goals() {
     const [goals, setGoals] = useState([]);
@@ -59,13 +60,50 @@ export default function Goals() {
             
         </Tabs>
         <Grid sx = {{ position: 'absolute', top: 110, right: 55,}}><CreateGoals /></Grid>
-        <Grid container spacing={1} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "55vh"}}>
-          {goals.map(goals => (
+
+        <Grid container spacing={0} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "58vh"}}>
+       
+        {goals.map(goals => (
             <Grid item xs={12} md={6} lg={4}>
                 <NoteCard />
             </Grid>
           ))}
+           <Card elevation={3} sx = {{bgcolor: lightGreen[200], m: 2, mb: 2}}>
+        <CardContent>
+        <Typography variant="body2" color="textSecondary">
+          <ul> <h3>Title: </h3> New Goal</ul>
+          <ul> <h3>Date: </h3> 11/14/2021</ul>
+          <ul> <h3>Goal Review Date: </h3> 11/14/2021 </ul>
+          <ul> <h3>Contents: </h3> This is a Test Goal.</ul>
+
+
+          </Typography>
+        <Fab sx = {{color: 'green'}} size="small" aria-label="add" >
+        <DoneIcon/>
+        </Fab>
+        </CardContent>
+      </Card>
+
+      <Card elevation={3} sx = {{bgcolor: lightGreen[200], m: 2, mb: 2}}>
+        <CardContent>
+        <Typography variant="body2" color="textSecondary">
+          <ul> <h3>Title: </h3> Goal</ul>
+          <ul> <h3>Date: </h3> 12/12/2021</ul>
+          <ul> <h3>Goal Review Date: </h3> 12/25/2021 </ul>
+          <ul> <h3>Contents: </h3> Complete English module 1.</ul>
+
+
+          </Typography>
+        <Fab sx = {{color: 'green'}} size="small" aria-label="add" >
+        <DoneIcon/>
+        </Fab>
+        </CardContent>
+      </Card>
+
+
+      
         </Grid>
+       
         <GoalsStatistics />
       </Container>
   
