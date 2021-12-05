@@ -1,4 +1,4 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/base_site1.html" %}
 {% load i18n static %} 
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin_login/admin/login.css" %}"> 
@@ -29,9 +29,9 @@
 </p>
 {% endfor %} {% endif %}
 
-<p>
+{% comment %} <p>
     {% load static %} <img src="{% static "admin_login/media/baytree.png" %}" alt="baytreelogin" height="100" width="100"/>
-</p> 
+</p>  {% endcomment %}
 
 <div id="content-main">
 
