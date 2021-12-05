@@ -114,10 +114,8 @@ const  CreateGoals = () =>   {
                 <TextField 
                     id="Title"
                     label="Title"
-                    variant="outlined"
-                    sx = {{mt: 0, pt: 0, mb: 5}}
-                    multiline
-                    rows={2}
+                    variant="standard"
+                    sx = {{ml: 2, pt: 0, mb: 5}}
                     required
                     fullWidth
                     margin="normal"
@@ -157,7 +155,7 @@ const  CreateGoals = () =>   {
                         sx = {{ml: 5, p: '5px', mb: 5, width: 100}}
                         id="Contents"
                         label="Contents"
-                        variant="outlined"
+                        variant="standard"
                         fullWidth
                         required
                         multiline

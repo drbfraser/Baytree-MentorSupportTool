@@ -68,15 +68,14 @@ export default function Goals() {
                 <NoteCard />
             </Grid>
           ))}
-           <Card elevation={3} sx = {{bgcolor: lightGreen[200], m: 2, mb: 2}}>
+
+      <Card elevation={3} sx = {{bgcolor: lightGreen[200], m: 2, mb: 2}}>
         <CardContent>
         <Typography variant="body2" color="textSecondary">
           <ul> <h3>Title: </h3> New Goal</ul>
           <ul> <h3>Date: </h3> 11/14/2021</ul>
           <ul> <h3>Goal Review Date: </h3> 11/14/2021 </ul>
           <ul> <h3>Contents: </h3> This is a Test Goal.</ul>
-
-
           </Typography>
         <Fab sx = {{color: 'green'}} size="small" aria-label="add" >
         <DoneIcon/>
@@ -90,20 +89,15 @@ export default function Goals() {
           <ul> <h3>Title: </h3> Goal</ul>
           <ul> <h3>Date: </h3> 12/12/2021</ul>
           <ul> <h3>Goal Review Date: </h3> 12/25/2021 </ul>
-          <ul> <h3>Contents: </h3> Complete English module 1.</ul>
-
-
-          </Typography>
+          <ul> <h3>Contents: </h3> Complete English module.</ul>
+        </Typography>
         <Fab sx = {{color: 'green'}} size="small" aria-label="add" >
         <DoneIcon/>
         </Fab>
         </CardContent>
       </Card>
 
-
-      
-        </Grid>
-       
+      </Grid> 
         <GoalsStatistics />
       </Container>
   
