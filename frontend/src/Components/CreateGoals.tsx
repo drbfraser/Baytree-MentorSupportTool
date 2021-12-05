@@ -94,16 +94,13 @@ const  CreateGoals = () =>   {
 
     return (
         <div>
-            <Card sx={{ border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mb: 5}}>
-             <Button color = "success" variant="contained" size="large" onClick={handleClickOpen}><AddIcon  /> Add New Goal </Button>
+            
+            <Button color = "success" variant="contained" size="large" onClick={handleClickOpen}><AddIcon  /> Add New Goal </Button>
+
+            
             {submit === true && <Alert severity="success" sx = {{ position: 'absolute', top: 250, right: 500,}}><strong>Goal Successfully Set</strong></Alert>}
             
-            
         
-
-                
-            </Card>
-            
             <Dialog open={open} onClose={handleClose}>
                 
                
@@ -115,11 +112,13 @@ const  CreateGoals = () =>   {
                     label="Title"
                     variant="outlined"
                     sx = {{mt: 0, pt: 0, mb: 5}}
+                    multiline
+                    rows={2}
                     required
                     fullWidth
                     margin="normal"
 
-                    value={title}
+                    value={Title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 
