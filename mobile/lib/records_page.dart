@@ -75,6 +75,98 @@ class SessionsData {
       );
 }
 
+// Get questionnaires data with GET request
+Future<List<dynamic>?> getQuestionnaires() async {
+  List<dynamic> list = [];
+
+  var url = Uri.parse(global.host + '/questionnaires/');
+  http.Response response = await http.get(url);
+  //print(response.statusCode);
+  try {
+    if (response.statusCode == 200) {
+      String data = response.body;
+      //debugPrint(data);
+      List<dynamic> list = json.decode(data);
+
+      return list;
+      // return decodedData;
+    }
+  } catch (e) {
+    return list;
+  }
+}
+
+
+
+// Model for questionnaire  data
+class QuestionnaireData {
+  int id;
+  String createdAt;
+  String updatedAt;
+  int mentor;
+  int mentee;
+  List<QuestionAnswers> questionAnswers;
+
+  QuestionnaireData({
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.mentor,
+    required this.mentee,
+    required this.questionAnswers,
+  });
+
+  factory QuestionnaireData.fromJson(Map<String, dynamic> json) => QuestionnaireData(
+    id: json["id"],
+    createdAt: json["created_at"],
+    updatedAt: json["updated_at"],
+    mentor: json["mentor"],
+    mentee: json["mentee"],
+    questionAnswers: List<QuestionAnswers>.from(json["questions_and_answers"].map((x) => QuestionAnswers.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "created_at": createdAt,
+    "updated_at": updatedAt,
+    "mentor": mentor,
+    "mentee": mentee,
+    "questions_and_answers": List<dynamic>.from(questionAnswers.map((x) => x.toJson())),
+
+  };
+}
+
+
+class QuestionAnswers {
+  int id;
+  int questionnaire;
+  String question;
+  String answer;
+
+  QuestionAnswers({
+    required this.id,
+    required this.questionnaire,
+    required this.question,
+    required this.answer,
+  });
+
+  factory QuestionAnswers.fromJson(Map<String, dynamic> json) => QuestionAnswers(
+    id: json["id"],
+    questionnaire: json["questionnaire"],
+    question: json["question"],
+    answer: json["answer"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "questionnaire": questionnaire,
+    "question": question,
+    "answer": answer,
+  };
+}
+
+
+
 class _RecordsPageState extends State<RecordsPage> {
   // Dynamic list
   List<dynamic> sessionsData = [];
@@ -176,6 +268,8 @@ class _RecordsPageState extends State<RecordsPage> {
   void initState() {
     getTokenPreference().then(updateToken);
     getSessions().then(updateSessionsData);
+    getQuestionnaires();
+
     super.initState();
 
     updateSessionsInReports();
