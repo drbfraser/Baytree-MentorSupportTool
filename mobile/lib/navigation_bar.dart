@@ -83,7 +83,8 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.library_books_outlined),
-            label: 'Progress',
+            label: 'Questions',
+
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.perm_media),

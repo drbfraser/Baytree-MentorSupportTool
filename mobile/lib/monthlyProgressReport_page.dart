@@ -28,7 +28,7 @@ Future<String?> getTokenPreference() async {
 Future<List<String>?> getQuestions() async {
   List<String> questions = [];
 
-  var url = Uri.parse('http://192.168.4.249:8000/monthly-report/get-report/');
+  var url = Uri.parse(global.host + '/questionnaires/get_questionnaire/');
   http.Response response = await http.get(url);
   try {
     if (response.statusCode == 200) {
@@ -155,7 +155,7 @@ class _MonthlyProgressPageState extends State<MonthlyProgressPage> {
   // Top header
   AppBar TopBar() {
     return AppBar(
-      title: const Text('Monthly Progress Report'),
+      title: const Text('Questionnaires'),
       centerTitle: true,
       backgroundColor: const Color(0xff5ab031),
       automaticallyImplyLeading: false,
@@ -457,21 +457,33 @@ class _MonthlyProgressPageState extends State<MonthlyProgressPage> {
   // Submit data to online server
   // Change URL to project server
   submitData(String token, mentee, month, questions, mentorInput) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    // Need to format date for POST request
+    String monthDate = month + " 1, " + DateTime.now().year.toString();
+    DateFormat format = new DateFormat("MMMM dd, yyyy");
+    String formattedDate = DateFormat('yyyy-MM-dd').format(format.parse(monthDate));
+
     Map data = {
-      'token': token,
-      'mentee': mentee,
-      'month': month,
-      'questions': questions,
-      'mentorInput': mentorInput,
+      'question': questions,
+      'answer': mentorInput,
     };
     var response = await http.post(
-        Uri.parse("http://ptsv2.com/t/70iw7-1635724230/post"),
-        body: data);
-
+      //Uri.parse("http://ptsv2.com/t/70iw7-1635724230/post"),
+      Uri.parse(global.host + "/questionnaires/"),
+      body: jsonEncode({
+        'id': 1,
+        'created_at': formattedDate,
+        'updated_at': formattedDate,
+        'mentor': global.mentorID,
+        'mentee': global.menteeIdList[1],
+        'questions_and_answers':[data],
+      }),
+      headers: {'Content-Type': 'application/json'},
+    );
+    print(response.statusCode);
     if (response.statusCode == 400) {
       print("Error 400");
-    } else if (response.statusCode == 200) {
+    } else if (response.statusCode == 200 || response.statusCode == 201 ) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (BuildContext context) => MyBottomNavigationBar()),
