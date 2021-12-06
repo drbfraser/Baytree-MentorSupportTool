@@ -23,7 +23,7 @@ export default function GoalsStatistics() {
                         Completed 
                     </Typography>
                     <Typography component="p" variant="h5">
-                        13
+                        0
                     </Typography>
                 </Grid>
                 <Divider orientation="vertical" flexItem />
@@ -32,7 +32,7 @@ export default function GoalsStatistics() {
                         Total 
                     </Typography>
                     <Typography component="p" variant="h5">
-                        15
+                        2
                     </Typography>
                 </Grid>
             </Grid>

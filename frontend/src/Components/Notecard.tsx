@@ -4,29 +4,25 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography'
-import { DeleteOutline } from '@mui/icons-material';
+import DoneIcon from '@mui/icons-material/DoneOutline';
+import Button from '@mui/material/Button';
+import Fab from '@mui/material/Fab';
 
 import {lightGreen} from '@mui/material/colors';
 
-interface goal {
-    goalName: string;
-    details: string;
-   
-  }
+
 
 export default function NoteCard( {} ) {
   return (
     <div>
-      <Card elevation={1} sx = {{bgcolor: lightGreen[200]}}>
+      <Card elevation={1} sx = {{bgcolor: lightGreen[200], m: 2}}>
         <CardHeader
-          action={
-            <IconButton >
-              <DeleteOutline />
-            </IconButton>
-          }
-          title="New Goal"
+          
         />
         <CardContent>
+        <Fab size="medium"  aria-label="add" >
+        <DoneIcon/>
+        </Fab>
           <Typography variant="body2" color="textSecondary">
           this is a new goal and needs to be completed asap
           </Typography>
