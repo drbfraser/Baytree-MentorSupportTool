@@ -39,7 +39,7 @@ urlpatterns = [
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
-admin.site.index_title = "The Baytree Center Administration"
+admin.site.index_title = ""
 admin.site.site_header = "The Baytree Center"
 admin.site.site_title = "The Baytree Center Administration"
 

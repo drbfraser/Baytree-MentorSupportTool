@@ -10,7 +10,7 @@
     <div>
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin">
-        <div class="sidebar-brand-text mx-3">Dashborad</div>
+        <div class="sidebar-brand-text mx-3">Dashboard</div>
     </a>
 
     {% if app_list %}
@@ -18,7 +18,6 @@
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#{{app.app_label}}" aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-cog"></i>
             <span>{{app.name}}</span>
         </a>
         <div id="{{app.app_label}}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -36,7 +35,6 @@
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#{{app.app_label}}" aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-cog"></i>
             <span>{{app.name}}</span>
         </a>
         <div id="{{app.app_label}}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
