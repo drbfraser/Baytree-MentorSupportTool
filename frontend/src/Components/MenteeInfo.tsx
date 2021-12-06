@@ -34,9 +34,7 @@ export default function MenteeInfo() {
         .catch((error) => {
           console.error('Error:', error);
         });
-    }, []);
-
-    console.log(menteeInfo);
+    }, []); 
 
     return (
         <div>

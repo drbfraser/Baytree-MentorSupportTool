@@ -21,7 +21,7 @@ const Questionnaire = () => {
   let values: { [key: string]: string } = {};
 
   useEffect(() => {
-    fetch('http://localhost:8000/monthly-report/get-report/', {
+    fetch('http://localhost:8000/questionnaires/get_questionnaire/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
