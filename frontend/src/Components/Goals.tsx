@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import Grow from '@mui/material/Grow';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card'
@@ -10,26 +10,27 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography'
-import DoneIcon from '@mui/icons-material/DoneOutline';
-import Button from '@mui/material/Button';
-import { positions } from '@mui/system';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 import {lightGreen} from '@mui/material/colors';
-
-import NoteCard from './Notecard';
 import GoalsStatistics from './GoalsStatistics';
-import { getJSDocClassTag } from 'typescript';
-import { AlignHorizontalLeft } from '@mui/icons-material';
 import CreateGoals from './CreateGoals';
-import { LabelImportantTwoTone } from '@mui/icons-material';
-import Fab from '@mui/material/Fab';
 
 export default function Goals() {
-    const [goals, setGoals] = useState([]);
-    const [tabValue, setTabValue] = React.useState(0);
-    const [goalList, setGoalList] = useState([] as any[]);
+    const [goals, setGoals] = useState([] as any[]);
+    const [goalType, setGoalType] = useState("IN PROGRESS");
+    const [tabValue, setTabValue] = useState(0);
 
     const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: number) => {
+      if (newValue == 0){
+        setGoalType("IN PROGRESS");
+      }
+      if (newValue == 1){
+        setGoalType("ACHIEVED");
+      }
+      if (newValue == 2){
+        setGoalType("ALL");
+      }
       setTabValue(newValue);
     };
 
@@ -38,68 +39,64 @@ export default function Goals() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'Token ' + localStorage.getItem('token'),
         },
       })
       .then (response => response.json())
-      .then (data => setGoalList(data.data))
+      .then (data => setGoals(data))
       .catch((error) => {
         console.error('Error:', error);
       });
-  }, []);
+    }, []);
 
     console.log(goals);
 
-
     return (
-      <Container >
-        
-        <Tabs value={tabValue} onChange={handleChange} centered sx = {{mb: 3}}> 
-            <Tab label="Active" />
-            <Tab label="Completed" />
-            <Tab label="All" />
-            
-        </Tabs>
-        <Grid sx = {{ position: 'absolute', top: 110, right: 55,}}><CreateGoals /></Grid>
-
-        <Grid container spacing={0} sx = {{bgcolor: "white", p: 5, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5}} style = {{height: "58vh"}}>
-       
-        {goals.map(goals => (
-            <Grid item xs={12} md={6} lg={4}>
-                <NoteCard />
+      <Grow in={true}>
+        <Container>
+          <Grid container spacing = {1}>
+            <Grid item xs = {1}>
             </Grid>
-          ))}
+            <Grid item xs = {10}>
+              <Tabs value={tabValue} onChange={handleChange} centered sx = {{mb: 3}}> 
+                  <Tab label="Active" />
+                  <Tab label="Completed" />
+                  <Tab label="All" />
+              </Tabs>
+            </Grid>
+            <Grid item xs = {1}>
+              <CreateGoals />
+            </Grid>
+          </Grid>
 
-      <Card elevation={3} sx = {{bgcolor: lightGreen[200], m: 2, mb: 2}}>
-        <CardContent>
-        <Typography variant="body2" color="textSecondary">
-          <ul> <h3>Title: </h3> New Goal</ul>
-          <ul> <h3>Date: </h3> 11/14/2021</ul>
-          <ul> <h3>Goal Review Date: </h3> 11/14/2021 </ul>
-          <ul> <h3>Contents: </h3> This is a Test Goal.</ul>
-          </Typography>
-        <Fab sx = {{color: 'green'}} size="small" aria-label="add" >
-        <DoneIcon/>
-        </Fab>
-        </CardContent>
-      </Card>
-
-      <Card elevation={3} sx = {{bgcolor: lightGreen[200], m: 2, mb: 2}}>
-        <CardContent>
-        <Typography variant="body2" color="textSecondary">
-          <ul> <h3>Title: </h3> Goal</ul>
-          <ul> <h3>Date: </h3> 12/12/2021</ul>
-          <ul> <h3>Goal Review Date: </h3> 12/25/2021 </ul>
-          <ul> <h3>Contents: </h3> Complete English module.</ul>
-        </Typography>
-        <Fab sx = {{color: 'green'}} size="small" aria-label="add" >
-        <DoneIcon/>
-        </Fab>
-        </CardContent>
-      </Card>
-
-      </Grid> 
-        <GoalsStatistics />
-      </Container>
-  
+          <Grid container spacing={3} sx = {{bgcolor: "white", p: 1, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5, border: 1}} style={{height: '58vh', overflow: 'auto'}}>
+            {Object.values(goals).map(data => (
+            data.status == goalType || goalType == "ALL"? 
+            (<Grid item xs = {4}> 
+                <Card variant="outlined" elevation={1} sx = {{bgcolor: lightGreen[50], m: 2, border: 3, borderColor: lightGreen[200]}} style = {{minHeight: '6vh'}}>
+                  <CardHeader
+                    action={
+                      <IconButton aria-label="settings">
+                        <CheckBoxIcon />
+                      </IconButton>
+                    }
+                    title= {<Typography variant="body1">{data.title}</Typography>}
+                    subheader={<Typography variant="body2" color="text.secondary">{data.date}</Typography>}
+                    sx = {{m: 0, pb: 0}}
+                  />
+                  <CardContent>
+                    <Container sx = {{bgcolor: "white", p: 2, m: 0, border: 1, borderColor: lightGreen[200]}} style = {{height: '100px', overflow: 'auto'}}>
+                      <Typography variant="body2" color="text.secondary">
+                        {data.content}
+                      </Typography>
+                    </Container>
+                  </CardContent>
+                </Card>
+              </Grid>) : null
+            ))}
+        </Grid> 
+          <GoalsStatistics />
+        </Container>
+      </Grow>
     )
 }
