@@ -43,11 +43,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_auth',
+    'dj_rest_auth',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
-    'rest_auth.registration',
+    'dj_rest_auth.registration',
     'users',
     'questionnaires',
     'questions_and_answers',
@@ -102,7 +102,7 @@ DATABASES = {
         'NAME': 'Baytree',
         'USER': 'Baytree',
         'PASSWORD': 'Baytree123',
-        'HOST': 'db',  
+        'HOST': '127.0.0.1',  
         'PORT': '3306',
     }
 }
