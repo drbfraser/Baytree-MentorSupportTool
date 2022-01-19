@@ -1,15 +1,20 @@
-1) install mysql server and library
+1) For Linux: install mysql server and library
 sudo apt install \
   libmysqlclient-dev \
   mysql-server \
   mysql-client 
+
+  For Windows: use the MySQL Community installer to install MySQL Server, WorkBench, and the Python Connector
+  https://dev.mysql.com/downloads/windows/installer/8.0.html
   
 2) install python library
 pip3 install -i requirements.txt
 
 3) initialize mysql database
 create database Baytree default character set 'utf8';
-grant all privileges on Baytree.* to 'Baytree'@localhost identified by 'Baytree123';
+CREATE USER 'Baytree'@'localhost' IDENTIFIED BY 'Baytree123';
+GRANT ALL PRIVILEGES ON Baytree.* TO 'Baytree'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES
 
 4) make migrations
 python3 manage.py makemigrations sessions
