@@ -2,7 +2,7 @@
 sudo apt install \
   libmysqlclient-dev \
   mysql-server \
-  mysql-client 
+  mysql-client \
 
   For Windows: use the MySQL Community installer to install MySQL Server, WorkBench, and the Python Connector
   https://dev.mysql.com/downloads/windows/installer/8.0.html
