@@ -57,7 +57,7 @@ For Windows: use the MySQL Community installer to install MySQL Server, WorkBenc
 https://dev.mysql.com/downloads/windows/installer/8.0.html
 
 ### Install Python Library
-pip3 install -i requirements.txt
+pip3 install -r requirements.txt
 
 
 ### Initialize mySQL Database

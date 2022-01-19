@@ -8,7 +8,7 @@ sudo apt install \
   https://dev.mysql.com/downloads/windows/installer/8.0.html
   
 2) install python library
-pip3 install -i requirements.txt
+pip3 install -r requirements.txt
 
 3) initialize mysql database
 create database Baytree default character set 'utf8';
