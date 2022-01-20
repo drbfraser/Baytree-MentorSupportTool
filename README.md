@@ -23,7 +23,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
 <br>
 
-# How to use Docker to run the app:
+# How to use Docker to run the app (NOT WORKING TEMPORARILY, you will have to install the backend and frontend normally using the instructions below):
 
 
 1. Install Docker at this link: https://www.docker.com/get-started
@@ -53,19 +53,22 @@ sudo apt install <br>
 libmysqlclient-dev <br>
 mysql-server <br>
 mysql-client <br>
-
+For Windows: use the MySQL Community installer to install MySQL Server, WorkBench, and the Python Connector: <br>
+https://dev.mysql.com/downloads/windows/installer/8.0.html
 
 ### Install Python Library
-pip3 install -i requirements.txt
+pip3 install -r requirements.txt
 
 
 ### Initialize mySQL Database
 Create Database Baytree default character set 'utf8'; <br>
-Grant all privileges on Baytree.* to 'Baytree'@localhost identified by 'Baytree123';
+CREATE USER 'Baytree'@'localhost' IDENTIFIED BY 'Baytree123';<br>
+GRANT ALL PRIVILEGES ON Baytree.* TO 'Baytree'@'localhost' WITH GRANT OPTION;<br>
+FLUSH PRIVILEGES
 
 
 ### Make Migrations
-python3 manage.py makemigrations worklogs <br>
+python3 manage.py makemigrations <br>
 python3 manage.py migrate
 
 
@@ -93,6 +96,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ### Available Scripts
 
 In the project directory, you can run:
+
+### `npm install`
+
+Installs any necessary dependencies for the react application. This command must be run first before the ones below.
 
 ### `npm start`
 
