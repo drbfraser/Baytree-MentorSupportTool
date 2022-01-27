@@ -15,7 +15,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
-const  CreateGoals = () =>   {
+const  CreateGoals = (props:any) =>   {
 
     const [contents, setContents] = useState('');
     const [title, setTitle] = useState('');
@@ -64,7 +64,10 @@ const  CreateGoals = () =>   {
              body: JSON.stringify(goal)
          })
              .then(response => console.log(response))
-             .then(() => history.push('/dashboard/Goals'))
+             .then(() => {
+                 props.onSubmit(); 
+                 history.push('/dashboard/Goals')
+                })
     }}
 
     return (

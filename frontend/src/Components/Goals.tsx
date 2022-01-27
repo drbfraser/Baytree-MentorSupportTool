@@ -33,8 +33,8 @@ export default function Goals() {
       }
       setTabValue(newValue);
     };
-
-    useEffect(() => {
+    
+    const fetchGoals = () => {
       fetch('http://localhost:8000/goals/goal/', {
         method: 'GET',
         headers: {
@@ -47,6 +47,10 @@ export default function Goals() {
       .catch((error) => {
         console.error('Error:', error);
       });
+    }
+
+    useEffect(() => {
+      fetchGoals();
     }, []);
 
     console.log(goals);
@@ -65,7 +69,7 @@ export default function Goals() {
               </Tabs>
             </Grid>
             <Grid item xs = {1}>
-              <CreateGoals />
+              <CreateGoals onSubmit={fetchGoals} />
             </Grid>
           </Grid>
 
