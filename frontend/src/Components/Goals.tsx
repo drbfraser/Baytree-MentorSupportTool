@@ -99,7 +99,10 @@ export default function Goals() {
               </Grid>) : null
             ))}
         </Grid> 
-          <GoalsStatistics />
+          <GoalsStatistics 
+            activeGoals={goals.filter( (goal) => goal.status == "IN PROGRESS").length}
+            completedGoals={goals.filter( (goal) => goal.status == "ACHIEVED").length}
+            totalGoals={goals.length} />
         </Container>
       </Grow>
     )

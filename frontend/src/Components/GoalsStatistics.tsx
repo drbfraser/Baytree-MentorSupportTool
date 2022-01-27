@@ -4,7 +4,7 @@ import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography';
 
-export default function GoalsStatistics() {
+export default function GoalsStatistics(props: any) {
   return (
       <div>
         <Card sx = {{boxShadow: 2, border: 1, borderRadius: 5, p: 3, mb: 22, ml: 4}}>
@@ -14,7 +14,7 @@ export default function GoalsStatistics() {
                         Active
                     </Typography>
                     <Typography component="p" variant="h5">
-                        2
+                        {props.activeGoals}
                     </Typography>
                 </Grid>
                 <Divider orientation="vertical" flexItem sx = {{m: 0, p: 0}}/>
@@ -23,7 +23,7 @@ export default function GoalsStatistics() {
                         Completed 
                     </Typography>
                     <Typography component="p" variant="h5">
-                        0
+                    {props.completedGoals}
                     </Typography>
                 </Grid>
                 <Divider orientation="vertical" flexItem />
@@ -32,7 +32,7 @@ export default function GoalsStatistics() {
                         Total 
                     </Typography>
                     <Typography component="p" variant="h5">
-                        2
+                    {props.totalGoals}
                     </Typography>
                 </Grid>
             </Grid>
