@@ -94,6 +94,7 @@ const  CreateGoals = (props:any) =>   {
                         value={goal_review_date}
                         onChange={handlereviewDateChange}
                         renderInput={(params) => <TextField fullWidth {...params} />}
+                        minDate={new Date()}
                     />
                 </LocalizationProvider>
                 <TextField
