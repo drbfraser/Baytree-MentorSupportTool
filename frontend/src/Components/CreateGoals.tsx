@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router';
 import 'date-fns';
+import moment from 'moment';
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import AddIcon from '@mui/icons-material/Add';
@@ -41,11 +42,11 @@ const  CreateGoals = (props:any) =>   {
         mentor: localStorage.getItem('id'),
         mentee: localStorage.getItem('id'),
         title: title,
-        date: "2021-12-16",
-        goal_review_date: "2021-12-16",
+        date: moment().format("YYYY-MM-DD"),
+        goal_review_date: moment(goal_review_date).format("YYYY-MM-DD"),
         content: contents,
       };
-
+  
     const handleSubmit = () => {
             setSubmit(true);
             setTimeout(() => {
