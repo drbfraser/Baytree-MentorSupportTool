@@ -7,6 +7,10 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography'
@@ -15,13 +19,19 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import {lightGreen} from '@mui/material/colors';
 import GoalsStatistics from './GoalsStatistics';
 import CreateGoals from './CreateGoals';
+import Divider from '@mui/material/Divider';
+import AccordionActions from '@mui/material/AccordionActions';
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+import moment from 'moment';
 
 export default function Goals() {
     const [goals, setGoals] = useState([] as any[]);
     const [goalType, setGoalType] = useState("IN PROGRESS");
     const [tabValue, setTabValue] = useState(0);
+    const [expanded, setExpanded] = React.useState('');
 
-    const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: number) => {
+    const handleChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
       if (newValue == 0){
         setGoalType("IN PROGRESS");
       }
@@ -57,14 +67,18 @@ export default function Goals() {
         },
         body: JSON.stringify({status:"ACHIEVED"})
       })
-      .then(response => fetchGoals());
+      .then(_response => fetchGoals());
     }
 
     useEffect(() => {
       fetchGoals();
     }, []);
 
-    console.log(goals);
+    console.log(goals); 
+
+    const handleChange1 = (panel: any) => (_event: any, isExpanded:any) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
     return (
       <Grow in={true}>
@@ -83,37 +97,50 @@ export default function Goals() {
               <CreateGoals onSubmit={fetchGoals} />
             </Grid>
           </Grid>
-
-          <Grid container spacing={3} sx = {{bgcolor: "white", p: 1, mb: 3, ml: 1, boxShadow: 2, borderRadius: 5, border: 1}} style={{height: '58vh', overflow: 'auto'}}>
-            {Object.values(goals).map(data => (
-            data.status == goalType || goalType == "ALL"? 
-            (<Grid item xs = {4}> 
-                <Card variant="outlined" elevation={1} sx = {{bgcolor: lightGreen[50], m: 2, border: 3, borderColor: lightGreen[200]}} style = {{minHeight: '6vh'}}>
-                  <CardHeader
-                    action={
-                      <IconButton aria-label="settings" onClick={() => handleGoalComplete(data.id)}>
-                        <CheckBoxIcon />
-                      </IconButton>
-                    }
-                    title= {<Typography variant="body1">{data.title}</Typography>}
-                    subheader={<Typography variant="body2" color="text.secondary">{data.date}</Typography>}
-                    sx = {{m: 0, pb: 0}}
-                  />
-                  <CardContent>
-                    <Container sx = {{bgcolor: "white", p: 2, m: 0, border: 1, borderColor: lightGreen[200]}} style = {{height: '100px', overflow: 'auto'}}>
-                      <Typography variant="body2" color="text.secondary">
-                        {data.content}
-                      </Typography>
-                    </Container>
-                  </CardContent>
-                </Card>
-              </Grid>) : null
-            ))}
-        </Grid> 
           <GoalsStatistics 
             activeGoals={goals.filter( (goal) => goal.status == "IN PROGRESS").length}
             completedGoals={goals.filter( (goal) => goal.status == "ACHIEVED").length}
             totalGoals={goals.length} />
+
+          <Grid container style={{marginTop:'24px'}}>
+            {Object.values(goals).map(data => (
+            data.status == goalType || goalType == "ALL"? 
+                <Accordion expanded={expanded === data.id} onChange={handleChange1(data.id)} style={{width:'100%'}}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1bh-content"
+                    id="panel1bh-header"
+                  >
+                    <Typography sx={{ width: '35%', flexShrink: 0 }}>
+                      {data.title}
+                    </Typography>
+                    <Typography sx={{ color: 'text.secondary', width: '35%'}}>{moment(data.date).format("dddd, MMMM Do YYYY")}</Typography>
+                    <Typography sx={{ color: 'text.secondary'}}>{data.status}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>
+                      Goal Deadline: {moment(data.goal_review_date).format("dddd, MMMM Do YYYY")} <br/>
+                      Details: <br/>
+                      {data.content}
+                      Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat.
+                      Aliquam eget maximus est, id dignissim quam.
+                    </Typography>
+                   
+                  </AccordionDetails>
+                  <Divider />
+                  <AccordionActions>
+                  <Button variant="outlined" startIcon={<DeleteIcon />}>
+                      Delete
+                    </Button>
+                    <Button variant="contained" color="success" onClick={() => handleGoalComplete(data.id)}>
+                      Mark as Completed
+                    </Button>
+                  </AccordionActions>
+                  
+                </Accordion> 
+               : null
+            ))}
+        </Grid> 
         </Container>
       </Grow>
     )

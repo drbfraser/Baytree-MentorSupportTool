@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 export default function GoalsStatistics(props: any) {
   return (
       <div>
-        <Card sx = {{boxShadow: 2, border: 1, borderRadius: 5, p: 3, mb: 22, ml: 4}}>
+        <Card sx = {{boxShadow: 2, p: 3 }}>
             <Grid style = {{ display: 'flex'}}>
                 <Grid item xs = {4} sx = {{m: 0, p: 0}}>
                     <Typography component="h6" variant="h6" color="text.secondary" gutterBottom>
