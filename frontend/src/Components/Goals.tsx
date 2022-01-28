@@ -5,18 +5,11 @@ import Grid from '@mui/material/Grid';
 import Grow from '@mui/material/Grow';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CardContent from '@mui/material/CardContent'
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography'
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-
-import {lightGreen} from '@mui/material/colors';
 import GoalsStatistics from './GoalsStatistics';
 import CreateGoals from './CreateGoals';
 import Divider from '@mui/material/Divider';
@@ -24,12 +17,19 @@ import AccordionActions from '@mui/material/AccordionActions';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import moment from 'moment';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 export default function Goals() {
     const [goals, setGoals] = useState([] as any[]);
     const [goalType, setGoalType] = useState("IN PROGRESS");
     const [tabValue, setTabValue] = useState(0);
     const [expanded, setExpanded] = React.useState('');
+    const [openDeleteConfirmationDialog, setOpenDeleteConfirmationDialog] = React.useState(false);
+    const [toBeDeletedGoalId, setToBeDeletedGoalId] = useState(null);
 
     const handleChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
       if (newValue == 0){
@@ -42,6 +42,15 @@ export default function Goals() {
         setGoalType("ALL");
       }
       setTabValue(newValue);
+    };
+
+    const handleClickOpenDeleteConfirmationDialog  = (goalId: any) => {
+      setOpenDeleteConfirmationDialog(true);
+      setToBeDeletedGoalId(goalId);
+    };
+  
+    const handleCloseDeleteConfirmationDialog = () => {
+      setOpenDeleteConfirmationDialog(false);
     };
     
     const fetchGoals = () => {
@@ -80,6 +89,16 @@ export default function Goals() {
       setExpanded(isExpanded ? panel : false);
     };
 
+    const handleGoalDelete = (goalId: any) => {
+      fetch('http://localhost:8000/goals/goal/'+ goalId , {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(_response => fetchGoals());
+    }
+
     return (
       <Grow in={true}>
         <Container>
@@ -111,7 +130,7 @@ export default function Goals() {
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                   >
-                    <Typography sx={{ width: '35%', flexShrink: 0 }}>
+                    <Typography  variant="subtitle1" sx={{ width: '35%', flexShrink: 0 }}>
                       {data.title}
                     </Typography>
                     <Typography sx={{ color: 'text.secondary', width: '35%'}}>{moment(data.date).format("dddd, MMMM Do YYYY")}</Typography>
@@ -129,7 +148,7 @@ export default function Goals() {
                   </AccordionDetails>
                   <Divider />
                   <AccordionActions>
-                  <Button variant="outlined" startIcon={<DeleteIcon />}>
+                  <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => handleClickOpenDeleteConfirmationDialog(data.id)}>
                       Delete
                     </Button>
                     <Button variant="contained" color="success" onClick={() => handleGoalComplete(data.id)}>
@@ -140,7 +159,28 @@ export default function Goals() {
                 </Accordion> 
                : null
             ))}
-        </Grid> 
+          </Grid> 
+          <Dialog
+            open={openDeleteConfirmationDialog}
+            onClose={handleCloseDeleteConfirmationDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Are you sure to delete this goal?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Deleted goal will disapper from the list.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDeleteConfirmationDialog}>CANCEL</Button>
+              <Button onClick={() => {handleGoalDelete(toBeDeletedGoalId); handleCloseDeleteConfirmationDialog()}}autoFocus >
+                DELETE
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Container>
       </Grow>
     )
