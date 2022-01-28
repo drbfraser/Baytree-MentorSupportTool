@@ -32,6 +32,9 @@ const  CreateGoals = (props:any) =>   {
 
     const handleClose = () => {
         setOpen(false);
+        setTitle('');
+        setGoal_review_date (null);
+        setContents('');
     }
 
     const handlereviewDateChange = (date: any) => {
@@ -113,7 +116,7 @@ const  CreateGoals = (props:any) =>   {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={() => { handleClose(); handleSubmit(); }}>Submit</Button>
+                    <Button disabled={contents==''||title==''|| goal_review_date==null } onClick={() => { handleSubmit(); handleClose();}}>Submit</Button>
                 </DialogActions>
             </Dialog>
         </div>
