@@ -49,6 +49,17 @@ export default function Goals() {
       });
     }
 
+    const handleGoalComplete = (goalId: any) => {
+      fetch('http://localhost:8000/goals/goal/'+ goalId , {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({status:"ACHIEVED"})
+      })
+      .then(response => fetchGoals());
+    }
+
     useEffect(() => {
       fetchGoals();
     }, []);
@@ -80,7 +91,7 @@ export default function Goals() {
                 <Card variant="outlined" elevation={1} sx = {{bgcolor: lightGreen[50], m: 2, border: 3, borderColor: lightGreen[200]}} style = {{minHeight: '6vh'}}>
                   <CardHeader
                     action={
-                      <IconButton aria-label="settings">
+                      <IconButton aria-label="settings" onClick={() => handleGoalComplete(data.id)}>
                         <CheckBoxIcon />
                       </IconButton>
                     }
