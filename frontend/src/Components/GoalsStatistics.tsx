@@ -13,7 +13,7 @@ export default function GoalsStatistics(props: any) {
                     <Typography component="h6" variant="h6" color="text.secondary" gutterBottom>
                         Active
                     </Typography>
-                    <Typography component="p" variant="h5">
+                    <Typography component="p" variant="h2" color="red">
                         {props.activeGoals}
                     </Typography>
                 </Grid>
@@ -22,7 +22,7 @@ export default function GoalsStatistics(props: any) {
                     <Typography component="h6" variant="h6" color="text.secondary" gutterBottom>
                         Completed 
                     </Typography>
-                    <Typography component="p" variant="h5">
+                    <Typography component="p" variant="h2" color="green">
                     {props.completedGoals}
                     </Typography>
                 </Grid>
@@ -31,7 +31,7 @@ export default function GoalsStatistics(props: any) {
                     <Typography component="h6" variant="h6" color="text.secondary" gutterBottom>
                         Total 
                     </Typography>
-                    <Typography component="p" variant="h5">
+                    <Typography component="p" variant="h2"color="blue" >
                     {props.totalGoals}
                     </Typography>
                 </Grid>

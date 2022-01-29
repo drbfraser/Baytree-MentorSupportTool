@@ -22,6 +22,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import TimelineDot from '@mui/lab/TimelineDot';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 export default function Goals() {
     const [goals, setGoals] = useState([] as any[]);
@@ -130,21 +133,36 @@ export default function Goals() {
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                   >
-                    <Typography  variant="subtitle1" sx={{ width: '35%', flexShrink: 0 }}>
+                    <Typography  variant="h6" sx={{ width: '35%', flexShrink: 0 }}>
                       {data.title}
                     </Typography>
-                    <Typography sx={{ color: 'text.secondary', width: '35%'}}>{moment(data.date).format("dddd, MMMM Do YYYY")}</Typography>
-                    <Typography sx={{ color: 'text.secondary'}}>{data.status}</Typography>
+                    <Typography sx={{ color: 'text.secondary', width: '35%', margin: '6px'}}> Created on {moment(data.date).format("dddd, MMMM Do YYYY")}</Typography>
+                    <Typography sx={{ color: 'text.secondary', margin: '6px'}}>{data.status}</Typography>
+                    {
+                      data.status == "IN PROGRESS"?
+                        <TimelineDot color="error" sx={{ backgroundColor: 'red'}}/>
+                        :(data.status == "ACHIEVED"?
+                          <TimelineDot color="success" sx={{ backgroundColor: 'green'}}/>
+                          :<TimelineDot color="success" sx={{ backgroundColor: 'blue'}}/>)
+                    }
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Typography>
-                      Goal Deadline: {moment(data.goal_review_date).format("dddd, MMMM Do YYYY")} <br/>
-                      Details: <br/>
-                      {data.content}
-                      Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat.
-                      Aliquam eget maximus est, id dignissim quam.
-                    </Typography>
-                   
+                    <Card sx={{ minWidth: 275 }}>
+                      <CardContent>
+                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                          Goal Review Date
+                        </Typography>
+                        <Typography variant="body2" gutterBottom>
+                          {moment(data.goal_review_date).format("dddd, MMMM Do YYYY")} <br/>
+                        </Typography>
+                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                          Goal Description
+                        </Typography>
+                        <Typography variant="body2">
+                          {data.content}
+                        </Typography>
+                      </CardContent>
+                    </Card>
                   </AccordionDetails>
                   <Divider />
                   <AccordionActions>
@@ -155,7 +173,6 @@ export default function Goals() {
                       Mark as Completed
                     </Button>
                   </AccordionActions>
-                  
                 </Accordion> 
                : null
             ))}
