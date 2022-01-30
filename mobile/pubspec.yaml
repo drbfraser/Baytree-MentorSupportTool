@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,10 +32,10 @@ dependencies:
   http: any
   shared_preferences: any
   form_field_validator: any
-  titled_navigation_bar: ^4.1.0
-  intl: 0.17.0
-  date_picker_timeline: ^1.2.3
-  syncfusion_flutter_charts: ^19.3.55
+  titled_navigation_bar: ^4.0.0
+  intl: ^0.16.1
+  date_picker_timeline: ^1.2.1
+  syncfusion_flutter_charts: ^18.4.49
   webview_flutter: ^2.3.1
 
 
