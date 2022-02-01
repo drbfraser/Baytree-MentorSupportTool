@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router';
 import 'date-fns';
+import moment from 'moment';
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import AddIcon from '@mui/icons-material/Add';
@@ -15,7 +16,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
-const  CreateGoals = () =>   {
+const  CreateGoals = (props:any) =>   {
 
     const [contents, setContents] = useState('');
     const [title, setTitle] = useState('');
@@ -31,6 +32,9 @@ const  CreateGoals = () =>   {
 
     const handleClose = () => {
         setOpen(false);
+        setTitle('');
+        setGoal_review_date (null);
+        setContents('');
     }
 
     const handlereviewDateChange = (date: any) => {
@@ -41,11 +45,11 @@ const  CreateGoals = () =>   {
         mentor: localStorage.getItem('id'),
         mentee: localStorage.getItem('id'),
         title: title,
-        date: "2021-12-16",
-        goal_review_date: "2021-12-16",
+        date: moment().format("YYYY-MM-DD"),
+        goal_review_date: moment(goal_review_date).format("YYYY-MM-DD"),
         content: contents,
       };
-
+  
     const handleSubmit = () => {
             setSubmit(true);
             setTimeout(() => {
@@ -64,7 +68,10 @@ const  CreateGoals = () =>   {
              body: JSON.stringify(goal)
          })
              .then(response => console.log(response))
-             .then(() => history.push('/dashboard/Goals'))
+             .then(() => {
+                 props.onSubmit(); 
+                 history.push('/dashboard/Goals')
+                })
     }}
 
     return (
@@ -91,6 +98,7 @@ const  CreateGoals = () =>   {
                         value={goal_review_date}
                         onChange={handlereviewDateChange}
                         renderInput={(params) => <TextField fullWidth {...params} />}
+                        minDate={new Date()}
                     />
                 </LocalizationProvider>
                 <TextField
@@ -108,7 +116,7 @@ const  CreateGoals = () =>   {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={() => { handleClose(); handleSubmit(); }}>Submit</Button>
+                    <Button disabled={contents==''||title==''|| goal_review_date==null } onClick={() => { handleSubmit(); handleClose();}}>Submit</Button>
                 </DialogActions>
             </Dialog>
         </div>

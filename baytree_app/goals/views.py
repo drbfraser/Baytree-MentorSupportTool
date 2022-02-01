@@ -34,3 +34,8 @@ class GoalViews(generics.ListAPIView):
             return Response({"status": "success", "data": serializer.data})
         else:
             return Response({"status": "error", "data": serializer.errors})
+
+    def delete(self, request, id=None):
+        item = Goal.objects.get(id=id)
+        item.delete()
+        return Response({"status": "success", "data": "Item Deleted"})

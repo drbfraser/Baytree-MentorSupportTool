@@ -152,3 +152,12 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 Run the file "prj\mobile\lib\main.dart"
 
+### TEMPORARILY Run Application
+
+In the mobile folder run the following commands:
+
+flutter pub get
+
+After setting up the emulator run:
+
+flutter run --no-sound-null-safety 

@@ -42,7 +42,7 @@ export default function Navigation() {
   let match = useRouteMatch();
 
   return (
-    <div className="content" style={{ background: '#faf6ed'}}>
+    <div className="content" style={{ background: '#faf6ed', minHeight:'100%'}}>
       <Box sx={{ display: 'flex', width:'100%', height: 'auto', margin: 'auto' }}>
         <CssBaseline />
         <AppBar position="fixed" style={{ background: 'white', width:'100%', height: 'auto', margin: 'auto' }} sx={{ zIndex: (theme) => theme.zIndex.drawer + 5 }}>
