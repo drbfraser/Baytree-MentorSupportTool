@@ -161,3 +161,12 @@ flutter pub get
 After setting up the emulator run:
 
 flutter run --no-sound-null-safety 
+
+
+# Admin Portal
+
+In the admin-frontend folder:
+
+Execute npm run dev to start running a development server on localhost:3001
+
+Execute npm run build and then npm run start to build for production and run on localhost:3001
