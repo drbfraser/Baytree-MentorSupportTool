@@ -1,7 +1,8 @@
 import { NextPage } from "next";
+import Navbar from "../components/Navbar";
 
 const Dashboard: NextPage = () => {
-  return <p>Congrats!</p>;
+  return <Navbar></Navbar>;
 };
 
 export default Dashboard;
