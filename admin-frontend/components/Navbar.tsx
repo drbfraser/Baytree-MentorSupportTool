@@ -1,10 +1,12 @@
 import { Typography } from "@mui/material";
+import { useRouter } from "next/router";
 import React from "react";
 import styled from "styled-components";
 import {
   baytreeLogoUrl,
   changingAspirationsUrl,
 } from "../public/images/imageUrls";
+import Icon, { IconType } from "./icons";
 import sidebarLinks, { SidebarLink } from "./SidebarLinks";
 
 const Navbar: React.FC<{}> = () => {
@@ -31,9 +33,24 @@ interface TopBarProps {
 const Topbar: React.FC<TopBarProps> = (props) => {
   return (
     <StyledTopBar>
-      <Logo src={props.logoUrl} width="7rem" padding={props.logoPadding}></Logo>
-      <Logo src={props.sloganImageUrl} width="8rem"></Logo>
-      <Typography>{props.title}</Typography>
+      <div style={{ display: "flex"}}>
+        <Logo
+          src={props.logoUrl}
+          width="7rem"
+          padding={props.logoPadding}
+        ></Logo>
+        <Logo src={props.sloganImageUrl} width="8rem"></Logo>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingLeft: "1rem"
+          }}
+        >
+          <Typography variant="h5">{props.title}</Typography>
+        </div>
+      </div>
     </StyledTopBar>
   );
 };
@@ -42,7 +59,8 @@ const StyledTopBar = styled.div`
   background: white;
   width: 100%;
   height: ${"5rem"};
-  box-shadow: 0 0 6px 4px lightgrey;
+  box-shadow: 0 0 0.4rem 0.2rem lightgrey;
+  position: fixed;
 `;
 
 interface LogoProps {
@@ -62,7 +80,17 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = (props) => {
-  return <StyledSidebar></StyledSidebar>;
+  return (
+    <StyledSidebar>
+      {sidebarLinks.map((link) => (
+        <SidebarItem
+          icon={link.icon}
+          text={link.title}
+          url={link.url}
+        ></SidebarItem>
+      ))}
+    </StyledSidebar>
+  );
 };
 
 const StyledSidebar = styled.div`
@@ -72,7 +100,46 @@ const StyledSidebar = styled.div`
   left: 0;
   top: ${() => "5rem"};
   position: fixed;
-  box-shadow: 0 9px 6px 4px lightgrey;
+  box-shadow: 0 9px 0.4rem 0.2rem lightgrey;
 `;
 
+interface SidebarItemProps {
+  text: string;
+  icon: IconType;
+  url: string;
+}
+
+const SidebarItem: React.FC<SidebarItemProps> = (props) => {
+  const router = useRouter();
+
+  return (
+    <StyledSidebarItem onClick={() => router.push(props.url)}>
+      <SidebarItemIcon>
+        <Icon icon={props.icon} color="#5AB031" size="1.6rem"></Icon>
+      </SidebarItemIcon>
+      <SidebarItemText>{props.text}</SidebarItemText>
+    </StyledSidebarItem>
+  );
+};
+
+const StyledSidebarItem = styled.div`
+  display: flex;
+  justify-content: left;
+  width: 100%;
+  height: 4rem;
+  :hover {
+    text-decoration: underline;
+    cursor: pointer;
+    background: #59b03145;
+    user-select: none;
+  }
+`;
+
+const SidebarItemIcon = styled.div`
+  margin: auto 0 auto 2rem;
+`;
+
+const SidebarItemText = styled(Typography)`
+  margin: auto 0 auto 2rem;
+`;
 export default Navbar;
