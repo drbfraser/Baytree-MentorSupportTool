@@ -151,6 +151,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = (props) => {
+  const router = useRouter();
+
   return (
     <StyledSidebar>
       {props.links.map((link, i) => (
@@ -159,6 +161,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
           icon={link.icon}
           text={link.title}
           url={link.url}
+          isSelected={link.url == router.pathname}
           setSidebarActive={props.setSidebarActive}
           useMobileLayout={props.useMobileLayout}
           modalComponent={link.modalComponent}
@@ -206,6 +209,7 @@ interface SidebarItemProps {
   modalHeight?: string;
   setSidebarActive: (active: boolean) => void;
   useMobileLayout: boolean;
+  isSelected?: boolean;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = (props) => {
@@ -215,6 +219,7 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
   return (
     <>
       <StyledSidebarItem
+        isSelected={props.isSelected}
         onClick={() => {
           if (props.useMobileLayout && !props.modalComponent) {
             props.setSidebarActive(false);
@@ -248,11 +253,12 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
   );
 };
 
-const StyledSidebarItem = styled.div`
+const StyledSidebarItem = styled.div<{ isSelected?: boolean }>`
   display: flex;
   justify-content: left;
   width: 100%;
   height: 4rem;
+  background: ${(props) => (props.isSelected ? `${ICON_COLOR}30` : "")};
   @media (hover: hover) {
     :hover {
       text-decoration: underline;
