@@ -8,7 +8,11 @@ import siteContext, {
   SiteContextInterface,
 } from "../context/siteContext";
 import { useState } from "react";
-import { BODY_BACKGROUND, SIDEBAR_WIDTH, TOPBAR_HEIGHT } from "../context/constants";
+import {
+  BODY_BACKGROUND,
+  SIDEBAR_WIDTH,
+  TOPBAR_HEIGHT,
+} from "../context/constants";
 import sidebarLinks from "../components/Navbar/sidebarLinks";
 import topbarActions from "../components/Navbar/topbarActions";
 import useMobileLayout from "../hooks/useMobileLayout";
@@ -36,8 +40,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           <div
             style={{
               background: BODY_BACKGROUND,
-              width: "100vw",
-              height: "100vh",
+              width: "100%",
+              height: "100%",
             }}
           >
             <Navbar
@@ -51,7 +55,15 @@ function MyApp({ Component, pageProps }: AppProps) {
               {sidebarActive && !mobileLayout && (
                 <div style={{ width: SIDEBAR_WIDTH }}></div>
               )}
-              <div style={{ padding: BODY_PADDING, marginTop: TOPBAR_HEIGHT }}>
+              <div
+                style={{
+                  minHeight: `calc(100vh - ${TOPBAR_HEIGHT})`,
+                  flex: 1,
+                  padding: BODY_PADDING,
+                  marginTop: TOPBAR_HEIGHT,
+                  overflowX: "hidden"
+                }}
+              >
                 <Component {...pageProps} />
               </div>
             </div>
