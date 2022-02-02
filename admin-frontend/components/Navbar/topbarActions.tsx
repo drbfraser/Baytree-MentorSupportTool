@@ -1,63 +1,24 @@
-import { Button, Typography } from "@mui/material";
-import { useRouter } from "next/router";
-import { IconType } from "../icons";
+import { IconBaseProps } from "react-icons";
+import { MdLogout } from "react-icons/md";
 import { ModalComponent } from "../Modal";
+import LogoutModal from "./logoutModal";
 
 export interface TopbarAction {
-  icon: IconType;
+  icon: React.FC<IconBaseProps>;
+  title: string;
+  iconColor?: string;
   modalComponent: ModalComponent;
   modalWidth?: string;
   modalHeight?: string;
-  color?: string;
 }
-
-const LogoutModalComponent: ModalComponent = (props) => {
-  const router = useRouter();
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      <Typography variant="h5" style={{ flex: 1, textAlign: "center" }}>
-        Are you sure that you want to logout?
-      </Typography>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          paddingTop: "3rem",
-        }}
-      >
-        <Button
-          variant="contained"
-          color="error"
-          onClick={() => router.push("/")}
-        >
-          Log out
-        </Button>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => props.onOutsideClick()}
-        >
-          Cancel
-        </Button>
-      </div>
-    </div>
-  );
-};
 
 const topbarActions: TopbarAction[] = [
   {
-    icon: "logout",
-    modalComponent: LogoutModalComponent,
+    icon: MdLogout,
+    title: "Log out",
+    modalComponent: LogoutModal,
     modalHeight: "auto",
-    color: "#ff0000",
+    iconColor: "#ff0000",
   },
 ];
 

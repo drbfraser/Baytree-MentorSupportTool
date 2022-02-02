@@ -1,30 +1,64 @@
-import { Typography } from "@mui/material";
+import { Typography, useMediaQuery } from "@mui/material";
 import { useRouter } from "next/router";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { IconBaseProps } from "react-icons";
+import { MdMenu } from "react-icons/md";
 import styled from "styled-components";
+import {
+  MOBILE_BREAKPOINT,
+  SIDEBAR_WIDTH,
+  TOPBAR_HEIGHT,
+} from "../../context/constants";
 import siteContext from "../../context/siteContext";
 import {
   baytreeLogoUrl,
   changingAspirationsUrl,
 } from "../../public/images/imageUrls";
-import Icon, { IconType } from "../icons";
 import Modal, { ModalComponent } from "../Modal";
-import sidebarLinks, { SidebarLink } from "./sidebarLinks";
-import topbarActions, { TopbarAction } from "./topbarActions";
+import { SidebarLink } from "./sidebarLinks";
+import { TopbarAction } from "./topbarActions";
 
 const ICON_SIZE = "1.6rem";
 const ICON_COLOR = "#5AB031";
-const Navbar: React.FC<{}> = () => {
+
+interface NavbarProps {
+  useMobileLayout: boolean;
+  sidebarActive: boolean;
+  setSidebarActive: (active: boolean) => void;
+  sidebarLinks?: SidebarLink[];
+  topbarActions?: TopbarAction[];
+}
+
+const Navbar: React.FC<NavbarProps> = (props) => {
+  useEffect(() => {
+    if (props.useMobileLayout) {
+      props.setSidebarActive(false);
+    } else {
+      props.setSidebarActive(true);
+    }
+  }, [props.useMobileLayout]);
+
   return (
     <>
       <Topbar
+        useMobileLayout={props.useMobileLayout}
         logoUrl={baytreeLogoUrl}
         logoPadding="0.4rem"
         sloganImageUrl={changingAspirationsUrl}
         title="Admin Portal"
-        actions={topbarActions}
+        actions={props.topbarActions ?? []}
+        toggleSidebarMenu={() => {
+          props.setSidebarActive(!props.sidebarActive);
+        }}
       ></Topbar>
-      <Sidebar links={sidebarLinks}></Sidebar>
+      {props.sidebarActive && (
+        <Sidebar
+          links={props.sidebarLinks ?? []}
+          topbarActions={props.topbarActions ?? []}
+          useMobileLayout={props.useMobileLayout}
+          setSidebarActive={props.setSidebarActive}
+        ></Sidebar>
+      )}
     </>
   );
 };
@@ -35,6 +69,8 @@ interface TopBarProps {
   sloganImageUrl: string;
   title: string;
   actions: TopbarAction[];
+  useMobileLayout: boolean;
+  toggleSidebarMenu: () => void;
 }
 
 const Topbar: React.FC<TopBarProps> = (props) => {
@@ -47,7 +83,9 @@ const Topbar: React.FC<TopBarProps> = (props) => {
             width="7rem"
             padding={props.logoPadding}
           ></Logo>
-          <Logo src={props.sloganImageUrl} width="8rem"></Logo>
+          {!props.useMobileLayout && (
+            <Logo src={props.sloganImageUrl} width="8rem"></Logo>
+          )}
           <div
             style={{
               display: "flex",
@@ -56,20 +94,29 @@ const Topbar: React.FC<TopBarProps> = (props) => {
               paddingLeft: "1rem",
             }}
           >
-            <Typography variant="h5">{props.title}</Typography>
+            {!props.useMobileLayout && (
+              <Typography variant="h5">{props.title}</Typography>
+            )}
           </div>
         </div>
         <div style={{ display: "flex", justifyContent: "space-around" }}>
-          {props.actions.map((action, i) => (
+          {props.useMobileLayout ? (
             <TopbarActionButton
-              key={`toolbar_action_button_${i}`}
-              icon={action.icon}
-              modalComponent={action.modalComponent}
-              modalWidth={action.modalWidth}
-              modalHeight={action.modalHeight}
-              color={action.color}
+              icon={MdMenu}
+              onClick={props.toggleSidebarMenu}
             ></TopbarActionButton>
-          ))}
+          ) : (
+            props.actions.map((action, i) => (
+              <TopbarActionButton
+                key={`toolbar_action_button_${i}`}
+                icon={action.icon}
+                modalComponent={action.modalComponent}
+                modalWidth={action.modalWidth}
+                modalHeight={action.modalHeight}
+                color={action.iconColor}
+              ></TopbarActionButton>
+            ))
+          )}
         </div>
       </div>
     </StyledTopBar>
@@ -79,7 +126,7 @@ const Topbar: React.FC<TopBarProps> = (props) => {
 const StyledTopBar = styled.div`
   background: white;
   width: 100%;
-  height: ${"5rem"};
+  height: ${TOPBAR_HEIGHT};
   box-shadow: 0 0 0.4rem 0.2rem lightgrey;
   position: fixed;
 `;
@@ -98,49 +145,106 @@ const Logo = styled.img<LogoProps>`
 
 interface SidebarProps {
   links: SidebarLink[];
+  topbarActions: TopbarAction[];
+  useMobileLayout: boolean;
+  setSidebarActive: (active: boolean) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = (props) => {
   return (
     <StyledSidebar>
-      {sidebarLinks.map((link, i) => (
+      {props.links.map((link, i) => (
         <SidebarItem
           key={`sidebar_item_${i}`}
           icon={link.icon}
           text={link.title}
           url={link.url}
+          setSidebarActive={props.setSidebarActive}
+          useMobileLayout={props.useMobileLayout}
+          modalComponent={link.modalComponent}
+          modalHeight={link.modalHeight}
+          modalWidth={link.modalWidth}
         ></SidebarItem>
       ))}
+      {props.useMobileLayout &&
+        props.topbarActions.map((actionButton, i) => {
+          return (
+            <SidebarItem
+              key={`sidebar_action_item_${i}`}
+              icon={actionButton.icon}
+              iconColor={actionButton.iconColor}
+              text={actionButton.title}
+              setSidebarActive={props.setSidebarActive}
+              useMobileLayout={props.useMobileLayout}
+              modalComponent={actionButton.modalComponent}
+              modalHeight={actionButton.modalHeight}
+              modalWidth={actionButton.modalWidth}
+            ></SidebarItem>
+          );
+        })}
     </StyledSidebar>
   );
 };
 
 const StyledSidebar = styled.div`
-  width: 14rem;
+  width: ${SIDEBAR_WIDTH};
   background: white;
   height: ${() => `calc(100vh - ${"5rem"})`};
   left: 0;
   top: ${() => "5rem"};
   position: fixed;
-  box-shadow: 0 9px 0.4rem 0.2rem lightgrey;
+  box-shadow: 0 0.5rem 0.4rem 0.2rem lightgrey;
 `;
 
 interface SidebarItemProps {
   text: string;
-  icon: IconType;
-  url: string;
+  icon: React.FC<IconBaseProps>;
+  iconColor?: string;
+  url?: string;
+  modalComponent?: ModalComponent;
+  modalWidth?: string;
+  modalHeight?: string;
+  setSidebarActive: (active: boolean) => void;
+  useMobileLayout: boolean;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = (props) => {
   const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
 
   return (
-    <StyledSidebarItem onClick={() => router.push(props.url)}>
-      <SidebarItemIcon>
-        <Icon icon={props.icon} color={ICON_COLOR} size={ICON_SIZE}></Icon>
-      </SidebarItemIcon>
-      <SidebarItemText>{props.text}</SidebarItemText>
-    </StyledSidebarItem>
+    <>
+      <StyledSidebarItem
+        onClick={() => {
+          if (props.useMobileLayout && !props.modalComponent) {
+            props.setSidebarActive(false);
+          }
+          if (props.url) {
+            router.push(props.url);
+          } else {
+            setShowModal(true);
+          }
+        }}
+      >
+        <SidebarItemIcon>
+          {React.createElement(props.icon, {
+            color: props.iconColor ?? ICON_COLOR,
+            size: ICON_SIZE,
+          })}
+        </SidebarItemIcon>
+        <SidebarItemText>{props.text}</SidebarItemText>
+      </StyledSidebarItem>
+      {props.modalComponent && (
+        <Modal
+          isOpen={showModal}
+          modalComponent={props.modalComponent}
+          onOutsideClick={() => {
+            setShowModal(false);
+          }}
+          useMobileLayout={props.useMobileLayout}
+        ></Modal>
+      )}
+    </>
   );
 };
 
@@ -149,11 +253,13 @@ const StyledSidebarItem = styled.div`
   justify-content: left;
   width: 100%;
   height: 4rem;
-  :hover {
-    text-decoration: underline;
-    cursor: pointer;
-    background: ${() => `${ICON_COLOR}30`};
-    user-select: none;
+  @media (hover: hover) {
+    :hover {
+      text-decoration: underline;
+      cursor: pointer;
+      background: ${() => `${ICON_COLOR}30`};
+      user-select: none;
+    }
   }
 `;
 
@@ -166,8 +272,9 @@ const SidebarItemText = styled(Typography)`
 `;
 
 interface TopbarActionProps {
-  icon: IconType;
-  modalComponent: ModalComponent;
+  icon: React.FC<IconBaseProps>;
+  onClick?: () => void;
+  modalComponent?: ModalComponent;
   modalWidth?: string;
   modalHeight?: string;
   color?: string;
@@ -180,23 +287,26 @@ const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
     <>
       <StyledTopbarActionButton
         hoverColor={`${props.color ?? ICON_COLOR}30`}
-        onClick={() => setIsModalOpen(!isModalOpen)}
-      >
-        <Icon
-          icon={props.icon}
-          color={props.color ?? ICON_COLOR}
-          size={ICON_SIZE}
-        ></Icon>
-      </StyledTopbarActionButton>
-      <Modal
-        isOpen={isModalOpen}
-        onOutsideClick={() => {
-          setIsModalOpen(false);
+        onClick={() => {
+          props.onClick ? props.onClick() : setIsModalOpen(!isModalOpen);
         }}
-        modalComponent={props.modalComponent}
-        width={props.modalWidth}
-        height={props.modalHeight}
-      ></Modal>
+      >
+        {React.createElement(props.icon, {
+          color: props.color ?? ICON_COLOR,
+          size: ICON_SIZE,
+        })}
+      </StyledTopbarActionButton>
+      {props.modalComponent && (
+        <Modal
+          isOpen={isModalOpen}
+          onOutsideClick={() => {
+            setIsModalOpen(false);
+          }}
+          modalComponent={props.modalComponent}
+          width={props.modalWidth}
+          height={props.modalHeight}
+        ></Modal>
+      )}
     </>
   );
 };
@@ -208,11 +318,13 @@ const StyledTopbarActionButton = styled.div<{ hoverColor: string }>`
   background: white;
   width: 6rem;
   height: 100%;
-  :hover {
-    text-decoration: underline;
-    cursor: pointer;
-    background: ${(props) => props.hoverColor};
-    user-select: none;
+  @media (hover: hover) {
+    :hover {
+      text-decoration: underline;
+      cursor: pointer;
+      background: ${(props) => props.hoverColor};
+      user-select: none;
+    }
   }
 `;
 

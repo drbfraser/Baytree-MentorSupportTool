@@ -8,9 +8,22 @@ import siteContext, {
   SiteContextInterface,
 } from "../context/siteContext";
 import { useState } from "react";
+import { useMediaQuery } from "@mui/material";
+import {
+  MOBILE_BREAKPOINT,
+  SIDEBAR_WIDTH,
+  TOPBAR_HEIGHT,
+} from "../context/constants";
+import sidebarLinks from "../components/Navbar/sidebarLinks";
+import topbarActions from "../components/Navbar/topbarActions";
+
+export const BODY_BACKGROUND = "#F9F3EB";
+export const BODY_PADDING = "1rem";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const useMobileLayout = useMediaQuery(`(max-width:${MOBILE_BREAKPOINT})`);
+  const [sidebarActive, setSidebarActive] = useState(!useMobileLayout);
 
   const [siteContextValue, setSiteContextValue] =
     useState<SiteContextInterface>({
@@ -26,12 +39,24 @@ function MyApp({ Component, pageProps }: AppProps) {
         <HeadTags />
         <siteContext.Provider value={siteContextValue}>
           <div
-            style={{ background: "#F9F3EB", width: "100vw", height: "100vh" }}
+            style={{
+              background: BODY_BACKGROUND,
+              width: "100vw",
+              height: "100vh",
+            }}
           >
-            <Navbar></Navbar>
+            <Navbar
+              useMobileLayout={useMobileLayout}
+              sidebarActive={sidebarActive}
+              setSidebarActive={setSidebarActive}
+              sidebarLinks={sidebarLinks}
+              topbarActions={topbarActions}
+            ></Navbar>
             <div style={{ display: "flex", justifyContent: "left" }}>
-              <div style={{ width: "14rem" }}></div>
-              <div style={{ padding: "1rem", marginTop: "5rem" }}>
+              {sidebarActive && !useMobileLayout && (
+                <div style={{ width: SIDEBAR_WIDTH }}></div>
+              )}
+              <div style={{ padding: BODY_PADDING, marginTop: TOPBAR_HEIGHT }}>
                 <Component {...pageProps} />
               </div>
             </div>
@@ -53,6 +78,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 const HeadTags: React.FC<{}> = () => {
   return (
     <Head>
+      <title>Baytree Admin Portal</title>
       <meta
         name="viewport"
         content="width=device-width, initial-scale=1"

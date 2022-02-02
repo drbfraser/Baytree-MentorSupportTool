@@ -4,12 +4,14 @@ import styled from "styled-components";
 
 export type ModalComponent = React.FC<{
   onOutsideClick: () => void;
+  useMobileLayout?: boolean;
 }>;
 
 interface ModalProps {
   isOpen: boolean;
   onOutsideClick: () => void;
   modalComponent: ModalComponent;
+  useMobileLayout?: boolean;
   width?: string;
   height?: string;
 }
@@ -41,9 +43,11 @@ const Modal: React.FC<ModalProps> = (props) => {
             ref={modalElementRef}
             width={props.width}
             height={props.height}
+            useMobileLayout={props.useMobileLayout}
           >
             {React.createElement(props.modalComponent, {
               onOutsideClick: props.onOutsideClick,
+              useMobileLayout: props.useMobileLayout,
             })}
           </StyledModal>
         </Overlay>,
@@ -65,15 +69,18 @@ const Overlay = styled.div`
 interface StyledModalProps {
   width?: string;
   height?: string;
+  useMobileLayout?: boolean;
 }
 
 const StyledModal = styled.div<StyledModalProps>`
   position: fixed;
   background: white;
-  width: ${(props) => props.width ?? "60vw"};
-  height: ${(props) => props.height ?? "60vh"};
-  top: 20vh;
-  left: 20vw;
+  width: ${(props) =>
+    props.useMobileLayout ? "100vw" : props.width ?? "60vw"};
+  height: ${(props) =>
+    props.useMobileLayout ? "100vh" : props.height ?? "60vh"};
+  top: ${(props) => (props.useMobileLayout ? "0" : "20vh")};
+  left: ${(props) => (props.useMobileLayout ? "0" : "20vw")};
   z-index: 501;
   padding: 2rem;
 `;
