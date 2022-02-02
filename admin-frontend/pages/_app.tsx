@@ -8,21 +8,16 @@ import siteContext, {
   SiteContextInterface,
 } from "../context/siteContext";
 import { useState } from "react";
-import { useMediaQuery } from "@mui/material";
-import {
-  MOBILE_BREAKPOINT,
-  SIDEBAR_WIDTH,
-  TOPBAR_HEIGHT,
-} from "../context/constants";
+import { BODY_BACKGROUND, SIDEBAR_WIDTH, TOPBAR_HEIGHT } from "../context/constants";
 import sidebarLinks from "../components/Navbar/sidebarLinks";
 import topbarActions from "../components/Navbar/topbarActions";
+import useMobileLayout from "../hooks/useMobileLayout";
 
-export const BODY_BACKGROUND = "#F9F3EB";
 export const BODY_PADDING = "1rem";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const useMobileLayout = useMediaQuery(`(max-width:${MOBILE_BREAKPOINT})`);
+  const mobileLayout = useMobileLayout();
   const [sidebarActive, setSidebarActive] = useState(!useMobileLayout);
 
   const [siteContextValue, setSiteContextValue] =
@@ -46,14 +41,14 @@ function MyApp({ Component, pageProps }: AppProps) {
             }}
           >
             <Navbar
-              useMobileLayout={useMobileLayout}
+              useMobileLayout={mobileLayout}
               sidebarActive={sidebarActive}
               setSidebarActive={setSidebarActive}
               sidebarLinks={sidebarLinks}
               topbarActions={topbarActions}
             ></Navbar>
             <div style={{ display: "flex", justifyContent: "left" }}>
-              {sidebarActive && !useMobileLayout && (
+              {sidebarActive && !mobileLayout && (
                 <div style={{ width: SIDEBAR_WIDTH }}></div>
               )}
               <div style={{ padding: BODY_PADDING, marginTop: TOPBAR_HEIGHT }}>
