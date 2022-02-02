@@ -1,5 +1,5 @@
 import { MdNotifications, MdHome, MdPerson } from "react-icons/md";
-import { IconType } from "./icons";
+import { IconType } from "../icons";
 
 export interface SidebarLink {
   url: string;
