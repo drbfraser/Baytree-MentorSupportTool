@@ -14,7 +14,7 @@ const LogoutModal: ModalComponent = (props) => {
         height: "100%",
       }}
     >
-      <Typography variant="h5" style={{ flex: 1, textAlign: "center" }}>
+      <Typography variant="h5" style={{ textAlign: "center" }}>
         Are you sure that you want to logout?
       </Typography>
       <div
