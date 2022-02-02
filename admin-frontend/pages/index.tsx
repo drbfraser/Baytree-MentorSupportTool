@@ -44,7 +44,7 @@ const Login: NextPage = () => {
   return (
     <div
       style={{
-        width: "100vw",
+        width: "100%",
         height: "100vh",
         background: mobileLayout ? "white" : BODY_BACKGROUND,
         display: "flex",
@@ -57,7 +57,7 @@ const Login: NextPage = () => {
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "100vw",
+            width: "100%",
             height: "100vh",
           }}
         >
@@ -163,7 +163,7 @@ const BackgroundPhotoContainer = styled.div``;
 
 const StyledBackgroundPhoto = styled.img`
   object-fit: fill;
-  height: 40vh;
+  height: 25vh;
   width: 100%;
 `;
 
