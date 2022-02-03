@@ -1,6 +1,6 @@
 import { Typography, useMediaQuery } from "@mui/material";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { IconBaseProps } from "react-icons";
 import { MdMenu } from "react-icons/md";
 import styled from "styled-components";
@@ -38,6 +38,27 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     }
   }, [props.useMobileLayout]);
 
+  const sidebarElementRef = useRef<HTMLDivElement>(null);
+  const hamburgerMenuButtonElementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        sidebarElementRef.current &&
+        hamburgerMenuButtonElementRef.current &&
+        !sidebarElementRef.current.contains(event.target as Node) &&
+        !hamburgerMenuButtonElementRef.current.contains(event.target as Node)
+      ) {
+        props.setSidebarActive(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [sidebarElementRef]);
+
   return (
     <>
       <Topbar
@@ -50,9 +71,11 @@ const Navbar: React.FC<NavbarProps> = (props) => {
         toggleSidebarMenu={() => {
           props.setSidebarActive(!props.sidebarActive);
         }}
+        hamburgerMenuRef={hamburgerMenuButtonElementRef}
       ></Topbar>
       {props.sidebarActive && (
         <Sidebar
+          Ref={sidebarElementRef}
           links={props.sidebarLinks ?? []}
           topbarActions={props.topbarActions ?? []}
           useMobileLayout={props.useMobileLayout}
@@ -71,6 +94,7 @@ interface TopBarProps {
   actions: TopbarAction[];
   useMobileLayout: boolean;
   toggleSidebarMenu: () => void;
+  hamburgerMenuRef: React.RefObject<HTMLDivElement>;
 }
 
 const Topbar: React.FC<TopBarProps> = (props) => {
@@ -102,6 +126,7 @@ const Topbar: React.FC<TopBarProps> = (props) => {
         <div style={{ display: "flex", justifyContent: "space-around" }}>
           {props.useMobileLayout ? (
             <TopbarActionButton
+              Ref={props.hamburgerMenuRef}
               icon={MdMenu}
               onClick={props.toggleSidebarMenu}
             ></TopbarActionButton>
@@ -148,13 +173,14 @@ interface SidebarProps {
   topbarActions: TopbarAction[];
   useMobileLayout: boolean;
   setSidebarActive: (active: boolean) => void;
+  Ref: React.MutableRefObject<any>;
 }
 
 const Sidebar: React.FC<SidebarProps> = (props) => {
   const router = useRouter();
 
   return (
-    <StyledSidebar>
+    <StyledSidebar ref={props.Ref}>
       {props.links.map((link, i) => (
         <SidebarItem
           key={`sidebar_item_${i}`}
@@ -284,6 +310,7 @@ interface TopbarActionProps {
   modalWidth?: string;
   modalHeight?: string;
   color?: string;
+  Ref?: React.RefObject<HTMLDivElement>;
 }
 
 const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
@@ -296,6 +323,7 @@ const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
         onClick={() => {
           props.onClick ? props.onClick() : setIsModalOpen(!isModalOpen);
         }}
+        ref={props.Ref}
       >
         {React.createElement(props.icon, {
           color: props.color ?? ICON_COLOR,
