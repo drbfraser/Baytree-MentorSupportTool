@@ -163,7 +163,7 @@ const BackgroundPhotoContainer = styled.div``;
 
 const StyledBackgroundPhoto = styled.img`
   object-fit: fill;
-  height: 25vh;
+  height: 40vh;
   width: 100%;
 `;
 
