@@ -14,7 +14,8 @@ services:
     ports:
       - "3302:3306"
     networks:
-      - db-net
+      db-net:
+       ipv4_address: 172.19.0.2
 
   baytree-app:
     restart: always
@@ -48,4 +49,4 @@ services:
 
 networks:
   db-net:
-    driver: bridge
+    external: true
