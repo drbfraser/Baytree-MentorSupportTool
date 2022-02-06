@@ -5,6 +5,9 @@ import { useState } from "react";
 import styled from "styled-components";
 import { BODY_BACKGROUND } from "../context/constants";
 import useMobileLayout from "../hooks/useMobileLayout";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "../actions/auth";
+import { RootState } from "../stores/store";
 
 const Login: NextPage = () => {
   const [email, setEmail] = useState("");
@@ -12,34 +15,23 @@ const Login: NextPage = () => {
   const [errors, setErrors] = useState(false);
   const router = useRouter();
   const mobileLayout = useMobileLayout();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector<RootState, boolean>(
+    (state) => state.auth.isAuthenticated
+  );
 
-  const onSignIn = () => {
-    const user = {
-      email: email,
-      password: password,
-    };
-
-    fetch("http://localhost:8000/rest-auth/login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.key) {
-          localStorage.clear();
-          localStorage.setItem("token", data.key);
-          router.push("/home");
-        } else {
-          setEmail("");
-          setPassword("");
-          localStorage.clear();
-          setErrors(true);
-        }
-      });
+  const onSignIn = async () => {
+    if (dispatch && dispatch !== null && dispatch !== undefined) {
+      await dispatch(login(email, password));
+      if (!isAuthenticated) {
+        setErrors(true);
+      }
+    }
   };
+
+  if (isAuthenticated) {
+    router.push("/home");
+  }
 
   return (
     <div
@@ -79,13 +71,18 @@ const Login: NextPage = () => {
             width: "95vw",
             height: "95vh",
             background: "white",
-            borderRadius: "20px"
+            borderRadius: "20px",
           }}
         >
           <Grid item xs={8} style={{ height: "100%", width: "100%" }}>
             <img
               src="/images/login/photo.jpg"
-              style={{ objectFit: "fill", height: "100%", width: "100%", borderRadius: "20px" }}
+              style={{
+                objectFit: "fill",
+                height: "100%",
+                width: "100%",
+                borderRadius: "20px",
+              }}
             ></img>
           </Grid>
           <Grid item xs={4} padding="2rem">
@@ -105,7 +102,7 @@ const Login: NextPage = () => {
               Admin Login
             </Typography>
             {errors && (
-              <Alert severity="warning">Invalid email or password</Alert>
+              <Alert severity="warning">Failed to login.</Alert>
             )}
             <TextField
               margin="normal"
@@ -219,7 +216,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
         Admin Login
       </Typography>
       {props.errors && (
-        <Alert severity="warning">Invalid email or password</Alert>
+        <Alert severity="warning">Failed to login.</Alert>
       )}
       <TextField
         margin="normal"
