@@ -22,13 +22,11 @@ const Modal: React.FC<ModalProps> = (props) => {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-        console.log("hey2");
       if (
         !useMobileLayoutRef.current &&
         modalElementRef.current &&
         !modalElementRef.current.contains(event.target as Node)
       ) {
-          console.log("hey");
         props.onOutsideClick();
       }
     }

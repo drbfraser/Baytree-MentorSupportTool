@@ -83,6 +83,7 @@ const Login: NextPage = () => {
                 width: "100%",
                 borderRadius: "20px",
               }}
+              alt="Login background photo"
             ></img>
           </Grid>
           <Grid item xs={4} padding="2rem">
@@ -96,6 +97,7 @@ const Login: NextPage = () => {
               <img
                 src="/images/baytree-logo.svg"
                 style={{ width: "200px", height: "200px" }}
+                alt="Baytree logo"
               ></img>
             </div>
             <Typography variant="h4" padding="1rem" align="center">

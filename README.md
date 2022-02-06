@@ -23,14 +23,16 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
 <br>
 
-# How to use Docker to run the app (NOT WORKING TEMPORARILY, you will have to install the backend and frontend normally using the instructions below):
+# How to use Docker to run the app 
 
 
 1. Install Docker at this link: https://www.docker.com/get-started
 2. After Docker is installed, navigate to the directory containing the ***docker-compose.yaml*** file
 3. Run:
-
         $ docker-compose build
+
+        $ docker network create --gateway 172.19.0.1 --subnet 172.19.0.0/24 db-net
+
 
 4. To start the application, run: 
 
@@ -173,4 +175,8 @@ Execute npm run dev to start running a development server on localhost:3001
 
 Execute npm run build and then npm run start to build for production and run on localhost:3001
 
-Navigate to localhost:3001 in your browser and use your superuser credentials to log in
+On Docker: docker-compose build & docker-compose up -d<br>
+then, create a bash shell within the baytree-app container: docker exec -it [baytree-app-container-id] bash<br>
+then, create a superuser if you haven't already with python manage.py createsuperuser
+
+Navigate to localhost:3001 in your browser and use your superuser credentials (or any admin user credentials) to log in

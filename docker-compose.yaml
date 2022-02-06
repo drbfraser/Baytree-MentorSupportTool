@@ -14,13 +14,14 @@ services:
     ports:
       - "3302:3306"
     networks:
-      - db-net
+      db-net:
+       ipv4_address: 172.19.0.2
 
   baytree-app:
     restart: always
     container_name: baytree-app
     command : bash -c "python manage.py migrate &&
-                      python manage.py runserver 0.0.0.0:8000"
+                      python manage.py runserver 0.0.0.0:8000 --settings=baytree_app.production_settings"
     build:
       context: ./baytree_app/
       dockerfile: Dockerfile
@@ -29,7 +30,8 @@ services:
     depends_on:
       - db
     networks:
-      - db-net
+      db-net:
+       ipv4_address: 172.19.0.3
 
   frontend:
     restart: always
@@ -44,11 +46,12 @@ services:
     depends_on:
       - baytree-app
     networks:
-      - db-net
+      db-net:
+       ipv4_address: 172.19.0.4
   
   admin-frontend:
     restart: always
-    command : npm start
+    command : npm run start
     container_name: admin-frontend
     build:
       context: ./admin-frontend/
@@ -59,8 +62,9 @@ services:
     depends_on:
       - baytree-app
     networks:
-      - db-net
+      db-net:
+       ipv4_address: 172.19.0.5
 
 networks:
   db-net:
-    driver: bridge
+    external: true
