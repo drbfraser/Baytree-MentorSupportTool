@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import os
 
@@ -27,14 +28,13 @@ SECRET_KEY = 'django-insecure-%bw7ei*$^qt%1tappq&+r)l@!6p&dg#=80400^^+--k16tqt8q
 DEBUG = True
 
 
-
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
-     'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -91,8 +91,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'baytree_app.wsgi.application'
 
 
-
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -102,11 +100,10 @@ DATABASES = {
         'NAME': 'Baytree',
         'USER': 'Baytree',
         'PASSWORD': 'Baytree123',
-        'HOST': '127.0.0.1',  
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }
-
 
 
 # Password validation
@@ -147,7 +144,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-os.path.join(BASE_DIR, 'static')]
+    os.path.join(BASE_DIR, 'static')]
 
 
 # STATIC_ROOT = BASE_DIR / 'static'
@@ -158,8 +155,8 @@ os.path.join(BASE_DIR, 'static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000',
-     'http://localhost:3001'
+    'http://localhost:3000',
+    'http://localhost:3001'
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -181,17 +178,23 @@ REST_AUTH_SERIALIZERS = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
-        ],
+    ],
 
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFTIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'AUTH_HEADER_TYPES': ('Bearer', ),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken', ),
 }
 
 
