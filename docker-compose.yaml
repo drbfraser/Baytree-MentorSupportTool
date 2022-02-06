@@ -45,6 +45,21 @@ services:
       - baytree-app
     networks:
       - db-net
+  
+  admin-frontend:
+    restart: always
+    command : npm start
+    container_name: admin-frontend
+    build:
+      context: ./admin-frontend/
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    stdin_open: true
+    depends_on:
+      - baytree-app
+    networks:
+      - db-net
 
 networks:
   db-net:
