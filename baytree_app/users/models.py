@@ -31,6 +31,7 @@ class MentorUser(models.Model):
     user = models.OneToOneField(
         CustomUser, on_delete=models.PROTECT, primary_key=True, related_name='mentoruser')
     status = models.CharField(max_length=30, choices=STATUS)
+    viewsId = models.CharField(max_length=30, default=None)
 
     def __str__(self):
         return self.user.last_name + ', ' + self.user.first_name
