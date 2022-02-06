@@ -7,7 +7,7 @@ import {
   VerifyFailureActionType,
   VerifyInProgressActionType,
   VerifySuccessActionType,
-} from "./types";
+} from "./actionTypes";
 
 // Action Creators
 export const login =

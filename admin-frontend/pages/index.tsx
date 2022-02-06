@@ -3,10 +3,10 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import styled from "styled-components";
-import { BODY_BACKGROUND } from "../context/constants";
+import { BODY_BACKGROUND } from "../constants/constants";
 import useMobileLayout from "../hooks/useMobileLayout";
 import { useSelector, useDispatch } from "react-redux";
-import { login } from "../actions/auth";
+import { login } from "../actions/auth/actionCreators";
 import { RootState } from "../stores/store";
 
 const Login: NextPage = () => {

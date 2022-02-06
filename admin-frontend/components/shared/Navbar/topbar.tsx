@@ -3,8 +3,10 @@ import React from "react";
 import { useState } from "react";
 import { IconBaseProps } from "react-icons";
 import { MdMenu } from "react-icons/md";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { BAYTREE_PRIMARY_COLOR, TOPBAR_HEIGHT } from "../../../context/constants";
+import { TOPBAR_HEIGHT } from "../../../constants/constants";
+import { RootState } from "../../../stores/store";
 import Modal, { ModalComponent } from "../Modal";
 import Logo from "./logo";
 import { NAVBAR_ICON_SIZE } from "./navbar";
@@ -92,18 +94,21 @@ interface TopbarActionProps {
 
 const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const primaryColor = useSelector<RootState, string>(
+    (state) => state.theme.colors.primaryColor
+  );
 
   return (
     <>
       <StyledTopbarActionButton
-        hoverColor={`${props.color ?? BAYTREE_PRIMARY_COLOR}30`}
+        hoverColor={`${props.color ?? primaryColor}30`}
         onClick={() => {
           props.onClick ? props.onClick() : setIsModalOpen(!isModalOpen);
         }}
         ref={props.Ref}
       >
         {React.createElement(props.icon, {
-          color: props.color ?? BAYTREE_PRIMARY_COLOR,
+          color: props.color ?? primaryColor,
           size: NAVBAR_ICON_SIZE,
         })}
       </StyledTopbarActionButton>

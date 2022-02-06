@@ -3,16 +3,12 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import Navbar from "../components/shared/Navbar/navbar";
 import { useRouter } from "next/router";
-import siteContext, {
-  defaultSiteContext,
-  SiteContextInterface,
-} from "../context/siteContext";
 import { Component, useEffect, useRef, useState } from "react";
 import {
   BODY_BACKGROUND,
   SIDEBAR_WIDTH,
   TOPBAR_HEIGHT,
-} from "../context/constants";
+} from "../constants/constants";
 import sidebarLinks from "../components/shared/Navbar/sidebarLinks";
 import topbarActions from "../components/shared/Navbar/topbarActions";
 import useMobileLayout from "../hooks/useMobileLayout";
@@ -21,8 +17,7 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import { NextComponentType, NextPageContext } from "next";
 import React from "react";
 import { Typography } from "@mui/material";
-import { logout, verify } from "../actions/auth";
-import { route } from "next/dist/server/router";
+import { logout, verify } from "../actions/auth/actionCreators";
 import OverlaySpinner from "../components/shared/overlaySpinner";
 import styled from "styled-components";
 

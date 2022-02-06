@@ -1,5 +1,6 @@
 import { Backdrop, CircularProgress } from "@mui/material";
-import { BAYTREE_PRIMARY_COLOR } from "../../context/constants";
+import { useSelector } from "react-redux";
+import { RootState } from "../../stores/store";
 
 interface OverlaySpinnerProps {
   active: boolean;
@@ -7,9 +8,13 @@ interface OverlaySpinnerProps {
 }
 
 const OverlaySpinner: React.FC<OverlaySpinnerProps> = (props) => {
+  const primaryColor = useSelector<RootState, string>(
+    (state) => state.theme.colors.primaryColor
+  );
+
   return (
     <Backdrop
-      style={{ color: BAYTREE_PRIMARY_COLOR, fontSize: "12rem" }}
+      style={{ color: primaryColor, fontSize: "12rem" }}
       open={props.active}
       onClick={props.handleClose}
     >

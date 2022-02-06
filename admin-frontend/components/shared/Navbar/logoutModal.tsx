@@ -1,7 +1,7 @@
 import { Typography, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
-import { logout } from "../../../actions/auth";
+import { logout } from "../../../actions/auth/actionCreators";
 import { ModalComponent } from "../Modal";
 
 const LogoutModal: ModalComponent = (props) => {

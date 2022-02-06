@@ -3,8 +3,10 @@ import { useRouter } from "next/router";
 import React from "react";
 import { useState } from "react";
 import { IconBaseProps } from "react-icons";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { BAYTREE_PRIMARY_COLOR, SIDEBAR_WIDTH } from "../../../context/constants";
+import { SIDEBAR_WIDTH } from "../../../constants/constants";
+import { RootState } from "../../../stores/store";
 import Modal, { ModalComponent } from "../Modal";
 import { NAVBAR_ICON_SIZE } from "./navbar";
 import { SidebarLink } from "./sidebarLinks";
@@ -83,11 +85,14 @@ interface SidebarItemProps {
 const SidebarItem: React.FC<SidebarItemProps> = (props) => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+  const primaryColor = useSelector<RootState, string>(
+    (state) => state.theme.colors.primaryColor
+  );
 
   return (
     <>
       <StyledSidebarItem
-        iconColor={props.iconColor}
+        iconColor={props.iconColor ?? primaryColor}
         isSelected={props.isSelected}
         onClick={() => {
           if (props.useMobileLayout && !props.modalComponent) {
@@ -102,7 +107,7 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
       >
         <SidebarItemIcon>
           {React.createElement(props.icon, {
-            color: props.iconColor ?? BAYTREE_PRIMARY_COLOR,
+            color: props.iconColor ?? primaryColor,
             size: NAVBAR_ICON_SIZE,
           })}
         </SidebarItemIcon>
@@ -113,7 +118,6 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
           isOpen={showModal}
           modalComponent={props.modalComponent}
           onOutsideClick={() => {
-            console.log("hey4");
             setShowModal(false);
           }}
           useMobileLayout={props.useMobileLayout}
@@ -131,13 +135,12 @@ const StyledSidebarItem = styled.div<{
   justify-content: left;
   width: 100%;
   height: 4rem;
-  background: ${(props) =>
-    props.isSelected ? `${props.iconColor ?? BAYTREE_PRIMARY_COLOR}30` : ""};
+  background: ${(props) => (props.isSelected ? `${props.iconColor}30` : "")};
   @media (hover: hover) {
     :hover {
       text-decoration: underline;
       cursor: pointer;
-      background: ${(props) => `${props.iconColor ?? BAYTREE_PRIMARY_COLOR}30`};
+      background: ${(props) => `${props.iconColor}30`};
       user-select: none;
     }
   }

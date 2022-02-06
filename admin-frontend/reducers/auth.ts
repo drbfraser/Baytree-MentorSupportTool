@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { AuthAction } from "../actions/types";
+import { AuthAction } from "../actions/auth/actionTypes";
 
 export interface AuthState {
   isAuthenticated: boolean;

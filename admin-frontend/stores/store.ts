@@ -2,13 +2,15 @@ import { useMemo } from "react";
 import { createStore, applyMiddleware, Store, Action } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunkMiddleware from "redux-thunk";
-import reducers from "../reducers";
 import { AuthState } from "../reducers/auth";
+import reducers from "../reducers/combinedReducers";
+import { ThemeState } from "../reducers/theme";
 
 let store: Store<any, Action<any>> | undefined;
 
 export interface RootState {
   auth: AuthState;
+  theme: ThemeState;
 }
 
 function initStore(initialState: any) {

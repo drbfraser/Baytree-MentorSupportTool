@@ -1,0 +1,43 @@
+import { ThemeAction } from "../actions/theme/actionTypes";
+import { BAYTREE_PRIMARY_COLOR, BAYTREE_SECONDARY_COLOR } from "../constants/constants";
+
+export interface ThemeState {
+  colors: {
+    primaryColor: string;
+    secondaryColor: string;
+    borderColor: string;
+  };
+  formatters: {
+    dateTimeFormatter: (dateTime: Date) => string;
+    currencyFormatter: (currency: string | null) => string;
+  };
+}
+
+const initialState: ThemeState = {
+  colors: {
+    primaryColor: BAYTREE_PRIMARY_COLOR,
+    secondaryColor: BAYTREE_SECONDARY_COLOR,
+    borderColor: "#303030",
+  },
+  formatters: {
+    dateTimeFormatter: (dateTime: Date) => {
+      return dateTime.toDateString();
+    },
+    currencyFormatter: (currency: string | null) => {
+      return currency ?? "";
+    },
+  },
+};
+
+const themeReducer = (
+  state: ThemeState = initialState,
+  action: ThemeAction
+): ThemeState => {
+  const { type } = action;
+  switch (type) {
+    default:
+      return state;
+  }
+};
+
+export default themeReducer;

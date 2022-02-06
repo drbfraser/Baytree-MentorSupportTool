@@ -1,22 +1,8 @@
-import { Typography, useMediaQuery } from "@mui/material";
-import { useRouter } from "next/router";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { IconBaseProps } from "react-icons";
-import { MdMenu } from "react-icons/md";
-import styled from "styled-components";
-import {
-  BAYTREE_PRIMARY_COLOR,
-  MOBILE_BREAKPOINT,
-  SIDEBAR_WIDTH,
-  TOPBAR_HEIGHT,
-} from "../../../context/constants";
-import siteContext from "../../../context/siteContext";
-import useMobileLayout from "../../../hooks/useMobileLayout";
 import {
   baytreeLogoUrl,
   changingAspirationsUrl,
 } from "../../../public/images/imageUrls";
-import Modal, { ModalComponent } from "../Modal";
 import Sidebar from "./sidebar";
 import { SidebarLink } from "./sidebarLinks";
 import Topbar from "./topbar";
