@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import CustomUser, MenteeUser, MentorUser
+from .models import AdminUser, CustomUser, MenteeUser, MentorUser
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,3 +24,10 @@ class MentorSerializer(serializers.ModelSerializer):
     class Meta:
         model = MentorUser
         fields = ('user', 'status', 'menteeuser')
+
+class AdminSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = AdminUser
+        fields = ('user', )

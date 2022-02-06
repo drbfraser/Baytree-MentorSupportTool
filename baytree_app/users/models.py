@@ -28,7 +28,8 @@ class MentorUser(models.Model):
         ('Inactive', 'Inactive')
     )
 
-    user = models.OneToOneField(CustomUser, on_delete=models.PROTECT, primary_key=True, related_name='mentoruser')
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.PROTECT, primary_key=True, related_name='mentoruser')
     status = models.CharField(max_length=30, choices=STATUS)
 
     def __str__(self):
@@ -36,8 +37,18 @@ class MentorUser(models.Model):
 
 
 class MenteeUser(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.PROTECT, primary_key=True)
-    mentorid = models.ForeignKey(MentorUser, on_delete=models.PROTECT, related_name='menteeuser')
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.PROTECT, primary_key=True)
+    mentorid = models.ForeignKey(
+        MentorUser, on_delete=models.PROTECT, related_name='menteeuser')
+
+    def __str__(self):
+        return self.user.last_name + ', ' + self.user.first_name
+
+
+class AdminUser(models.Model):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.PROTECT, primary_key=True)
 
     def __str__(self):
         return self.user.last_name + ', ' + self.user.first_name
