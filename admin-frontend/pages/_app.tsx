@@ -1,86 +1,174 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import Navbar from "../components/Navbar/navbar";
+import Navbar from "../components/shared/Navbar/navbar";
 import { useRouter } from "next/router";
 import siteContext, {
   defaultSiteContext,
   SiteContextInterface,
 } from "../context/siteContext";
-import { useState } from "react";
+import { Component, useEffect, useRef, useState } from "react";
 import {
   BODY_BACKGROUND,
   SIDEBAR_WIDTH,
   TOPBAR_HEIGHT,
 } from "../context/constants";
-import sidebarLinks from "../components/Navbar/sidebarLinks";
-import topbarActions from "../components/Navbar/topbarActions";
+import sidebarLinks from "../components/shared/Navbar/sidebarLinks";
+import topbarActions from "../components/shared/Navbar/topbarActions";
 import useMobileLayout from "../hooks/useMobileLayout";
+import { RootState, useStore } from "../stores/store";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { NextComponentType, NextPageContext } from "next";
+import React from "react";
+import { Typography } from "@mui/material";
+import { logout, verify } from "../actions/auth";
+import { route } from "next/dist/server/router";
+import OverlaySpinner from "../components/shared/overlaySpinner";
+import styled from "styled-components";
 
 export const BODY_PADDING = "1rem";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const store = useStore(pageProps.initialReduxState);
+
+  return (
+    <Provider store={store}>
+      <PageChooser pageProps={pageProps} component={Component}></PageChooser>
+    </Provider>
+  );
+}
+
+const PageChooser: React.FC<{
+  pageProps: any;
+  component: NextComponentType<NextPageContext, any, {}>;
+}> = ({ pageProps, component }) => {
   const router = useRouter();
   const mobileLayout = useMobileLayout();
   const [sidebarActive, setSidebarActive] = useState(!useMobileLayout);
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector<RootState, boolean>(
+    (state) => state.auth.isAuthenticated
+  );
+  const isVerifyInProgress = useSelector<RootState, boolean>(
+    (state) => state.auth.isVerifyInProgress
+  );
 
-  const [siteContextValue, setSiteContextValue] =
-    useState<SiteContextInterface>({
-      ...defaultSiteContext,
-      setSiteContext: (newSiteContext) => {
-        setSiteContextValue({ ...siteContextValue, ...newSiteContext });
-      },
-    });
+  useEffect(() => {
+    if (router.pathname !== "/" && router.pathname !== "/index") {
+      dispatch(verify());
+    }
+  }, [router.pathname]);
 
-  if (router.pathname !== "/" && router.pathname !== "/index") {
-    return (
-      <>
-        <HeadTags />
-        <siteContext.Provider value={siteContextValue}>
-          <div
-            style={{
-              background: BODY_BACKGROUND,
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            <Navbar
-              useMobileLayout={mobileLayout}
-              sidebarActive={sidebarActive}
-              setSidebarActive={setSidebarActive}
-              sidebarLinks={sidebarLinks}
-              topbarActions={topbarActions}
-            ></Navbar>
-            <div style={{ display: "flex", justifyContent: "left" }}>
-              {sidebarActive && !mobileLayout && (
-                <div style={{ width: SIDEBAR_WIDTH }}></div>
-              )}
-              <div
-                style={{
-                  minHeight: `calc(100vh - ${TOPBAR_HEIGHT})`,
-                  flex: 1,
-                  padding: BODY_PADDING,
-                  marginTop: TOPBAR_HEIGHT,
-                  overflowX: "hidden"
-                }}
-              >
-                <Component {...pageProps} />
-              </div>
-            </div>
-          </div>
-          <div id="modalContainer"></div>
-        </siteContext.Provider>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <HeadTags />
-        <Component {...pageProps}></Component>
-      </>
-    );
-  }
-}
+  useEffect(() => {
+    if (!isAuthenticated && !isVerifyInProgress) {
+      router.push("/");
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (
+      !isAuthenticated &&
+      !isVerifyInProgress &&
+      router.pathname !== "/" &&
+      router.pathname !== ""
+    ) {
+      setTimeout(() => {
+        router.push("/");
+      }, 3000);
+    }
+  }, [isVerifyInProgress]);
+
+  return (
+    <>
+      <HeadTags />
+      {router.pathname !== "/" && router.pathname !== "/index" ? (
+        isVerifyInProgress ? (
+          <OverlaySpinner active={isVerifyInProgress} handleClose={() => {}} />
+        ) : !isAuthenticated ? (
+          <>
+            <Typography variant="h4" padding="4rem">
+              You do not have access to this page.
+            </Typography>
+            <Typography variant="h4" padding="4rem">
+              Going back to the login page...
+            </Typography>
+          </>
+        ) : (
+          <NonLoginPage
+            mobileLayout={mobileLayout}
+            sidebarActive={sidebarActive}
+            setSidebarActive={setSidebarActive}
+            component={component}
+            pageProps={pageProps}
+          ></NonLoginPage>
+        )
+      ) : (
+        <LoginPage component={component} pageProps={pageProps}></LoginPage>
+      )}
+    </>
+  );
+};
+
+const NonLoginPage: React.FC<{
+  mobileLayout: boolean;
+  sidebarActive: boolean;
+  setSidebarActive: (active: boolean) => void;
+  component: NextComponentType<NextPageContext, any, {}>;
+  pageProps: any;
+}> = ({
+  mobileLayout,
+  sidebarActive,
+  setSidebarActive,
+  component,
+  pageProps,
+}) => {
+  const pageContentDivRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <>
+      <div
+        style={{
+          background: BODY_BACKGROUND,
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Navbar
+          useMobileLayout={mobileLayout}
+          sidebarActive={sidebarActive}
+          setSidebarActive={setSidebarActive}
+          sidebarLinks={sidebarLinks}
+          topbarActions={topbarActions}
+          pageContentDivRef={pageContentDivRef}
+        ></Navbar>
+        <div style={{ display: "flex", justifyContent: "left" }}>
+          {sidebarActive && !mobileLayout && (
+            <div style={{ width: SIDEBAR_WIDTH }}></div>
+          )}
+          <PageContent ref={pageContentDivRef}>
+            {React.createElement(component, { ...pageProps })}
+          </PageContent>
+        </div>
+      </div>
+      <div id="modalContainer"></div>
+    </>
+  );
+};
+
+const PageContent = styled.div`
+  min-height: ${`calc(100vh - ${TOPBAR_HEIGHT})`};
+  flex: 1;
+  padding: ${BODY_PADDING};
+  margin-top: ${TOPBAR_HEIGHT};
+  overflow-x: "hidden";
+`;
+
+const LoginPage: React.FC<{
+  component: NextComponentType<NextPageContext, any, {}>;
+  pageProps: any;
+}> = ({ component, pageProps }) => {
+  return React.createElement(component, { ...pageProps });
+};
 
 const HeadTags: React.FC<{}> = () => {
   return (
