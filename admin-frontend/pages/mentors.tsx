@@ -12,7 +12,14 @@ const Mentors: NextPage = () => {
         <Typography padding="0.75rem" variant="h4">
           Mentors
         </Typography>
-        <Button variant="contained" style={{margin: "0.6rem 0.6rem 0 0"}}>
+        <Button
+          variant="contained"
+          style={{
+            padding: "0.3rem 0.6rem 0.3rem 0.6rem",
+            height: "fit-content",
+            margin: "0.6rem 0.6rem 0 0",
+          }}
+        >
           <MdAdd size="2rem"></MdAdd>
           Add Mentor
         </Button>
