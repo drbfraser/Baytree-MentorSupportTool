@@ -11,6 +11,8 @@ import startOfHour from 'date-fns/startOfHour'
 
 import Card from '@mui/material/Card'
 
+import Holidays from '../Utils/Holidays'
+
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 type Props = {
@@ -66,10 +68,10 @@ const Scheduler: React.FC<Props> = ({height}) => {
 
     return (
         <div>
-            <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, mb: 1}} style = {{height: height}}>
+            <Card sx = {{boxShadow: 2, p: 3, mb: 3}} style = {{height: height}}>
                 <Calendar
                 localizer={localizer}
-                events = {sessionList}
+                events = {[...sessionList, ...Holidays]}
                 onSelectEvent = {handleEventClick}
                 />
             </Card>
