@@ -23,7 +23,8 @@ export default function MenteeInfo() {
     };
     
     useEffect(() => {
-        fetch('http://localhost:8000/users/mentors/1', {
+        let mentorId = localStorage.getItem('id')
+        fetch(`http://localhost:8000/users/mentors/${mentorId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -44,7 +45,7 @@ export default function MenteeInfo() {
                 <Card sx = {{boxShadow: 2, p: 3, mt:1 }}>
                 {Object.values(menteeInfo).map((data, index: number, arr) => (
                     index == currentMentee ?
-                    (<div>
+                    (<div key={index}>
                         <Typography variant = "overline" align = "left" sx = {{mt: 1}} color="text.secondary">
                             Name:
                         </Typography>
