@@ -18,7 +18,7 @@ import {
 import Button from "./button";
 import CheckBox from "./checkBox";
 import { Table } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { stringToBool } from "../../util/misc";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useSelector } from "react-redux";
@@ -26,7 +26,7 @@ import { RootState } from "../../stores/store";
 import { ThemeState } from "../../reducers/theme";
 import styled from "styled-components";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
-import { MdMoreVert } from "react-icons/md";
+import { MdCheck, MdMoreVert } from "react-icons/md";
 import { IconBaseProps } from "react-icons";
 
 export interface DataRowAction {
@@ -43,7 +43,7 @@ export interface DataGridColumn {
 }
 
 export interface DataGridProps {
-  data: Record<string, any>[];
+  data: any[];
   cols: DataGridColumn[];
   caption?: string;
   height?: string;
@@ -51,8 +51,9 @@ export interface DataGridProps {
   dataRowActions?: DataRowAction[];
 }
 
-const PageableDataGrid: React.FunctionComponent<DataGridProps> = (props) => {
+const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   const theme = useSelector<RootState, ThemeState>((state) => state.theme);
+  const [selectedRowIndex, setSelectedRowIndex] = useState<number>(-1);
 
   const renderDateTimeValue = (dateTime: Date | string | null) => {
     if (!dateTime) {
@@ -117,9 +118,20 @@ const PageableDataGrid: React.FunctionComponent<DataGridProps> = (props) => {
           </TableHead>
           <TableBody>
             {props.data.map((dataRow, i) => (
-              <TableRow key={`datagrid_row_${i}`}>
+              <TableRow
+                onClick={() => {
+                  setSelectedRowIndex(i);
+                }}
+                key={`datagrid_row_${i}`}
+              >
                 {props.cols.map((col: DataGridColumn, j) => (
                   <TableCell
+                    style={{
+                      backgroundColor:
+                        selectedRowIndex === i
+                          ? `${theme.colors.primaryColor}30`
+                          : undefined,
+                    }}
                     height="fit-content"
                     key={`datagrid_cell_${i}_${j}`}
                   >
@@ -138,7 +150,28 @@ const PageableDataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                       : dataRow[col.dataField]}
                   </TableCell>
                 ))}
-                {props.dataRowActions && (
+                {props.dataRowActions && props.dataRowActions.length === 1 && (
+                  <TableCell
+                    width="3rem"
+                    key={`datagrid_cell_more_options_row_${i}`}
+                  >
+                    <div>
+                      <Button
+                        backgroundColor={theme.colors.primaryColor}
+                        variant="contained"
+                        onClick={() => {
+                          if (props.dataRowActions) {
+                            props.dataRowActions[0].action(dataRow);
+                          }
+                        }}
+                      >
+                        {props.dataRowActions &&
+                          React.createElement(props.dataRowActions[0].icon)}
+                      </Button>
+                    </div>
+                  </TableCell>
+                )}
+                {props.dataRowActions && props.dataRowActions.length > 1 && (
                   <TableCell
                     width="3rem"
                     key={`datagrid_cell_more_options_row_${i}`}
@@ -213,4 +246,4 @@ const StyledTableContainer = styled(Table)<StyledTableContainerProps>`
   width: ${(props) => props.width ?? "100%"};
 `;
 
-export default PageableDataGrid;
+export default DataGrid;
