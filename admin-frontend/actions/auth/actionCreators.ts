@@ -15,17 +15,28 @@ export const login =
   async (
     dispatch: Dispatch<LoginSuccessfulActionType | LoginFailureActionType>
   ) => {
-    try {
-      const apiRes = await fetch(`/api/login`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email, password: password }),
-      });
+    const body = JSON.stringify({
+      email,
+      password,
+    });
 
-      if (apiRes.status == 200) {
+    try {
+      const apiRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/token/`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: body,
+        }
+      );
+
+      const data = await apiRes.json()
+
+      if (apiRes.status === 200 && (data.is_admin || data.is_superuser)) {
         dispatch({ type: "LOGIN_SUCCESSFUL" });
       } else {
         dispatch({ type: "LOGIN_FAILURE" });
@@ -41,23 +52,64 @@ export const logout =
     dispatch: Dispatch<LogoutSuccessfulActionType | LogoutFailureActionType>
   ) => {
     try {
-      const apiRes = await fetch(`/api/logout`, {
+      const apiRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/token/logout/`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      if (apiRes.status === 200) {
+        await dispatch({ type: "LOGOUT_SUCCESSFUL" });
+      } else {
+        await dispatch({ type: "LOGOUT_FAILURE" });
+      }
+    } catch (err) {
+      await dispatch({ type: "LOGOUT_FAILURE" });
+    }
+  };
+
+export const refreshAccessToken = async () => {
+  try {
+    const apiRes = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/token/refresh/`,
+      {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-      });
-
-      if (apiRes.status == 200) {
-        dispatch({ type: "LOGOUT_SUCCESSFUL" });
-      } else {
-        dispatch({ type: "LOGOUT_FAILURE" });
+        credentials: "include",
       }
-    } catch (err) {
-      dispatch({ type: "LOGOUT_FAILURE" });
-    }
-  };
+    );
+    return apiRes;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const verifyFetch = async () => {
+  try {
+    const apiRes = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/token/verify/`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    return apiRes.status === 200;
+  } catch (err) {
+    return false;
+  }
+};
 
 export const verify =
   () =>
@@ -70,19 +122,14 @@ export const verify =
   ) => {
     try {
       await dispatch({ type: "VERIFY_IN_PROGRESS" });
-
-      const apiRes = await fetch(`/api/verify`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (apiRes.status !== 200) {
-        await dispatch({ type: "VERIFY_FAILURE" });
-      } else {
+      if (await verifyFetch()) {
         await dispatch({ type: "VERIFY_SUCCESS" });
+      } else {
+        if (await refreshAccessToken()) {
+          await dispatch({ type: "VERIFY_SUCCESS" });
+        } else {
+          await dispatch({ type: "VERIFY_FAILURE" });
+        }
       }
     } catch (err) {
       await dispatch({ type: "VERIFY_FAILURE" });
