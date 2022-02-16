@@ -4,7 +4,8 @@ import { RootState } from "../../stores/store";
 
 interface OverlaySpinnerProps {
   active: boolean;
-  handleClose: () => void;
+  onClick?: () => void;
+  element?: any;
 }
 
 const OverlaySpinner: React.FC<OverlaySpinnerProps> = (props) => {
@@ -16,7 +17,8 @@ const OverlaySpinner: React.FC<OverlaySpinnerProps> = (props) => {
     <Backdrop
       style={{ color: primaryColor, fontSize: "12rem" }}
       open={props.active}
-      onClick={props.handleClose}
+      onClick={props.onClick}
+      component={props.element ?? undefined}
     >
       <CircularProgress color="inherit" />
     </Backdrop>
