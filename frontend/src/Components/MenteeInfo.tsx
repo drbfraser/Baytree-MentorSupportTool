@@ -23,14 +23,15 @@ export default function MenteeInfo() {
     };
     
     useEffect(() => {
-        fetch('http://localhost:8000/users/mentors/1', {
+        fetch(`http://localhost:8000/users/mentors?id=${localStorage.getItem('user_id')}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: "include"
         })
         .then (response => response.json())
-        .then (data => setMenteeInfo(data.data.menteeuser))
+        .then (data => setMenteeInfo(data.data.menteeUsers))
         .catch((error) => {
           console.error('Error:', error);
         });
@@ -42,7 +43,7 @@ export default function MenteeInfo() {
                 <Typography component="h2" variant="h6" color="text.secondary" gutterBottom>
                     Mentee Information
                 </Typography>
-                {Object.values(menteeInfo).map((data, index: number, arr) => (
+                {menteeInfo && Object.values(menteeInfo).map((data, index: number, arr) => (
                     index == currentMentee ?
                     (<div>
                         <Typography variant = "overline" align = "left" sx = {{mt: 1}} color="text.secondary">
