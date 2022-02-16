@@ -12,6 +12,8 @@ import Grow from '@mui/material/Grow'
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 
+import GoalList from './GoalsList'
+
 const Home = () => {
     const [checked, setChecked] = useState(true);
 
@@ -30,9 +32,11 @@ const Home = () => {
             <Grid item xs = {8}>
               <Grow in={checked}><div><Scheduler height = '55vh'/></div></Grow>
               <Grow in={checked}><div><Statistics /></div></Grow>
+              
             </Grid>
             <Grid item xs = {4}>
-              <Grow in={checked}><div><MenteeInfo /></div></Grow>
+              <Grow in={checked}><div><MenteeInfo/></div></Grow>
+              <Grow in={checked}><div><GoalList /></div></Grow>
             </Grid>
           </Grid>
         }

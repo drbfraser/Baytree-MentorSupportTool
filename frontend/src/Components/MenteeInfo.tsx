@@ -39,8 +39,7 @@ export default function MenteeInfo() {
 
     return (
         <div>
-            <Card sx = {{border: 0.1, boxShadow: 2, borderRadius: 5, p: 3, pl: 5, pr: 5, mb: 0}}>
-                <Typography component="h2" variant="h6" color="text.secondary" gutterBottom>
+                <Typography component="h2" variant="button" sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
                     Mentee Information
                 </Typography>
                 {menteeInfo && Object.values(menteeInfo).map((data, index: number, arr) => (
@@ -51,20 +50,6 @@ export default function MenteeInfo() {
                         </Typography>
                         <Typography align = "right" sx = {{mt: -1, mb: 1}}>
                             {data.user.first_name} {data.user.last_name}
-                        </Typography>
-                        <Divider />
-                        <Typography variant = "overline" align = "left" sx = {{mt: 1}} color="text.secondary">
-                            Email:
-                        </Typography>
-                        <Typography align = "right" sx = {{mt: -1, mb: 1}}>
-                            {data.user.email}
-                        </Typography>
-                        <Divider />
-                        <Typography variant = "overline" align = "left" sx = {{mt: 1}} color="text.secondary">
-                            DOB:
-                        </Typography>
-                        <Typography align = "right" sx = {{mt: -1, mb: 1}}>
-                            18 Jan, 1996
                         </Typography>
                         <Divider />
                         <Typography variant = "overline" align = "left" sx = {{mt: 1}} color="text.secondary">
@@ -80,27 +65,13 @@ export default function MenteeInfo() {
                         <Typography align = "right" sx = {{mt: -1, mb: 1}}>
                             31 Jan, 2020
                         </Typography>
-                        <Divider />
-                        <Typography variant = "overline" align = "left" sx = {{mt: 1}} color="text.secondary">
-                            End Date:
-                        </Typography>
-                        <Typography align = "right" sx = {{mt: -1, mb: 1}}>
-                            N/A
-                        </Typography>
+                      
                     </div>)
                     : null
                 ))}
             <Divider/>
-            <Button variant="text" onClick = {handleClick} sx = {{ml: 9}}>Next Mentee</Button>
-            <Box  
-                display="flex" 
-                alignItems="center"
-                justifyContent="center"
-                height={200}
-                sx = {{pl: 5}}>
-                <img src = {Tree} width = "null" height = "150" />
-            </Box>
-            </Card>
+            <Button variant="outlined" onClick = {handleClick} sx = {{mt:3}}>Next Mentee</Button>
+            <Card/>
         </div>
     );
 }

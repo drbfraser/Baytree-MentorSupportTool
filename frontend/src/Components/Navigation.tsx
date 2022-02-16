@@ -22,6 +22,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import PermDeviceInformationIcon from '@mui/icons-material/PermDeviceInformation';
 
 import Home from './Home';
 import Goals from './Goals';
@@ -131,6 +132,14 @@ export default function Navigation() {
                 </ListItemIcon>
                 <ListItemText>
                   Resources
+                </ListItemText>
+              </ListItem>
+              <ListItem button component="a" href= "mailto: federica@baytreecentre.org.uk" target="_blank">
+                <ListItemIcon>
+                  <PermDeviceInformationIcon sx={{ color: pink[500]}}/>
+                </ListItemIcon>
+                <ListItemText>
+                  Help
                 </ListItemText>
               </ListItem>
             </List>
