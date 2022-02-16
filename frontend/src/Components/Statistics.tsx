@@ -28,8 +28,6 @@ export default function Statistics() {
         });
       }, []);
 
-    console.log(statistics);
-
     return (
         <div>   
         <Card sx = {{boxShadow: 2, p: 3, mt: 1 }}>
