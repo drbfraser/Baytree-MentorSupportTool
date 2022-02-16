@@ -1,4 +1,5 @@
 from .shared_settings import *
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
