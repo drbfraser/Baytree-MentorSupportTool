@@ -81,10 +81,21 @@ const StyledModal = styled.div<StyledModalProps>`
     props.useMobileLayout ? "100vw" : props.width ?? "60vw"};
   height: ${(props) =>
     props.useMobileLayout ? "100vh" : props.height ?? "60vh"};
-  top: ${(props) => (props.useMobileLayout ? "0" : "20vh")};
-  left: ${(props) => (props.useMobileLayout ? "0" : "20vw")};
+  top: ${(props) =>
+    props.useMobileLayout
+      ? "0"
+      : props.height && props.height !== 'auto' && props.height !== 'fit-content'
+      ? `calc((100vh - ${props.height}) / 2)`
+      : "20vh"};
+  left: ${(props) =>
+    props.useMobileLayout
+      ? "0"
+      : props.width
+      ? `calc((100vw - ${props.width}) / 2)`
+      : "20vw"};
   z-index: 501;
   padding: 2rem;
+  overflow-y: auto;
 `;
 
 export default Modal;
