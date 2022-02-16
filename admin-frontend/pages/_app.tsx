@@ -22,6 +22,7 @@ import OverlaySpinner from "../components/shared/overlaySpinner";
 import styled from "styled-components";
 
 export const BODY_PADDING = "1rem";
+import "react-toastify/dist/ReactToastify.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const store = useStore(pageProps.initialReduxState);
@@ -78,7 +79,7 @@ const PageChooser: React.FC<{
       <HeadTags />
       {router.pathname !== "/" && router.pathname !== "/index" ? (
         isVerifyInProgress ? (
-          <OverlaySpinner active={isVerifyInProgress} handleClose={() => {}} />
+          <OverlaySpinner active={isVerifyInProgress} onClick={() => {}} />
         ) : !isAuthenticated ? (
           <>
             <Typography variant="h4" padding="4rem">
