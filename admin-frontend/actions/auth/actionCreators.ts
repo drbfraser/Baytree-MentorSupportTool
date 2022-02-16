@@ -105,7 +105,10 @@ export const verifyFetch = async () => {
         credentials: "include",
       }
     );
-    return apiRes.status === 200;
+
+    const data = await apiRes.json()
+
+    return apiRes.status === 200 && (data.is_admin || data.is_superuser);
   } catch (err) {
     return false;
   }
@@ -125,7 +128,10 @@ export const verify =
       if (await verifyFetch()) {
         await dispatch({ type: "VERIFY_SUCCESS" });
       } else {
-        if (await refreshAccessToken()) {
+        const refreshRes = await refreshAccessToken();
+        const refreshResData = await refreshRes?.json()
+        if (refreshRes && refreshRes.status === 200
+            && (refreshResData.is_admin || refreshResData.is_superuser)) {
           await dispatch({ type: "VERIFY_SUCCESS" });
         } else {
           await dispatch({ type: "VERIFY_FAILURE" });
