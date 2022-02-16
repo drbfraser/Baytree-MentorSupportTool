@@ -31,8 +31,8 @@ export default function MenteeInfo() {
           credentials: "include"
         })
         .then (response => response.json())
-        .then (data => setMenteeInfo(data.data.menteeUsers))
-        .catch((error) => {
+        .then ((data: any) => {console.log(data); setMenteeInfo(data.data[0].menteeUsers)})
+        .catch((error: any) => {
           console.error('Error:', error);
         });
     }, []); 

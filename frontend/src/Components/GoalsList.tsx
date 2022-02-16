@@ -20,7 +20,6 @@ export default function Goals() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Token ' + localStorage.getItem('token'),
         },
         credentials: "include"
       })

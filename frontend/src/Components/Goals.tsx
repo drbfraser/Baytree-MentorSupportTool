@@ -60,9 +60,24 @@ export default function Goals() {
     setOpenDeleteConfirmationDialog(false);
   };
 
-  const fetchGoals = async () => {
-    //const response = await getGoals(10, 0);
-  };
+  const fetchGoals = () => {
+    fetch('http://localhost:8000/goals/goal/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: "include"
+    })
+    .then (response => response.json())
+    .then (data => setGoals(data))
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+
+  useEffect(() => {
+    fetchGoals();
+  }, []);
 
   const handleGoalComplete = (goalId: any) => {
     fetch("http://localhost:8000/goals/goal/" + goalId, {
@@ -71,6 +86,7 @@ export default function Goals() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ status: "ACHIEVED" }),
+      credentials: "include"
     }).then((_response) => fetchGoals());
   };
 
@@ -90,6 +106,7 @@ export default function Goals() {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include"
     }).then((_response) => fetchGoals());
   };
 
