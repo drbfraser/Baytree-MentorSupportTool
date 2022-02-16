@@ -14,16 +14,17 @@ class MenteeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MenteeUser
-        fields = ('user', 'mentorid')
+        fields = ('user', 'mentorUsers')
 
 
 class MentorSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    menteeuser = MenteeSerializer(many=True, read_only=True)
+    menteeUsers = MenteeSerializer(many=True, read_only=True)
 
     class Meta:
         model = MentorUser
-        fields = ('user', 'status', 'menteeuser')
+        fields = ('user', 'status', 'menteeUsers', 'viewsPersonId')
+
 
 class AdminSerializer(serializers.ModelSerializer):
     user = UserSerializer()
