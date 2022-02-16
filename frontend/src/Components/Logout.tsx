@@ -1,6 +1,7 @@
-export default function Logout (): void {
-    if (localStorage.getItem('token')) {
-        localStorage.clear();
-        window.location.replace('http://localhost:3000/login');
-    }
+import { logout } from "../api/auth";
+
+export default async function Logout() {
+  if (await logout()) {
+    window.location.replace("http://localhost:3000/login");
+  }
 }
