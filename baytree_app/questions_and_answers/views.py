@@ -100,9 +100,9 @@ class QuestionAndAnswerView(generics.ListAPIView):
     request.data.get('25', ''), request.data.get('26', ''), request.data.get('27', ''))
 
         print(data)
-
+        
         try:
-            response = requests.post(url, data, headers = {"content-type": "text/xml"}, auth=('group.jupiter', 'Wethebest01!'))
+            response = requests.post(url, data, headers = {"content-type": "text/xml"}, auth=('',''))
            
             return Response(response,status=200)
         except Exception as e:
