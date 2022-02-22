@@ -62,7 +62,7 @@ class QuestionnaireView(APIView):
         url = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/{0}/questions?allquestions=1.json'.format(id)
 
         if request.method == 'GET':
-            r = requests.get(url, auth=('group.jupiter', 'Wethebest01!'))
+            r = requests.get(url, auth=('', ''))
             return HttpResponse(r)
 
         elif request.method == 'POST':
