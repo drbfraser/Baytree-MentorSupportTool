@@ -14,12 +14,12 @@ export default function Statistics() {
     const [statistics, setStatistics] = useState([] as any[]);
 
     useEffect(() => {
-        fetch('http://localhost:8000/users/statistics/mentor/1', {
+        fetch(`http://localhost:8000/users/statistics/mentor?id=${localStorage.getItem('user_id')}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Token ' + localStorage.getItem('token'),
           },
+          credentials: "include"
         })
         .then (response => response.json())
         .then (data => setStatistics(data))
@@ -27,8 +27,6 @@ export default function Statistics() {
           console.error('Error:', error);
         });
       }, []);
-
-    console.log(statistics);
 
     return (
         <div>   

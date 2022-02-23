@@ -1,4 +1,3 @@
-from allauth.account.views import confirm_email
 from django.contrib import admin
 from django.urls import path, include, re_path
 from admin_login.admin import blog_site
@@ -6,6 +5,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.auth import views as auth_views
+
+from .views import CookieTokenObtainPairView, CookieTokenRefreshView, CookieTokenVerifyView, logout_view
 
 
 urlpatterns = [
@@ -15,10 +16,10 @@ urlpatterns = [
     path('questionnaires/', include('questionnaires.urls')),
     path('questions/', include('questions_and_answers.urls')),
     path('goals/', include('goals.urls')),
-    re_path(r'^rest-auth/', include('dj_rest_auth.urls')),
-    re_path(r'^rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    re_path(r'^account/', include('allauth.urls')),
-    re_path(r'^accounts-rest/registration/account-confirm-email/(?P<key>.+)/$', confirm_email, name='account_confirm_email'),
+    path('api/token/', CookieTokenObtainPairView.as_view()),
+    path('api/token/refresh/', CookieTokenRefreshView.as_view()),
+    path('api/token/verify/', CookieTokenVerifyView.as_view()),
+    path('api/token/logout/', logout_view),
     # path('accounts/', include('django.contrib.auth.urls')),
     # Password reset links (ref: https://github.com/django/django/blob/master/django/contrib/auth/views.py)
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='password_reset/password_change_done.html'), 
@@ -41,4 +42,3 @@ urlpatterns += staticfiles_urlpatterns()
 admin.site.index_title = ""
 admin.site.site_header = "The Baytree Center"
 admin.site.site_title = "The Baytree Center Administration"
-

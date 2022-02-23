@@ -48,6 +48,14 @@ If you want to open a terminal within an app use the command:
 
         $ docker exec -it [container-id] bash
 
+<br>
+
+Remember to create a superuser with python manage.py createsuperuser first to login to the admin portal!
+
+<br>
+
+It is also necessary to place an .env file with the appropriate secrets at mentorsupport/baytree_app
+
 # Backend - Baytree_App: 
 
 ### Install mySQL Server and Library
@@ -78,6 +86,8 @@ python3 manage.py migrate
 python3 manage.py createsuperuser <br>
 (enter your email and password) 
 
+### Provide .env file with secrets
+Place an .env file with the appropriate secrets used in mentorsupport/baytree_app/development_settings.py & production_settings.py at mentorsupport/baytree_app.
 
 ### Start Django
 python3 manage.py runserver
@@ -175,4 +185,8 @@ Execute npm run dev to start running a development server on localhost:3001
 
 Execute npm run build and then npm run start to build for production and run on localhost:3001
 
-Navigate to localhost:3001 in your browser and use your superuser credentials to log in
+On Docker: docker-compose build & docker-compose up -d<br>
+then, create a bash shell within the baytree-app container: docker exec -it [baytree-app-container-id] bash<br>
+then, create a superuser if you haven't already with python manage.py createsuperuser
+
+Navigate to localhost:3001 in your browser and use your superuser credentials (or any admin user credentials) to log in

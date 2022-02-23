@@ -23,16 +23,16 @@ export default function MenteeInfo() {
     };
     
     useEffect(() => {
-        let mentorId = localStorage.getItem('id')
-        fetch(`http://localhost:8000/users/mentors/${mentorId}`, {
+        fetch(`http://localhost:8000/users/mentors?id=${localStorage.getItem('user_id')}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: "include"
         })
         .then (response => response.json())
-        .then (data => setMenteeInfo(data.data.menteeuser))
-        .catch((error) => {
+        .then ((data: any) => {console.log(data); setMenteeInfo(data.data[0].menteeUsers)})
+        .catch((error: any) => {
           console.error('Error:', error);
         });
     }, []); 
@@ -42,8 +42,7 @@ export default function MenteeInfo() {
                 <Typography component="h2" variant="button" sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
                     Mentee Information
                 </Typography>
-                <Card sx = {{boxShadow: 2, p: 3, mt:1 }}>
-                {Object.values(menteeInfo).map((data, index: number, arr) => (
+                {menteeInfo && Object.values(menteeInfo).map((data, index: number, arr) => (
                     index == currentMentee ?
                     (<div key={index}>
                         <Typography variant = "overline" align = "left" sx = {{mt: 1}} color="text.secondary">
@@ -72,7 +71,7 @@ export default function MenteeInfo() {
                 ))}
             <Divider/>
             <Button variant="outlined" onClick = {handleClick} sx = {{mt:3}}>Next Mentee</Button>
-            </Card>
+            <Card/>
         </div>
     );
 }

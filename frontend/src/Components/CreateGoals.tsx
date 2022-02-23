@@ -42,8 +42,8 @@ const  CreateGoals = (props:any) =>   {
     }
 
     const goal = {
-        mentor: localStorage.getItem('id'),
-        mentee: localStorage.getItem('id'),
+        mentor: localStorage.getItem('user_id'),
+        mentee: localStorage.getItem('user_id'),
         title: title,
         date: moment().format("YYYY-MM-DD"),
         goal_review_date: moment(goal_review_date).format("YYYY-MM-DD"),
@@ -65,7 +65,8 @@ const  CreateGoals = (props:any) =>   {
                  'Content-Type': 'application/json',
              },
             
-             body: JSON.stringify(goal)
+             body: JSON.stringify(goal),
+             credentials: "include"
          })
              .then(response => console.log(response))
              .then(() => {

@@ -16,6 +16,9 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+class Mentoring(models.Model):
+    mentorUser=models.ForeignKey("MentorUser", on_delete=models.CASCADE)
+    menteeUser=models.ForeignKey("MenteeUser", on_delete=models.CASCADE)
 
 class MentorUser(models.Model):
     STATUS = (
@@ -28,16 +31,28 @@ class MentorUser(models.Model):
         ('Inactive', 'Inactive')
     )
 
-    user = models.OneToOneField(CustomUser, on_delete=models.PROTECT, primary_key=True, related_name='mentoruser')
-    status = models.CharField(max_length=30, choices=STATUS)
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, primary_key=True, related_name='mentoruser')
+    status = models.CharField(max_length=30, default='Active', choices=STATUS)
+    viewsPersonId = models.CharField(max_length=30, default=None)
+    menteeUsers = models.ManyToManyField("MenteeUser", through=Mentoring)
 
     def __str__(self):
         return self.user.last_name + ', ' + self.user.first_name
 
 
 class MenteeUser(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.PROTECT, primary_key=True)
-    mentorid = models.ForeignKey(MentorUser, on_delete=models.PROTECT, related_name='menteeuser')
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, primary_key=True)
+    mentorUsers = models.ManyToManyField("MentorUser", through=Mentoring)
+
+    def __str__(self):
+        return self.user.last_name + ', ' + self.user.first_name
+
+
+class AdminUser(models.Model):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, primary_key=True)
 
     def __str__(self):
         return self.user.last_name + ', ' + self.user.first_name

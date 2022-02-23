@@ -6,6 +6,7 @@ from .serializers import QuestionnaireSerializer
 from .permissions import *
 import requests
 from django.http import HttpResponse
+from .constants import views_username, views_password
 
 
 class QuestionnaireView(APIView):
@@ -62,7 +63,7 @@ class QuestionnaireView(APIView):
         url = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/{0}/questions?allquestions=1.json'.format(id)
 
         if request.method == 'GET':
-            r = requests.get(url, auth=('', ''))
+            r = requests.get(url, auth=(views_username, views_password))
             return HttpResponse(r)
 
         elif request.method == 'POST':

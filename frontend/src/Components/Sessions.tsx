@@ -57,7 +57,8 @@ const Sessions = () => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(session)
+        body: JSON.stringify(session),
+        credentials: "include"
     })
     .then(response => response.json())
 
@@ -72,6 +73,7 @@ const Sessions = () => {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: "include"
     })
     .then (response => response.json())
     .then (data => setMenteeList(data.data.menteeuser))

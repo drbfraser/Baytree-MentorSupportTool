@@ -26,6 +26,7 @@ const Questionnaire = () => {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: "include"
     })
     .then (response => response.json())
     .then (data => setFormData(data))
@@ -60,6 +61,7 @@ const Questionnaire = () => {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: "include",
       body: JSON.stringify(answers)
     })
     .then (response => handleSubmitResponse(response))
