@@ -56,7 +56,7 @@ const Login: NextPage = () => {
           <BackgroundPhoto></BackgroundPhoto>
           <BaytreeLogo></BaytreeLogo>
           <LoginForm
-            errors={errors}
+            errors={errors && !isAuthenticated}
             email={email}
             setEmail={setEmail}
             password={password}
@@ -72,16 +72,19 @@ const Login: NextPage = () => {
             height: "95vh",
             background: "white",
             borderRadius: "20px",
+            boxShadow: "0 0 0.3rem grey"
           }}
         >
-          <Grid item xs={8} style={{ height: "100%", width: "100%" }}>
+          <Grid item xs={8} style={{display: "flex", alignItems: "center", height: "100%", width: "100%", padding: "2rem" }}>
             <img
               src="/images/login/photo.jpg"
               style={{
-                objectFit: "fill",
-                height: "100%",
+                objectFit: "cover",
+                maxHeight: "95vh",
+                height: "auto",
                 width: "100%",
                 borderRadius: "20px",
+                boxShadow: "0 0 0.3rem grey",
               }}
               alt="Login background photo"
             ></img>
@@ -103,7 +106,7 @@ const Login: NextPage = () => {
             <Typography variant="h4" padding="1rem" align="center">
               Admin Login
             </Typography>
-            {errors && (
+            {errors && !isAuthenticated && (
               <Alert severity="warning">Failed to login.</Alert>
             )}
             <TextField
@@ -162,7 +165,7 @@ const BackgroundPhotoContainer = styled.div``;
 
 const StyledBackgroundPhoto = styled.img`
   object-fit: fill;
-  height: 40vh;
+  height: auto;
   width: 100%;
 `;
 

@@ -1,4 +1,3 @@
-from email.policy import EmailPolicy
 from .base_settings import *
 import environ
 # Initialise environment variables
