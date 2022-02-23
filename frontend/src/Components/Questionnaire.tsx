@@ -11,14 +11,14 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Skeleton from '@mui/material/Skeleton';
 import TextField from '@mui/material/TextField';
 import Typography  from "@mui/material/Typography";
+import { isValid } from "date-fns";
 
 const Questionnaire = () => {
 
   const [formData, setFormData] = useState([] as any[]);
-  const [answers, setAnswers] = useState({answer: ''});
+  const [answers, setAnswers] = useState({} as any);
   const [loading, setLoading] = useState(true);
-
-  let values: { [key: string]: string } = {};
+  const [submitted, setSubmitted] = useState(true);
 
   useEffect(() => {
     fetch('http://localhost:8000/questionnaires/get_questionnaire/', {
@@ -35,26 +35,35 @@ const Questionnaire = () => {
     });
   }, []);
 
-  useEffect(() => {
-    for (let entry in formData) {
-      values = {...values, entry: ''};
-      console.log(entry)
-      console.log(values);
-    }
-  }, [formData]);
-
-  console.log(values);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    alert('Thank you! Your answers have been submitted');
-    const formData = new FormData(e.currentTarget);
-    e.preventDefault();
-    // for (let [key, value] of formData.entries()) {
-    //   console.log(key, value);
-    // }
-    console.log(formData.entries())
+  const isValid = () => {
+    for (let [key, value] of Object.entries(formData))
+   
+      if (answers[value.QuestionID] == undefined || answers[value.QuestionID].length == 0){
+        return false
+      }
+      return true
   }
-  
+  const handleSubmitResponse = (response: any) => {
+    if (response.status == 200) {
+      alert('Succesfully Submitted, Thank you!')
+      setAnswers({})
+    } else {
+      alert('Failed to Submit, Error: '+ response)
+    }
+  }
+
+  const handleSubmit = () => {
+    answers['mentorId'] = localStorage.getItem('id')
+
+    fetch('http://localhost:8000/questions/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(answers)
+    })
+    .then (response => handleSubmitResponse(response))
+  }
   return (
     <Grow in={true}>
     <Container 
@@ -66,11 +75,7 @@ const Questionnaire = () => {
       </Typography>
       <Divider />
 
-      <Box component="form"
-        sx = {{margin: 5}}
-        onSubmit = {handleSubmit} 
-        noValidate
-        autoComplete="off">
+      <Box sx = {{margin: 5}}>
         
         {loading === true &&
         <div>
@@ -89,8 +94,8 @@ const Questionnaire = () => {
         {loading === false &&
         <div>
         {Object.values(formData).map((data, index) => 
-            <FormControl fullWidth>
-              <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{index + 1}. {data.Question}</Typography>
+            <FormControl fullWidth required>
+              <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{index + 1}. {data.Question}*</Typography>
               {(function () {
                 switch (data.inputType) {
                   case 'text':
@@ -100,9 +105,9 @@ const Questionnaire = () => {
                         variant="outlined"
                         sx = {{mt: 0, pt: 0, mb: 5}}
                         required
-                        value = {values[index]}
+                        value={answers[data.QuestionID] || ''}
                         margin="normal"
-                        onChange = {e => setAnswers(Object.assign({}, answers, { answer: e.target.value }))}
+                        onChange = {e => setAnswers(Object.assign({}, answers, { [data.QuestionID]: e.target.value }))}
                       />
                     );
                   case 'number':
@@ -113,6 +118,8 @@ const Questionnaire = () => {
                         aria-label = "gender"
                         name = "radio-buttons-group"
                         sx = {{mt: 2, pt: 0, mb: 5, gap: 5}}
+                        value={answers[data.QuestionID] || ''}
+                        onChange = {e => setAnswers(Object.assign({}, answers, { [data.QuestionID]: e.target.value }))}
                       >
                         <FormControlLabel value="1" control={<Radio />} label="Strongly Disagree" labelPlacement="top"/>
                         <FormControlLabel value="2" control={<Radio />} label="Disagree" labelPlacement="top"/>
@@ -127,7 +134,14 @@ const Questionnaire = () => {
               <Divider />
             </FormControl>
         )}
-        <Button variant="contained" type = "submit" sx = {{mt: 3}}>Submit</Button>
+        <Button 
+          variant="contained"
+          sx = {{mt: 3}} 
+          onClick={handleSubmit} 
+          disabled={!isValid()}
+        >
+          Submit
+        </Button>
         </div>
       }
       </Box>
