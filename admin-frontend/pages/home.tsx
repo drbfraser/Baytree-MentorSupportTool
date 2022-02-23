@@ -4,9 +4,7 @@ import { NextPage } from "next";
 const Home: NextPage = () => {
   return (
     <span style={{ overflowWrap: "anywhere" }}>
-      This is the home Pageaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-      aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa sdf d d s a w e j d a h v d s
-      a d q a c z x d s d h u j a
+      Welcome to the home page! Graphs will be added here later.
     </span>
   );
 };
