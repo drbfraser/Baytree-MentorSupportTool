@@ -26,7 +26,7 @@ export const generateBackendGetFunc =
 
       if (apiRes.status === 401) {
         const refreshRes = await refreshAccessToken();
-        if (refreshRes && refreshRes.status === 200) {
+        if (refreshRes) {
           apiRes = await backendGetFetch(backendEndpoint, limitStr, offsetStr);
         } else {
           return { total: -1, status: apiRes.status, data: null };
@@ -75,7 +75,7 @@ export const generateBackendPostFunc =
 
       if (apiRes.status === 401) {
         const refreshResponse = await refreshAccessToken();
-        if (refreshResponse && refreshResponse.status === 200) {
+        if (refreshResponse) {
           apiRes = await backendPostFetch(backendEndpoint, postFetchObject);
         } else {
           return { ids: null, status: apiRes.status };
@@ -123,7 +123,7 @@ export const generateBackendPutFunc =
 
       if (apiRes.status === 401) {
         const refreshResponse = await refreshAccessToken();
-        if (refreshResponse && refreshResponse.status === 200) {
+        if (refreshResponse) {
           apiRes = await backendPutFetch(backendEndpoint, putFetchObject);
         } else {
           return { status: apiRes.status };
@@ -168,7 +168,7 @@ export const generateBackendDeleteFunc =
 
       if (apiRes.status === 401) {
         const refreshResponse = await refreshAccessToken();
-        if (refreshResponse && refreshResponse.status === 200) {
+        if (refreshResponse) {
           apiRes = await backendDeleteFetch(backendEndpoint, objectIds);
         } else {
           return { status: apiRes.status };

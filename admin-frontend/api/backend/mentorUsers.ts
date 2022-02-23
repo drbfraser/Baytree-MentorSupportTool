@@ -1,16 +1,17 @@
 import { generateBackendCrudFuncs } from "./utils";
 
+export type MentorUserStatus = "Active"
+| "Withdrawn"
+| "On Hold"
+| "Temporarily Withdrawn"
+| "Future Leaver"
+| "Staff"
+| "Inactive";
+
 export interface MentorUserCreate {
   user: number;
   menteeUsers: number[];
-  status:
-    | "Active"
-    | "Withdrawn"
-    | "On Hold"
-    | "Temporarily Withdrawn"
-    | "Future Leaver"
-    | "Staff"
-    | "Inactive";
+  status: MentorUserStatus;
   viewsPersonId: string;
 }
 
@@ -22,14 +23,7 @@ export interface MentorUserResponse {
     last_name: string;
   };
   menteeUsers: number[];
-  status:
-    | "Active"
-    | "Withdrawn"
-    | "On Hold"
-    | "Temporarily Withdrawn"
-    | "Future Leaver"
-    | "Staff"
-    | "Inactive";
+  status: MentorUserStatus;
   viewsPersonId: string;
 }
 

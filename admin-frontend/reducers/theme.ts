@@ -1,4 +1,3 @@
-import { ThemeAction } from "../actions/theme/actionTypes";
 import { BAYTREE_PRIMARY_COLOR, BAYTREE_SECONDARY_COLOR } from "../constants/constants";
 
 export interface ThemeState {
@@ -27,7 +26,7 @@ const initialState: ThemeState = {
 
 const themeReducer = (
   state: ThemeState = initialState,
-  action: ThemeAction
+  action: any
 ): ThemeState => {
   const { type } = action;
   switch (type) {
