@@ -65,41 +65,6 @@ def postUser(self, request):
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class AdminsView(APIView):
-    permission_classes = [AdminPermissions | SuperUserPermissions]
-
-    def get(self, request, id=None):
-        try:
-            if id == None:
-                return Response({"error": "Please give an id as a URL parameter."},
-                                status=status.HTTP_400_BAD_REQUEST)
-            admin = AdminUser.objects.get(user_id=id)
-            serializer = AdminSerializer(admin)
-            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": "Failed to retrieve admin object."},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    def post(self, request, id=None):
-        try:
-            data = request.data
-            email = data["email"]
-            password = data["password"]
-            if not CustomUser.objects.filter(email=email).exists():
-                customUser = CustomUser.objects.create_user(email=email,
-                                                            password=password)
-                AdminUser.objects.create(user=customUser)
-                return Response({"success": "Admin created successfully"},
-                                status=status.HTTP_201_CREATED)
-            else:
-                return Response({"error": "Failed to create admin: email already exists."},
-                                status=status.HTTP_400_BAD_REQUEST)
-
-        except Exception as e:
-            return Response({"error": "Failed to create admin."},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 class StatisticViews(APIView):
     permission_classes = [MentorsViewPermissions]
 

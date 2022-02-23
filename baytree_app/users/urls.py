@@ -5,7 +5,7 @@ from .models import AdminUser, CustomUser, MenteeUser, MentorUser
 from .permissions import AdminPermissions, MenteesViewPermissions, MentorsViewPermissions
 from .serializers import AdminSerializer, MenteeSerializer, MentorSerializer, UserSerializer
 
-from .views import AdminsView, StatisticViews, get_mentors_from_views, postUser
+from .views import StatisticViews, get_mentors_from_views, postUser
 
 urlpatterns = [
     path('mentees', GenerateCrudEndpointsForModel.as_view(model=MenteeUser,
