@@ -6,6 +6,7 @@ from .serializers import QuestionnaireSerializer
 from .permissions import *
 import requests
 from django.http import HttpResponse
+from .constants import views_username, views_password
 
 
 class QuestionnaireView(APIView):
@@ -56,18 +57,13 @@ class QuestionnaireView(APIView):
         return HttpResponse('index')
 
     def get_questionnaire(request, id=None):
+        # id is optional. Defaults to 10 because that is the id of the questionnaire that matches the local db.
+        id = id if id is not None else 10
 
-        url = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/10/questions?allquestions=1.json'
-        url_head = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/'
-        url_tail = '/questions?allquestions=1.json'
+        url = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/{0}/questions?allquestions=1.json'.format(id)
 
         if request.method == 'GET':
-            if id:
-                url = url_head + id + url_tail
-            r = requests.get(
-                url,
-                auth=('group.jupiter', 'Wethebest01!'))
-            #print(r.content)
+            r = requests.get(url, auth=(views_username, views_password))
             return HttpResponse(r)
 
         elif request.method == 'POST':

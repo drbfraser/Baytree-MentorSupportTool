@@ -44,7 +44,7 @@ export default function MenteeInfo() {
                 </Typography>
                 {menteeInfo && Object.values(menteeInfo).map((data, index: number, arr) => (
                     index == currentMentee ?
-                    (<div>
+                    (<div key={index}>
                         <Typography variant = "overline" align = "left" sx = {{mt: 1}} color="text.secondary">
                             Name:
                         </Typography>
