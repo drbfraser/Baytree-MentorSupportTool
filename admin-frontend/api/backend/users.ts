@@ -1,4 +1,4 @@
-/*
+/**
   Endpoints for creating/reading/updating/deleting Django user(s).
   All users are a sub-type of a user in Django. For instance, Mentor users,
   Mentee users, Admin users, and Super users are all extensions of a Django user
@@ -7,7 +7,7 @@
   User object that was first created.
 */
 
-import { generateBackendCrudFuncs } from "./utils";
+import { generateBackendCrudFuncs } from "./base";
 
 export interface UserCreate {
   email: string;

@@ -1,4 +1,4 @@
-import { generateBackendGetFunc } from "../utils";
+import { generateBackendGetFunc } from "../base";
 
 export interface MentorResponse {
   firstName: string;

@@ -1,5 +1,16 @@
+/** The base module provides reusuable functions to quickly create endpoints
+ *  for performing CRUD operations on Django Models while supporting
+ *  capabilities for pagination and filtering/sorting (in the future).
+ */
+
 import { refreshAccessToken } from "../../actions/auth/actionCreators";
 
+/** Make paginated get requests to the backend to obtain model objects
+ * which are implemented in the backend using the GenerateCrudEndpointsForModel
+ * Python class. limit specifies how many objects to return, while offset specifies
+ * how many objects to skip in the resulting response of objects from the specified
+ * backendEndpoint.
+ */
 const backendGetFetch = async (
   backendEndpoint: string,
   limit: string,
@@ -15,6 +26,10 @@ const backendGetFetch = async (
   });
 };
 
+/** Generates a strongly-typed function given a backendEndpoint that will allow
+ * paginated get requests via backendGetFetch() above. Information for how to
+ * use the generated function can be seen from the JSDoc for backendGetFetch() above.
+ */
 export const generateBackendGetFunc =
   <ResponseObject>(backendEndpoint: string) =>
   async (limit: number, offset: number) => {
@@ -46,6 +61,14 @@ export const generateBackendGetFunc =
     }
   };
 
+/** Make post requests to the backend to create model object(s)
+ * which are implemented in the backend using the GenerateCrudEndpointsForModel
+ * Python class. backendEndpoint specifies the endpoint of the model to create
+ * objects for, while requestObject contains an array of objects to create for
+ * that model (as used in generateBackendPostFunc()). When creating objects
+ * that have foreign key fields, providing an array of foreign key ids will
+ * automatically link those ids to objects in the database.
+ */
 const backendPostFetch = async (
   backendEndpoint: string,
   requestObject: any
@@ -63,6 +86,11 @@ const backendPostFetch = async (
   return apiRes;
 };
 
+/** Generates a function to make post requests to the backend to create model object(s)
+ * which are implemented in the backend using the GenerateCrudEndpointsForModel
+ * Python class via backendPostFetch() above.Information for how to use the generated
+ * function can be seen from the JSDoc for backendPostFetch() above.
+ */
 export const generateBackendPostFunc =
   <RequestObject>(backendEndpoint: string) =>
   async (requestObject: RequestObject[] | RequestObject) => {
@@ -94,6 +122,15 @@ export const generateBackendPostFunc =
     }
   };
 
+/** Make put requests to the backend to update model object(s)
+ * which are implemented in the backend using the GenerateCrudEndpointsForModel
+ * Python class. backendEndpoint specifies the endpoint of the model to create
+ * objects for, while body contains an array of objects to update for that model.
+ * Note that each object must contain the id of the model object in the Django
+ * database to. When updating objects that have foreign key fields,
+ * providing an array of foreign key ids will automatically link those ids to
+ * objects in the database.
+ */
 const backendPutFetch = async (
   backendEndpoint: string,
   body: any
@@ -111,6 +148,12 @@ const backendPutFetch = async (
   return apiRes;
 };
 
+/** Generates a function to make put requests to the backend to update model object(s)
+ * which are implemented in the backend using the GenerateCrudEndpointsForModel
+ * Python class. backendEndpoint specifies the endpoint of the model to create
+ * objects for. Information for how to use the generated function can be seen
+ * from the JSDoc for backendPutFetch() above.
+ */
 export const generateBackendPutFunc =
   <RequestObject>(backendEndpoint: string) =>
   async (requestObject: RequestObject[] | RequestObject) => {
@@ -138,6 +181,11 @@ export const generateBackendPutFunc =
     }
   };
 
+/** Make delete requests to the backend to delete model object(s)
+ * which are implemented in the backend using the GenerateCrudEndpointsForModel
+ * Python class. backendEndpoint specifies the endpoint of the model to delete
+ * objects from, while objectIds contains an array of object ids to delete for that model.
+ */
 const backendDeleteFetch = async (
   backendEndpoint: string,
   objectIds: number[]
@@ -157,6 +205,13 @@ const backendDeleteFetch = async (
   return apiRes;
 };
 
+
+/** Generates a function to make delete requests to the backend to delete model object(s)
+ * which are implemented in the backend using the GenerateCrudEndpointsForModel
+ * Python class. backendEndpoint specifies the endpoint of the model to delete
+ * objects from. Information for how to use the generated function can be seen
+ * from the JSDoc for backendDeleteFetch() above.
+ */
 export const generateBackendDeleteFunc =
   (backendEndpoint: string) => async (objectIds: number | number[]) => {
     try {
@@ -183,6 +238,15 @@ export const generateBackendDeleteFunc =
     }
   };
 
+/** Generates all strongly-typed functions necessary for CRUD operations on any Django
+ * Model object implemented with GenerateCrudEndpointsForModel in the Python
+ * backend. backendEndpoint specifies the model endpoint to use in the backend.
+ * CreateObject is a type specifying the structure of each object  to create for a model.
+ * ResponseObject is a type specifying the structure of a model object response
+ * from the backend for a Read operation (GET request). UpdateObject is a type
+ * specifying the structure of model objects to be updated when performing an
+ * Update operation (PUT request).
+ */
 export const generateBackendCrudFuncs = <
   CreateObject,
   ResponseObject,
