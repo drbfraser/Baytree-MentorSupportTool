@@ -26,14 +26,6 @@ class QuestionAndAnswerView(generics.ListAPIView):
     def post(self, request):
         return self.submit_new_answer_set(request)
 
-        # Since this part is not used, we re skipping right now
-        create_serializer = QuestionAndAnswerSerializer(data=request.data)
-        if create_serializer.is_valid():
-            qa_object = create_serializer.save()
-            read_serializer = QuestionAndAnswerSerializer(qa_object)
-            return Response(read_serializer.data, status=201)
-        return Response(create_serializer.errors, status=400)
-
     def put(self, request, id=None):
         try:
             qa = QuestionAndAnswer.objects.get(id=id)
