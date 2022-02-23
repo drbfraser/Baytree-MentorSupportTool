@@ -1,3 +1,11 @@
+/*
+  Endpoints creating/reading/updating/deleting Mentor User(s). Mentor Users are a sub-type of
+  Django users, so a corresponding Django user must be created (via the endpoints in users.ts)
+  before creating a Mentor User with these endpoints, and the Mentor User can be linked
+  to this Django user by assigning the Django User id number to the "user" field in
+  the MentorUserCreate interface below.
+*/
+
 import { generateBackendCrudFuncs } from "./utils";
 
 export type MentorUserStatus = "Active"
