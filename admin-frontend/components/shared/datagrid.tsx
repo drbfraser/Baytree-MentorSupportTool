@@ -67,12 +67,6 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
     return theme.formatters.dateTimeFormatter(dateTime);
   };
 
-  const renderCurrencyValue = (currency: string | null) => {
-    // TODO: Create baytree theme formatter for currency
-
-    return theme.formatters.currencyFormatter(currency);
-  };
-
   const renderDateValue = (date: Date | string | null) => {
     if (!date) {
       return "";
@@ -141,8 +135,6 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                       ? null
                       : col.dataType === "date"
                       ? renderDateValue(dataRow[col.dataField])
-                      : col.dataType === "currency"
-                      ? renderCurrencyValue(dataRow[col.dataField])
                       : col.dataType === "dateTime"
                       ? renderDateTimeValue(dataRow[col.dataField])
                       : typeof dataRow[col.dataField] === "boolean"

@@ -9,7 +9,6 @@ export interface ThemeState {
   };
   formatters: {
     dateTimeFormatter: (dateTime: Date) => string;
-    currencyFormatter: (currency: string | null) => string;
   };
 }
 
@@ -22,9 +21,6 @@ const initialState: ThemeState = {
   formatters: {
     dateTimeFormatter: (dateTime: Date) => {
       return dateTime.toDateString();
-    },
-    currencyFormatter: (currency: string | null) => {
-      return currency ?? "";
     },
   },
 };
