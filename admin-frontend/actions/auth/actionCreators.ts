@@ -9,7 +9,21 @@ import {
   VerifySuccessActionType,
 } from "./actionTypes";
 
-// Action Creators
+interface AuthResponse {
+  is_admin: boolean;
+  is_superuser: boolean;
+}
+
+interface LoginResponse extends AuthResponse {}
+interface VerifyResponse extends AuthResponse {}
+interface RefreshResponse extends AuthResponse {}
+
+/** async function that attempts to login the admin user with their email and password.
+ If the login is successful, a value of true will be returned, and an action of
+ LoginSuccessfulActionType will be dispatched, which will set the auth reducer
+ state for isAuthenticated to true. If the login is not successful, false will be returned,
+ and an action of LoginFailureActionType will be dispatched, which will set the auth reducer
+ state for isAuthenticated to false. */
 export const login =
   (email: string, password: string) =>
   async (
@@ -34,18 +48,27 @@ export const login =
         }
       );
 
-      const data = await apiRes.json()
+      const data: LoginResponse = await apiRes.json();
 
       if (apiRes.status === 200 && (data.is_admin || data.is_superuser)) {
         dispatch({ type: "LOGIN_SUCCESSFUL" });
+        return true;
       } else {
         dispatch({ type: "LOGIN_FAILURE" });
+        return false;
       }
     } catch (err) {
       dispatch({ type: "LOGIN_FAILURE" });
+      return false;
     }
   };
 
+/** async function that attempts to logout the admin user.
+ If the logout is successful, a value of true will be returned, and an action of
+ LogoutSuccessfulActionType will be dispatched, which will set the auth reducer
+ state for isAuthenticated to false. If the logout is not successful, false will be returned,
+ and an action of LogoutFailureActionType will be dispatched, which will set the auth reducer
+ state for isAuthenticated to true. */
 export const logout =
   () =>
   async (
@@ -64,15 +87,23 @@ export const logout =
         }
       );
       if (apiRes.status === 200) {
-        await dispatch({ type: "LOGOUT_SUCCESSFUL" });
+        dispatch({ type: "LOGOUT_SUCCESSFUL" });
+        return true;
       } else {
-        await dispatch({ type: "LOGOUT_FAILURE" });
+        dispatch({ type: "LOGOUT_FAILURE" });
+        return false;
       }
     } catch (err) {
       await dispatch({ type: "LOGOUT_FAILURE" });
+      return false;
     }
   };
 
+/** async function that attempts to refresh the admin user's access token.
+ if the refresh is successful, this function will return the successful fetch response which contains
+ more information about the user, like is_admin and is_superuser. The admin user will be able to
+ access the site for 30 more minutes until they have to refresh again. If the refresh failed,
+ this function will return null, and they will not be able to access the site. */
 export const refreshAccessToken = async () => {
   try {
     const apiRes = await fetch(
@@ -86,12 +117,18 @@ export const refreshAccessToken = async () => {
         credentials: "include",
       }
     );
-    return apiRes;
+
+    const data: RefreshResponse = await apiRes.json();
+
+    return data;
   } catch (err) {
     return null;
   }
 };
 
+/** async function that attempts to make a request to the backend to verify the user's
+ access token. if the verification is successful, this function will return the successful
+ response which contains more information about the user, like is_admin and is_superuser. */
 export const verifyFetch = async () => {
   try {
     const apiRes = await fetch(
@@ -106,14 +143,20 @@ export const verifyFetch = async () => {
       }
     );
 
-    const data = await apiRes.json()
+    const data: VerifyResponse = await apiRes.json();
 
-    return apiRes.status === 200 && (data.is_admin || data.is_superuser);
+    return data;
   } catch (err) {
-    return false;
+    return null;
   }
 };
 
+/** async function that attempts to make a request to the backend to verify the user's
+ access token. if the verification is successful, this function will dispatch an action
+ of type VerifySuccessActionType and return true. Otherwise, it will return false and 
+ dispatch an action of type VerifyFailureActionType. While the verification is in progress,
+ an action of VerifyInProgressActionType will be dispatched, so that frontend code can
+ display loading spinners to the user to inform that the page is still loading. */
 export const verify =
   () =>
   async (
@@ -125,13 +168,20 @@ export const verify =
   ) => {
     try {
       await dispatch({ type: "VERIFY_IN_PROGRESS" });
-      if (await verifyFetch()) {
+      const verifyResData = await verifyFetch();
+
+      if (
+        verifyResData &&
+        (verifyResData.is_admin || verifyResData.is_superuser)
+      ) {
         await dispatch({ type: "VERIFY_SUCCESS" });
       } else {
-        const refreshRes = await refreshAccessToken();
-        const refreshResData = await refreshRes?.json()
-        if (refreshRes && refreshRes.status === 200
-            && (refreshResData.is_admin || refreshResData.is_superuser)) {
+        const refreshResData = await refreshAccessToken();
+
+        if (
+          refreshResData &&
+          (refreshResData.is_admin || refreshResData.is_superuser)
+        ) {
           await dispatch({ type: "VERIFY_SUCCESS" });
         } else {
           await dispatch({ type: "VERIFY_FAILURE" });
