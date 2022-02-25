@@ -12,6 +12,7 @@ from .views import CookieTokenObtainPairView, CookieTokenRefreshView, CookieToke
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('sessions/', include('sessions.urls')),
+    path('records/', include('records.urls')),
     path('users/', include('users.urls')),
     path('questionnaires/', include('questionnaires.urls')),
     path('questions/', include('questions_and_answers.urls')),
