@@ -26,7 +26,6 @@
     "react-toastify": "^8.1.1",
     "redux": "^4.1.2",
     "redux-devtools": "^3.7.0",
-    "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.1",
     "styled-components": "^5.3.3"
   },
