@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { createStore, applyMiddleware, Store, Action } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { composeWithDevTools } from "@redux-devtools/extension";
 import thunkMiddleware from "redux-thunk";
 import { AuthState } from "../reducers/auth";
 import reducers from "../reducers/combinedReducers";

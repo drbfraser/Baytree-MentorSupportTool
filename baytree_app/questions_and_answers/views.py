@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from .models import QuestionAndAnswer
 from .serializers import QuestionAndAnswerSerializer
 from .permissions import *
+from .constants import views_username, views_password
 
 class QuestionAndAnswerView(generics.ListAPIView):
     permission_classes = [IsOwner]
@@ -94,7 +95,7 @@ class QuestionAndAnswerView(generics.ListAPIView):
         print(data)
         
         try:
-            response = requests.post(url, data, headers = {"content-type": "text/xml"}, auth=('',''))
+            response = requests.post(url, data, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
            
             return Response(response,status=200)
         except Exception as e:
