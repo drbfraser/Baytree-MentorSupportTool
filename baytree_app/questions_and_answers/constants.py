@@ -3,6 +3,6 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 
-views_base_url = 'https://app.viewsapp.net/api/restful/'
-views_username = env("VIEWS_USERNAME")
-views_password = env("VIEWS_PASSWORD")
+VIEWS_BASE_URL = 'https://app.viewsapp.net/api/restful/'
+VIEWS_USERNAME = env("VIEWS_USERNAME")
+VIEWS_PASSWORD = env("VIEWS_PASSWORD")
