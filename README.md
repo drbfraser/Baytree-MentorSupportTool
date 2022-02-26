@@ -24,9 +24,16 @@ VIEWS_PASSWORD=the_password
 
 Replace instances of `something_random` with random strings, and `the_username` and `the_password` with appropriate credentials (which you can obtain by talking to someone on the team).
 
-3. Then, run the application: `docker-compose up`
+3. Install frontend dependencies:
 
-4. You can use `Ctrl+C` to stop running the application
+```
+docker-compose run --rm frontend npm install
+docker-compose run --rm admin-frontend npm install
+```
+
+4. Then, run the application: `docker-compose up`
+
+5. You can use `Ctrl+C` to stop running the application
 
 <br>
 
