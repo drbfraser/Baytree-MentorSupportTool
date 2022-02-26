@@ -7,6 +7,7 @@
 */
 
 import { generateBackendCrudFuncs } from "./base";
+import { API_BASE_URL } from "./url";
 
 export type MentorUserStatus = "Active"
 | "Withdrawn"
@@ -37,7 +38,7 @@ export interface MentorUserResponse {
 
 export type MentorUserUpdate = Partial<MentorUserCreate> & { id: number };
 
-export const mentorUsersBackendEndpoint = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users/mentors`;
+export const mentorUsersBackendEndpoint = `${API_BASE_URL}/users/mentors`;
 
 export const {
   create: addMentorUser,

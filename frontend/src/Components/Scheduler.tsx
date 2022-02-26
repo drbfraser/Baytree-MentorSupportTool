@@ -14,6 +14,7 @@ import Card from '@mui/material/Card'
 import Holidays from '../Utils/Holidays'
 
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import { API_BASE_URL } from '../api/url'
 
 type Props = {
     height: string;
@@ -42,7 +43,7 @@ const Scheduler: React.FC<Props> = ({height}) => {
     }
     
     useEffect(() => {
-    fetch('http://localhost:8000/sessions/', {
+    fetch(`${API_BASE_URL}/sessions/`, {
         method: 'GET',
         headers: {
         'Content-Type': 'application/json',

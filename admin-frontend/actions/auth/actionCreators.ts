@@ -1,4 +1,5 @@
 import { Dispatch } from "react";
+import { API_BASE_URL } from "../../api/backend/url";
 import {
   LoginFailureActionType,
   LoginSuccessfulActionType,
@@ -36,7 +37,7 @@ export const login =
 
     try {
       const apiRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/token/`,
+        `${API_BASE_URL}/token/`,
         {
           method: "POST",
           headers: {
@@ -76,7 +77,7 @@ export const logout =
   ) => {
     try {
       const apiRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/token/logout/`,
+        `${API_BASE_URL}/token/logout/`,
         {
           method: "GET",
           headers: {
@@ -107,7 +108,7 @@ export const logout =
 export const refreshAccessToken = async () => {
   try {
     const apiRes = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/token/refresh/`,
+      `${API_BASE_URL}/token/refresh/`,
       {
         method: "POST",
         headers: {
@@ -132,7 +133,7 @@ export const refreshAccessToken = async () => {
 export const verifyFetch = async () => {
   try {
     const apiRes = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/token/verify/`,
+      `${API_BASE_URL}/token/verify/`,
       {
         method: "POST",
         headers: {

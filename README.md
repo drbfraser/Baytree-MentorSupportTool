@@ -33,17 +33,18 @@ docker-compose run --rm admin-frontend npm install
 
 4. Then, run the application: `docker-compose up`
 
-5. You can use `Ctrl+C` to stop running the application
+5. The first time you run the app, you'll need to run migrations and create a superuser (while the application is running):
+
+```
+docker exec baytree_server python manage.py migrate
+docker exec -it baytree_server python manage.py createsuperuser
+```
+
+6. You can use `Ctrl+C` to stop running the application
 
 <br>
 
-If you want to open a terminal within an app use the command: 
-
-        $ docker exec -it [container-name] bash
-
-<br>
-
-Remember to create a superuser with python manage.py createsuperuser first to login to the admin portal!
+If you want to open a terminal within an app use the command: `docker exec -it [container-name] bash`
 
 ## Backend - Baytree_App: 
 
@@ -177,8 +178,6 @@ Execute npm run dev to start running a development server on localhost:3001
 
 Execute npm run build and then npm run start to build for production and run on localhost:3001
 
-On Docker: docker-compose build & docker-compose up -d<br>
-then, create a bash shell within the baytree-app container: docker exec -it [baytree-app-container-id] bash<br>
-then, create a superuser if you haven't already with python manage.py createsuperuser
+To run within Docker, see instructions above
 
-Navigate to localhost:3001 in your browser and use your superuser credentials (or any admin user credentials) to log in
+Navigate to http://localhost:3001/admin in your browser and use your superuser credentials (or any admin user credentials) to log in

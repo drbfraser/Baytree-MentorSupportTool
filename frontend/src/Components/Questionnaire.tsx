@@ -11,7 +11,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Skeleton from '@mui/material/Skeleton';
 import TextField from '@mui/material/TextField';
 import Typography  from "@mui/material/Typography";
-import { isValid } from "date-fns";
+import { API_BASE_URL } from "../api/url";
 
 const Questionnaire = () => {
 
@@ -21,7 +21,7 @@ const Questionnaire = () => {
   const [submitted, setSubmitted] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8000/questionnaires/get_questionnaire/', {
+    fetch(`${API_BASE_URL}/questionnaires/get_questionnaire/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const Questionnaire = () => {
   const handleSubmit = () => {
     answers['mentorId'] = localStorage.getItem('id')
 
-    fetch('http://localhost:8000/questions/', {
+    fetch(`${API_BASE_URL}/questions/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,2 +1,2 @@
-export const changingAspirationsUrl = "/images/changing-aspirations.png";
-export const baytreeLogoUrl = "/images/baytree-logo.svg";
+export const changingAspirationsUrl = "/admin/images/changing-aspirations.png";
+export const baytreeLogoUrl = "/admin/images/baytree-logo.svg";

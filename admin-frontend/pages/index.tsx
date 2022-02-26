@@ -77,7 +77,7 @@ const Login: NextPage = () => {
         >
           <Grid item xs={8} style={{display: "flex", alignItems: "center", height: "100%", width: "100%", padding: "2rem" }}>
             <img
-              src="/images/login/photo.jpg"
+              src="/admin/images/login/photo.jpg"
               style={{
                 objectFit: "cover",
                 maxHeight: "95vh",
@@ -98,7 +98,7 @@ const Login: NextPage = () => {
               }}
             >
               <img
-                src="/images/baytree-logo.svg"
+                src="/admin/images/baytree-logo.svg"
                 style={{ width: "200px", height: "200px" }}
                 alt="Baytree logo"
               ></img>
@@ -156,7 +156,7 @@ const Login: NextPage = () => {
 const BackgroundPhoto: React.FC<{}> = () => {
   return (
     <BackgroundPhotoContainer>
-      <StyledBackgroundPhoto src="/images/login/photo.jpg"></StyledBackgroundPhoto>
+      <StyledBackgroundPhoto src="/admin/images/login/photo.jpg"></StyledBackgroundPhoto>
     </BackgroundPhotoContainer>
   );
 };
@@ -173,7 +173,7 @@ const BaytreeLogo: React.FC<{}> = () => {
   return (
     <BaytreeLogoContainer>
       <LogoCircleContainer>
-        <StyledBaytreeLogo src="/images/baytree-logo.svg"></StyledBaytreeLogo>
+        <StyledBaytreeLogo src="/admin/images/baytree-logo.svg"></StyledBaytreeLogo>
       </LogoCircleContainer>
     </BaytreeLogoContainer>
   );

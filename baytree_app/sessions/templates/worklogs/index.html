@@ -8,7 +8,7 @@
 {% if sessions %}
     <ul>
         {% for session in sessions %}
-            <li><a href="/sessions/{{session.id}}/">{{session}}</a></li>
+            <li><a href="/api/sessions/{{session.id}}/">{{session}}</a></li>
         {% endfor %}
     </ul>
 {% else %}

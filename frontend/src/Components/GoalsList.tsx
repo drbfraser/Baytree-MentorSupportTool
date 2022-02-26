@@ -9,6 +9,7 @@ import moment from 'moment';
 import TimelineDot from '@mui/lab/TimelineDot';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import { API_BASE_URL } from '../api/url';
 
 export default function Goals() {
     const [goals, setGoals] = useState([] as any[]);
@@ -16,7 +17,7 @@ export default function Goals() {
     const [expanded, setExpanded] = React.useState('');
    
     const fetchGoals = () => {
-      fetch('http://localhost:8000/goals/goal/', {
+      fetch(`${API_BASE_URL}/goals/goal/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
