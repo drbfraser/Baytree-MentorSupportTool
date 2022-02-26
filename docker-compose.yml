@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  server:
+    container_name: baytree_server
+    build:
+      context: ./baytree_app
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - MYSQL_HOST=baytree_database
+      - MYSQL_DATABASE=baytree
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - VIEWS_USERNAME=${VIEWS_USERNAME}
+      - VIEWS_PASSWORD=${VIEWS_PASSWORD}
+    depends_on:
+      - database
+  database:
+    container_name: baytree_database
+    image: mariadb:5.5
+    environment:
+      - MYSQL_DATABASE=baytree
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - baytree_database_data:/var/lib/mysql
+
+volumes:
+  baytree_database_data:

@@ -2,62 +2,43 @@
 
 The Baytree App is designed to facilitate the tracking of each volunteers' progress with each client.
 
-## Members  (Team Jupiter): 
+## Run Using Docker
 
-<dl>
-<dt>Scrum Master:</dt>
-<dd>Yanze Zheng</dd>
+1. Install Docker: https://www.docker.com/get-started
+2. Create a file named `.env` (for environment variables) in the same directory as `docker-compose.yml`. It should look like this:
 
-<dt>Product Owner:</dt>
-<dd>Shubham Joon</dd>
+```
+SECRET_KEY=something_random
 
-<dt>Repo Manager:</dt> 
-<dd>Ashvinder Grewal</dd>
+MYSQL_USER=dbuser
+MYSQL_PASSWORD=something_random
 
-<dt>Team Members:</dt> 
-<dd>Jake Kim</dd> 
-<dd>Herman Luo</dd>
-<dd>Jasim Khan Pathan</dd>
-<dd>Jack Ren</dd>
-</dl>
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=the_account@gmail.com
+EMAIL_PASSWORD=the_password
 
-<br>
+VIEWS_USERNAME=the_username
+VIEWS_PASSWORD=the_password
+```
 
-# How to use Docker to run the app 
+Replace instances of `something_random` with random strings, and `the_username` and `the_password` with appropriate credentials (which you can obtain by talking to someone on the team).
 
+3. Then, run the application: `docker-compose up`
 
-1. Install Docker at this link: https://www.docker.com/get-started
-2. After Docker is installed, navigate to the directory containing the ***docker-compose.yaml*** file
-3. Run:
-        $ docker-compose build
-
-4. Then run:
-
-        $ docker network create --gateway 172.19.0.1 --subnet 172.19.0.0/24 db-net
-
-5. To start the application, run: 
-
-        $ docker-compose up -d
-
-6. The stop the app, run:
-        
-        $ docker-compose down
+4. You can use `Ctrl+C` to stop running the application
 
 <br>
 
 If you want to open a terminal within an app use the command: 
 
-        $ docker exec -it [container-id] bash
+        $ docker exec -it [container-name] bash
 
 <br>
 
 Remember to create a superuser with python manage.py createsuperuser first to login to the admin portal!
 
-<br>
-
-It is also necessary to place an .env file with the appropriate secrets at mentorsupport/baytree_app
-
-# Backend - Baytree_App: 
+## Backend - Baytree_App: 
 
 ### Install mySQL Server and Library
 sudo apt install <br>
@@ -102,7 +83,7 @@ enter superuser credentials in step 5
 <br>
 <br>
 
-# Frontend - Getting Started with a React App
+## Frontend - Getting Started with a React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -156,7 +137,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 # 
 
 
-# Mobile Application
+## Mobile Application
 
 ### Technical Requirements
 
@@ -179,7 +160,7 @@ After setting up the emulator run:
 flutter run --no-sound-null-safety 
 
 
-# Admin Portal
+## Admin Portal
 
 In the admin-frontend folder:
 

@@ -1,8 +1,7 @@
-FROM python:3
-ENV PYTHONUNBUFFERED 1
-WORKDIR /app/baytree_app
-COPY requirements.txt ./
-ENV DJANGO_SETTINGS_MODULE=baytree_app.production_settings
+# Reference: https://docs.docker.com/compose/django/
+FROM python:3.9.1-buster
+ENV PYTHONUNBUFFERED=1
+WORKDIR /code
+COPY requirements.txt .
 RUN pip install -r requirements.txt
-COPY . ./
-EXPOSE 8000
+COPY . .

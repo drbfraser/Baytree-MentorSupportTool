@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  server:
+    restart: always
+    command: gunicorn baytree_app.wsgi --bind 0:8000
+    environment:
+      - DOMAIN=${DOMAIN}
+  database:
+    restart: always

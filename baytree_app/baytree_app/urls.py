@@ -9,18 +9,19 @@ from django.contrib.auth import views as auth_views
 from .views import CookieTokenObtainPairView, CookieTokenRefreshView, CookieTokenVerifyView, logout_view
 
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
+api_patterns = [
     path('sessions/', include('sessions.urls')),
     path('users/', include('users.urls')),
     path('questionnaires/', include('questionnaires.urls')),
     path('questions/', include('questions_and_answers.urls')),
     path('goals/', include('goals.urls')),
-    path('api/token/', CookieTokenObtainPairView.as_view()),
-    path('api/token/refresh/', CookieTokenRefreshView.as_view()),
-    path('api/token/verify/', CookieTokenVerifyView.as_view()),
-    path('api/token/logout/', logout_view),
-    # path('accounts/', include('django.contrib.auth.urls')),
+    path('token/', CookieTokenObtainPairView.as_view()),
+    path('token/refresh/', CookieTokenRefreshView.as_view()),
+    path('token/verify/', CookieTokenVerifyView.as_view()),
+    path('token/logout/', logout_view),
+]
+
+password_patterns = [
     # Password reset links (ref: https://github.com/django/django/blob/master/django/contrib/auth/views.py)
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='password_reset/password_change_done.html'), 
     name='password_change_done'),
@@ -36,7 +37,14 @@ urlpatterns = [
     
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset/password_reset_complete.html'),
     name='password_reset_complete'),
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
+
+urlpatterns = [
+    path("api/", include(api_patterns)),
+    # remove once all admin and password functionality is implemented in the React frontends
+    path("backend/admin/", admin.site.urls),
+    path("backend/password/", include(password_patterns)),
+]
 
 urlpatterns += staticfiles_urlpatterns()
 admin.site.index_title = ""
