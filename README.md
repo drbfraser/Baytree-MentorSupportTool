@@ -31,14 +31,15 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 3. Run:
         $ docker-compose build
 
+4. Then run:
+
         $ docker network create --gateway 172.19.0.1 --subnet 172.19.0.0/24 db-net
 
-
-4. To start the application, run: 
+5. To start the application, run: 
 
         $ docker-compose up -d
 
-5. The stop the app, run:
+6. The stop the app, run:
         
         $ docker-compose down
 
@@ -107,7 +108,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ### Available Scripts
 
-In the project directory, you can run:
+In the frontend folder, there is a variable REACT_APP_RESOURCES_URL in both .env.developement and .env.production
+Ask a previous developer for a link, to be placed into this variable, so you can have access to the resource page.
+
+Then in the frontend directory, you can run:
 
 ### `npm install`
 
