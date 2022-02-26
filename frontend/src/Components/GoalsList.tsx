@@ -13,7 +13,7 @@ import { API_BASE_URL } from '../api/url';
 
 export default function Goals() {
     const [goals, setGoals] = useState([] as any[]);
-    const [goalType, setGoalType] = useState("IN PROGRESS");
+    const [goalType] = useState("IN PROGRESS");
     const [expanded, setExpanded] = React.useState('');
    
     const fetchGoals = () => {
@@ -46,7 +46,7 @@ export default function Goals() {
         </Typography>
         <Grid container style={{marginTop:'8px'}}>
             {Object.values(goals).map(data => (
-            data.status == goalType ?
+            data.status === goalType ?
                 <Accordion expanded={expanded === data.id} onChange={handleChange1(data.id)} style={{width:'100%'}}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}

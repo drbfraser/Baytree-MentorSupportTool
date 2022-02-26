@@ -21,8 +21,8 @@ const  CreateGoals = (props:any) =>   {
     const [title, setTitle] = useState('');
     const [goal_review_date, setGoal_review_date ] = useState<Date | null>(null);
     const history = useHistory();
-    const [errors, setErrors] = useState(false);
-    const [submit, setSubmit] = useState(false);
+    const [, setErrors] = useState(false);
+    const [, setSubmit] = useState(false);
     const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
@@ -54,7 +54,7 @@ const  CreateGoals = (props:any) =>   {
             setTimeout(() => {
                 setSubmit(false);
              }, 5000);
-         if ( contents == ''){
+         if ( contents === ''){
              setErrors(true);
          }
          else {
@@ -116,14 +116,11 @@ const  CreateGoals = (props:any) =>   {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button disabled={contents==''||title==''|| goal_review_date==null } onClick={() => { handleSubmit(); handleClose();}}>Submit</Button>
+                    <Button disabled={contents===''||title===''|| goal_review_date===null } onClick={() => { handleSubmit(); handleClose();}}>Submit</Button>
                 </DialogActions>
             </Dialog>
         </div>
     )
 };
-function setValue(newValue: Date | null) {
-    throw new Error('Function not implemented.');
-}
 
 export default CreateGoals;

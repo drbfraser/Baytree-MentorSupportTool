@@ -18,7 +18,6 @@ const Questionnaire = () => {
   const [formData, setFormData] = useState([] as any[]);
   const [answers, setAnswers] = useState({} as any);
   const [loading, setLoading] = useState(true);
-  const [submitted, setSubmitted] = useState(true);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/questionnaires/get_questionnaire/`, {
@@ -37,15 +36,15 @@ const Questionnaire = () => {
   }, []);
 
   const isValid = () => {
-    for (let [key, value] of Object.entries(formData))
+    for (const value of Object.values(formData))
    
-      if (answers[value.QuestionID] == undefined || answers[value.QuestionID].length == 0){
+      if (answers[value.QuestionID] === undefined || answers[value.QuestionID].length === 0){
         return false
       }
       return true
   }
   const handleSubmitResponse = (response: any) => {
-    if (response.status == 200) {
+    if (response.status === 200) {
       alert('Succesfully Submitted, Thank you!')
       setAnswers({})
     } else {

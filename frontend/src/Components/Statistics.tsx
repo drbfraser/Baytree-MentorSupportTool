@@ -5,10 +5,6 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography';
 import { API_BASE_URL } from '../api/url';
 
-function preventDefault(event: React.MouseEvent) {
-  event.preventDefault();
-}
-
 export default function Statistics() {
 
     const [statistics, setStatistics] = useState([] as any[]);
