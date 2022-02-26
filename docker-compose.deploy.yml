@@ -7,3 +7,15 @@ services:
       - DOMAIN=${DOMAIN}
   database:
     restart: always
+  caddy:
+    container_name: baytree_caddy
+    build:
+      context: .
+      dockerfile: caddy/Dockerfile
+    restart: always
+    environment:
+      - DOMAIN=${DOMAIN}
+      - API_HOSTNAME=baytree_server
+    ports:
+      - "80:80"
+      - "443:443"
