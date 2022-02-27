@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'sessions',
     'admin_login',
     'goals',
+    'notifications',
     'crispy_forms',
     'django_filters',
     'views_api'
