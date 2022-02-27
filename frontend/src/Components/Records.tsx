@@ -7,19 +7,20 @@ export default function Records(){
 
   const [staffRecord, setStaffRecord] = useState([] as any[]);
 
-  fetch('http://localhost:8000/records/', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-          },
-          credentials: "include"
-      })
-      .then(response => response.json())
-      .then((data) => {
-        setStaffRecord(JSON.parse(data))
-        console.log(staffRecord)
-      });
-  
+  if(staffRecord.length == 0){
+    fetch('http://localhost:8000/records/' + localStorage.getItem('user_id'), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+            },
+            credentials: "include"
+        })
+        .then(response => response.json())
+        .then((data) => {
+          setStaffRecord(JSON.parse(data))
+          console.log(staffRecord)
+        });
+  } 
     return (
       <div>
         <h2>Records</h2>
