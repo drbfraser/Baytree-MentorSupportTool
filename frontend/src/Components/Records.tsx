@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./css/records.css";
 
 
 export default function Records(){
@@ -21,7 +22,7 @@ export default function Records(){
   
     return (
       <div>
-        <h3>Records</h3>
+        <h2>Records</h2>
         <table>
                 <thead>
                     <tr>
