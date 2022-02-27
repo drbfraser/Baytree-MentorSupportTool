@@ -5,7 +5,7 @@ import { useState } from "react";
 import { IconBaseProps } from "react-icons";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { SIDEBAR_WIDTH } from "../../../constants/constants";
+import { NAVBAR_Z_INDEX, SIDEBAR_WIDTH } from "../../../constants/constants";
 import { RootState } from "../../../stores/store";
 import Modal, { ModalComponent } from "../Modal";
 import { NAVBAR_ICON_SIZE } from "./navbar";
@@ -67,6 +67,7 @@ const StyledSidebar = styled.div`
   top: ${() => "5rem"};
   position: fixed;
   box-shadow: 0 0.5rem 0.4rem 0.2rem lightgrey;
+  z-index: ${NAVBAR_Z_INDEX};
 `;
 
 interface SidebarItemProps {

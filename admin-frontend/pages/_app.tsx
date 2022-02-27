@@ -156,7 +156,7 @@ const PageContent = styled.div`
   flex: 1;
   padding: ${BODY_PADDING};
   margin-top: ${TOPBAR_HEIGHT};
-  overflow-x: "hidden";
+  overflow-x: hidden;
 `;
 
 const LoginPage: React.FC<{
@@ -177,24 +177,24 @@ const HeadTags: React.FC<{}> = () => {
       <link
         rel="apple-touch-icon"
         sizes="180x180"
-        href="/favicons/apple-touch-icon.png"
+        href="/admin/favicons/apple-touch-icon.png"
       />
       <link
         rel="icon"
         type="image/png"
         sizes="32x32"
-        href="/favicons/favicon-32x32.png"
+        href="/admin/favicons/favicon-32x32.png"
       />
       <link
         rel="icon"
         type="image/png"
         sizes="16x16"
-        href="/favicons/favicon-16x16.png"
+        href="/admin/favicons/favicon-16x16.png"
       />
-      <link rel="manifest" href="/favicons/site.webmanifest" />
+      <link rel="manfest" href="/admin/favicons/site.webmanifest" />
       <link
         rel="mask-icon"
-        href="/favicons/safari-pinned-tab.svg"
+        href="/admin/favicons/safari-pinned-tab.svg"
         color="#5bbad5"
       />
       <meta name="msapplication-TileColor" content="#da532c" />
