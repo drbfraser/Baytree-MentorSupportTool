@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -10,6 +11,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Typography from "@mui/material/Typography";
 import AccordionActions from "@mui/material/AccordionActions";
 import Button from "@mui/material/Button";
+import Dashboard from "./Dashboard";
+import Questionnaire from "./Questionnaire";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([] as any[]);
@@ -77,13 +80,14 @@ export default function Notification() {
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
+                    <Link to = "/dashboard/Questionnaires">
                         <Typography
                             color="text.secondary"
                             gutterBottom
                         >
                             {data.notification_type.content}
                         </Typography>
-                        <Typography variant="body2">{data.content}</Typography>
+                    </Link>
                 </AccordionDetails>
                     {!data.is_read &&
                         <AccordionActions>
