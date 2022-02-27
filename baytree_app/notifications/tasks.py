@@ -6,7 +6,7 @@ import threading
 from datetime import datetime
 from .serializers import *
 from .models import NotificationType
-
+    
 def handle_monthly_notifications():
     today = datetime.now()
     if today.day != 1:
@@ -22,7 +22,8 @@ def handle_monthly_notifications():
                 notification_type = notif_type,
                 mentor = mentor.user,
                 creation_date = today,
-                is_read = False)
+                is_read = False,
+                content = notif_type.content)
             notif.save() 
 
 def run_scheduled_jobs():

@@ -10,4 +10,4 @@ class NotificationSerializer(serializers.ModelSerializer):
     notification_type = NotificationTypeSerializer()
     class Meta:
         model = Notification
-        fields = ['id', 'notification_type', 'mentor', 'creation_date', 'is_read']
+        fields = ['id', 'notification_type', 'mentor', 'creation_date', 'is_read', 'content']

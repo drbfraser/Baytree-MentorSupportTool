@@ -8,7 +8,7 @@ def add_notification_types(apps, schema_editor):
     NotificationType = apps.get_model('notifications', 'NotificationType')
     mentees_progress_questionnaire = NotificationType(
         title="Mentee's Progress Questionnaire Pending to Complete", 
-        content="Please complete the mentee's progress questionnaire.", 
+        content="Please complete the progress questionnaire for all your mentees.", 
         type="MONTHLY",
         period_in_days=30)
     mentees_progress_questionnaire.save()

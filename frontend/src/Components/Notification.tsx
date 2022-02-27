@@ -11,8 +11,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Typography from "@mui/material/Typography";
 import AccordionActions from "@mui/material/AccordionActions";
 import Button from "@mui/material/Button";
-import Dashboard from "./Dashboard";
-import Questionnaire from "./Questionnaire";
+import moment from "moment";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([] as any[]);
@@ -32,7 +31,6 @@ export default function Notification() {
       console.error('Error:', error);
     });
   }
-  console.log(notifications)
   useEffect(() => {
     fetchNotifications();
   }, []);
@@ -76,7 +74,7 @@ export default function Notification() {
                     {data.notification_type.title}
                   </Typography>
                   <Typography sx={{ color: "text.secondary", margin: "6px" }}>
-                    {data.is_read ? "COMPLETED" : "NOT COMPLETED"}
+                    {moment(data.creation_date).fromNow()}
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -85,7 +83,7 @@ export default function Notification() {
                             color="text.secondary"
                             gutterBottom
                         >
-                            {data.notification_type.content}
+                            {data.content}
                         </Typography>
                     </Link>
                 </AccordionDetails>
