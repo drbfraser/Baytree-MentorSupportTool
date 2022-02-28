@@ -9,18 +9,6 @@ from sessions.models import MentorSession
 from .permissions import *
 from rest_framework.decorators import api_view, permission_classes
 
-
-@api_view(('GET',))
-@permission_classes((AdminPermissions, ))
-def get_mentors_from_views(request, id=None):
-    if id != None:
-        response = get_volunteers(id)
-    else:
-        response = get_volunteers(limit=request.GET.get(
-            'limit', None), offset=request.GET.get('offset', None))
-
-    return Response(response, status=status.HTTP_200_OK)
-
 def postUser(self, request):
     try:
         ids = []

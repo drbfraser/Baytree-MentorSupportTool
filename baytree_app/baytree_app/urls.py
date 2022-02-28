@@ -15,6 +15,7 @@ api_patterns = [
     path('questionnaires/', include('questionnaires.urls')),
     path('questions/', include('questions_and_answers.urls')),
     path('goals/', include('goals.urls')),
+    path('views-api/', include('views_api.urls')),
     path('token/', CookieTokenObtainPairView.as_view()),
     path('token/refresh/', CookieTokenRefreshView.as_view()),
     path('token/verify/', CookieTokenVerifyView.as_view()),

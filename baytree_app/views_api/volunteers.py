@@ -1,11 +1,14 @@
+from users.permissions import AdminPermissions
 from .constants import views_base_url, views_username, views_password
+from rest_framework.decorators import permission_classes, api_view
+from rest_framework.response import Response
+from rest_framework import status
 import requests
 import xmltodict
 volunteers_base_url = views_base_url + "contacts/volunteers/"
 
 volunteerFields = ["Forename", "Surname", "PersonID", "Email"]
 volunteerTranslateFields = ["firstname", "surname", "personId", "email"]
-
 
 def get_volunteers(id: str = None, limit: int = 5, offset: int = 0):
     """
@@ -36,3 +39,20 @@ def get_volunteers(id: str = None, limit: int = 5, offset: int = 0):
         volunteers = [{volunteerTranslateFields[i]: volunteer[field] for i, field in enumerate(volunteerFields)}
                       for volunteer in parsed["contacts"]["volunteers"]["volunteer"]]
         return {"total": parsed["contacts"]["volunteers"]["@count"], "data": volunteers}
+
+@api_view(('GET',))
+@permission_classes((AdminPermissions, ))
+def get_volunteers_endpoint(request):
+    """
+    Handles a request from the client browser and calls get_volunteers
+    to return its response to the client.
+    """
+    id = request.GET.get('id', None)
+
+    if id != None:
+        response = get_volunteers(id)
+    else:
+        response = get_volunteers(limit=request.GET.get(
+            'limit', None), offset=request.GET.get('offset', None))
+
+    return Response(response, status=status.HTTP_200_OK)
