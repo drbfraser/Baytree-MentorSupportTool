@@ -39,9 +39,7 @@ session_translated_fields = [
     "venueName"
 ]
 
-DEFAULT_LIMIT = 20
-DEFAULT_OFFSET = 0
-def get_sessions(id: str = None, session_group_id: str = None, limit: int = DEFAULT_LIMIT, offset: int = DEFAULT_OFFSET):
+def get_sessions(id: str = None, session_group_id: str = None, limit: int = None, offset: int = None):
     """
     Gets sessions from Views API.
     If an id argument is provided, the session with a matching id will be returned.
@@ -60,10 +58,16 @@ def get_sessions(id: str = None, session_group_id: str = None, limit: int = DEFA
                      for i, field in enumerate(session_views_response_fields)}
         return session
     else:
-        response = requests.get(
-            sessions_base_url.format(session_group_id) + "?pageFold=" +
-            str(limit) + "&offset=" + str(offset),
-            auth=(views_username, views_password))
+        if limit != None and offset != None:
+            response = requests.get(
+                sessions_base_url.format(session_group_id) + "?pageFold=" +
+                str(limit) + "&offset=" + str(offset),
+                auth=(views_username, views_password))
+        else:
+            response = requests.get(
+                sessions_base_url.format(session_group_id),
+                auth=(views_username, views_password))
+        
         parsed = xmltodict.parse(response.text)
         parsed_session_list = parsed["sessions"]["session"]
         if not isinstance(parsed_session_list, list):
@@ -87,7 +91,7 @@ def get_sessions_endpoint(request):
         response = get_sessions(id, session_group_id=session_group_id)
     elif session_group_id != None:
         response = get_sessions(session_group_id=session_group_id, limit=request.GET.get(
-            'limit', DEFAULT_LIMIT), offset=request.GET.get('offset', DEFAULT_OFFSET))
+            'limit', None), offset=request.GET.get('offset', None))
     else:
         return Response({"error": "A session group ID must be provided"}, status=status.HTTP_200_OK)
 

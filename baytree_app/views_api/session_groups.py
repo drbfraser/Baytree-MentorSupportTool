@@ -23,9 +23,7 @@ session_group_translated_fields = [
     "otherStaff"
 ]
 
-DEFAULT_LIMIT = 5
-DEFAULT_OFFSET = 0
-def get_session_groups(id: str = None, limit: int = DEFAULT_LIMIT, offset: int = DEFAULT_OFFSET):
+def get_session_groups(id: str = None, limit: int = None, offset: int = None):
     """
     Gets session groups from Views API.
     If an id argument is provided, the session group with a matching id will be returned.
@@ -44,18 +42,25 @@ def get_session_groups(id: str = None, limit: int = DEFAULT_LIMIT, offset: int =
                      for i, field in enumerate(session_group_fields)}
         return session_group
     else:
-
-        response = requests.get(
-            session_groups_base_url + "search?q=&pageFold=" +
-            str(limit) + "&offset=" + str(offset),
-            auth=(views_username, views_password))
+        if limit != None and offset != None:
+            response = requests.get(
+                session_groups_base_url + "search?q=&pageFold=" +
+                str(limit) + "&offset=" + str(offset),
+                auth=(views_username, views_password))
+        else:
+            response = requests.get(
+                session_groups_base_url + "search?q=",
+                auth=(views_username, views_password))
         parsed = xmltodict.parse(response.text)
-        parsed_session_group_list = parsed["work"]["sessiongroups"]["sessiongroup"]
-        if not isinstance(parsed_session_group_list, list):
-            parsed_session_group_list = [parsed_session_group_list]
-        session_groups = [{session_group_translated_fields[i]: sessionGroup[field] for i, field in enumerate(session_group_fields)}
-                      for sessionGroup in parsed_session_group_list]
-        return {"total": parsed["work"]["sessiongroups"]["@count"], "data": session_groups}
+        if "sessiongroup" in parsed["work"]["sessiongroups"]:
+            parsed_session_group_list = parsed["work"]["sessiongroups"]["sessiongroup"]
+            if not isinstance(parsed_session_group_list, list):
+                parsed_session_group_list = [parsed_session_group_list]
+            session_groups = [{session_group_translated_fields[i]: sessionGroup[field] for i, field in enumerate(session_group_fields)}
+                        for sessionGroup in parsed_session_group_list]
+            return {"total": parsed["work"]["sessiongroups"]["@count"], "data": session_groups}
+        else:
+            return {"total": parsed["work"]["sessiongroups"]["@count"], "data": []}
 
 @api_view(('GET',))
 @permission_classes((AdminPermissions, ))
@@ -70,6 +75,6 @@ def get_session_groups_endpoint(request):
         response = get_session_groups(id)
     else:
         response = get_session_groups(limit=request.GET.get(
-            'limit', DEFAULT_LIMIT), offset=request.GET.get('offset', DEFAULT_OFFSET))
+            'limit', None), offset=request.GET.get('offset', None))
 
     return Response(response, status=status.HTTP_200_OK)

@@ -207,18 +207,19 @@ class GenerateCrudEndpointsForModel(APIView):
             return self.get_override_func(self, request)
 
         if ('id' not in request.GET):
-            if 'limit' not in request.GET:
-                limit = 100
-            else:
+            limit = None
+            if 'limit' in request.GET:
                 limit = int(request.GET.get('limit', None))
 
-            if 'offset' not in request.GET:
-                offset = 0
-            else:
+            offset = None
+            if 'offset' in request.GET:
                 offset = int(request.GET.get('offset', None))
 
-            modelObjects = self.model.objects.all(
-            )[offset:offset+limit]
+            if (limit != None and offset != None):
+                modelObjects = self.model.objects.all(
+                )[offset:offset+limit]
+            else:
+                modelObjects = self.model.objects.all()
 
             numModelObjects = self.model.objects.all().count()
 
