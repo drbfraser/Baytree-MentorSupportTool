@@ -23,7 +23,7 @@ const HomePageLayout = styled.div`
   grid-gap: 1rem;
 
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 1.5fr 1fr;
+  grid-template-rows: 1fr 1fr;
   grid-template-areas:
     "sessionStatsCard sessionStatsCard"
     "mentorDemographicsCard menteeDemographicsCard";

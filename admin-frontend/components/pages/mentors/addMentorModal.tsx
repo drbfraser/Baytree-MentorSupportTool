@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import {
   getVolunteersFromViews,
-  VolunteerResponse,
+  Volunteer,
 } from "../../../api/backend/views/volunteers";
 import { HELP_MESSAGE } from "../../../constants/constants";
 import DataGrid from "../../shared/datagrid";
@@ -16,7 +16,7 @@ import { MdCheck } from "react-icons/md";
 const AddMentorModal: ModalComponent = (props) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [maxPageNumber, setMaxPageNumber] = useState(1);
-  const [pageData, setPageData] = useState<VolunteerResponse[]>([]);
+  const [pageData, setPageData] = useState<Volunteer[]>([]);
   const [loadingData, setLoadingData] = useState(false);
   const PAGE_LIMIT = 8;
 

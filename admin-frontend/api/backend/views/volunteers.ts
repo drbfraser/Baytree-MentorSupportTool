@@ -15,7 +15,7 @@ interface VolunteerResponse extends VolunteerUnparsed {
 }
 
 export interface Volunteer extends VolunteerUnparsed {
-  dateOfBirth: Date;
+  dateOfBirth: Date | null;
 }
 
 export const volunteersFromViewsBackendEndpoint = `${API_BASE_URL}/views-api/volunteers`;

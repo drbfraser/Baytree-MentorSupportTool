@@ -259,6 +259,10 @@ const Chart: React.FC<{
           <Skeleton />
           <Skeleton />
           <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
         </div>
       ) : (
         <ResponsiveContainer width="99%" height={240}>

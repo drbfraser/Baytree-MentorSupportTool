@@ -1,10 +1,14 @@
 import Paper from "@mui/material/Paper";
 import styled from "styled-components";
-import { HELP_MESSAGE, MOBILE_BREAKPOINT } from "../../../constants/constants";
+import {
+  COLORS,
+  HELP_MESSAGE,
+  MOBILE_BREAKPOINT,
+} from "../../../constants/constants";
 
 import React, { PureComponent, useEffect, useState } from "react";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
-import { Button, ButtonGroup, Typography } from "@mui/material";
+import { Button, ButtonGroup, Skeleton, Typography } from "@mui/material";
 import {
   getVolunteersFromViews,
   Volunteer,
@@ -33,7 +37,7 @@ const MentorDemographicsCard: React.FC<{}> = () => {
   const [selectedDemographicCategory, setSelectedDemographicCategory] =
     useState<DemographicCategory>("age");
 
-  const getAgeInYearsFromBirthDate = (birthDate: Date) => {
+  const getAgeInYearsFromBirthDate = (birthDate: Date | null) => {
     return moment().diff(birthDate, "years");
   };
 
@@ -104,8 +108,6 @@ const MentorDemographicsCard: React.FC<{}> = () => {
           birthLocation: getVolunteerBirthCountryCounts(volunteers.data),
         };
 
-        console.log(volunteers.data);
-        console.log(mentorDemographicsData);
         setData(mentorDemographicsData);
       } else {
         toast.error(HELP_MESSAGE);
@@ -119,18 +121,37 @@ const MentorDemographicsCard: React.FC<{}> = () => {
 
   return (
     <StyledMentorDemographicsCard>
-      <Header
-        selectedDemographicCategory={selectedDemographicCategory}
-        setSelectedDemographicCategory={setSelectedDemographicCategory}
-      ></Header>
-      <Chart
-        selectedDemographicCategory={selectedDemographicCategory}
-        data={data}
-      ></Chart>
-      <Legend
-        selectedCategory={selectedDemographicCategory}
-        data={data}
-      ></Legend>
+      {loadingData ? (
+        <>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </>
+      ) : (
+        <>
+          <Header
+            selectedDemographicCategory={selectedDemographicCategory}
+            setSelectedDemographicCategory={setSelectedDemographicCategory}
+          ></Header>
+          <Chart
+            selectedDemographicCategory={selectedDemographicCategory}
+            data={data}
+          ></Chart>
+          <Legend
+            selectedCategory={selectedDemographicCategory}
+            data={data}
+          ></Legend>
+        </>
+      )}
     </StyledMentorDemographicsCard>
   );
 };
@@ -312,20 +333,6 @@ const Chart: React.FC<{
     }
   };
 
-  const COLORS = [
-    "#48825C",
-    "#4482C8",
-    "#D06F36",
-    "#da4843",
-    "#8c44ff",
-    "#f1ef53",
-    "#eb6ec1",
-    "#37ff41",
-    "#ff0055",
-    "#5cdbd5",
-    "#b6d2fd",
-  ];
-
   const RADIAN = Math.PI / 180;
   const renderCustomizedLabel = ({
     cx,
@@ -408,20 +415,7 @@ const Legend: React.FC<{
   data: MentorDemographicsData | null;
 }> = (props) => {
   const getUniqueColor = (n: number) => {
-    const colors = [
-      "#48825C",
-      "#4482C8",
-      "#D06F36",
-      "#da4843",
-      "#8c44ff",
-      "#f1ef53",
-      "#eb6ec1",
-      "#37ff41",
-      "#ff0055",
-      "#5cdbd5",
-      "#b6d2fd",
-    ];
-    return colors[n % colors.length];
+    return COLORS[n % COLORS.length];
   };
 
   return (
