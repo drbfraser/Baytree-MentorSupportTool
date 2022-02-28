@@ -17,6 +17,7 @@ urlpatterns = [
     path('questionnaires/', include('questionnaires.urls')),
     path('questions/', include('questions_and_answers.urls')),
     path('goals/', include('goals.urls')),
+    path('notifications/', include('notifications.urls')),
     path('api/token/', CookieTokenObtainPairView.as_view()),
     path('api/token/refresh/', CookieTokenRefreshView.as_view()),
     path('api/token/verify/', CookieTokenVerifyView.as_view()),
