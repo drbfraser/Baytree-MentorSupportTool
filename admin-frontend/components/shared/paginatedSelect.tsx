@@ -43,7 +43,6 @@ const PaginatedSelect: React.FC<
         container: (base: any) => ({
           ...base,
           width: "100%",
-          maxWidth: "600px",
         }),
         control: (base: any) => ({
           ...base,

@@ -79,6 +79,13 @@ const SessionStatsCard: React.FC<{}> = () => {
     );
   };
 
+  const getNumPendingSessions = (sessions: ParsedSession[]) => {
+    return sessions.reduce(
+      (prevVal, curVal) => prevVal + (new Date() > curVal.startDate && !curVal.cancelled ? 1 : 0),
+      0
+    );
+  };
+
   const getNumUpcomingSessions = (sessions: ParsedSession[]) => {
     return sessions.reduce(
       (prevVal, curVal) => prevVal + (new Date() < curVal.startDate ? 1 : 0),
@@ -118,6 +125,7 @@ const SessionStatsCard: React.FC<{}> = () => {
 
     let completedSessionsForSessionGroups: Record<string, number> = {};
     let upcomingSessionsForSessionGroups: Record<string, number> = {};
+    let pendingSessionsForSessionGroups: Record<string, number> = {};
     let cancelledSessionsForSessionGroups: Record<string, number> = {};
 
     for (const sessionDataResponse of sessionDataResponses) {
@@ -125,6 +133,8 @@ const SessionStatsCard: React.FC<{}> = () => {
         getNumCompletedSessions(sessionDataResponse.data);
       upcomingSessionsForSessionGroups[sessionDataResponse.name] =
         getNumUpcomingSessions(sessionDataResponse.data);
+      pendingSessionsForSessionGroups[sessionDataResponse.name] =
+        getNumPendingSessions(sessionDataResponse.data);
       cancelledSessionsForSessionGroups[sessionDataResponse.name] =
         getNumCancelledSessions(sessionDataResponse.data);
     }
@@ -137,6 +147,10 @@ const SessionStatsCard: React.FC<{}> = () => {
       {
         name: "Upcoming",
         ...upcomingSessionsForSessionGroups,
+      },
+      {
+        name: "Pending to Report",
+        ...pendingSessionsForSessionGroups,
       },
       {
         name: "Cancelled",
@@ -247,7 +261,7 @@ const Chart: React.FC<{
           <Skeleton />
         </div>
       ) : (
-        <ResponsiveContainer width="99%" height={300}>
+        <ResponsiveContainer width="99%" height={240}>
           <BarChart data={props.data}>
             <CartesianGrid></CartesianGrid>
             {props.selectedSessionGroups.map((selectedSessionGroup, i) => (
