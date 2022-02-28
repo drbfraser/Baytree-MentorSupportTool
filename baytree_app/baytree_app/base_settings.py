@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'goals',
     'crispy_forms',
     'django_filters',
-    'views_api'
+    'views_api',
+    'records'
 ]
 
 

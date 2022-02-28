@@ -1,54 +1,52 @@
-import React, { useState } from "react";
-import "./css/records.css";
+import React, { useState, useEffect } from "react";
+import { DataGrid, GridColDef} from '@mui/x-data-grid';
 
 
 export default function Records(){
 
 
   const [staffRecord, setStaffRecord] = useState([] as any[]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  if(staffRecord.length == 0){
+  useEffect(() => {
+    setIsLoading(true)
     fetch('http://localhost:8000/records/' + localStorage.getItem('user_id'), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
             },
             credentials: "include"
-        })
-        .then(response => response.json())
-        .then((data) => {
-          setStaffRecord(JSON.parse(data))
-          console.log(staffRecord)
-        });
-  } 
+    })
+    .then(response => response.json())
+    .then((data) => {
+      setStaffRecord(JSON.parse(data))
+      setIsLoading(false)
+    });
+  }, []);
+
+
+  const columns: GridColDef[] = [
+    { field: 'Title', headerName: 'Session Title', width: 300 },
+    { field: 'StartDate', headerName: 'Start Date', width: 300 },
+    { field: 'Duration', headerName: 'Duration', width: 150 },
+    { field: 'Status', headerName: 'Status', width: 150 },
+    { field: 'Snippet', headerName: 'Note', width: 600 },
+  ];
+
+
     return (
       <div>
         <h2>Records</h2>
-        <table>
-                <thead>
-                    <tr>
-                    <th>Session Title</th>
-                    <th>Start Date</th>
-                    <th>Duration</th>
-                    <th>Status</th>
-                    <th>Note</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {staffRecord.map((record)=>{
-                    return(
-                      <tr>
-                        <td>{record.Title}</td>
-                        <td>{record.StartDate}</td>
-                        <td>{record.Duration}</td>
-                        <td>{record.Status}</td>
-                        <td>{record.Snippet}</td>
-                      </tr>
-                    );
-                   }
-                  )}    
-                </tbody>
-        </table>
+        <div style={{ height: 700, width: '100%'}}>
+          <DataGrid
+            getRowId={(row) => row.SessionID}
+            rows={staffRecord}
+            columns={columns}
+            pageSize={15}
+            rowsPerPageOptions={[15, 25, 50, 100]}
+            loading = {isLoading}
+          />
+        </div>
       </div>
     )
   };

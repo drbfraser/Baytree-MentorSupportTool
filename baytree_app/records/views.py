@@ -9,7 +9,6 @@ import json
 class ViewsAppSessionView(APIView):
     permission_classes = [IsOwner]
 
-
     def get(self, request, id=None):
 
         all_staff_url = views_base_url + str(id)
@@ -42,8 +41,7 @@ class ViewsAppSessionView(APIView):
             for noteDict in staffNoteList:
                 if sessionDict["SessionID"] == noteDict["TypeID"]:
                     staff.append({"SessionID":sessionDict["SessionID"],"Title": sessionDict["Title"],"StartDate": sessionDict["StartDate"],"Duration": sessionDict["Duration"],"Status": sessionDict["Status"],"Snippet": noteDict["Snippet"],"Note": noteDict["Note"]})
-                
-        
+                       
         jsonStaff = json.dumps(staff)
         
         return Response(jsonStaff,status=200)
