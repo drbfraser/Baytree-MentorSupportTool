@@ -17,6 +17,73 @@ export interface SessionResponse {
   venueName: string;
 }
 export const sessionsFromViewsBackendEndpoint = `${API_BASE_URL}/views-api/sessions`;
-export const getSessionsFromViews = generateBackendGetFunc<SessionResponse>(
-    sessionsFromViewsBackendEndpoint
-);
+
+/** Get unparsed sessions from Django backend */
+const getSessionsFromViewsBackendGetFunc =
+  generateBackendGetFunc<SessionResponse>(sessionsFromViewsBackendEndpoint);
+
+export interface ParsedSession {
+  name: string;
+  activity: string;
+  leadStaff: string;
+  venueName: string;
+  viewsSessionId: number;
+  viewsSessionGroupId: number;
+  startDate: Date;
+  durationInMinutes: number;
+  cancelled: boolean;
+  venueId: number;
+  createdDate: Date;
+  updatedDate: Date;
+}
+
+/** Wrapper function to get sessions from views while parsing the appropiate format for each field */
+export const getSessionsFromViews = async (
+  viewsSessionGroupId: string,
+  limit?: number,
+  offset?: number
+): Promise<
+  | {
+      total: number;
+      status: number;
+      data: null;
+    }
+  | {
+      data: ParsedSession[];
+      status: number;
+      total: number;
+    }
+  | null
+> => {
+  const sessionsResponse = await getSessionsFromViewsBackendGetFunc(
+    limit,
+    offset,
+    { sessionGroupId: viewsSessionGroupId }
+  );
+
+  if (sessionsResponse && sessionsResponse.data) {
+    return {
+      ...sessionsResponse,
+      data: sessionsResponse.data.map((session) => ({
+        activity: session.activity,
+        name: session.name,
+        leadStaff: session.leadStaff,
+        venueName: session.venueName,
+        viewsSessionId: parseInt(session.viewsSessionId),
+        viewsSessionGroupId: parseInt(session.viewsSessionGroupId),
+        startDate: new Date(
+          Date.parse(`${session.startDate} ${session.startTime}:00 GMT`) // Convert from UK time
+        ),
+        durationInMinutes:
+          parseInt(session.duration.split(":")[0]) * 60 +
+          parseInt(session.duration.split(":")[0]),
+        cancelled: session.cancelled === "1",
+        venueId: parseInt(session.venueId),
+        createdDate: new Date(Date.parse(`${session.created} GMT`)),
+        updatedDate: new Date(Date.parse(`${session.created} GMT`)),
+      })),
+    };
+  }
+
+  return sessionsResponse;
+};
