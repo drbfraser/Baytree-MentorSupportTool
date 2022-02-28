@@ -15,11 +15,13 @@ const backendGetFetch = async (
   backendEndpoint: string,
   limit?: string,
   offset?: string,
-  filters: Record<string, string> = {}
+  filters?: Record<string, string>
 ) => {
   let queryParams = [];
-  for (const filterField in filters) {
-    queryParams.push(`${filterField}=${filters[filterField]}`);
+  if (filters) {
+    for (const filterField in filters) {
+      queryParams.push(`${filterField}=${filters[filterField]}`);
+    }
   }
 
   if (limit) {
@@ -42,23 +44,58 @@ const backendGetFetch = async (
   });
 };
 
+export type BackendGetResponse<ResponseObject> =
+  | {
+      status: number;
+      total: number;
+      data: ResponseObject[];
+    }
+  | {
+      total: number;
+      status: number;
+      data: null;
+    }
+  | null;
+
+export type BackendGetFunction<ResponseObject> = (
+  limit?: number,
+  offset?: number,
+  filters?: Record<string, string>
+) => Promise<BackendGetResponse<ResponseObject>>;
+
 /** Generates a strongly-typed function given a backendEndpoint that will allow
- * paginated get requests via backendGetFetch() above. Information for how to
- * use the generated function can be seen from the JSDoc for backendGetFetch() above.
+ * paginated get requests via backendGetFetch(). Information for how to
+ * use the generated function can be seen from the JSDoc for backendGetFetch().
  */
 export const generateBackendGetFunc =
-  <ResponseObject>(backendEndpoint: string) =>
-  async (limit?: number, offset?: number, filters: Record<string, string> = {}) => {
+  <ResponseObject>(
+    backendEndpoint: string
+  ): BackendGetFunction<ResponseObject> =>
+  async (
+    limit?: number,
+    offset?: number,
+    filters?: Record<string, string>
+  ): Promise<BackendGetResponse<ResponseObject>> => {
     try {
       const limitStr = limit ? limit.toString() : undefined;
       const offsetStr = offset ? offset.toString() : undefined;
 
-      let apiRes = await backendGetFetch(backendEndpoint, limitStr, offsetStr, filters);
+      let apiRes = await backendGetFetch(
+        backendEndpoint,
+        limitStr,
+        offsetStr,
+        filters
+      );
 
       if (apiRes.status === 401) {
         const refreshRes = await refreshAccessToken();
         if (refreshRes) {
-          apiRes = await backendGetFetch(backendEndpoint, limitStr, offsetStr, filters);
+          apiRes = await backendGetFetch(
+            backendEndpoint,
+            limitStr,
+            offsetStr,
+            filters
+          );
         } else {
           return { total: -1, status: apiRes.status, data: null };
         }
@@ -147,10 +184,7 @@ export const generateBackendPostFunc =
  * providing an array of foreign key ids will automatically link those ids to
  * objects in the database.
  */
-const backendPutFetch = async (
-  backendEndpoint: string,
-  body: any
-) => {
+const backendPutFetch = async (backendEndpoint: string, body: any) => {
   const apiRes = await fetch(`${backendEndpoint}`, {
     method: "PUT",
     headers: {
@@ -220,7 +254,6 @@ const backendDeleteFetch = async (
 
   return apiRes;
 };
-
 
 /** Generates a function to make delete requests to the backend to delete model object(s)
  * which are implemented in the backend using the GenerateCrudEndpointsForModel

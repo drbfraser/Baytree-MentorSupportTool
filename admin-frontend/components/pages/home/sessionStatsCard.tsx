@@ -16,7 +16,7 @@ import styled from "styled-components";
 import { getSessionGroupsFromViews } from "../../../api/backend/views/sessionGroups";
 import {
   getSessionsFromViews,
-  ParsedSession,
+  Session,
 } from "../../../api/backend/views/sessions";
 import { HELP_MESSAGE, MOBILE_BREAKPOINT } from "../../../constants/constants";
 import PaginatedSelect, {
@@ -65,28 +65,28 @@ const SessionStatsCard: React.FC<{}> = () => {
     }
   };
 
-  const getNumCancelledSessions = (sessions: ParsedSession[]) => {
+  const getNumCancelledSessions = (sessions: Session[]) => {
     return sessions.reduce(
       (prevVal, curVal) => prevVal + (curVal.cancelled ? 1 : 0),
       0
     );
   };
 
-  const getNumCompletedSessions = (sessions: ParsedSession[]) => {
+  const getNumCompletedSessions = (sessions: Session[]) => {
     return sessions.reduce(
       (prevVal, curVal) => prevVal + (new Date() > curVal.startDate && !curVal.cancelled ? 1 : 0),
       0
     );
   };
 
-  const getNumPendingSessions = (sessions: ParsedSession[]) => {
+  const getNumPendingSessions = (sessions: Session[]) => {
     return sessions.reduce(
       (prevVal, curVal) => prevVal + (new Date() > curVal.startDate && !curVal.cancelled ? 1 : 0),
       0
     );
   };
 
-  const getNumUpcomingSessions = (sessions: ParsedSession[]) => {
+  const getNumUpcomingSessions = (sessions: Session[]) => {
     return sessions.reduce(
       (prevVal, curVal) => prevVal + (new Date() < curVal.startDate ? 1 : 0),
       0

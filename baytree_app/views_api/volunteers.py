@@ -7,8 +7,9 @@ import requests
 import xmltodict
 volunteers_base_url = views_base_url + "contacts/volunteers/"
 
-volunteerFields = ["Forename", "Surname", "PersonID", "Email"]
-volunteerTranslateFields = ["firstname", "surname", "personId", "email"]
+volunteerFields = ["Forename", "Surname", "PersonID", "Email", "DateOfBirth", "Ethnicity_V_15", "County"]
+volunteerTranslateFields = ["firstname", "surname", "viewsPersonId", "email", "dateOfBirth", "ethnicity", "country"]
+
 
 def get_volunteers(id: str = None, limit: int = 5, offset: int = 0):
     """
@@ -31,14 +32,21 @@ def get_volunteers(id: str = None, limit: int = 5, offset: int = 0):
                      for i, field in enumerate(volunteerFields)}
         return volunteer
     else:
-        response = requests.get(
-            volunteers_base_url + "search?q=&pageFold=" +
-            str(limit) + "&offset=" + str(offset),
-            auth=(views_username, views_password))
+        if limit != None and offset != None:
+            response = requests.get(
+                volunteers_base_url + "search?q=&pageFold=" +
+                str(limit) + "&offset=" + str(offset),
+                auth=(views_username, views_password))
+        else:
+            response = requests.get(
+                volunteers_base_url + "search?q=",
+                auth=(views_username, views_password))
+
         parsed = xmltodict.parse(response.text)
         volunteers = [{volunteerTranslateFields[i]: volunteer[field] for i, field in enumerate(volunteerFields)}
                       for volunteer in parsed["contacts"]["volunteers"]["volunteer"]]
         return {"total": parsed["contacts"]["volunteers"]["@count"], "data": volunteers}
+
 
 @api_view(('GET',))
 @permission_classes((AdminPermissions, ))

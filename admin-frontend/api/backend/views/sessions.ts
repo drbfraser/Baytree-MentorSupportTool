@@ -1,4 +1,4 @@
-import { generateBackendGetFunc } from "../base";
+import { BackendGetResponse, generateBackendGetFunc } from "../base";
 import { API_BASE_URL } from "../url";
 
 export interface SessionResponse {
@@ -22,7 +22,7 @@ export const sessionsFromViewsBackendEndpoint = `${API_BASE_URL}/views-api/sessi
 const getSessionsFromViewsBackendGetFunc =
   generateBackendGetFunc<SessionResponse>(sessionsFromViewsBackendEndpoint);
 
-export interface ParsedSession {
+export interface Session {
   name: string;
   activity: string;
   leadStaff: string;
@@ -42,19 +42,7 @@ export const getSessionsFromViews = async (
   viewsSessionGroupId: string,
   limit?: number,
   offset?: number
-): Promise<
-  | {
-      total: number;
-      status: number;
-      data: null;
-    }
-  | {
-      data: ParsedSession[];
-      status: number;
-      total: number;
-    }
-  | null
-> => {
+): Promise<BackendGetResponse<Session>> => {
   const sessionsResponse = await getSessionsFromViewsBackendGetFunc(
     limit,
     offset,
@@ -72,15 +60,15 @@ export const getSessionsFromViews = async (
         viewsSessionId: parseInt(session.viewsSessionId),
         viewsSessionGroupId: parseInt(session.viewsSessionGroupId),
         startDate: new Date(
-          Date.parse(`${session.startDate} ${session.startTime}:00 GMT`) // Convert from UK time
+          Date.parse(`${session.startDate} ${session.startTime}:00`)
         ),
         durationInMinutes:
           parseInt(session.duration.split(":")[0]) * 60 +
           parseInt(session.duration.split(":")[0]),
         cancelled: session.cancelled === "1",
         venueId: parseInt(session.venueId),
-        createdDate: new Date(Date.parse(`${session.created} GMT`)),
-        updatedDate: new Date(Date.parse(`${session.created} GMT`)),
+        createdDate: new Date(Date.parse(`${session.created}`)),
+        updatedDate: new Date(Date.parse(`${session.created}`)),
       })),
     };
   }
