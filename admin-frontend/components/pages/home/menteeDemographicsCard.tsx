@@ -424,16 +424,16 @@ const Legend: React.FC<{
       {props.data && props.selectedCategory === "age" && (
         <>
           <LegendListItem
-            legendEntry={{ title: "15 to 19", color: getUniqueColor(0) }}
+            legendEntry={{ title: "8 to 9", color: getUniqueColor(0) }}
           ></LegendListItem>
           <LegendListItem
-            legendEntry={{ title: "20 to 30", color: getUniqueColor(1) }}
+            legendEntry={{ title: "10 to 12", color: getUniqueColor(1) }}
           ></LegendListItem>
           <LegendListItem
-            legendEntry={{ title: "30 to 40", color: getUniqueColor(2) }}
+            legendEntry={{ title: "13 to 20", color: getUniqueColor(2) }}
           ></LegendListItem>
           <LegendListItem
-            legendEntry={{ title: "40+", color: getUniqueColor(3) }}
+            legendEntry={{ title: "20+", color: getUniqueColor(3) }}
           ></LegendListItem>
           <LegendListItem
             legendEntry={{ title: "Not Entered", color: getUniqueColor(4) }}
