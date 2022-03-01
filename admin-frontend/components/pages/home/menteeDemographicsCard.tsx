@@ -371,7 +371,7 @@ const Chart: React.FC<{
 
   return (
     <StyledChart>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="99%" height={200}>
         <PieChart width={400} height={400}>
           <Pie
             data={convertDemographicDataToPieChartData(
@@ -509,6 +509,8 @@ const LegendListItemColorBlock = styled.div<{ color: string }>`
   margin-right: 1rem;
 `;
 
-const LegendListItemTitle = styled(Typography)``;
+const LegendListItemTitle = styled(Typography)`
+ flex: 1
+`;
 
 export default MenteeDemographicsCard;
