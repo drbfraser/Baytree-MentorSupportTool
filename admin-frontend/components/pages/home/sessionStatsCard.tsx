@@ -270,6 +270,7 @@ const Chart: React.FC<{
             <CartesianGrid></CartesianGrid>
             {props.selectedSessionGroups.map((selectedSessionGroup, i) => (
               <Bar
+                key={`bar_${i}`}
                 dataKey={selectedSessionGroup.label}
                 name={selectedSessionGroup.label}
                 fill={getUniqueColor(i)}
