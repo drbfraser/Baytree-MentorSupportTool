@@ -1,5 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from users.models import MentorUser
 from .constants import views_base_url, views_username, views_password
 from .permissions import *
 import requests
@@ -11,7 +13,9 @@ class ViewsAppSessionView(APIView):
 
     def get(self, request, id=None):
 
-        all_staff_url = views_base_url + str(id)
+        mentorUser = MentorUser.objects.all().filter(user_id=id)
+
+        all_staff_url = views_base_url + str(mentorUser[0].viewsPersonId)
     
         try:
             responseSession = requests.get(all_staff_url + '/sessions', 
