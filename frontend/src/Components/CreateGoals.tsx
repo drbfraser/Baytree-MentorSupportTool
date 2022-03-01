@@ -50,29 +50,29 @@ const  CreateGoals = (props:any) =>   {
       };
   
     const handleSubmit = () => {
-            setSubmit(true);
-            setTimeout(() => {
-                setSubmit(false);
-             }, 5000);
-         if ( contents === ''){
-             setErrors(true);
-         }
-         else {
-             fetch(`${API_BASE_URL}/goals/goal/`, {
-             method: 'POST',
-             headers: {
-                 'Content-Type': 'application/json',
-             },
-            
-             body: JSON.stringify(goal),
-             credentials: "include"
-         })
-             .then(response => console.log(response))
-             .then(() => {
-                 props.onSubmit(); 
-                 history.push('/dashboard/Goals')
-                })
-    }}
+        setSubmit(true);
+        setTimeout(() => {
+            setSubmit(false);
+        }, 5000);
+
+        if (contents === ''){
+            setErrors(true);
+        } else {
+            fetch(`${API_BASE_URL}/goals/goal/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(goal),
+                credentials: "include"
+            })
+            .then(response => console.log(response))
+            .then(() => {
+                props.onSubmit(); 
+                history.push('/dashboard/Goals')
+            })
+        }
+    };
 
     return (
         <div>

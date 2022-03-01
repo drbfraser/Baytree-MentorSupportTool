@@ -81,7 +81,7 @@ const AddMentorModal: ModalComponent = (props) => {
                       user: userRes.ids[0],
                       menteeUsers: [],
                       status: "Active",
-                      viewsPersonId: dataRow.personId,
+                      viewsPersonId: dataRow.viewsPersonId,
                     });
                     if (mentorUserRes) {
                       setLoadingData(false);

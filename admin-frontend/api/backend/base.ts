@@ -141,8 +141,8 @@ const backendPostFetch = async (
 
 /** Generates a function to make post requests to the backend to create model object(s)
  * which are implemented in the backend using the GenerateCrudEndpointsForModel
- * Python class via backendPostFetch() above.Information for how to use the generated
- * function can be seen from the JSDoc for backendPostFetch() above.
+ * Python class via backendPostFetch().Information for how to use the generated
+ * function can be seen from the JSDoc for backendPostFetch().
  */
 export const generateBackendPostFunc =
   <RequestObject>(backendEndpoint: string) =>

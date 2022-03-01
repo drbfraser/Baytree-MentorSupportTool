@@ -215,7 +215,9 @@ class GenerateCrudEndpointsForModel(APIView):
             if 'offset' in request.GET:
                 offset = int(request.GET.get('offset', None))
 
-            if (limit != None and offset != None):
+            if (limit != None):
+                if (offset == None):
+                    offset = 0
                 modelObjects = self.model.objects.all(
                 )[offset:offset+limit]
             else:

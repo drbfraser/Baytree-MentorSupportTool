@@ -32,7 +32,9 @@ def get_volunteers(id: str = None, limit: int = 5, offset: int = 0):
                      for i, field in enumerate(volunteerFields)}
         return volunteer
     else:
-        if limit != None and offset != None:
+        if limit != None:
+            if (offset == None):
+                offset = 0
             response = requests.get(
                 volunteers_base_url + "search?q=&pageFold=" +
                 str(limit) + "&offset=" + str(offset),

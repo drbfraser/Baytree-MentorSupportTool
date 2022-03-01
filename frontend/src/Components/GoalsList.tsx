@@ -47,7 +47,7 @@ export default function Goals() {
         <Grid container style={{marginTop:'8px'}}>
             {Object.values(goals).map(data => (
             data.status === goalType ?
-                <Accordion expanded={expanded === data.id} onChange={handleChange1(data.id)} style={{width:'100%'}}>
+                <Accordion key={data.id} expanded={expanded === data.id} onChange={handleChange1(data.id)} style={{width:'100%'}}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
