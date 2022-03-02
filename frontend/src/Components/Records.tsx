@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid, GridColDef} from '@mui/x-data-grid';
+import { API_BASE_URL } from "../api/url";
 
 
 export default function Records(){
@@ -10,7 +11,7 @@ export default function Records(){
 
   useEffect(() => {
     setIsLoading(true)
-    fetch('http://localhost:8000/records/' + localStorage.getItem('user_id'), {
+    fetch(`${API_BASE_URL}/records/${localStorage.getItem('user_id')}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
