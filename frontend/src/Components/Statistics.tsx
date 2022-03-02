@@ -2,19 +2,15 @@ import {useState, useEffect} from 'react';
 import Card from '@mui/material/Card'
 import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-
-function preventDefault(event: React.MouseEvent) {
-  event.preventDefault();
-}
+import { API_BASE_URL } from '../api/url';
 
 export default function Statistics() {
 
     const [statistics, setStatistics] = useState([] as any[]);
 
     useEffect(() => {
-        fetch(`http://localhost:8000/users/statistics/mentor?id=${localStorage.getItem('user_id')}`, {
+        fetch(`${API_BASE_URL}/users/statistics/mentor?id=${localStorage.getItem('user_id')}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

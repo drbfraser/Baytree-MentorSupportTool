@@ -10,11 +10,10 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import DateTimePicker from '@mui/lab/DateTimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { API_BASE_URL } from '../api/url';
 
 const  CreateGoals = (props:any) =>   {
 
@@ -22,8 +21,8 @@ const  CreateGoals = (props:any) =>   {
     const [title, setTitle] = useState('');
     const [goal_review_date, setGoal_review_date ] = useState<Date | null>(null);
     const history = useHistory();
-    const [errors, setErrors] = useState(false);
-    const [submit, setSubmit] = useState(false);
+    const [, setErrors] = useState(false);
+    const [, setSubmit] = useState(false);
     const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
@@ -56,10 +55,10 @@ const  CreateGoals = (props:any) =>   {
             setSubmit(false);
         }, 5000);
 
-        if (contents == ''){
+        if (contents === ''){
             setErrors(true);
         } else {
-            fetch('http://localhost:8000/goals/goal/', {
+            fetch(`${API_BASE_URL}/goals/goal/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -117,14 +116,11 @@ const  CreateGoals = (props:any) =>   {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button disabled={contents==''||title==''|| goal_review_date==null } onClick={() => { handleSubmit(); handleClose();}}>Submit</Button>
+                    <Button disabled={contents===''||title===''|| goal_review_date===null } onClick={() => { handleSubmit(); handleClose();}}>Submit</Button>
                 </DialogActions>
             </Dialog>
         </div>
     )
 };
-function setValue(newValue: Date | null) {
-    throw new Error('Function not implemented.');
-}
 
 export default CreateGoals;

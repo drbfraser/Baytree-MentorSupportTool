@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "./url";
+
 export const login = async (email: string, password: string) => {
   try {
     const apiRes = await fetch(
-      `${process.env.REACT_APP_BACKEND_API_URL}/api/token/`,
+      `${API_BASE_URL}/token/`,
       {
         method: "POST",
         headers: {
@@ -26,7 +28,7 @@ export const login = async (email: string, password: string) => {
 export const logout = async () => {
   try {
     const apiRes = await fetch(
-      `${process.env.REACT_APP_BACKEND_API_URL}/api/token/logout/`,
+      `${API_BASE_URL}/token/logout/`,
       {
         method: "GET",
         headers: {
@@ -49,7 +51,7 @@ export const logout = async () => {
 export const verifyFetch = async () => {
   try {
     const apiRes = await fetch(
-      `${process.env.REACT_APP_BACKEND_API_URL}/api/token/verify/`,
+      `${API_BASE_URL}/token/verify/`,
       {
         method: "POST",
         headers: {
@@ -68,7 +70,7 @@ export const verifyFetch = async () => {
 export const refreshAccessToken = async () => {
   try {
     const apiRes = await fetch(
-      `${process.env.REACT_APP_BACKEND_API_URL}/api/token/refresh/`,
+      `${API_BASE_URL}/token/refresh/`,
       {
         method: "POST",
         headers: {

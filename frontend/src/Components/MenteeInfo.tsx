@@ -1,12 +1,11 @@
 import {useState, useEffect} from 'react';
 
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography';
 
-import Tree from '../Assets/baytree.png';
+import { API_BASE_URL } from '../api/url';
 
 export default function MenteeInfo() {
     const [menteeInfo, setMenteeInfo] = useState([] as any[]);
@@ -23,7 +22,7 @@ export default function MenteeInfo() {
     };
     
     useEffect(() => {
-        fetch(`http://localhost:8000/users/mentors?id=${localStorage.getItem('user_id')}`, {
+        fetch(`${API_BASE_URL}/users/mentors?id=${localStorage.getItem('user_id')}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -43,7 +42,7 @@ export default function MenteeInfo() {
                     Mentee Information
                 </Typography>
                 {menteeInfo && Object.values(menteeInfo).map((data, index: number, arr) => (
-                    index == currentMentee ?
+                    index === currentMentee ?
                     (<div key={index}>
                         <Typography variant = "overline" align = "left" sx = {{mt: 1}} color="text.secondary">
                             Name:

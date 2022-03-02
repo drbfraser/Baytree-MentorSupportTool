@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  server:
+    restart: always
+    command: gunicorn baytree_app.wsgi --bind 0:8000
+    environment:
+      - DOMAIN=${DOMAIN}
+  database:
+    restart: always
+  caddy:
+    container_name: baytree_caddy
+    build:
+      context: .
+      dockerfile: caddy/Dockerfile
+    restart: always
+    environment:
+      - DOMAIN=${DOMAIN}
+      - API_HOSTNAME=baytree_server
+    ports:
+      - "80:80"
+      - "443:443"

@@ -1,2 +1,4 @@
-export const changingAspirationsUrl = "/images/changing-aspirations.png";
-export const baytreeLogoUrl = "/images/baytree-logo.svg";
+import { basePath } from "../../next.config";
+
+export const changingAspirationsUrl = `${basePath}/images/changing-aspirations.png`;
+export const baytreeLogoUrl = `${basePath}/images/baytree-logo.svg`;

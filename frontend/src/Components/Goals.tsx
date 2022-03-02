@@ -25,6 +25,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TimelineDot from "@mui/lab/TimelineDot";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import { API_BASE_URL } from "../api/url";
 
 export default function Goals() {
   const [goals, setGoals] = useState([] as any[]);
@@ -39,13 +40,13 @@ export default function Goals() {
     _event: React.SyntheticEvent<Element, Event>,
     newValue: number
   ) => {
-    if (newValue == 0) {
+    if (newValue === 0) {
       setGoalType("IN PROGRESS");
     }
-    if (newValue == 1) {
+    if (newValue === 1) {
       setGoalType("ACHIEVED");
     }
-    if (newValue == 2) {
+    if (newValue === 2) {
       setGoalType("ALL");
     }
     setTabValue(newValue);
@@ -61,7 +62,7 @@ export default function Goals() {
   };
 
   const fetchGoals = () => {
-    fetch('http://localhost:8000/goals/goal/', {
+    fetch(`${API_BASE_URL}/goals/goal/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -80,7 +81,7 @@ export default function Goals() {
   }, []);
 
   const handleGoalComplete = (goalId: any) => {
-    fetch("http://localhost:8000/goals/goal/" + goalId, {
+    fetch(`${API_BASE_URL}/goals/goal/${goalId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -95,7 +96,7 @@ export default function Goals() {
   };
 
   const handleGoalDelete = (goalId: any) => {
-    fetch("http://localhost:8000/goals/goal/" + goalId, {
+    fetch(`${API_BASE_URL}/goals/goal/${goalId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -127,17 +128,17 @@ export default function Goals() {
         </Grid>
         <GoalsStatistics
           activeGoals={
-            goals.filter((goal) => goal.status == "IN PROGRESS").length
+            goals.filter((goal) => goal.status === "IN PROGRESS").length
           }
           completedGoals={
-            goals.filter((goal) => goal.status == "ACHIEVED").length
+            goals.filter((goal) => goal.status === "ACHIEVED").length
           }
           totalGoals={goals.length}
         />
 
         <Grid container style={{ marginTop: "24px" }}>
           {Object.values(goals).map((data) =>
-            data.status == goalType || goalType == "ALL" ? (
+            data.status === goalType || goalType === "ALL" ? (
               <Accordion 
                 key={data.id}
                 expanded={expanded === data.id}
@@ -165,12 +166,12 @@ export default function Goals() {
                   <Typography sx={{ color: "text.secondary", margin: "6px" }}>
                     {data.status}
                   </Typography>
-                  {data.status == "IN PROGRESS" ? (
+                  {data.status === "IN PROGRESS" ? (
                     <TimelineDot
                       color="error"
                       sx={{ backgroundColor: "red" }}
                     />
-                  ) : data.status == "ACHIEVED" ? (
+                  ) : data.status === "ACHIEVED" ? (
                     <TimelineDot
                       color="success"
                       sx={{ backgroundColor: "green" }}

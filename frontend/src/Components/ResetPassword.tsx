@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -55,7 +55,7 @@ export default function ResetPassword(){
                     sx={{ mt: 3, mb: 2 }}> Reset Password
                     </Button>
                     <Typography variant = "caption" display = "block" align = "center">
-                        <a href="http://localhost:3000/login">Back to login</a>
+                        <a href="/login">Back to login</a>
                     </Typography>
                 </Box>
                 </CardContent>

@@ -8,6 +8,7 @@
 */
 
 import { generateBackendCrudFuncs } from "./base";
+import { API_BASE_URL } from "./url";
 
 export interface UserCreate {
   email: string;
@@ -25,7 +26,7 @@ export interface UserResponse {
 
 export type UserUpdate = Partial<UserCreate> & { id: number };
 
-export const usersBackendEndpoint = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users/`;
+export const usersBackendEndpoint = `${API_BASE_URL}/users/`;
 
 export const {
   create: addUsers,

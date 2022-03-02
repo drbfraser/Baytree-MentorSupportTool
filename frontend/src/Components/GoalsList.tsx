@@ -9,14 +9,15 @@ import moment from 'moment';
 import TimelineDot from '@mui/lab/TimelineDot';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import { API_BASE_URL } from '../api/url';
 
 export default function Goals() {
     const [goals, setGoals] = useState([] as any[]);
-    const [goalType, setGoalType] = useState("IN PROGRESS");
+    const [goalType] = useState("IN PROGRESS");
     const [expanded, setExpanded] = React.useState('');
    
     const fetchGoals = () => {
-      fetch('http://localhost:8000/goals/goal/', {
+      fetch(`${API_BASE_URL}/goals/goal/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ export default function Goals() {
         </Typography>
         <Grid container style={{marginTop:'8px'}}>
             {Object.values(goals).map(data => (
-            data.status == goalType ?
+            data.status === goalType ?
                 <Accordion key={data.id} expanded={expanded === data.id} onChange={handleChange1(data.id)} style={{width:'100%'}}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}

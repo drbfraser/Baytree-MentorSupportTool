@@ -1,8 +1,5 @@
-import environ
-# Initialise environment variables
-env = environ.Env()
-environ.Env.read_env()
+import os
 
 views_base_url = 'https://app.viewsapp.net/api/restful/contacts/staff/'
-views_username = env("VIEWS_USERNAME")
-views_password = env("VIEWS_PASSWORD")
+views_username = os.environ["VIEWS_USERNAME"]
+views_password = os.environ["VIEWS_PASSWORD"]

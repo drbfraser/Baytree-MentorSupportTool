@@ -22,7 +22,7 @@ const Login = () => {
   useEffect(() => {
     async function verifyClient() {
       if (await verify()) {
-        window.location.replace("http://localhost:3000/dashboard/home");
+        window.location.replace("/dashboard/home");
       } else {
         setLoading(false);
       }
@@ -38,7 +38,7 @@ const Login = () => {
 
     if ((loginRes = await login(email, password))) {
       localStorage.setItem("user_id", loginRes.user_id);
-      window.location.replace("http://localhost:3000/dashboard/home");
+      window.location.replace("/dashboard/home");
     } else {
       setEmail("");
       setPassword("");
@@ -124,7 +124,7 @@ const Login = () => {
                   </Button>
 
                   <Typography variant="caption" display="block" align="center">
-                    <a href="http://localhost:3000/ResetPassword">
+                    <a href="/ResetPassword">
                       Forgot Password?
                     </a>
                   </Typography>

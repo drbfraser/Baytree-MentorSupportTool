@@ -12,10 +12,11 @@ import Grid from '@mui/material/Grid';
 import Grow from '@mui/material/Grow'
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import TextField, { TextFieldProps } from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
 import TimePicker from '@mui/lab/TimePicker';
 import Typography  from "@mui/material/Typography";
+import { API_BASE_URL } from '../api/url';
 
 const Sessions = () => {
 
@@ -52,7 +53,7 @@ const Sessions = () => {
       notes: notes
     };
 
-    fetch('http://localhost:8000/sessions/', {
+    fetch(`${API_BASE_URL}/sessions/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -62,13 +63,13 @@ const Sessions = () => {
     })
     .then(response => response.json())
 
-    window.location.replace('http://localhost:3000/dashboard/home'); 
+    window.location.replace('/dashboard/home'); 
   }
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   useEffect(() => {
-    fetch('http://localhost:8000/users/mentors/1', {
+    fetch(`${API_BASE_URL}/users/mentors/1`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

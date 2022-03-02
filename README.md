@@ -2,161 +2,116 @@
 
 The Baytree App is designed to facilitate the tracking of each volunteers' progress with each client.
 
-## Members  (Team Jupiter): 
+## Run Using Docker
 
-<dl>
-<dt>Scrum Master:</dt>
-<dd>Yanze Zheng</dd>
+### Setup
 
-<dt>Product Owner:</dt>
-<dd>Shubham Joon</dd>
+1. Install Docker: https://www.docker.com/get-started
+2. Create a file named `.env` (for environment variables) in the same directory as `docker-compose.yml`. It should look like this:
 
-<dt>Repo Manager:</dt> 
-<dd>Ashvinder Grewal</dd>
+```
+SECRET_KEY=something_random
 
-<dt>Team Members:</dt> 
-<dd>Jake Kim</dd> 
-<dd>Herman Luo</dd>
-<dd>Jasim Khan Pathan</dd>
-<dd>Jack Ren</dd>
-</dl>
+MYSQL_USER=dbuser
+MYSQL_PASSWORD=something_random
+
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=the_account@gmail.com
+EMAIL_PASSWORD=the_password
+
+VIEWS_USERNAME=the_username
+VIEWS_PASSWORD=the_password
+```
+
+Replace instances of `something_random` with random strings, and `the_username` and `the_password` with appropriate credentials (which you can obtain by talking to someone on the team).
+
+3. Install frontend dependencies (if running in Docker - see frontend section if not):
+
+```
+docker-compose run --rm frontend npm install
+docker-compose run --rm admin-frontend npm install
+```
+
+4. Then, run the application: `docker-compose up`
+
+5. Run migrations and create a superuser (while the application is running):
+
+```
+docker exec baytree_server python manage.py migrate
+docker exec -it baytree_server python manage.py createsuperuser
+```
+
+6. You can use `Ctrl+C` to stop running the application
+
+### Run Locally
+
+- To run the entire application: `docker-compose up`
+- To run only the backend + database: `docker-compose up server`
+- If new backend packages have been installed, run `docker-compose build` prior to running the `up` commands above
+- If new frontend packages have been installed, run the following prior to running the `up` commands above:
+```
+docker-compose run --rm frontend npm install
+docker-compose run --rm admin-frontend npm install
+```
+
+### Commands Inside Container
+
+If you want to open a terminal within a container, use the command: `docker exec -it [container-name] bash`
+
+<br>
+
+## Backend
+
+The recommended way to run the backend is within Docker (using the instructions above).
+
+### Migrations
+
+After a model change, run the following to make database migrations:
+```
+docker exec baytree_server python manage.py makemigrations
+```
+
+To migrate your database, either because you or someone else made database migrations, run:
+```
+docker exec baytree_server python manage.py migrate
+```
+
+### Creating a User
+
+You can create a super (admin) user by running:
+```
+docker exec -it baytree_server python manage.py createsuperuser
+```
+
+### Install Package
+
+You can install a new package by adding it to `requirements.txt` and then running `docker-compose build` while the application isn't running.
 
 <br>
 
-# How to use Docker to run the app 
+## Frontends
 
+### Install Package
 
-1. Install Docker at this link: https://www.docker.com/get-started
-2. After Docker is installed, navigate to the directory containing the ***docker-compose.yaml*** file
-3. Run:
-        $ docker-compose build
+To install a package, with the application running:
+- frontend: `docker exec baytree_frontend npm install [package name]`
+- admin-frontend: `docker exec baytree_admin_frontend npm install [package name]`
 
-4. Then run:
+### Run Outside of Docker
 
-        $ docker network create --gateway 172.19.0.1 --subnet 172.19.0.0/24 db-net
+The frontends can either be run in Docker (using the instructions above) or outside of Docker. Due to the large number of files in `node_modules`, file system performance may be better outside of Docker. To run outside of Docker:
 
-5. To start the application, run: 
-
-        $ docker-compose up -d
-
-6. The stop the app, run:
-        
-        $ docker-compose down
-
-<br>
-
-If you want to open a terminal within an app use the command: 
-
-        $ docker exec -it [container-id] bash
+1. Install [Node.js](https://nodejs.org/en/)
+2. Run `npm install` in both frontend folders
+3. Use the command `docker-compose up server` to run only the backend + database
+4. Use the following commands to run the frontends:
+    - frontend: `npm start`
+    - admin-frontend: `npm run dev`
 
 <br>
 
-Remember to create a superuser with python manage.py createsuperuser first to login to the admin portal!
-
-<br>
-
-It is also necessary to place an .env file with the appropriate secrets at mentorsupport/baytree_app
-
-# Backend - Baytree_App: 
-
-### Install mySQL Server and Library
-sudo apt install <br>
-libmysqlclient-dev <br>
-mysql-server <br>
-mysql-client <br>
-For Windows: use the MySQL Community installer to install MySQL Server, WorkBench, and the Python Connector: <br>
-https://dev.mysql.com/downloads/windows/installer/8.0.html
-
-### Install Python Library
-pip3 install -r requirements.txt
-
-
-### Initialize mySQL Database
-Create Database Baytree default character set 'utf8'; <br>
-CREATE USER 'Baytree'@'localhost' IDENTIFIED BY 'Baytree123';<br>
-GRANT ALL PRIVILEGES ON Baytree.* TO 'Baytree'@'localhost' WITH GRANT OPTION;<br>
-FLUSH PRIVILEGES
-
-
-### Make Migrations
-python3 manage.py makemigrations <br>
-python3 manage.py migrate
-
-
-### Create Superuser
-python3 manage.py createsuperuser <br>
-(enter your email and password) 
-
-### Provide .env file with secrets
-Place an .env file with the appropriate secrets used in mentorsupport/baytree_app/development_settings.py & production_settings.py at mentorsupport/baytree_app.
-
-### Start Django
-python3 manage.py runserver
-
-
-### Visit Admin Site
-http://127.0.0.1:8000/admin/ <br>
-enter superuser credentials in step 5
-
-
-<br>
-<br>
-
-# Frontend - Getting Started with a React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-### Available Scripts
-
-In the frontend folder, there is a variable REACT_APP_RESOURCES_URL in both .env.developement and .env.production
-Ask a previous developer for a link, to be placed into this variable, so you can have access to the resource page.
-
-Then in the frontend directory, you can run:
-
-### `npm install`
-
-Installs any necessary dependencies for the react application. This command must be run first before the ones below.
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-
-<br>
-<br>
-# 
-
-
-# Mobile Application
+## Mobile Application
 
 ### Technical Requirements
 
@@ -179,18 +134,6 @@ After setting up the emulator run:
 flutter run --no-sound-null-safety 
 
 
-# Admin Portal
+## Admin Portal
 
-In the admin-frontend folder:
-
-FIRST TIME RUN: Install all necessary packages with npm install
-
-Execute npm run dev to start running a development server on localhost:3001
-
-Execute npm run build and then npm run start to build for production and run on localhost:3001
-
-On Docker: docker-compose build & docker-compose up -d<br>
-then, create a bash shell within the baytree-app container: docker exec -it [baytree-app-container-id] bash<br>
-then, create a superuser if you haven't already with python manage.py createsuperuser
-
-Navigate to localhost:3001 in your browser and use your superuser credentials (or any admin user credentials) to log in
+Navigate to http://localhost:3001/admin in your browser and use your superuser credentials (or any admin user credentials) to log in

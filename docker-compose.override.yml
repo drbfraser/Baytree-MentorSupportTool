@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  server:
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./baytree_app:/code
+    environment:
+      - DEBUG=yes
+  database:
+    ports:
+      - "3306:3306"
+  frontend:
+    container_name: baytree_frontend
+    image: node:16
+    command: npm start
+    working_dir: /code
+    volumes:
+      - ./frontend:/code
+    ports:
+      - "3000:3000"
+  admin-frontend:
+    container_name: baytree_admin_frontend
+    image: node:14
+    command: npm run dev
+    working_dir: /code
+    volumes:
+      - ./admin-frontend:/code
+    ports:
+      - "3001:3001"

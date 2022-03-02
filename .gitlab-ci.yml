@@ -1,0 +1,129 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DEV_BRANCH: "master"
+  STG_BRANCH: "staging"
+
+build frontend:
+  stage: build
+  image: node:16
+  tags:
+    - docker
+  rules:
+    - if: "$CI_MERGE_REQUEST_ID != null"
+      changes:
+        - frontend/**/*
+        - .gitlab-ci.yml
+      when: always
+    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH || $CI_COMMIT_BRANCH == $STG_BRANCH"
+      when: always
+  before_script:
+    - cd frontend
+    - npm ci
+  script:
+    - GENERATE_SOURCEMAP=false npm run build
+  after_script:
+    - cd frontend/build && tar -czvf ../../frontend_build.tar.gz .
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - frontend_build.tar.gz
+
+build admin-frontend:
+  stage: build
+  image: node:14
+  tags:
+    - docker
+  rules:
+    - if: "$CI_MERGE_REQUEST_ID != null"
+      changes:
+        - admin-frontend/**/*
+        - .gitlab-ci.yml
+      when: always
+    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH || $CI_COMMIT_BRANCH == $STG_BRANCH"
+      when: always
+  before_script:
+    - cd admin-frontend
+    - npm ci
+  script:
+    - GENERATE_SOURCEMAP=false npm run export
+  after_script:
+    - ls -l admin-frontend
+    - cd admin-frontend/build && tar -czvf ../../admin_frontend_build.tar.gz .
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - admin_frontend_build.tar.gz
+
+build server:
+  stage: build
+  image: python:3.9.1-buster
+  services:
+    - name: mariadb:5.5
+      alias: test_mysql
+  tags:
+    - docker
+  needs: []
+  rules:
+    - if: "$CI_MERGE_REQUEST_ID != null"
+      changes:
+        - baytree_app/**/*
+        - .gitlab-ci.yml
+      when: always
+    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH || $CI_COMMIT_BRANCH == $STG_BRANCH"
+      when: always
+  variables:
+    DOMAIN: "example.com"
+    SECRET_KEY: "test"
+    MYSQL_HOST: baytree_database
+    MYSQL_DATABASE: baytree
+    MYSQL_USER: theuser
+    MYSQL_PASSWORD: thepassword
+    EMAIL_HOST: ""
+    EMAIL_PORT: ""
+    EMAIL_USER: ""
+    EMAIL_PASSWORD: ""
+    VIEWS_USERNAME: ""
+    VIEWS_PASSWORD: ""
+  before_script:
+    - cd baytree_app
+  script:
+    - pip install -r requirements.txt
+    - python manage.py check
+    - python manage.py makemigrations --check
+
+.deploy-script: &deploy-script
+  - cp /var/baytree/.env ./.env
+  - docker-compose -f docker-compose.yml -f docker-compose.deploy.yml build
+  - docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up --force-recreate -d
+  - docker image prune -f # remove unused images since we just built new ones
+  - bash -c 'sleep 15'
+  - docker exec baytree_server python manage.py migrate
+
+deploy development:
+  stage: deploy
+  environment:
+    name: development
+    url: https://baytree-dev.cmpt.sfu.ca
+  tags:
+    - deploy-development
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH"
+      when: on_success
+  script:
+    - *deploy-script
+
+deploy staging:
+  stage: deploy
+  environment:
+    name: staging
+    url: https://baytree-stg.cmpt.sfu.ca
+  tags:
+    - deploy-staging
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $STG_BRANCH"
+      when: on_success
+  script:
+    - *deploy-script

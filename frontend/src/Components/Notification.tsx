@@ -12,13 +12,14 @@ import Typography from "@mui/material/Typography";
 import AccordionActions from "@mui/material/AccordionActions";
 import Button from "@mui/material/Button";
 import moment from "moment";
+import { API_BASE_URL } from "../api/url";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([] as any[]);
   const [expanded, setExpanded] = React.useState("");
 
   const fetchNotifications = () => {
-    fetch(`http://localhost:8000/notifications/${localStorage.getItem('user_id')}`, {
+    fetch(`${API_BASE_URL}/notifications/${localStorage.getItem('user_id')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +37,7 @@ export default function Notification() {
   }, []);
 
   const handleNotificationComplete = (notificationId: any) => {
-    fetch("http://localhost:8000/notifications/" + notificationId, {
+    fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
