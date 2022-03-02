@@ -91,12 +91,6 @@ export default function Goals() {
     }).then((_response) => fetchGoals());
   };
 
-  useEffect(() => {
-    fetchGoals();
-  }, []);
-
-  console.log(goals);
-
   const handleChange1 = (panel: any) => (_event: any, isExpanded: any) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -145,7 +139,8 @@ export default function Goals() {
         <Grid container style={{ marginTop: "24px" }}>
           {Object.values(goals).map((data) =>
             data.status === goalType || goalType === "ALL" ? (
-              <Accordion
+              <Accordion 
+                key={data.id}
                 expanded={expanded === data.id}
                 onChange={handleChange1(data.id)}
                 style={{ width: "100%" }}

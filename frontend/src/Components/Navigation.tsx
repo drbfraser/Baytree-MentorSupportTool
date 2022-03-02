@@ -23,6 +23,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import PermDeviceInformationIcon from '@mui/icons-material/PermDeviceInformation';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 import Home from './Home';
 import Goals from './Goals';
@@ -30,11 +31,11 @@ import Logo from '../Assets/baytree-logo.png';
 import SideLogo from '../Assets/changing-aspirations.png';
 import Logout from './Logout';
 import Messages from './Messages';
-import Notifications from './Notifications';
 import Profile from './Profile';
 import Questionnaire from './Questionnaire';
 import Sessions from './Sessions';
 import Records from './Records';
+import Notification from './Notification';
 const drawerWidth = 240;
 const resourcesURL = `${process.env.REACT_APP_RESOURCES_URL}`;
 
@@ -66,8 +67,12 @@ export default function Navigation() {
                         <Grid item xs = {3}>
                         <Messages />
                         </Grid>
-                        <Grid item xs = {3}>
-                        <Notifications />
+                        <Grid item xs = {3}>  
+                          <Link to = {`${match.url}/notifications`} style={{ textDecoration: 'none', color: 'black' }}>
+                            <IconButton color = "inherit" size = "large">
+                              <NotificationsIcon />
+                            </IconButton>
+                          </Link>
                         </Grid>
                         <Grid item xs = {3}>
                         <Link to = {`${match.url}/profile`} style={{ textDecoration: 'none', color: 'black' }}>
@@ -99,7 +104,7 @@ export default function Navigation() {
           <Box sx={{ overflow: 'auto' }}>
             <List>
 
-              {['Home', 'Sessions', 'Questionnaires','Goals', 'Records'].map((text, index) => (
+              {['Home', 'Sessions', 'Questionnaires','Goals', 'Records', 'Notifications'].map((text, index) => (
 
               <Link to = {`${match.url}/${text}`} style={{ textDecoration: 'none', color: 'black' }} key = {text}>
                 <ListItem button>
@@ -111,6 +116,7 @@ export default function Navigation() {
                             case "Questionnaires": return <QuestionAnswerIcon sx={{ color: pink[500]}}/>;  
                             case "Goals": return <AutoGraphIcon sx={{ color: pink[500]}}/>;
                             case "Records": return <BookIcon sx={{ color: pink[500]}}/>;         
+                            case "Notifications": return <NotificationsIcon sx={{ color: pink[500]}}/>;         
                             }
                           })()}
                   </ListItemIcon>
@@ -169,6 +175,9 @@ export default function Navigation() {
               </Route>
               <Route path={`${match.path}/messages`}>
                   <Messages />
+              </Route>
+              <Route path={`${match.path}/notifications`}>
+                  <Notification />
               </Route>
           </Switch>
         </Box>

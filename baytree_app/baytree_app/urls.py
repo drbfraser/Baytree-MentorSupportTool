@@ -11,10 +11,12 @@ from .views import CookieTokenObtainPairView, CookieTokenRefreshView, CookieToke
 
 api_patterns = [
     path('sessions/', include('sessions.urls')),
+    path('records/', include('records.urls')),
     path('users/', include('users.urls')),
     path('questionnaires/', include('questionnaires.urls')),
     path('questions/', include('questions_and_answers.urls')),
     path('goals/', include('goals.urls')),
+    path('notifications/', include('notifications.urls')),
     path('token/', CookieTokenObtainPairView.as_view()),
     path('token/refresh/', CookieTokenRefreshView.as_view()),
     path('token/verify/', CookieTokenVerifyView.as_view()),
