@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import AccordionActions from "@mui/material/AccordionActions";
 import Button from "@mui/material/Button";
 import moment from "moment";
-import { API_BASE_URL } from '../api/url';
+import { API_BASE_URL } from "../api/url";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([] as any[]);
@@ -37,7 +37,7 @@ export default function Notification() {
   }, []);
 
   const handleNotificationComplete = (notificationId: any) => {
-    fetch(`${API_BASE_URL}/notifications/` + notificationId, {
+    fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

@@ -8,6 +8,9 @@ import useMobileLayout from "../hooks/useMobileLayout";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../actions/auth/actionCreators";
 import { RootState } from "../stores/store";
+import { FRONTEND_BASE_URL } from "../api/backend/url";
+import { basePath } from "../next.config";
+import { NoServerSideRender } from "../components/shared/noServerSideRender";
 
 const Login: NextPage = () => {
   const [email, setEmail] = useState("");
@@ -77,7 +80,7 @@ const Login: NextPage = () => {
         >
           <Grid item xs={8} style={{display: "flex", alignItems: "center", height: "100%", width: "100%", padding: "2rem" }}>
             <img
-              src="/admin/images/login/photo.jpg"
+              src={`${basePath}/images/login/photo.jpg`}
               style={{
                 objectFit: "cover",
                 maxHeight: "95vh",
@@ -98,7 +101,7 @@ const Login: NextPage = () => {
               }}
             >
               <img
-                src="/admin/images/baytree-logo.svg"
+                src={`${basePath}/images/baytree-logo.svg`}
                 style={{ width: "200px", height: "200px" }}
                 alt="Baytree logo"
               ></img>
@@ -143,9 +146,11 @@ const Login: NextPage = () => {
               Sign In
             </Button>
 
-            <Typography variant="caption" display="block" align="center">
-              <a href="http://localhost:3000/ResetPassword">Forgot Password?</a>
-            </Typography>
+            <NoServerSideRender>
+              <Typography variant="caption" display="block" align="center">
+                <a href={`${FRONTEND_BASE_URL}/ResetPassword`}>Forgot Password?</a>
+              </Typography>
+            </NoServerSideRender>
           </Grid>
         </Grid>
       )}
@@ -156,7 +161,7 @@ const Login: NextPage = () => {
 const BackgroundPhoto: React.FC<{}> = () => {
   return (
     <BackgroundPhotoContainer>
-      <StyledBackgroundPhoto src="/admin/images/login/photo.jpg"></StyledBackgroundPhoto>
+      <StyledBackgroundPhoto src={`${basePath}/images/login/photo.jpg`}></StyledBackgroundPhoto>
     </BackgroundPhotoContainer>
   );
 };
@@ -173,7 +178,7 @@ const BaytreeLogo: React.FC<{}> = () => {
   return (
     <BaytreeLogoContainer>
       <LogoCircleContainer>
-        <StyledBaytreeLogo src="/admin/images/baytree-logo.svg"></StyledBaytreeLogo>
+        <StyledBaytreeLogo src={`${basePath}/images/baytree-logo.svg`}></StyledBaytreeLogo>
       </LogoCircleContainer>
     </BaytreeLogoContainer>
   );
@@ -257,9 +262,11 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
         Sign In
       </Button>
 
-      <Typography variant="caption" display="block" align="center">
-        <a href="http://localhost:3000/ResetPassword">Forgot Password?</a>
-      </Typography>
+      <NoServerSideRender>
+        <Typography variant="caption" display="block" align="center">
+          <a href={`${FRONTEND_BASE_URL}/ResetPassword`}>Forgot Password?</a>
+        </Typography>
+      </NoServerSideRender>
     </StyledLoginForm>
   );
 };

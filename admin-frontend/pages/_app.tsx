@@ -20,6 +20,7 @@ import { Typography } from "@mui/material";
 import { logout, verify } from "../actions/auth/actionCreators";
 import OverlaySpinner from "../components/shared/overlaySpinner";
 import styled from "styled-components";
+import { basePath } from "../next.config";
 
 export const BODY_PADDING = "1rem";
 import "react-toastify/dist/ReactToastify.css";
@@ -177,24 +178,24 @@ const HeadTags: React.FC<{}> = () => {
       <link
         rel="apple-touch-icon"
         sizes="180x180"
-        href="/admin/favicons/apple-touch-icon.png"
+        href={`${basePath}/favicons/apple-touch-icon.png`}
       />
       <link
         rel="icon"
         type="image/png"
         sizes="32x32"
-        href="/admin/favicons/favicon-32x32.png"
+        href={`${basePath}/favicons/favicon-32x32.png`}
       />
       <link
         rel="icon"
         type="image/png"
         sizes="16x16"
-        href="/admin/favicons/favicon-16x16.png"
+        href={`${basePath}/favicons/favicon-16x16.png`}
       />
-      <link rel="manfest" href="/admin/favicons/site.webmanifest" />
+      <link rel="manifest" href={`${basePath}/favicons/site.webmanifest`} />
       <link
         rel="mask-icon"
-        href="/admin/favicons/safari-pinned-tab.svg"
+        href={`${basePath}/safari-pinned-tab.svg`}
         color="#5bbad5"
       />
       <meta name="msapplication-TileColor" content="#da532c" />

@@ -99,10 +99,10 @@ const Mentors: NextPage = () => {
                 setLoadingData(true);
                 const res = await deleteUsers(dataRow.id);
                 setDataGridKey(dataGridKey + 1);
-                if (res) {
+                if (res && res.status === 200) {
                   toast.success("Successfully deleted user!");
                 } else {
-                  toast.error("Failed to delete user.");
+                  toast.error(HELP_MESSAGE);
                 }
                 setLoadingData(false);
               },
