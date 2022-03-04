@@ -18,26 +18,29 @@ import {
   getSessionsFromViews,
   Session,
 } from "../../../api/backend/views/sessions";
-import { HELP_MESSAGE, MOBILE_BREAKPOINT } from "../../../constants/constants";
+import { COLORS, HELP_MESSAGE, MOBILE_BREAKPOINT } from "../../../constants/constants";
 import PaginatedSelect, {
   PaginatedSelectOption,
 } from "../../shared/paginatedSelect";
 
 const SessionStatsCard: React.FC<{}> = () => {
-  const [sessions, setSessions] = useState([]);
-
   const [loadingData, setLoadingData] = useState(false);
   const [selectedSessionGroups, setSelectedSessionGroups] = useState<
     PaginatedSelectOption<string>[]
   >([]);
-  const [data, setData] = useState<any>([
+
+  interface DataEntryFormat {
+    name: string;
+    [key: string]: string | number;
+  }
+
+  const initialData = [
     {
-      completedSessions: 20,
-      upcomingSessions: 30,
-      pendingSessions: 8,
-      cancelledSessions: 10,
+      name: "Please select a session group(s) above.",
     },
-  ]);
+  ];
+
+  const [data, setData] = useState<DataEntryFormat[]>(initialData);
 
   const loadSessionGroupOptions = async (search: any, prevOptions: any) => {
     const SESSION_GROUPS_SELECT_PAGE_SIZE = 20;
@@ -74,14 +77,16 @@ const SessionStatsCard: React.FC<{}> = () => {
 
   const getNumCompletedSessions = (sessions: Session[]) => {
     return sessions.reduce(
-      (prevVal, curVal) => prevVal + (new Date() > curVal.startDate && !curVal.cancelled ? 1 : 0),
+      (prevVal, curVal) =>
+        prevVal + (new Date() > curVal.startDate && !curVal.cancelled ? 1 : 0),
       0
     );
   };
 
   const getNumPendingSessions = (sessions: Session[]) => {
     return sessions.reduce(
-      (prevVal, curVal) => prevVal + (new Date() > curVal.startDate && !curVal.cancelled ? 1 : 0),
+      (prevVal, curVal) =>
+        prevVal + (new Date() > curVal.startDate && !curVal.cancelled ? 1 : 0),
       0
     );
   };
@@ -168,7 +173,11 @@ const SessionStatsCard: React.FC<{}> = () => {
           loadSessionGroupOptions={loadSessionGroupOptions}
           onSessionGroupSelectOptionChange={onSessionGroupSelectOptionChange}
         ></Header>
-        <Chart loading={loadingData} selectedSessionGroups={selectedSessionGroups} data={data}></Chart>
+        <Chart
+          loading={loadingData}
+          selectedSessionGroups={selectedSessionGroups}
+          data={data}
+        ></Chart>
       </StyledSessionStatsCard>
       <ToastContainer></ToastContainer>
     </>
@@ -211,6 +220,7 @@ const Header: React.FC<HeaderProps> = (props) => {
         isMulti={true}
         loadOptions={props.loadSessionGroupOptions}
         onChange={props.onSessionGroupSelectOptionChange}
+        placeholder="Select a session group..."
       ></PaginatedSelect>
     </StyledHeader>
   );
@@ -243,17 +253,13 @@ const Chart: React.FC<{
   selectedSessionGroups: PaginatedSelectOption<string>[];
 }> = (props) => {
   const getUniqueColor = (n: number) => {
-    const colors = ["#48825C", "#4482C8", "#D06F36", "#D44C47", "#8c44ff", "#fffd92", "#eb6ec1"];
-    return colors[n % colors.length];
+    return COLORS[n % COLORS.length];
   };
 
   return (
     <StyledChart>
       {props.loading ? (
         <div style={{ marginLeft: "2rem" }}>
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
           <Skeleton />
           <Skeleton />
           <Skeleton />
