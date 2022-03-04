@@ -39,6 +39,15 @@ session_translated_fields = [
     "venueName"
 ]
 
+"""
+WHAT IS A SESSION:
+For Baytree's use case of the Views API, Sessions in their Views database hold
+recorded information about a mentoring session that transpired between a Mentor and their Mentee.
+Mentors can take notes and attach these as "Session Notes" in views to a particular session.
+Mentors can also take note of attendance by attaching "Session Attendance" in views to a
+particular session.
+"""
+
 def get_sessions(id: str = None, session_group_id: str = None, limit: int = None, offset: int = None):
     """
     Gets sessions from Views API.

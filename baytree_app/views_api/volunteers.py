@@ -10,6 +10,13 @@ volunteers_base_url = views_base_url + "contacts/volunteers/"
 volunteerFields = ["Forename", "Surname", "PersonID", "Email", "DateOfBirth", "Ethnicity_V_15", "County"]
 volunteerTranslateFields = ["firstname", "surname", "viewsPersonId", "email", "dateOfBirth", "ethnicity", "country"]
 
+"""
+WHAT IS A VOUNTEER:
+For Baytree's use case of the Views API, Volunteers in their Views database are the same as Mentors.
+These Mentor records in Views contain contact and general information about the Mentor, .etc.
+Mentors are also considered as "Staff", but not all staff are mentors, so we shouldn't retrieve
+staff members since we could retrieve members that aren't actually mentors.
+"""
 
 def get_volunteers(id: str = None, limit: int = 5, offset: int = 0):
     """

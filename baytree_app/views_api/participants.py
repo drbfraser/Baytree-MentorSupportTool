@@ -10,6 +10,11 @@ participants_base_url = views_base_url + "contacts/participants/"
 participantFields = ["Forename", "Surname", "PersonID", "Email", "DateOfBirth", "Ethnicity", "County"]
 participantTranslateFields = ["firstname", "surname", "viewsPersonId", "email", "dateOfBirth", "ethnicity", "country"]
 
+"""
+WHAT IS A PARTICIPANT:
+For Baytree's use case of the Views API, Participants in their Views database are the same as Mentees.
+These participant records in Views contain contact and general information about the Mentee, .etc.
+"""
 
 def get_participants(id: str = None, limit: int = 5, offset: int = 0):
     """

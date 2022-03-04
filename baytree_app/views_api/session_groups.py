@@ -23,6 +23,14 @@ session_group_translated_fields = [
     "otherStaff"
 ]
 
+"""
+WHAT IS A SESSION GROUP:
+For Baytree's use case of the Views API, Session Groups in their Views database hold
+all the sessions for a specific mentor role group such as "YS: Youth Mentoring 2021/2022".
+Thus, this group would contain all the recorded sessions for Youth Mentors in the 2021/2022
+academic year.
+"""
+
 def get_session_groups(id: str = None, limit: int = None, offset: int = None):
     """
     Gets session groups from Views API.
