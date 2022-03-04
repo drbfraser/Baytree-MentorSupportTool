@@ -423,18 +423,23 @@ const Legend: React.FC<{
       {props.data && props.selectedCategory === "age" && (
         <>
           <LegendListItem
+            key={`MentorLegendListItem_${0}`}
             legendEntry={{ title: "15 to 19", color: getUniqueColor(0) }}
           ></LegendListItem>
           <LegendListItem
+            key={`MentorLegendListItem_${1}`}
             legendEntry={{ title: "20 to 30", color: getUniqueColor(1) }}
           ></LegendListItem>
           <LegendListItem
+            key={`MentorLegendListItem_${2}`}
             legendEntry={{ title: "30 to 40", color: getUniqueColor(2) }}
           ></LegendListItem>
           <LegendListItem
+            key={`MentorLegendListItem_${3}`}
             legendEntry={{ title: "40+", color: getUniqueColor(3) }}
           ></LegendListItem>
           <LegendListItem
+            key={`MentorLegendListItem_${4}`}
             legendEntry={{ title: "Not Entered", color: getUniqueColor(4) }}
           ></LegendListItem>
         </>
@@ -448,6 +453,7 @@ const Legend: React.FC<{
           for (const ethnicity in props.data.ethnicity) {
             legendListItems.push(
               <LegendListItem
+                key={`MentorLegendListItem_${i}`}
                 legendEntry={{ title: ethnicity, color: getUniqueColor(i) }}
               ></LegendListItem>
             );
@@ -465,6 +471,7 @@ const Legend: React.FC<{
           for (const birthLocation in props.data.birthLocation) {
             legendListItems.push(
               <LegendListItem
+                key={`MentorLegendListItem_${i}`}
                 legendEntry={{ title: birthLocation, color: getUniqueColor(i) }}
               ></LegendListItem>
             );

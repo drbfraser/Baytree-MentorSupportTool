@@ -424,18 +424,23 @@ const Legend: React.FC<{
       {props.data && props.selectedCategory === "age" && (
         <>
           <LegendListItem
+            key={`MenteeLegendListItem_${0}`}
             legendEntry={{ title: "8 to 9", color: getUniqueColor(0) }}
           ></LegendListItem>
           <LegendListItem
+            key={`MenteeLegendListItem_${1}`}
             legendEntry={{ title: "10 to 12", color: getUniqueColor(1) }}
           ></LegendListItem>
           <LegendListItem
+            key={`MenteeLegendListItem_${2}`}
             legendEntry={{ title: "13 to 20", color: getUniqueColor(2) }}
           ></LegendListItem>
           <LegendListItem
+            key={`MenteeLegendListItem_${3}`}
             legendEntry={{ title: "20+", color: getUniqueColor(3) }}
           ></LegendListItem>
           <LegendListItem
+            key={`MenteeLegendListItem_${4}`}
             legendEntry={{ title: "Not Entered", color: getUniqueColor(4) }}
           ></LegendListItem>
         </>
@@ -449,6 +454,7 @@ const Legend: React.FC<{
           for (const ethnicity in props.data.ethnicity) {
             legendListItems.push(
               <LegendListItem
+                key={`MenteeLegendListItem_${i}`}
                 legendEntry={{ title: ethnicity, color: getUniqueColor(i) }}
               ></LegendListItem>
             );
@@ -466,6 +472,7 @@ const Legend: React.FC<{
           for (const birthLocation in props.data.birthLocation) {
             legendListItems.push(
               <LegendListItem
+                key={`MenteeLegendListItem_${i}`}
                 legendEntry={{ title: birthLocation, color: getUniqueColor(i) }}
               ></LegendListItem>
             );
@@ -510,7 +517,7 @@ const LegendListItemColorBlock = styled.div<{ color: string }>`
 `;
 
 const LegendListItemTitle = styled(Typography)`
- flex: 1
+  flex: 1;
 `;
 
 export default MenteeDemographicsCard;
