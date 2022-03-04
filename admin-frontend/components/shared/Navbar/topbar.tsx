@@ -5,7 +5,7 @@ import { IconBaseProps } from "react-icons";
 import { MdMenu } from "react-icons/md";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { TOPBAR_HEIGHT } from "../../../constants/constants";
+import { NAVBAR_Z_INDEX, TOPBAR_HEIGHT } from "../../../constants/constants";
 import { RootState } from "../../../stores/store";
 import Modal, { ModalComponent } from "../Modal";
 import Logo from "./logo";
@@ -80,6 +80,7 @@ const StyledTopBar = styled.div`
   height: ${TOPBAR_HEIGHT};
   box-shadow: 0 0 0.4rem 0.2rem lightgrey;
   position: fixed;
+  z-index: ${NAVBAR_Z_INDEX};
 `;
 
 interface TopbarActionProps {

@@ -157,7 +157,7 @@ const PageContent = styled.div`
   flex: 1;
   padding: ${BODY_PADDING};
   margin-top: ${TOPBAR_HEIGHT};
-  overflow-x: "hidden";
+  overflow-x: hidden;
 `;
 
 const LoginPage: React.FC<{

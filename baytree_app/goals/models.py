@@ -7,8 +7,8 @@ class Goal(models.Model):
         IN_PROGRESS = 'IN PROGRESS', "IN PROGRESS"
         RECALIBRATED = 'RECALIBRATED', "RECALIBRATED"
 
-    mentor = models.ForeignKey(CustomUser, related_name="goal_mentor", on_delete=models.PROTECT, null=True)
-    mentee = models.ForeignKey(CustomUser, related_name="goal_mentee", on_delete=models.PROTECT, null=True)
+    mentor = models.ForeignKey(CustomUser, related_name="goal_mentor", on_delete=models.SET_NULL, null=True)
+    mentee = models.ForeignKey(CustomUser, related_name="goal_mentee", on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=100)
     date = models.DateField()
     goal_review_date = models.DateField()
