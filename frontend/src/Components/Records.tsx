@@ -1,13 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { DataGrid, GridColDef} from '@mui/x-data-grid';
+import { useState, useEffect } from "react";
+import { DataGrid, GridColDef, GridCellParams} from '@mui/x-data-grid';
+import Dialog  from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 import { API_BASE_URL } from "../api/url";
 
 
 export default function Records(){
 
-
   const [staffRecord, setStaffRecord] = useState([] as any[]);
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [note, setNote] = useState("");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     setIsLoading(true)
@@ -21,10 +36,9 @@ export default function Records(){
     .then(response => response.json())
     .then((data) => {
       setStaffRecord(JSON.parse(data))
-      setIsLoading(false)
+      setIsLoading(false);
     });
   }, []);
-
 
   const columns: GridColDef[] = [
     { field: 'Title', headerName: 'Session Title', width: 300 },
@@ -33,7 +47,6 @@ export default function Records(){
     { field: 'Status', headerName: 'Status', width: 150 },
     { field: 'Snippet', headerName: 'Note', width: 600 },
   ];
-
 
     return (
       <div>
@@ -46,8 +59,25 @@ export default function Records(){
             pageSize={15}
             rowsPerPageOptions={[15, 25, 50, 100]}
             loading = {isLoading}
+            onCellClick = {(params:GridCellParams)=>{
+              setNote(params.row.Note);
+              handleClickOpen();
+            }}
           />
         </div>
+        <Dialog
+        open={open}
+        onClose={handleClose}
+        scroll= "paper"
+        >
+          <DialogTitle>Note:</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{note}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Close</Button>
+          </DialogActions>
+        </Dialog>
       </div>
     )
   };
