@@ -15,14 +15,14 @@ class ViewsAppSessionView(APIView):
 
         mentorUser = MentorUser.objects.all().filter(user_id=id)
 
-        all_staff_url = views_base_url + str(mentorUser[0].viewsPersonId)
+        all_volunteer_url = views_base_url + str(mentorUser[0].viewsPersonId)
     
         try:
-            responseSession = requests.get(all_staff_url + '/sessions', 
+            responseSession = requests.get(all_volunteer_url + '/sessions', 
                 headers = {"content-type": "text/xml"},
                 auth=(views_username, views_password))
             try:
-                responseNote = requests.get(all_staff_url + '/notes', 
+                responseNote = requests.get(all_volunteer_url + '/notes', 
                     headers = {"content-type": "text/xml"},
                     auth=(views_username, views_password))
             except Exception as e:
@@ -34,20 +34,20 @@ class ViewsAppSessionView(APIView):
         #turn the xml response to dictionary
         parsedSession = xmltodict.parse(responseSession.text)
         parsedNote = xmltodict.parse(responseNote.text)
-        
+
         #sort throught the dictionary
-        staffSessionList = parsedSession["staff"]["sessions"]["session"]
-        staffNoteList = parsedNote["staff"]["notes"]["note"]
+        volunteerSessionList = parsedSession["volunteer"]["sessions"]["session"]
+        volunteerNoteList = parsedNote["volunteer"]["notes"]["note"]
 
         #make json from dictionary
-        staff = []
-        for sessionDict in staffSessionList:
-            for noteDict in staffNoteList:
+        volunteer = []
+        for sessionDict in volunteerSessionList:
+            for noteDict in volunteerNoteList:
                 if sessionDict["SessionID"] == noteDict["TypeID"]:
-                    staff.append({"SessionID":sessionDict["SessionID"],"Title": sessionDict["Title"],"StartDate": sessionDict["StartDate"],"Duration": sessionDict["Duration"],"Status": sessionDict["Status"],"Snippet": noteDict["Snippet"],"Note": noteDict["Note"]})
+                    volunteer.append({"SessionID":sessionDict["SessionID"],"Title": sessionDict["Title"],"StartDate": sessionDict["StartDate"],"Duration": sessionDict["Duration"],"Status": sessionDict["Status"],"Snippet": noteDict["Snippet"],"Note": noteDict["Note"]})
                        
-        jsonStaff = json.dumps(staff)
+        jsonVolunteer = json.dumps(volunteer)
         
-        return Response(jsonStaff,status=200)
+        return Response(jsonVolunteer,status=200)
 
 
