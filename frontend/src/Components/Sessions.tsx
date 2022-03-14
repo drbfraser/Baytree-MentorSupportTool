@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import DatePicker from '@mui/lab/DatePicker';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
@@ -23,20 +23,27 @@ const Sessions = () => {
   const [mentee, setMentee] = useState('');
   const [mentorAttendance, setMentorAttendance] = useState(false);
   const [menteeAttendance, setMenteeAttendance] = useState(false);
-  const [date, setDate] = useState<Date | null>(null);
-  const [clockInTime, setClockInTime] = useState<Date | null>(null);
-  const [clockOutTime, setClockOutTime] = useState<Date | null>(null);
+  const [sessionCancelled, setSessionCancelled] = useState(false);
+  const [date, setDate] = useState<Date>(new Date());
+  const [clockInTime, setClockInTime] = useState<Date>(new Date());
+  const [clockOutTime, setClockOutTime] = useState<Date >(new Date());
   const [notes, setNotes] = useState('');
   const [menteeList, setMenteeList] = useState([] as any[]);
   
   const handleDateChange = (newValue: Date | null) => {
-    setDate(newValue);
+    if(newValue){
+      setDate(newValue);
+    }
   };
   const handleClockInChange = (newValue: Date | null) => {
-    setClockInTime(newValue);
+    if(newValue){
+      setClockInTime(newValue);
+    }
   };
   const handleClockOutChange = (newValue: Date | null) => {
-    setClockOutTime(newValue);
+    if(newValue){
+      setClockOutTime(newValue);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,7 +60,15 @@ const Sessions = () => {
       notes: notes
     };
 
-    fetch(`${API_BASE_URL}/sessions/`, {
+    const viewSession = {
+      StartDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+      StartTime: `${clockInTime.getHours()}:${clockInTime.getMinutes()}`,
+      Duration: `${clockOutTime.getHours() - clockInTime.getHours()}:${clockOutTime.getMinutes() - clockInTime.getMinutes()}`,
+      Cancelled: sessionCancelled,
+      LeadStaff: 1,
+    };
+
+   /* fetch(`${API_BASE_URL}/sessions/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -61,9 +76,23 @@ const Sessions = () => {
         body: JSON.stringify(session),
         credentials: "include"
     })
-    .then(response => response.json())
+    .then(response => response.json())*/
 
-    window.location.replace('/dashboard/home'); 
+    fetch(`${API_BASE_URL}/sessions/viewsapp/`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(viewSession),
+      credentials: "include"
+    })
+    .then(response => {
+      console.log('Success:', response.json());
+      console.log("session frontend")
+      console.log(session)
+    })
+
+   // window.location.replace('/dashboard/home'); 
   }
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
@@ -113,7 +142,18 @@ const Sessions = () => {
             )}
             </Select>
             <Divider sx = {{pt: 2, pb: 2}}/>
-
+            <Grid container spacing = {2}>
+              <Grid item xs = {6}>
+                <Grid container spacing = {1}>
+                  <Grid item xs = {10}>
+                    <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Check if the session didn't take place?</Typography>
+                  </Grid>
+                  <Grid item xs = {2} sx = {{mt: 1.8}}>
+                    <Checkbox checked={sessionCancelled} onChange={e => setSessionCancelled(e.target.checked)} {...label} />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
             <Grid container spacing = {2}>
               <Grid item xs = {6}>
                 <Grid container spacing = {1}>
@@ -142,7 +182,7 @@ const Sessions = () => {
               <Grid container spacing = {1}>
                 <Grid item xs = {4}>
                   <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Date</Typography>
-                  <DesktopDatePicker
+                  <DatePicker
                     inputFormat="MM/dd/yyyy"
                     value={date}
                     onChange={handleDateChange}
@@ -169,7 +209,8 @@ const Sessions = () => {
             </LocalizationProvider>
             <Divider sx = {{pt: 2, pb: 2}}/>
 
-            <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Session Notes. If you or the mentee did not attend the session, please explain why</Typography>
+            <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{sessionCancelled ?'If you or the mentee did not attend the session, please explain why' :'Please enter your notes'}
+           </Typography>
             <TextField 
               variant="outlined"
               sx = {{mt: 0, pt: 0, mb: 5}}
