@@ -5,6 +5,7 @@ from .serializers import SessionSerializer
 from .permissions import *
 from .constants import views_username, views_password, views_base_url
 import requests
+import re
 
 
 # Based on https://medium.com/beyond-light-creations/build-a-rest-api-with-django-rest-framework-and-mysql-ddff0c1126ae#04e7
@@ -61,7 +62,12 @@ class ViewsAppSessionView(APIView):
     ### todo: SessionGroupID, Activity, VenueID are hardcoded need to be changed once admin page (creating mentor account) is completed
 
     def post(self, request):
-        viewData = '''<?xml version="1.0" encoding="utf-8"?>
+
+        ############################
+        # POST request for Session #
+        ############################
+
+        viewSessionData = '''<?xml version="1.0" encoding="utf-8"?>
                         <session id="">
                             <SessionGroupID>{0}</SessionGroupID>
                             <SessionType>Individual</SessionType>
@@ -79,34 +85,66 @@ class ViewsAppSessionView(APIView):
 
         session_url = views_base_url + '3/sessions'
         try:
-            response = requests.post(session_url, 
-            data = viewData,
-            headers = {"content-type": "text/xml"},
-            auth=(views_username, views_password))
+            response = requests.post(session_url, data = viewSessionData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
             print("backend")
+            sessionID = response.text[(response.text.find("<SessionID>")+ len("<SessionID>")):(response.text.find("</SessionID>"))]
             print(response.text)
             print(request.data)
-            return Response(response,status=200)
+            print(sessionID)
         except Exception as e:
             print(e)
             return Response({'Error':'Making a post request for session failed!'}, status=400)
+        
+        #################################
+        # POST request for Session Note #
+        #################################
 
+        viewNoteData =  '''<?xml version="1.0" encoding="utf-8"?>
+                            <notes>
+                                <Note>{0}</Note>
+                            </notes>'''.format(request.data['Notes'])
+        note_url = views_base_url + 'sessions/' + sessionID + '/notes'
+        print(note_url)
+        try:
+            response = requests.post(note_url, data = viewNoteData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
+            print(response.text)
+        except Exception as e:
+            print(e)
+            return Response({'Error':'Making a post request for note failed!'}, status=400)
 
+        ###########################
+        # POST request for Mentor #
+        ###########################
 
+        viewMentorData =  '''<?xml version="1.0" encoding="utf-8"?>
+                            <staff>
+                                <ContactID>{0}</ContactID>
+                                <Attended>{1}</Attended>
+                                <Role>Lead</Role>
+                                <Volunteering>Mentoring</Volunteering>
+                            </staff>'''.format(request.data['LeadStaff'], request.data['Cancelled'])
+        mentor_url = views_base_url + 'sessions/' + sessionID + '/staff'
+        try:
+            response = requests.post(mentor_url, data =  viewMentorData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
+            print(response.text)
+        except Exception as e:
+            print(e)
+            return Response({'Error':'Making a post request for mentor failed!'}, status=400)
 
+        ###########################
+        # POST request for Mentee #
+        ###########################
+        viewMenteeData =  '''<?xml version="1.0" encoding="utf-8"?>
+                            <participants>
+                                <ContactID>{0}</ContactID>
+                                <Attended>{1}</Attended>
+                            </participants>'''.format(4,request.data['Cancelled'])
+        mentee_url = views_base_url + 'sessions/' + sessionID + '/participants'
+        try:
+            response = requests.post(mentee_url, data =  viewMenteeData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
+            print(response.text)
+        except Exception as e:
+            print(e)
+            return Response({'Error':'Making a post request for mentee failed!'}, status=400)
 
-''' <?xml version="1.0" encoding="utf-8"?>
-                        <session id="">
-                            <SessionGroupID>3</SessionGroupID>
-                            <SessionType>Individual</SessionType>
-                            <Name>A session001</Name>
-                            <StartDate>2011-03-03</StartDate>
-                            <StartTime>12:00</StartTime>
-                            <Duration>01:00</Duration>
-                            <Cancelled>0</Cancelled>
-                            <Activity>Budgeting</Activity>
-                            <LeadStaff>1</LeadStaff>
-                            <VenueID>2</VenueID>
-                            <RestrictedRecord>0</RestrictedRecord>
-                            <ContactType>Individual</ContactType>
-                        </session>'''
+        return Response(response,status=200)

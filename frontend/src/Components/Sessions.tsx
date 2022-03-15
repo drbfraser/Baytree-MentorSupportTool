@@ -50,7 +50,7 @@ const Sessions = () => {
     alert('Thank you! Your answers have been submitted');
     e.preventDefault();
 
-    const session = {
+    /*const session = {
       mentor: localStorage.getItem('id'),
       mentee: mentee,
       attended_by_mentor: mentorAttendance,
@@ -58,7 +58,7 @@ const Sessions = () => {
       clock_in: clockInTime,
       clock_out: clockOutTime,
       notes: notes
-    };
+    };*/
 
     const viewSession = {
       StartDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
@@ -66,6 +66,7 @@ const Sessions = () => {
       Duration: `${clockOutTime.getHours() - clockInTime.getHours()}:${clockOutTime.getMinutes() - clockInTime.getMinutes()}`,
       Cancelled: sessionCancelled,
       LeadStaff: 1,
+      Notes: notes
     };
 
    /* fetch(`${API_BASE_URL}/sessions/`, {
@@ -89,7 +90,7 @@ const Sessions = () => {
     .then(response => {
       console.log('Success:', response.json());
       console.log("session frontend")
-      console.log(session)
+      console.log(viewSession)
     })
 
    // window.location.replace('/dashboard/home'); 
