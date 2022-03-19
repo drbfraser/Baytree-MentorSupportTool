@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
@@ -66,4 +67,4 @@ class AccountCreationLink(models.Model):
 
     accountType = models.CharField(max_length=30, default='Mentor', choices=ACCOUNT_TYPES)
     viewsPersonId = models.CharField(max_length=30, default=None)
-    linkId = models.CharField(max_length=30)
+    linkId = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
