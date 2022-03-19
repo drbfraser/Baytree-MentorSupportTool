@@ -65,6 +65,7 @@ class AccountCreationLink(models.Model):
         ('Admin', 'Admin')
     )
 
+    email = models.EmailField(_('email address'), unique=True)
     accountType = models.CharField(max_length=30, default='Mentor', choices=ACCOUNT_TYPES)
     viewsPersonId = models.CharField(max_length=30, default=None)
     linkId = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

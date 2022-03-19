@@ -4,10 +4,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from views_api.volunteers import get_volunteers
 from .serializers import AdminSerializer, MentorSerializer
-from .models import CustomUser, MentorUser
+from .models import AccountCreationLink, CustomUser, MentorUser
 from sessions.models import MentorSession
 from .permissions import *
 from rest_framework.decorators import api_view, permission_classes
+import boto3
 
 def postUser(self, request):
     try:
@@ -52,14 +53,26 @@ def postUser(self, request):
         return Response({"error": "Failed to create object"},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+
 @api_view(('POST',))
 @permission_classes((AdminPermissions, ))
-def sendMentorAccountCreationEmail(request):
+def sendAccountCreationEmail(request):
+    ses = boto3.client('ses') # for sending emails with Amazon SES
+
     viewsPersonId = request.data['viewsPersonId']
+    email = request.data['email']
     accountType = request.data['accountType']
-    if viewsPersonId != None and accountType != None:
-        pass
-    else:
+    try:
+        if viewsPersonId != None and accountType != None:
+            accountCreationLink = AccountCreationLink(viewsPersonId=viewsPersonId, \
+                accountType=accountType, email=email)
+            accountCreationLink.save()
+            # send account creation email if successful
+        else:
+            return Response({"error": "Failed to send account creation email"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
         return Response({"error": "Failed to send account creation email"},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
