@@ -9,3 +9,4 @@ xmltodict==0.12.0
 requests==2.26.0
 gunicorn==20.1.0
 schedule==1.1.0
+boto3==1.21.22

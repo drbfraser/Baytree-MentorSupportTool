@@ -52,6 +52,16 @@ def postUser(self, request):
         return Response({"error": "Failed to create object"},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(('POST',))
+@permission_classes((AdminPermissions, ))
+def sendMentorAccountCreationEmail(request):
+    viewsPersonId = request.data['viewsPersonId']
+    accountType = request.data['accountType']
+    if viewsPersonId != None and accountType != None:
+        pass
+    else:
+        return Response({"error": "Failed to send account creation email"},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class StatisticViews(APIView):
     permission_classes = [MentorsViewPermissions]

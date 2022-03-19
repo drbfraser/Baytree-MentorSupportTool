@@ -56,3 +56,14 @@ class AdminUser(models.Model):
 
     def __str__(self):
         return self.user.last_name + ', ' + self.user.first_name
+
+class AccountCreationLink(models.Model):
+    ACCOUNT_TYPES = (
+        ('Mentor', 'Mentor'),
+        ('Mentee', 'Mentee'),
+        ('Admin', 'Admin')
+    )
+
+    accountType = models.CharField(max_length=30, default='Mentor', choices=ACCOUNT_TYPES)
+    viewsPersonId = models.CharField(max_length=30, default=None)
+    linkId = models.CharField(max_length=30)
