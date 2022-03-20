@@ -52,6 +52,9 @@ def get_volunteers(id: str = None, limit: int = 5, offset: int = 0):
                 auth=(views_username, views_password))
 
         parsed = xmltodict.parse(response.text)
+        if not isinstance(parsed["contacts"]["volunteers"]["volunteer"], list):
+            parsed["contacts"]["volunteers"]["volunteer"] = [parsed["contacts"]["volunteers"]["volunteer"]]
+
         volunteers = [{volunteerTranslateFields[i]: volunteer[field] for i, field in enumerate(volunteerFields)}
                       for volunteer in parsed["contacts"]["volunteers"]["volunteer"]]
         return {"total": parsed["contacts"]["volunteers"]["@count"], "data": volunteers}
