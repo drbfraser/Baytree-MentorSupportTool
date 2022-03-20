@@ -33,8 +33,6 @@ const CreateAccount = (props: any) => {
     }
     else if (checkPassword()) {
       if (accountCreationLinkId) {
-        const errorMessage =
-          "Failed to create mentor account. Please contact an administrator for further assistance.";
         try {
           const apiRes = await createMentorAccount(
             password,
@@ -42,11 +40,13 @@ const CreateAccount = (props: any) => {
           );
           if (apiRes.status === 200) {
             setAccountCreationSuccessful(true);
+          } else if (apiRes.status == 410) {
+              toast.error("Link expired. Please contact an administrator for further assistance.");
           } else {
-            toast.error(errorMessage);
+            toast.error("Invalid link. Please contact an administrator for further assistance.");
           }
         } catch {
-          toast.error(errorMessage);
+          toast.error("Failed to create mentor account. Please contact an administrator for further assistance.");
         }
       }
     } else {

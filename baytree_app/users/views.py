@@ -15,6 +15,8 @@ from .permissions import *
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 import os
 from django.core.mail import send_mail
+import datetime
+from django.utils.timezone import make_aware
 
 def createUsers(users: dict):
     ids = []
@@ -72,11 +74,17 @@ def sendAccountCreationEmail(request):
         mentor_first_name = request.data['mentorFirstName']
         email = request.data['email']
         account_type = request.data['accountType']
+
+        foundAccountCreationLink = \
+                AccountCreationLink.objects.filter(views_person_id=views_person_id)
+        if foundAccountCreationLink.exists():
+            foundAccountCreationLink.first().delete()
+
         account_creation_link = AccountCreationLink(views_person_id=views_person_id, \
             account_type=account_type, email=email)
         account_creation_link.save()
         
-        if (os.environ.get("DOMAIN") != None):
+        if (os.environ.get("DEBUG", "") != "yes" and os.environ.get("DOMAIN") != None):
             email_account_creation_link = "https://" + os.environ["DOMAIN"] \
                 + "/createAccount?id=" + str(account_creation_link.link_id)
         else:
@@ -101,6 +109,9 @@ def sendAccountCreationEmail(request):
         return Response({"error": "Failed to send account creation email"},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+def isAccountCreationLinkExpired(accountCreationLink):
+    return make_aware(datetime.datetime.now()) >= accountCreationLink.link_expiry_date
+
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
@@ -112,6 +123,10 @@ def createMentorAccount(request):
             foundAccountCreationLink = \
                 AccountCreationLink.objects.filter(link_id=create_account_link_id)
             if foundAccountCreationLink.exists():
+                if isAccountCreationLinkExpired(foundAccountCreationLink.first()):
+                    return Response({"error": "Link is expired"},
+                        status=status.HTTP_410_GONE)
+
                 foundAccountCreationLink = foundAccountCreationLink.first()
                 createdUserIds = createUsers({"email": foundAccountCreationLink.email,
                     "password": password})
