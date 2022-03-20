@@ -6,6 +6,7 @@ from .permissions import *
 from .constants import views_username, views_password, views_base_url
 import requests
 import re
+from users.models import MentorUser
 
 
 # Based on https://medium.com/beyond-light-creations/build-a-rest-api-with-django-rest-framework-and-mysql-ddff0c1126ae#04e7
@@ -67,6 +68,10 @@ class ViewsAppSessionView(APIView):
         # POST request for Session #
         ############################
 
+        mentorUser = MentorUser.objects.all().filter(user_id=request.data['LeadStaff'])
+        mentorID = str(mentorUser[0].viewsPersonId)
+        print(mentorID)
+
         viewSessionData = '''<?xml version="1.0" encoding="utf-8"?>
                         <session id="">
                             <SessionGroupID>{0}</SessionGroupID>
@@ -81,16 +86,17 @@ class ViewsAppSessionView(APIView):
                             <VenueID>{7}</VenueID>
                             <RestrictedRecord>0</RestrictedRecord>
                             <ContactType>Individual</ContactType>
-                        </session>'''.format(3, request.data['StartDate'], request.data['StartTime'], request.data['Duration'], request.data['Cancelled'], 'Budgeting', request.data['LeadStaff'], 2)
+                        </session>'''.format(3, request.data['StartDate'], request.data['StartTime'], request.data['Duration'], request.data['Cancelled'], 'Budgeting', mentorID, 2)
 
         session_url = views_base_url + '3/sessions'
         try:
             response = requests.post(session_url, data = viewSessionData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
-            print("backend")
+            print("backend sessions")
             sessionID = response.text[(response.text.find("<SessionID>")+ len("<SessionID>")):(response.text.find("</SessionID>"))]
             print(response.text)
-            print(request.data)
-            print(sessionID)
+            print(viewSessionData)
+            #print(request.data)
+            #print(sessionID)
         except Exception as e:
             print(e)
             return Response({'Error':'Making a post request for session failed!'}, status=400)
@@ -108,6 +114,7 @@ class ViewsAppSessionView(APIView):
         try:
             response = requests.post(note_url, data = viewNoteData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
             print(response.text)
+            print("backend note")
         except Exception as e:
             print(e)
             return Response({'Error':'Making a post request for note failed!'}, status=400)
@@ -122,11 +129,13 @@ class ViewsAppSessionView(APIView):
                                 <Attended>{1}</Attended>
                                 <Role>Lead</Role>
                                 <Volunteering>Mentoring</Volunteering>
-                            </staff>'''.format(request.data['LeadStaff'], request.data['Cancelled'])
+                            </staff>'''.format(mentorID, request.data['Cancelled'])
         mentor_url = views_base_url + 'sessions/' + sessionID + '/staff'
         try:
             response = requests.post(mentor_url, data =  viewMentorData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
             print(response.text)
+            print("backend mentor")
+            print(request.data['Cancelled'])
         except Exception as e:
             print(e)
             return Response({'Error':'Making a post request for mentor failed!'}, status=400)
@@ -143,6 +152,8 @@ class ViewsAppSessionView(APIView):
         try:
             response = requests.post(mentee_url, data =  viewMenteeData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
             print(response.text)
+            print(request.data['Cancelled'])
+            print("backend mentee")
         except Exception as e:
             print(e)
             return Response({'Error':'Making a post request for mentee failed!'}, status=400)

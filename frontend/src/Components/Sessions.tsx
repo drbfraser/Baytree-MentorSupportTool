@@ -16,6 +16,7 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import TimePicker from '@mui/lab/TimePicker';
 import Typography  from "@mui/material/Typography";
+import { format, intervalToDuration } from 'date-fns'
 import { API_BASE_URL } from '../api/url';
 
 const Sessions = () => {
@@ -33,6 +34,9 @@ const Sessions = () => {
   const handleDateChange = (newValue: Date | null) => {
     if(newValue){
       setDate(newValue);
+      console.log("HELLO FROM DATE")
+      console.log(newValue)
+      console.log(format(newValue, 'yyyy-mm-dd')) //format(new Date(1988, 1, 2, 15, 23, 10, 350), 'YYYY-MM-DD hh:mm:ss.SSS A'); 
     }
   };
   const handleClockInChange = (newValue: Date | null) => {
@@ -45,6 +49,41 @@ const Sessions = () => {
       setClockOutTime(newValue);
     }
   };
+
+  const handleDuration = ()=>{
+    const minute = intervalToDuration({
+      start: clockInTime,
+      end: clockOutTime
+    }).minutes
+    console.log(minute + " " + clockInTime + " " + clockOutTime)
+    if (minute && minute < 10){
+      return(`${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).hours}:0${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).minutes}`)
+    }
+    else{
+      return(`${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).hours}:${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).minutes}`)
+    }
+  }
+
+  const handleStartTime= ()=>{
+    if(clockInTime.getMinutes() < 10){
+      return `${clockInTime.getHours()}:0${clockInTime.getMinutes()}`
+    }
+    else{
+      return `${clockInTime.getHours()}:${clockInTime.getMinutes()}`
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     alert('Thank you! Your answers have been submitted');
@@ -61,13 +100,15 @@ const Sessions = () => {
     };*/
 
     const viewSession = {
-      StartDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-      StartTime: `${clockInTime.getHours()}:${clockInTime.getMinutes()}`,
-      Duration: `${clockOutTime.getHours() - clockInTime.getHours()}:${clockOutTime.getMinutes() - clockInTime.getMinutes()}`,
+      StartDate: `${format(date, 'yyyy-mm-dd')}`,
+      StartTime: handleStartTime(),
+      Duration: handleDuration(),
       Cancelled: sessionCancelled,
-      LeadStaff: 1,
+      LeadStaff: localStorage.getItem('user_id'),
       Notes: notes
     };
+
+    //console.log(viewSession)
 
    /* fetch(`${API_BASE_URL}/sessions/`, {
         method: 'POST',
