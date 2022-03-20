@@ -1,0 +1,61 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-class name="pinkText" font-size="15px" color="#FFFFFF" font-family="helvetica" padding="5px"></mj-class>
+    </mj-attributes>
+    <mj-style inline="inline">
+      .pinkText div {
+        background: #ff1d89;
+        padding: 5px;
+        width: fit-content;
+        color: white !important;
+      }
+    </mj-style>
+    <mj-style inline="inline">
+      .box-shadow {
+        box-shadow: 0 4px 6px hsla(0, 0%, 46%, 0.2), 0 1px 3px hsla(0, 0%, 46%, 0.2);
+      }
+
+      .box-shadow-button td {
+        box-shadow: 0 4px 6px hsla(0, 0%, 46%, 0.2), 0 1px 3px hsla(0, 0%, 46%, 0.2);
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#EDEDED">
+    <mj-section background-color="#FFFFFF" css-class="box-shadow">
+      <mj-column vertical-align="middle">
+        <mj-image width="70px" src="https://www.baytreecentre.org/wp-content/uploads/2021/01/baytree-logo.svg"></mj-image>
+      </mj-column>
+      <mj-column vertical-align="middle">
+        <mj-text css-class="pinkText" mj-class="pinkText">Changing aspirations</mj-text>
+        <mj-text css-class="pinkText" mj-class="pinkText">into realities</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column background-color="#FFFFFF" css-class="box-shadow">
+        <mj-image width="400px" src="https://wonderfoundation.org.uk/wp-content/uploads/2019/08/PROJECT-IMAGES-baytree.jpg">
+        </mj-image>
+        <mj-text align="center" font-size="20px" font-family="helvetica">Welcome to The Baytree Centre, {{mentorFirstName}}!</mj-text>
+        <mj-button href="{{createAccountButtonLink}}" background-color="#5AB031" css-class="box-shadow-button" font-size="15px" font-family="helvetica">Create your account</mj-button>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#FFFFFF" css-class="box-shadow">
+      <mj-column>
+        <mj-social font-size="15px" icon-size="30px" inner-padding="10px">
+          <mj-social-element name="web" href="https://www.baytreecentre.org/">
+            Website
+          </mj-social-element>
+          <mj-social-element name="facebook-noshare" href="https://www.facebook.com/BaytreeCentre/">
+            Facebook
+          </mj-social-element>
+          <mj-social-element name="twitter-noshare" href="https://twitter.com/BaytreeCentre">
+            Twitter
+          </mj-social-element>
+          <mj-social-element name="instagram-noshare" href="https://www.instagram.com/baytreecentre/">
+            Instagram
+          </mj-social-element>
+        </mj-social>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
