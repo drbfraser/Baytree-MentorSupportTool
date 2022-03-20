@@ -35,6 +35,12 @@ class ViewsAppSessionView(APIView):
         parsedSession = xmltodict.parse(responseSession.text)
         parsedNote = xmltodict.parse(responseNote.text)
 
+        #Check to see if the mentor has zero sessions entered
+        if(parsedSession["volunteer"]["sessions"] == None):
+            volunteer = []
+            jsonVolunteer = json.dumps(volunteer)
+            return Response(jsonVolunteer,status=200)
+        
         #sort throught the dictionary
         volunteerSessionList = parsedSession["volunteer"]["sessions"]["session"]
         volunteerNoteList = parsedNote["volunteer"]["notes"]["note"]
