@@ -12,7 +12,7 @@ from .models import AccountCreationLink, CustomUser, MentorUser
 from sessions.models import MentorSession
 from rest_framework.permissions import AllowAny
 from .permissions import *
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 import os
 from django.core.mail import send_mail
 
@@ -102,7 +102,8 @@ def sendAccountCreationEmail(request):
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@authentication_classes([])
+@permission_classes([])
 def createMentorAccount(request):
     try:
         password = request.data['password']

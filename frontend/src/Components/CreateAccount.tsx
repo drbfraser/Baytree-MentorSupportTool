@@ -37,13 +37,11 @@ const CreateAccount = (props: any) => {
         const errorMessage =
           "Failed to create mentor account. Please contact an administrator for further assistance.";
         try {
-          // logout to clear httpOnly cookies which cause an issue when accessing create mentor account endpoint
-          const successfullyLoggedOut = await logout();
           const apiRes = await createMentorAccount(
             password,
             accountCreationLinkId
           );
-          if (successfullyLoggedOut && apiRes.status === 200) {
+          if (apiRes.status === 200) {
             setAccountCreationSuccessful(true);
           } else {
             toast.error(errorMessage);
