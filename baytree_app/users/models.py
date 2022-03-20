@@ -1,8 +1,10 @@
+import datetime
 import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
+from django.utils.timezone import make_aware
 
 
 class CustomUser(AbstractUser):
@@ -58,6 +60,11 @@ class AdminUser(models.Model):
     def __str__(self):
         return self.user.last_name + ', ' + self.user.first_name
 
+def generateAccountCreationLinkExpiryDateTime():
+    ACCOUNT_CREATION_LINK_EXPIRY_TIME_IN_DAYS = 7 # 1 week
+    return make_aware(datetime.datetime.now()) \
+        + datetime.timedelta(days=ACCOUNT_CREATION_LINK_EXPIRY_TIME_IN_DAYS)
+
 class AccountCreationLink(models.Model):
     ACCOUNT_TYPES = (
         ('Mentor', 'Mentor'),
@@ -65,7 +72,8 @@ class AccountCreationLink(models.Model):
         ('Admin', 'Admin')
     )
 
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(_('email address'), unique=True, blank=True, null=True)
     accountType = models.CharField(max_length=30, default='Mentor', choices=ACCOUNT_TYPES)
     viewsPersonId = models.CharField(max_length=30, default=None)
     linkId = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    date = models.DateTimeField(default=generateAccountCreationLinkExpiryDateTime, blank=True)

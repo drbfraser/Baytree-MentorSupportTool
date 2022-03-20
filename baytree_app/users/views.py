@@ -2,6 +2,8 @@ from http.client import INTERNAL_SERVER_ERROR, HTTPResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from emails.constants import BAYTREE_EMAIL
+from emails.email import generateEmailTemplateHtml
 from views_api.volunteers import get_volunteers
 from .serializers import AdminSerializer, MentorSerializer
 from .models import AccountCreationLink, CustomUser, MentorUser
@@ -9,6 +11,7 @@ from sessions.models import MentorSession
 from .permissions import *
 from rest_framework.decorators import api_view, permission_classes
 import boto3
+import os
 
 def postUser(self, request):
     try:
@@ -50,7 +53,7 @@ def postUser(self, request):
             return Response({"ids": [created_obj.pk]},
                             status=status.HTTP_200_OK)
     except Exception as e:
-        return Response({"error": "Failed to create object"},
+        return Response({"error": "Failed to create user"},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -58,17 +61,44 @@ def postUser(self, request):
 @api_view(('POST',))
 @permission_classes((AdminPermissions, ))
 def sendAccountCreationEmail(request):
-    ses = boto3.client('ses') # for sending emails with Amazon SES
-
-    viewsPersonId = request.data['viewsPersonId']
-    email = request.data['email']
-    accountType = request.data['accountType']
     try:
+        viewsPersonId = request.data['viewsPersonId']
+        mentorFirstName = request.data['mentorFirstName']
+        email = request.data['email']
+        accountType = request.data['accountType']
         if viewsPersonId != None and accountType != None:
             accountCreationLink = AccountCreationLink(viewsPersonId=viewsPersonId, \
                 accountType=accountType, email=email)
             accountCreationLink.save()
-            # send account creation email if successful
+            
+            emailAccountCreationLink = os.environ["DOMAIN"] + "/createMentorAccount?id=" + accountCreationLink.linkId
+            emailHtml = generateEmailTemplateHtml("mentorAccountCreation", {"mentorFirstName": mentorFirstName, \
+                "createAccountButtonLink": emailAccountCreationLink})
+
+            # Send email to Mentor to confirm their account
+            ses = boto3.client('ses') # for sending emails with Amazon SES
+            ses.send_email(
+                Source = BAYTREE_EMAIL,
+                Destination = {
+                    'ToAddresses': [email]
+                },
+                Message = {
+                    'Subject': {
+                        'Data': 'Welcome to The Baytree Centre!',
+                        'Charset': 'utf-8'
+                    },
+                    'Body': {
+                        'Text': {
+                            'Data': 'Welcome to The Baytree Centre! Click this link to create your account: ' + emailAccountCreationLink,
+                            'Charset': 'utf-8'
+                        },
+                        'Html': {
+                            'Data': emailHtml,
+                            'Charset': 'utf-8'
+                        }
+                    }
+                }
+            )
         else:
             return Response({"error": "Failed to send account creation email"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
