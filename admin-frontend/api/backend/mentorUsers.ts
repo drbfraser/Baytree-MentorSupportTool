@@ -9,13 +9,14 @@
 import { generateBackendCrudFuncs } from "./base";
 import { API_BASE_URL } from "./url";
 
-export type MentorUserStatus = "Active"
-| "Withdrawn"
-| "On Hold"
-| "Temporarily Withdrawn"
-| "Future Leaver"
-| "Staff"
-| "Inactive";
+export type MentorUserStatus =
+  | "Active"
+  | "Withdrawn"
+  | "On Hold"
+  | "Temporarily Withdrawn"
+  | "Future Leaver"
+  | "Staff"
+  | "Inactive";
 
 export interface MentorUserCreate {
   user: number;
@@ -50,3 +51,30 @@ export const {
   MentorUserResponse,
   MentorUserUpdate
 >(mentorUsersBackendEndpoint);
+
+export const sendMentorAccountCreationEmail = async (
+  viewsPersonId: string,
+  mentorFirstName: string,
+  email: string
+) => {
+  try {
+    const apiRes = await fetch(`${API_BASE_URL}/users/sendAccountCreationEmail`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        viewsPersonId,
+        mentorFirstName,
+        email,
+        accountType: "Mentor",
+      }),
+    });
+
+    return apiRes;
+  } catch {
+    return null;
+  }
+};

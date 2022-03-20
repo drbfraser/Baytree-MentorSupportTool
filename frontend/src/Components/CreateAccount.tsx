@@ -85,7 +85,9 @@ const CreateAccount = (props: any) => {
           {accountCreationSuccessful ? (
             <Button
               variant="contained"
-              onClick={createAccount}
+              onClick={() => {
+                window.location.replace("/login");
+              }}
               size="large"
               color="success"
             >
@@ -196,6 +198,7 @@ const PasswordEntry = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
 `;
 
 const CreateAccountButton = styled.div`

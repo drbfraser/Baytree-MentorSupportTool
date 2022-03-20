@@ -14,6 +14,7 @@ import { createMemoryHistory } from "history";
 import { useEffect, useState } from "react";
 import { verify } from "./api/auth";
 import CreateAccount from "./Components/CreateAccount";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const history = createMemoryHistory();

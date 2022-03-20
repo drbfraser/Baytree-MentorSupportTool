@@ -76,4 +76,4 @@ class AccountCreationLink(models.Model):
     account_type = models.CharField(max_length=30, default='Mentor', choices=ACCOUNT_TYPES)
     views_person_id = models.CharField(max_length=30, default=None)
     link_id = models.UUIDField(default=uuid.uuid4, editable=False)
-    date = models.DateTimeField(default=generateAccountCreationLinkExpiryDateTime, blank=True)
+    link_expiry_date = models.DateTimeField(default=generateAccountCreationLinkExpiryDateTime, blank=True)
