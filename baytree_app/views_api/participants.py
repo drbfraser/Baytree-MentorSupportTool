@@ -55,6 +55,11 @@ def get_participants(id: str = None, limit: int = 5, offset: int = 0):
         responseText = response.text.replace("<2Personrelationshipandcontactnumberofpersonauthorised_P_229/>", "")
 
         parsed = xmltodict.parse(responseText)
+
+        # Make sure the participants are wrapped in a list, if there is a single participant
+        if not isinstance(parsed["contacts"]["participants"]["participant"], list):
+            parsed["contacts"]["participants"]["participant"] = [parsed["contacts"]["participants"]["participant"]]
+
         participants = [{participantTranslateFields[i]: participant[field] for i, field in enumerate(participantFields)}
                       for participant in parsed["contacts"]["participants"]["participant"]]
         return {"total": parsed["contacts"]["participants"]["@count"], "data": participants}
