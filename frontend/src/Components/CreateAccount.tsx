@@ -4,10 +4,36 @@ import styled from "styled-components";
 import { MOBILE_BREAKPOINT } from "../constants/constants";
 import BaytreeLogo from "../Assets/baytree-logo.png";
 import BaytreePhoto from "../Assets/baytree-photo.jpg";
+import { createMentorAccount } from "../api/mentorAccount";
+import { ToastContainer, toast } from "react-toastify";
 
 const CreateAccount = (props: any) => {
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
+  const [accountCreationSuccessful, setAccountCreationSuccessful] =
+    useState(false);
+
+  const createAccount = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const accountCreationLinkId = params.get("id");
+    if (accountCreationLinkId) {
+      const errorMessage =
+        "Failed to create mentor account. Please contact an administrator for further assistance.";
+      try {
+        const apiRes = await createMentorAccount(
+          password,
+          accountCreationLinkId
+        );
+        if (apiRes.status === 200) {
+          setAccountCreationSuccessful(true);
+        } else {
+          toast.error(errorMessage);
+        }
+      } catch {
+        toast.error(errorMessage);
+      }
+    }
+  };
 
   return (
     <PageLayout>
@@ -23,36 +49,58 @@ const CreateAccount = (props: any) => {
           />
         </Logo>
         <PasswordEntry>
-          <Typography variant="h4">
-            Please create your account password:
-          </Typography>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password (again)"
-            label="Password (again)"
-            type="password"
-            id="password-again"
-            value={passwordAgain}
-            onChange={(e) => setPasswordAgain(e.target.value)}
-          />
+          {accountCreationSuccessful ? (
+            <Typography variant="h4">Successfully created account!</Typography>
+          ) : (
+            <>
+              <Typography variant="h4">
+                Create your account password:
+              </Typography>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password (again)"
+                label="Password (again)"
+                type="password"
+                id="password-again"
+                value={passwordAgain}
+                onChange={(e) => setPasswordAgain(e.target.value)}
+              />
+            </>
+          )}
         </PasswordEntry>
         <CreateAccountButton>
-          <Button variant="contained" size="large" color="success">
-            Create Account!
-          </Button>
+          {accountCreationSuccessful ? (
+            <Button
+              variant="contained"
+              onClick={createAccount}
+              size="large"
+              color="success"
+            >
+              Login
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={createAccount}
+              size="large"
+              color="success"
+            >
+              Create Account!
+            </Button>
+          )}
         </CreateAccountButton>
         <Photo>
           <img
@@ -68,6 +116,7 @@ const CreateAccount = (props: any) => {
           />
         </Photo>
       </CardLayout>
+      <ToastContainer></ToastContainer>
     </PageLayout>
   );
 };
@@ -103,6 +152,7 @@ const CardLayout = styled.div`
 
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     width: 100vw;
+    min-height: 100vh;
     padding: 0;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto auto;
@@ -121,6 +171,10 @@ const Photo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media all and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
 `;
 
 const Logo = styled.div`
