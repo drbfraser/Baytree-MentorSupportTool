@@ -40,7 +40,7 @@ const CreateAccount = (props: any) => {
           );
           if (apiRes.status === 200) {
             setAccountCreationSuccessful(true);
-          } else if (apiRes.status == 410) {
+          } else if (apiRes.status === 410) {
               toast.error("Link expired. Please contact an administrator for further assistance.");
           } else {
             toast.error("Invalid link. Please contact an administrator for further assistance.");
