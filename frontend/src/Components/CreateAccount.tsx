@@ -6,7 +6,6 @@ import BaytreeLogo from "../Assets/baytree-logo.png";
 import BaytreePhoto from "../Assets/baytree-photo.jpg";
 import { createMentorAccount } from "../api/mentorAccount";
 import { ToastContainer, toast } from "react-toastify";
-import { logout } from "../api/auth";
 
 const CreateAccount = (props: any) => {
   const [password, setPassword] = useState("");
@@ -140,7 +139,7 @@ const CreateAccount = (props: any) => {
         <Photo>
           <img
             src={BaytreePhoto}
-            alt="Photo"
+            alt="BaytreeBackground"
             style={{
               objectFit: "cover",
               maxHeight: "95vh",
