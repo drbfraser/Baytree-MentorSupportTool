@@ -24,7 +24,7 @@
   <mj-body background-color="#EDEDED">
     <mj-section background-color="#FFFFFF" css-class="box-shadow">
       <mj-column vertical-align="middle">
-        <mj-image width="70px" src="https://www.baytreecentre.org/wp-content/uploads/2021/01/baytree-logo.svg"></mj-image>
+        <mj-image width="70px" src="https://baytree-stg.cmpt.sfu.ca/admin/images/baytree-logo.png"></mj-image>
       </mj-column>
       <mj-column vertical-align="middle">
         <mj-text css-class="pinkText" mj-class="pinkText">Changing aspirations</mj-text>
@@ -33,10 +33,10 @@
     </mj-section>
     <mj-section>
       <mj-column background-color="#FFFFFF" css-class="box-shadow">
-        <mj-image width="400px" src="https://wonderfoundation.org.uk/wp-content/uploads/2019/08/PROJECT-IMAGES-baytree.jpg">
+        <mj-image width="400px" src="https://baytree-stg.cmpt.sfu.ca/admin/images/login/photo.jpg">
         </mj-image>
         <mj-text align="center" font-size="20px" font-family="helvetica">Welcome to The Baytree Centre, {{mentorFirstName}}!</mj-text>
-        <mj-button href="{{createAccountButtonLink}}" background-color="#5AB031" css-class="box-shadow-button" font-size="15px" font-family="helvetica">Create your account</mj-button>
+        <mj-button href="{{createAccountButtonLink}}" background-color="#5AB031" css-class="box-shadow-button" font-size="20px" font-family="helvetica">Create your account</mj-button>
       </mj-column>
     </mj-section>
     <mj-section background-color="#FFFFFF" css-class="box-shadow">

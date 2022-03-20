@@ -2,6 +2,7 @@ from http.client import INTERNAL_SERVER_ERROR, HTTPResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from baytree_app.settings import EMAIL_USER
 from emails.constants import BAYTREE_EMAIL
 from emails.email import generateEmailTemplateHtml
 from views_api.volunteers import get_volunteers
@@ -10,8 +11,8 @@ from .models import AccountCreationLink, CustomUser, MentorUser
 from sessions.models import MentorSession
 from .permissions import *
 from rest_framework.decorators import api_view, permission_classes
-import boto3
 import os
+from django.core.mail import send_mail
 
 def postUser(self, request):
     try:
@@ -58,47 +59,39 @@ def postUser(self, request):
 
 
 
-@api_view(('POST',))
+@api_view(['POST'])
 @permission_classes((AdminPermissions, ))
 def sendAccountCreationEmail(request):
     try:
-        viewsPersonId = request.data['viewsPersonId']
-        mentorFirstName = request.data['mentorFirstName']
+        views_person_id = request.data['viewsPersonId']
+        mentor_first_name = request.data['mentorFirstName']
         email = request.data['email']
-        accountType = request.data['accountType']
-        if viewsPersonId != None and accountType != None:
-            accountCreationLink = AccountCreationLink(viewsPersonId=viewsPersonId, \
-                accountType=accountType, email=email)
-            accountCreationLink.save()
+        account_type = request.data['accountType']
+        if views_person_id != None and account_type != None:
+            account_creation_link = AccountCreationLink(views_person_id=views_person_id, \
+                account_type=account_type, email=email)
+            account_creation_link.save()
             
-            emailAccountCreationLink = os.environ["DOMAIN"] + "/createMentorAccount?id=" + accountCreationLink.linkId
-            emailHtml = generateEmailTemplateHtml("mentorAccountCreation", {"mentorFirstName": mentorFirstName, \
-                "createAccountButtonLink": emailAccountCreationLink})
+            if (os.environ.get("DOMAIN") != None):
+                email_account_creation_link = "https://" + os.environ["DOMAIN"] \
+                    + "/createMentorAccount?id=" + str(account_creation_link.link_id)
+            else:
+                email_account_creation_link = "https://localhost:3001" \
+                    + "/createMentorAccount?id=" + str(account_creation_link.link_id)
+
+            email_html = generateEmailTemplateHtml("mentorAccountCreation", {"mentorFirstName": mentor_first_name, \
+                "createAccountButtonLink": email_account_creation_link})
 
             # Send email to Mentor to confirm their account
-            ses = boto3.client('ses') # for sending emails with Amazon SES
-            ses.send_email(
-                Source = BAYTREE_EMAIL,
-                Destination = {
-                    'ToAddresses': [email]
-                },
-                Message = {
-                    'Subject': {
-                        'Data': 'Welcome to The Baytree Centre!',
-                        'Charset': 'utf-8'
-                    },
-                    'Body': {
-                        'Text': {
-                            'Data': 'Welcome to The Baytree Centre! Click this link to create your account: ' + emailAccountCreationLink,
-                            'Charset': 'utf-8'
-                        },
-                        'Html': {
-                            'Data': emailHtml,
-                            'Charset': 'utf-8'
-                        }
-                    }
-                }
-            )
+            send_mail(subject='Welcome to The Baytree Centre!',
+                message='Welcome to The Baytree Centre! Click this link to create your account: ' \
+                + email_account_creation_link,
+                from_email=EMAIL_USER,
+                recipient_list=[email],
+                html_message=email_html)
+
+            return Response({"status": "Successfully sent account creation email!"},
+                status=status.HTTP_200_OK)
         else:
             return Response({"error": "Failed to send account creation email"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
