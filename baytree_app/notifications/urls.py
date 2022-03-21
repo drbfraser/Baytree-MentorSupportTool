@@ -4,5 +4,6 @@ from .views import NotificationViews
 
 urlpatterns = [
     path('', NotificationViews.as_view()),
-    path('<int:mentor_id>', NotificationViews.as_view())
+    path('<int:mentor_id>', NotificationViews.as_view()),
+    path('unread/<int:mentor_id>', NotificationViews.unread)
 ]

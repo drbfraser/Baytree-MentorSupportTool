@@ -6,9 +6,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import filters
 from rest_framework import generics
+from rest_framework.decorators import api_view
 from .models import *
 from .permissions import *
-from .tasks import *
+from .tasks.tasks import *
 #adapted from https://stackabuse.com/creating-a-rest-api-with-django-rest-framework/
 
 class NotificationViews(generics.ListAPIView):
@@ -23,7 +24,7 @@ class NotificationViews(generics.ListAPIView):
     def get(self, request, mentor_id=None):
         if mentor_id:
             try:
-                queryset = Notification.objects.prefetch_related('notification_type').filter(mentor=mentor_id)
+                queryset = Notification.objects.prefetch_related('notification_type').filter(mentor=mentor_id).order_by('-creation_date')
             except Notification.DoesNotExist:
                 return Response([], status=200)
             read_serializer = NotificationSerializer(queryset, many=True)
@@ -54,3 +55,12 @@ class NotificationViews(generics.ListAPIView):
             return Response({"is_read":True})
         else:
             return Response({"status": "error", "data": serializer.errors})
+
+    @api_view(['GET'])
+    def unread(request, mentor_id):
+        try:
+            unread_notifications = Notification.objects.prefetch_related('notification_type').filter(mentor=mentor_id, is_read=0).count()
+        except Notification.DoesNotExist:
+            unread_notifications = []
+
+        return Response({unread_notifications}, status=200)

@@ -49,6 +49,10 @@ export default function Notification() {
 
   const handleChange1 = (panel: any) => (_event: any, isExpanded: any) => {
     setExpanded(isExpanded ? panel : false);
+
+    if (isExpanded) {
+      handleNotificationComplete(panel);
+    }
   };
 
   return (
@@ -88,17 +92,6 @@ export default function Notification() {
                         </Typography>
                     </Link>
                 </AccordionDetails>
-                    {!data.is_read &&
-                        <AccordionActions>
-                            <Button
-                                variant="contained"
-                                color="success"
-                                onClick={() => handleNotificationComplete(data.id)}
-                            >
-                                Mark as Completed
-                            </Button>
-                        </AccordionActions>
-                    }
               </Accordion>
           )}
         </Grid>
