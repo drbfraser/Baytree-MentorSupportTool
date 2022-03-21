@@ -187,7 +187,7 @@ const CardLayout = styled.div`
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     width: 100vw;
     min-height: 100vh;
-    padding: 0;
+    padding: 0 0 2rem 0;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto auto;
     grid-template-areas:
