@@ -157,7 +157,7 @@ const CreateAccount = (props: any) => {
 
 const PageLayout = styled.div`
   display: flex;
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   height: auto;
   justify-content: center;
