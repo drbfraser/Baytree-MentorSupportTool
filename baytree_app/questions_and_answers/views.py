@@ -68,7 +68,8 @@ class QuestionAndAnswerView(generics.ListAPIView):
 
         questions = json.loads(r.content)
         for question in questions:
-            if questions[question]['QuestionID'] not in request.data:
+            if questions[question]['enabled'] == '1' and 'required' in questions[question]['validation'] and questions[question]['QuestionID'] not in request.data:
+                # request does not contain answer to a question that's enabled and required.
                 return Response({'errors': "{0} is required.".format(questions[question]['Question'])}, status=400)
 
         now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
