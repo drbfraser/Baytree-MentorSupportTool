@@ -9,7 +9,10 @@ import DataGrid from "../../shared/datagrid";
 import { ModalComponent } from "../../shared/Modal";
 import Pager from "../../shared/pager";
 import OverlaySpinner from "../../shared/overlaySpinner";
-import { addMentorUser } from "../../../api/backend/mentorUsers";
+import {
+  addMentorUser,
+  sendMentorAccountCreationEmail,
+} from "../../../api/backend/mentorUsers";
 import { addUsers } from "../../../api/backend/users";
 import { MdCheck } from "react-icons/md";
 
@@ -69,31 +72,29 @@ const AddMentorModal: ModalComponent = (props) => {
                     );
                     return;
                   }
-                  const userRes = await addUsers({
-                    first_name: dataRow.firstName,
-                    last_name: dataRow.surName,
-                    email: dataRow.email,
-                    password: "testing",
-                  });
 
-                  if (userRes && userRes.ids) {
-                    const mentorUserRes = await addMentorUser({
-                      user: userRes.ids[0],
-                      menteeUsers: [],
-                      status: "Active",
-                      viewsPersonId: dataRow.viewsPersonId,
-                    });
-                    if (mentorUserRes) {
-                      setLoadingData(false);
-                      toast.success("Sucessfully created Mentor User!");
-                      props.onOutsideClick();
-                    } else {
-                      setLoadingData(false);
-                      toast.error(HELP_MESSAGE);
-                    }
+                  const sendAccountCreationEmailRes =
+                    await sendMentorAccountCreationEmail(
+                      dataRow.viewsPersonId,
+                      dataRow.firstname,
+                      dataRow.email
+                    );
+
+                  if (
+                    sendAccountCreationEmailRes &&
+                    sendAccountCreationEmailRes.status === 200
+                  ) {
+                    setLoadingData(false);
+                    toast.success(
+                      "Email has been sent to mentor for account creation."
+                    );
+                    props.onOutsideClick();
                   } else {
                     setLoadingData(false);
-                    toast.error(HELP_MESSAGE);
+                    toast.error(
+                      "Failed to send account creation email to mentor."
+                    );
+                    props.onOutsideClick();
                   }
                 },
                 name: "Create",

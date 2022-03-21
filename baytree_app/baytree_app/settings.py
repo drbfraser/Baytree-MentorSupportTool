@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.sites',
+    'emails',
     'users',
     'questionnaires',
     'questions_and_answers',
@@ -197,7 +198,11 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = os.environ["EMAIL_HOST"]
 EMAIL_PORT = os.environ["EMAIL_PORT"]
 EMAIL_USER = os.environ["EMAIL_USER"]
+EMAIL_HOST_USER = os.environ["EMAIL_USER"]
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASSWORD"]
 EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
+DEFAULT_FROM_EMAIL = os.environ["EMAIL_USER"]
+SERVER_EMAIL = os.environ["EMAIL_USER"]
 
 
 DATABASES = {
