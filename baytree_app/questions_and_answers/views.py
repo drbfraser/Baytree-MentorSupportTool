@@ -1,3 +1,4 @@
+import json
 from django.http.response import HttpResponse
 import requests
 from rest_framework.views import APIView
@@ -7,7 +8,9 @@ from datetime import datetime, timezone
 from .models import QuestionAndAnswer
 from .serializers import QuestionAndAnswerSerializer
 from .permissions import *
-from .constants import VIEWS_USERNAME, VIEWS_PASSWORD
+from .constants import VIEWS_USERNAME, VIEWS_PASSWORD, VIEWS_BASE_URL
+
+QUESTIONNAIRE_ID = 10
 
 class QuestionAndAnswerView(generics.ListAPIView):
     permission_classes = [IsOwner]
@@ -52,45 +55,45 @@ class QuestionAndAnswerView(generics.ListAPIView):
 
     def submit_new_answer_set(self, request, questionnaireId=None):
 
-        if '23' not in request.data:
-            return Response({'errors': "Mentor's name is required."}, status=400)
-        if '24' not in request.data:
-            return Response({'errors': "Mentee's name is required."}, status=400)
-        if '25' not in request.data:
-            return Response({'errors': "Reporting Period is required."}, status=400)
-        if '26' not in request.data:
-            return Response({'errors': "Mentee's engaging with session information is required."}, status=400)
-        if '27' not in request.data:
-            return Response({'errors': "Mentee's arrival time information is required."}, status=400)
-        
-
         # id is optional. Defaults to 10 because that is the id of the questionnaire that matches the local db.
-        questionnaireId = questionnaireId if questionnaireId is not None else 10
+        questionnaireId = questionnaireId if questionnaireId is not None else QUESTIONNAIRE_ID
+        
+        # Server side validation for the answers. Retrieve the question list from Views and ensure answers to all 
+        # the questions are in the request.
+        url = '{0}/evidence/questionnaires/{1}/questions?allquestions=1.json'.format(VIEWS_BASE_URL, questionnaireId)
+        r = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
+        if r.status_code != 200:
+            print('Failed to get answers. Status code: {0}'.format(r.status_code))
+            return Response({'errors': "Failed to get questionnaire details from Views app."}, status=500)
+
+        questions = json.loads(r.content)
+        for question in questions:
+            if questions[question]['QuestionID'] not in request.data:
+                return Response({'errors': "{0} is required.".format(questions[question]['Question'])}, status=400)
+
         now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
 
         url = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/{0}/answers'.format(questionnaireId)
+
+        answerTemplate = '''
+    <answer id="{0}">
+        <Answer>{1}</Answer>
+    </answer>'''
+
+        answers = ''
+        for qid in request.data:
+            if qid == 'mentorId':
+                # skip mentorId field
+                continue
+                
+            answers += answerTemplate.format(qid, request.data[qid])
+
         data = '''
 <answers>
     <EntityType>Volunteer</EntityType>
     <EntityID>{0}</EntityID>
-    <Date>{1}</Date>
-    <answer id="23">
-        <Answer>{2}</Answer>
-    </answer>
-    <answer id="24">
-        <Answer>{3}</Answer>
-    </answer>
-    <answer id="25">
-        <Answer>{4}</Answer>
-    </answer>
-    <answer id="26">
-        <Answer>{5}</Answer>
-    </answer>
-    <answer id="27">
-        <Answer>{6}</Answer>
-    </answer>
-</answers>'''.format(request.data['mentorId'], now, request.data.get('23', ''), request.data.get('24', ''),
-    request.data.get('25', ''), request.data.get('26', ''), request.data.get('27', ''))
+    <Date>{1}</Date>{2}
+</answers>'''.format(request.data['mentorId'], now, answers)
 
         print(data)
         

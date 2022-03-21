@@ -95,7 +95,7 @@ const Questionnaire = () => {
         {loading === false &&
         <div>
         {Object.values(formData).map((data, index) => 
-            <FormControl fullWidth required>
+            <FormControl key={index} fullWidth required>
               <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{index + 1}. {data.Question}*</Typography>
               {(function () {
                 switch (data.inputType) {
