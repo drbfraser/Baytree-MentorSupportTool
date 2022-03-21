@@ -57,10 +57,10 @@ class NotificationViews(generics.ListAPIView):
             return Response({"status": "error", "data": serializer.errors})
 
     @api_view(['GET'])
-    def unread(request, mentor_id):
+    def get_unread_notification_count(request, mentor_id):
         try:
             unread_notifications = Notification.objects.prefetch_related('notification_type').filter(mentor=mentor_id, is_read=0).count()
         except Notification.DoesNotExist:
-            unread_notifications = []
+            unread_notifications = 0
 
         return Response({unread_notifications}, status=200)
