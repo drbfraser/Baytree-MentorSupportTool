@@ -48,7 +48,7 @@ export default function Navigation() {
   const [numNotifications, setNumNotifications] = React.useState(0);
   
   const fetchNumNotifications = () => {
-    fetch(`${API_BASE_URL}/notifications/get_unread_count/${localStorage.getItem('user_id')}`, {
+    fetch(`${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${localStorage.getItem('user_id')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

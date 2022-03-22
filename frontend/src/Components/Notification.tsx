@@ -17,7 +17,7 @@ export default function Notification() {
   const [expanded, setExpanded] = React.useState("");
 
   const fetchNotifications = () => {
-    fetch(`${API_BASE_URL}/notifications/${localStorage.getItem('user_id')}`, {
+    fetch(`${API_BASE_URL}/notifications/?mentor_id=${localStorage.getItem('user_id')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -35,14 +35,16 @@ export default function Notification() {
   }, []);
 
   const handleNotificationComplete = (notificationId: any) => {
-    fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({is_read: true }),
-      credentials: "include"
-    }).then((_response) => fetchNotifications());
+    if (!notifications.find(n => n.id === notificationId).is_read) {
+      fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({is_read: true }),
+        credentials: "include"
+      }).then((_response) => fetchNotifications());
+    }
   };
 
   const handleChange1 = (panel: any) => (_event: any, isExpanded: any) => {
