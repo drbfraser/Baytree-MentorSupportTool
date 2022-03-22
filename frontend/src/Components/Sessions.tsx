@@ -101,8 +101,8 @@ const Sessions = () => {
       StartDate: `${format(date, 'yyyy-MM-dd')}`,
       StartTime: handleStartTime(),
       Duration: handleDuration(),
-      CancelledSession: (sessionCancelled == true) ? '1' : '0' ,
-      CancelledAttendee: (sessionCancelled == true) ? '0' : '1',
+      CancelledSession: (sessionCancelled === true) ? '1' : '0' ,
+      CancelledAttendee: (sessionCancelled === true) ? '0' : '1',
       LeadStaff: localStorage.getItem('user_id'),
       Notes: notes
     };
