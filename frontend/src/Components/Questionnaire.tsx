@@ -36,12 +36,17 @@ const Questionnaire = () => {
   }, []);
 
   const isValid = () => {
-    for (const value of Object.values(formData))
-   
+    for (const value of Object.values(formData)) {
+      if (value.enabled !== '1' || !value.validation.includes('required')) {
+        continue;
+      }
+
       if (answers[value.QuestionID] === undefined || answers[value.QuestionID].length === 0){
         return false
       }
-      return true
+    }
+    
+    return true
   }
   const handleSubmitResponse = (response: any) => {
     if (response.status === 200) {
@@ -94,9 +99,11 @@ const Questionnaire = () => {
         
         {loading === false &&
         <div>
-        {Object.values(formData).map((data, index) => 
-            <FormControl fullWidth required>
-              <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{index + 1}. {data.Question}*</Typography>
+        {Object.values(formData).filter(data => data.enabled === '1').map((data, index) => 
+            <FormControl key={index} fullWidth required>
+              <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">
+                {index + 1}. {data.Question}{data.validation.includes('required') ? '*' : ''}
+              </Typography>
               {(function () {
                 switch (data.inputType) {
                   case 'text':
