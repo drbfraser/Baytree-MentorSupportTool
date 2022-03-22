@@ -9,7 +9,6 @@ from .models import QuestionAndAnswer
 from .serializers import QuestionAndAnswerSerializer
 from .permissions import *
 from .constants import VIEWS_USERNAME, VIEWS_PASSWORD, VIEWS_BASE_URL
-
 QUESTIONNAIRE_ID = 10
 
 class QuestionAndAnswerView(generics.ListAPIView):
@@ -74,7 +73,7 @@ class QuestionAndAnswerView(generics.ListAPIView):
 
         now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
 
-        url = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/{0}/answers'.format(questionnaireId)
+        url = '{0}/evidence/questionnaires/{1}/answers'.format(VIEWS_BASE_URL, questionnaireId)
 
         answerTemplate = '''
     <answer id="{0}">
