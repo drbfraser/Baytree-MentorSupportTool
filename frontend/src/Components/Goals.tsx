@@ -15,16 +15,10 @@ import CreateGoals from "./CreateGoals";
 import Divider from "@mui/material/Divider";
 import AccordionActions from "@mui/material/AccordionActions";
 import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import DoneIcon from "@mui/icons-material/Done";
 import moment from "moment";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import TimelineDot from "@mui/lab/TimelineDot";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import { API_BASE_URL } from "../api/url";
 
 export default function Goals() {
@@ -32,9 +26,8 @@ export default function Goals() {
   const [goalType, setGoalType] = useState("IN PROGRESS");
   const [tabValue, setTabValue] = useState(0);
   const [expanded, setExpanded] = React.useState("");
-  const [openDeleteConfirmationDialog, setOpenDeleteConfirmationDialog] =
-    React.useState(false);
-  const [toBeDeletedGoalId, setToBeDeletedGoalId] = useState(null);
+  const [menteeList, setMenteeList] = useState([] as any[]);
+  const [toBeUpdatedGoalId, setToBeUpdatedGoalId] = useState(undefined);
 
   const handleChange = (
     _event: React.SyntheticEvent<Element, Event>,
@@ -52,15 +45,6 @@ export default function Goals() {
     setTabValue(newValue);
   };
 
-  const handleClickOpenDeleteConfirmationDialog = (goalId: any) => {
-    setOpenDeleteConfirmationDialog(true);
-    setToBeDeletedGoalId(goalId);
-  };
-
-  const handleCloseDeleteConfirmationDialog = () => {
-    setOpenDeleteConfirmationDialog(false);
-  };
-
   const fetchGoals = () => {
     fetch(`${API_BASE_URL}/goals/goal/`, {
       method: 'GET',
@@ -76,9 +60,29 @@ export default function Goals() {
     });
   }
 
+  const fetchMenteeList = () => {
+    fetch(`${API_BASE_URL}/users/mentors?id=${localStorage.getItem('user_id')}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: "include"
+    })
+    .then (response => response.json())
+    .then (data => setMenteeList(data.data.menteeuser || []))
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
   useEffect(() => {
     fetchGoals();
+    fetchMenteeList();
   }, []);
+
+  const handleSubmitCreateGoal = () => {
+    setToBeUpdatedGoalId(undefined);
+    fetchGoals();
+  };
 
   const handleGoalComplete = (goalId: any) => {
     fetch(`${API_BASE_URL}/goals/goal/${goalId}`, {
@@ -95,15 +99,7 @@ export default function Goals() {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const handleGoalDelete = (goalId: any) => {
-    fetch(`${API_BASE_URL}/goals/goal/${goalId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include"
-    }).then((_response) => fetchGoals());
-  };
+  const toBeUpdatedGoal = toBeUpdatedGoalId && goals ? goals.find(g => g.id === toBeUpdatedGoalId) : undefined;
 
   return (
     <Grow in={true}>
@@ -123,7 +119,7 @@ export default function Goals() {
             </Tabs>
           </Grid>
           <Grid item xs={1}>
-            <CreateGoals onSubmit={fetchGoals} />
+            <CreateGoals menteeList={menteeList} onSubmit={handleSubmitCreateGoal} />
           </Grid>
         </Grid>
         <GoalsStatistics
@@ -135,6 +131,15 @@ export default function Goals() {
           }
           totalGoals={goals.length}
         />
+
+        {toBeUpdatedGoal && 
+          <CreateGoals 
+              goal={toBeUpdatedGoal}
+              goalId={toBeUpdatedGoalId}
+              menteeList={menteeList}
+              onSubmit={handleSubmitCreateGoal}
+              onClose={() => setToBeUpdatedGoalId(undefined)} />
+        }
 
         <Grid container style={{ marginTop: "24px" }}>
           {Object.values(goals).map((data) =>
@@ -150,118 +155,81 @@ export default function Goals() {
                   aria-controls="panel1bh-content"
                   id="panel1bh-header"
                 >
-                  <Typography variant="h6" sx={{ width: "35%", flexShrink: 0 }}>
-                    {data.title}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: "text.secondary",
-                      width: "35%",
-                      margin: "6px",
-                    }}
-                  >
-                    {" "}
-                    Created on {moment(data.date).format("dddd, MMMM Do YYYY")}
-                  </Typography>
-                  <Typography sx={{ color: "text.secondary", margin: "6px" }}>
-                    {data.status}
-                  </Typography>
-                  {data.status === "IN PROGRESS" ? (
-                    <TimelineDot
-                      color="error"
-                      sx={{ backgroundColor: "red" }}
-                    />
-                  ) : data.status === "ACHIEVED" ? (
-                    <TimelineDot
-                      color="success"
-                      sx={{ backgroundColor: "green" }}
-                    />
-                  ) : (
-                    <TimelineDot
-                      color="success"
-                      sx={{ backgroundColor: "blue" }}
-                    />
-                  )}
+                  <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
+                    <Typography variant="h6">
+                      {data.title}
+                    </Typography>
+                    <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', paddingRight: '8px'}}>
+                      <Typography
+                        sx={{
+                          color: "text.secondary",
+                          margin: "8px",
+                          paddingRight: '8px'
+                        }}
+                      >
+                        {moment(data.date).fromNow()}
+                      </Typography>
+                      <Typography sx={{ color: "text.secondary", margin: "6px" }}>
+                        {data.status}
+                      </Typography>
+                      {data.status === "IN PROGRESS" ? (
+                        <TimelineDot color="error" sx={{ backgroundColor: "red", alignSelf: 'center' }} />
+                      ) : data.status === "ACHIEVED" ? (
+                        <TimelineDot color="success" sx={{ backgroundColor: "green", alignSelf: 'center'  }} />
+                      ) : (
+                        <TimelineDot color="success" sx={{ backgroundColor: "blue", alignSelf: 'center'  }} />
+                      )}
+                    </div>
+                  </div>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Card sx={{ minWidth: 275 }}>
-                    <CardContent>
-                      <Typography
-                        sx={{ fontSize: 14 }}
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        Goal Review Date
-                      </Typography>
-                      <Typography variant="body2" gutterBottom>
-                        {moment(data.goal_review_date).format(
-                          "dddd, MMMM Do YYYY"
-                        )}{" "}
-                        <br />
-                      </Typography>
-                      <Typography
-                        sx={{ fontSize: 14 }}
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        Goal Description
-                      </Typography>
-                      <Typography variant="body2">{data.content}</Typography>
-                    </CardContent>
-                  </Card>
+                  <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Created Date</Typography>
+                  <Typography variant="body2" gutterBottom>
+                    {moment(data.date).format("dddd, MMMM Do YYYY")} <br />
+                  </Typography>
+
+                  <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Goal Review Date</Typography>
+                  <Typography variant="body2" gutterBottom>
+                    {moment(data.goal_review_date).format("dddd, MMMM Do YYYY")} <br />
+                  </Typography>
+
+                  <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Last Update Date</Typography>
+                  <Typography variant="body2" gutterBottom>
+                    {moment(data.last_update_date).format("dddd, MMMM Do YYYY")}<br />
+                  </Typography>
+
+                  <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Mentee Name</Typography>
+                  <Typography variant="body2">{data.menteeName}</Typography>
+
+                  <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Goal Description</Typography>
+                  <Typography variant="body2">{data.content}</Typography>
                 </AccordionDetails>
-                <Divider />
-                <AccordionActions>
-                  <Button
-                    variant="outlined"
-                    startIcon={<DeleteIcon />}
-                    onClick={() =>
-                      handleClickOpenDeleteConfirmationDialog(data.id)
-                    }
-                  >
-                    Delete
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="success"
-                    onClick={() => handleGoalComplete(data.id)}
-                  >
-                    Mark as Completed
-                  </Button>
-                </AccordionActions>
+                {data.status === "IN PROGRESS" && 
+                  <>
+                    <Divider />
+                    <AccordionActions>
+                      <Button
+                        variant="outlined"
+                        startIcon={<EditIcon />}
+                        onClick={() => setToBeUpdatedGoalId(data.id)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        startIcon={<DoneIcon />}
+                        onClick={() => handleGoalComplete(data.id)}
+                      >
+                        Complete
+                      </Button>
+                    </AccordionActions>
+                  </>
+                }
               </Accordion>
             ) : null
           )}
         </Grid>
-        <Dialog
-          open={openDeleteConfirmationDialog}
-          onClose={handleCloseDeleteConfirmationDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Are you sure to delete this goal?"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Deleted goal will disapper from the list.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDeleteConfirmationDialog}>
-              CANCEL
-            </Button>
-            <Button
-              onClick={() => {
-                handleGoalDelete(toBeDeletedGoalId);
-                handleCloseDeleteConfirmationDialog();
-              }}
-              autoFocus
-            >
-              DELETE
-            </Button>
-          </DialogActions>
-        </Dialog>
       </Container>
     </Grow>
   );
