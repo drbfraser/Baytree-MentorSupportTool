@@ -19,6 +19,8 @@ import Typography  from "@mui/material/Typography";
 import { format, intervalToDuration } from 'date-fns'
 import { API_BASE_URL } from '../api/url';
 
+
+
 const Sessions = () => {
 
   const [mentee, setMentee] = useState('');
@@ -36,7 +38,7 @@ const Sessions = () => {
       setDate(newValue);
       console.log("HELLO FROM DATE")
       console.log(newValue)
-      console.log(format(newValue, 'yyyy-mm-dd')) //format(new Date(1988, 1, 2, 15, 23, 10, 350), 'YYYY-MM-DD hh:mm:ss.SSS A'); 
+      console.log(format(newValue, 'yyyy-MM-dd')) //format(new Date(1988, 1, 2, 15, 23, 10, 350), 'YYYY-MM-DD hh:mm:ss.SSS A'); 
     }
   };
   const handleClockInChange = (newValue: Date | null) => {
@@ -100,10 +102,11 @@ const Sessions = () => {
     };*/
 
     const viewSession = {
-      StartDate: `${format(date, 'yyyy-mm-dd')}`,
+      StartDate: `${format(date, 'yyyy-MM-dd')}`,
       StartTime: handleStartTime(),
       Duration: handleDuration(),
-      Cancelled: sessionCancelled,
+      CancelledSession: (sessionCancelled == true) ? '1' : '0' ,
+      CancelledAttendee: (sessionCancelled == true) ? '0' : '1',
       LeadStaff: localStorage.getItem('user_id'),
       Notes: notes
     };
@@ -140,7 +143,7 @@ const Sessions = () => {
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/users/mentors/1`, {
+    fetch(`${API_BASE_URL}/users/mentors?id=${localStorage.getItem('user_id')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -148,7 +151,7 @@ const Sessions = () => {
       credentials: "include"
     })
     .then (response => response.json())
-    .then (data => setMenteeList(data.data.menteeuser))
+    .then (data => setMenteeList(data.data.menteeuser || []))
     .catch((error) => {
       console.error('Error:', error);
     });
@@ -219,7 +222,9 @@ const Sessions = () => {
               </Grid>
             </Grid>
             <Divider sx = {{pt: 2, pb: 2}}/>
-            
+
+            <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{sessionCancelled ?'If you or the mentee did not attend the session, please enter when the session was suppose to happen' :''}
+           </Typography>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid container spacing = {1}>
                 <Grid item xs = {4}>

@@ -86,7 +86,7 @@ class ViewsAppSessionView(APIView):
                             <VenueID>{7}</VenueID>
                             <RestrictedRecord>0</RestrictedRecord>
                             <ContactType>Individual</ContactType>
-                        </session>'''.format(3, request.data['StartDate'], request.data['StartTime'], request.data['Duration'], request.data['Cancelled'], 'Budgeting', mentorID, 2)
+                        </session>'''.format(3, request.data['StartDate'], request.data['StartTime'], request.data['Duration'], request.data['CancelledSession'], 'Budgeting', mentorID, 2)
 
         session_url = views_base_url + '3/sessions'
         try:
@@ -129,13 +129,14 @@ class ViewsAppSessionView(APIView):
                                 <Attended>{1}</Attended>
                                 <Role>Lead</Role>
                                 <Volunteering>Mentoring</Volunteering>
-                            </staff>'''.format(mentorID, request.data['Cancelled'])
+                            </staff>'''.format(mentorID, request.data['CancelledAttendee'])
         mentor_url = views_base_url + 'sessions/' + sessionID + '/staff'
         try:
             response = requests.post(mentor_url, data =  viewMentorData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
             print(response.text)
             print("backend mentor")
-            print(request.data['Cancelled'])
+            print(request.data['CancelledAttendee'])
+            print(type(request.data['CancelledAttendee']))
         except Exception as e:
             print(e)
             return Response({'Error':'Making a post request for mentor failed!'}, status=400)
@@ -147,12 +148,12 @@ class ViewsAppSessionView(APIView):
                             <participants>
                                 <ContactID>{0}</ContactID>
                                 <Attended>{1}</Attended>
-                            </participants>'''.format(4,request.data['Cancelled'])
+                            </participants>'''.format(4,request.data['CancelledAttendee'])
         mentee_url = views_base_url + 'sessions/' + sessionID + '/participants'
         try:
             response = requests.post(mentee_url, data =  viewMenteeData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
             print(response.text)
-            print(request.data['Cancelled'])
+            print(request.data['CancelledAttendee'])
             print("backend mentee")
         except Exception as e:
             print(e)
