@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from "react";
 import { Switch, Route, useRouteMatch, Link } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -24,6 +24,9 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import PermDeviceInformationIcon from '@mui/icons-material/PermDeviceInformation';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
+
+import { API_BASE_URL } from "../api/url";
 
 import Home from './Home';
 import Goals from './Goals';
@@ -40,11 +43,30 @@ const drawerWidth = 240;
 const resourcesURL = `${process.env.REACT_APP_RESOURCES_URL}`;
 
 export default function Navigation() {
-
   let match = useRouteMatch();
+  
+  const [numNotifications, setNumNotifications] = React.useState(0);
+  
+  const fetchNumNotifications = () => {
+    fetch(`${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${localStorage.getItem('user_id')}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: "include"
+    })
+    .then (response => response.json())
+    .then (data => setNumNotifications(data))
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+  useEffect(() => {
+    fetchNumNotifications();
+  }, []);
 
   return (
-    <div className="content" style={{ background: '#faf6ed', minHeight:'100%'}}>
+    <div className="content" style={{ background: '#f9f9f9', minHeight:'100vh'}}>
       <Box sx={{ display: 'flex', width:'100%', height: 'auto', margin: 'auto' }}>
         <CssBaseline />
         <AppBar position="fixed" style={{ background: 'white', width:'100%', height: 'auto', margin: 'auto' }} sx={{ zIndex: (theme) => theme.zIndex.drawer + 5 }}>
@@ -69,9 +91,11 @@ export default function Navigation() {
                         </Grid>
                         <Grid item xs = {3}>  
                           <Link to = {`${match.url}/notifications`} style={{ textDecoration: 'none', color: 'black' }}>
-                            <IconButton color = "inherit" size = "large">
-                              <NotificationsIcon />
-                            </IconButton>
+                              <IconButton color = "inherit" size = "large">
+                                <Badge badgeContent={numNotifications} color="error">
+                                    <NotificationsIcon />
+                                </Badge>
+                              </IconButton>
                           </Link>
                         </Grid>
                         <Grid item xs = {3}>

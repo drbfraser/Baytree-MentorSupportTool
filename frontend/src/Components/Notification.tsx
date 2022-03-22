@@ -9,8 +9,6 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Typography from "@mui/material/Typography";
-import AccordionActions from "@mui/material/AccordionActions";
-import Button from "@mui/material/Button";
 import moment from "moment";
 import { API_BASE_URL } from "../api/url";
 
@@ -19,7 +17,7 @@ export default function Notification() {
   const [expanded, setExpanded] = React.useState("");
 
   const fetchNotifications = () => {
-    fetch(`${API_BASE_URL}/notifications/${localStorage.getItem('user_id')}`, {
+    fetch(`${API_BASE_URL}/notifications/?mentor_id=${localStorage.getItem('user_id')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -37,18 +35,24 @@ export default function Notification() {
   }, []);
 
   const handleNotificationComplete = (notificationId: any) => {
-    fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({is_read: true }),
-      credentials: "include"
-    }).then((_response) => fetchNotifications());
+    if (!notifications.find(n => n.id === notificationId).is_read) {
+      fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({is_read: true }),
+        credentials: "include"
+      }).then((_response) => fetchNotifications());
+    }
   };
 
   const handleChange1 = (panel: any) => (_event: any, isExpanded: any) => {
     setExpanded(isExpanded ? panel : false);
+
+    if (isExpanded) {
+      handleNotificationComplete(panel);
+    }
   };
 
   return (
@@ -88,17 +92,6 @@ export default function Notification() {
                         </Typography>
                     </Link>
                 </AccordionDetails>
-                    {!data.is_read &&
-                        <AccordionActions>
-                            <Button
-                                variant="contained"
-                                color="success"
-                                onClick={() => handleNotificationComplete(data.id)}
-                            >
-                                Mark as Completed
-                            </Button>
-                        </AccordionActions>
-                    }
               </Accordion>
           )}
         </Grid>
