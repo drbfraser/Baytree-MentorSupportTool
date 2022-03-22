@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import filters
@@ -16,7 +17,7 @@ class GoalViews(generics.ListAPIView):
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
     filter_backends = [filters.OrderingFilter]
-    ordering_fields = ['mentee', 'title', 'date', 'goal_review_date', 'status']
+    ordering_fields = ['mentee', 'title', 'date', 'goal_review_date', 'status', 'last_update_date']
 
     def post(self, request):
         serializer = GoalSerializer(data=request.data)

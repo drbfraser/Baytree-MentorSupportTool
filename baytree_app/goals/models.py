@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from users.models import CustomUser
 
@@ -12,6 +13,7 @@ class Goal(models.Model):
     title = models.CharField(max_length=100)
     date = models.DateField()
     goal_review_date = models.DateField()
+    last_update_date = models.DateTimeField(auto_now=True)
     content = models.CharField(max_length=1000)
     status = models.CharField(
         max_length = 12,
