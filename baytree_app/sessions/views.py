@@ -70,7 +70,8 @@ class ViewsAppSessionView(APIView):
 
         mentorUser = MentorUser.objects.all().filter(user_id=request.data['LeadStaff'])
         mentorID = str(mentorUser[0].viewsPersonId)
-        print(mentorID)
+
+        # NOTE: Activity, Session Group ID, VenueID is needed here
 
         viewSessionData = '''<?xml version="1.0" encoding="utf-8"?>
                         <session id="">
@@ -88,17 +89,15 @@ class ViewsAppSessionView(APIView):
                             <ContactType>Individual</ContactType>
                         </session>'''.format(3, request.data['StartDate'], request.data['StartTime'], request.data['Duration'], request.data['CancelledSession'], 'Budgeting', mentorID, 2)
 
+        # NOTE: Session Group ID needed here
+
         session_url = views_base_url + '3/sessions'
         try:
             response = requests.post(session_url, data = viewSessionData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
-            print("backend sessions")
+            # getting session ID from response
             sessionID = response.text[(response.text.find("<SessionID>")+ len("<SessionID>")):(response.text.find("</SessionID>"))]
-            print(response.text)
-            print(viewSessionData)
-            #print(request.data)
-            #print(sessionID)
+            
         except Exception as e:
-            print(e)
             return Response({'Error':'Making a post request for session failed!'}, status=400)
         
         #################################
@@ -110,13 +109,9 @@ class ViewsAppSessionView(APIView):
                                 <Note>{0}</Note>
                             </notes>'''.format(request.data['Notes'])
         note_url = views_base_url + 'sessions/' + sessionID + '/notes'
-        print(note_url)
         try:
             response = requests.post(note_url, data = viewNoteData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
-            print(response.text)
-            print("backend note")
-        except Exception as e:
-            print(e)
+        except Exception as e: 
             return Response({'Error':'Making a post request for note failed!'}, status=400)
 
         ###########################
@@ -133,17 +128,15 @@ class ViewsAppSessionView(APIView):
         mentor_url = views_base_url + 'sessions/' + sessionID + '/staff'
         try:
             response = requests.post(mentor_url, data =  viewMentorData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
-            print(response.text)
-            print("backend mentor")
-            print(request.data['CancelledAttendee'])
-            print(type(request.data['CancelledAttendee']))
         except Exception as e:
-            print(e)
             return Response({'Error':'Making a post request for mentor failed!'}, status=400)
 
         ###########################
         # POST request for Mentee #
         ###########################
+        
+        # NOTE: Mentee ID is neede here
+
         viewMenteeData =  '''<?xml version="1.0" encoding="utf-8"?>
                             <participants>
                                 <ContactID>{0}</ContactID>
@@ -152,11 +145,7 @@ class ViewsAppSessionView(APIView):
         mentee_url = views_base_url + 'sessions/' + sessionID + '/participants'
         try:
             response = requests.post(mentee_url, data =  viewMenteeData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
-            print(response.text)
-            print(request.data['CancelledAttendee'])
-            print("backend mentee")
         except Exception as e:
-            print(e)
             return Response({'Error':'Making a post request for mentee failed!'}, status=400)
 
         return Response(response,status=200)

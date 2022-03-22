@@ -35,10 +35,7 @@ const Sessions = () => {
   
   const handleDateChange = (newValue: Date | null) => {
     if(newValue){
-      setDate(newValue);
-      console.log("HELLO FROM DATE")
-      console.log(newValue)
-      console.log(format(newValue, 'yyyy-MM-dd')) //format(new Date(1988, 1, 2, 15, 23, 10, 350), 'YYYY-MM-DD hh:mm:ss.SSS A'); 
+      setDate(newValue); 
     }
   };
   const handleClockInChange = (newValue: Date | null) => {
@@ -57,7 +54,6 @@ const Sessions = () => {
       start: clockInTime,
       end: clockOutTime
     }).minutes
-    console.log(minute + " " + clockInTime + " " + clockOutTime)
     if (minute && minute < 10){
       return(`${intervalToDuration({
         start: clockInTime,
@@ -91,7 +87,7 @@ const Sessions = () => {
     alert('Thank you! Your answers have been submitted');
     e.preventDefault();
 
-    /*const session = {
+    const session = {
       mentor: localStorage.getItem('id'),
       mentee: mentee,
       attended_by_mentor: mentorAttendance,
@@ -99,7 +95,7 @@ const Sessions = () => {
       clock_in: clockInTime,
       clock_out: clockOutTime,
       notes: notes
-    };*/
+    };
 
     const viewSession = {
       StartDate: `${format(date, 'yyyy-MM-dd')}`,
@@ -111,9 +107,7 @@ const Sessions = () => {
       Notes: notes
     };
 
-    //console.log(viewSession)
-
-   /* fetch(`${API_BASE_URL}/sessions/`, {
+    fetch(`${API_BASE_URL}/sessions/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -121,7 +115,7 @@ const Sessions = () => {
         body: JSON.stringify(session),
         credentials: "include"
     })
-    .then(response => response.json())*/
+    .then(response => response.json())
 
     fetch(`${API_BASE_URL}/sessions/viewsapp/`, {
       method: 'POST',
@@ -131,11 +125,8 @@ const Sessions = () => {
       body: JSON.stringify(viewSession),
       credentials: "include"
     })
-    .then(response => {
-      console.log('Success:', response.json());
-      console.log("session frontend")
-      console.log(viewSession)
-    })
+    .then(response => response.json())
+      
 
    // window.location.replace('/dashboard/home'); 
   }
