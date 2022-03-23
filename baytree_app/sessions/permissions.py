@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from .models import MenteeUser, MentorUser
+from users.models import MenteeUser, MentorUser
 
 from users.models import AdminUser
 

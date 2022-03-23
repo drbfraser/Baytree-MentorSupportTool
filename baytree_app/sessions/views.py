@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from users.permissions import AdminPermissions, IsUserAMentor, userIsAdmin, userIsSuperUser
+from users.permissions import AdminPermissions, userIsAdmin, userIsSuperUser
 from .models import MentorSession
 from .serializers import SessionSerializer
 from .permissions import *
