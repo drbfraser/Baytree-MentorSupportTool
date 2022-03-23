@@ -5,9 +5,11 @@ class IsSuperUser(BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_superuser
 
-
-class IsOwner(BasePermission):
-
-    def has_object_permission(self, request, view, obj):
-
-        return obj.id == request.user.id 
+# Allow only the mentor making the request to deal with their own notifications
+# If creating a notification with POST, return False since only admins can do that
+# If DELETE request, return True and check object permissions within the delete view function instead
+class IsRequestingMentor(BasePermission):
+    def has_permission(self, request, view):
+        return request.method == 'PATCH' or \
+            request.method == 'DELETE' or \
+            (request.method == 'GET' and str(request.user.id) == request.query_params['mentor_id'])

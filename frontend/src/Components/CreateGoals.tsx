@@ -3,6 +3,10 @@ import { useHistory } from 'react-router';
 import 'date-fns';
 import moment from 'moment';
 
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
@@ -17,13 +21,15 @@ import { API_BASE_URL } from '../api/url';
 
 const  CreateGoals = (props:any) =>   {
 
-    const [contents, setContents] = useState('');
-    const [title, setTitle] = useState('');
-    const [goal_review_date, setGoal_review_date ] = useState<Date | null>(null);
+    const [contents, setContents] = useState(props.goal ? props.goal.content : '');
+    const [title, setTitle] = useState(props.goal ? props.goal.title : '');
+    const [menteeId, setMenteeId] = useState(props.goal ? props.goal.mentee || '' : '');
+    const [goal_review_date, setGoal_review_date ] = useState<Date | null>(props.goal ? props.goal.goal_review_date : null);
+    const [open, setOpen] = useState(props.goalId !== undefined);
+
     const history = useHistory();
     const [, setErrors] = useState(false);
     const [, setSubmit] = useState(false);
-    const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -34,6 +40,8 @@ const  CreateGoals = (props:any) =>   {
         setTitle('');
         setGoal_review_date (null);
         setContents('');
+        if (props.onClose !== undefined)
+            props.onClose(); 
     }
 
     const handlereviewDateChange = (date: any) => {
@@ -42,7 +50,7 @@ const  CreateGoals = (props:any) =>   {
 
     const goal = {
         mentor: localStorage.getItem('user_id'),
-        mentee: localStorage.getItem('user_id'),
+        mentee: menteeId,
         title: title,
         date: moment().format("YYYY-MM-DD"),
         goal_review_date: moment(goal_review_date).format("YYYY-MM-DD"),
@@ -58,8 +66,11 @@ const  CreateGoals = (props:any) =>   {
         if (contents === ''){
             setErrors(true);
         } else {
-            fetch(`${API_BASE_URL}/goals/goal/`, {
-                method: 'POST',
+            const method = props.goalId ? 'PATCH' : 'POST';
+            const goalId = props.goalId ? props.goalId : '';
+
+            fetch(`${API_BASE_URL}/goals/goal/${goalId}`, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -75,51 +86,65 @@ const  CreateGoals = (props:any) =>   {
     };
 
     return (
-        <div>
-            <Button color = "success" variant="contained" size="small" onClick={handleClickOpen}><AddIcon  /></Button>
-            <Dialog open={open} onClose={handleClose} maxWidth={"xs"}>
-                <DialogTitle color = "success"> Create New Goal</DialogTitle>
+        <>
+            {props.goalId === undefined && <Button color = "success" variant="contained" size="small" onClick={handleClickOpen}><AddIcon  /></Button>}
+            <Dialog open={props.open || open} onClose={handleClose} maxWidth={"xs"}>
+                <DialogTitle color = "success">{props.goalId === undefined ? 'Create New Goal' : 'Edit Goal'}</DialogTitle>
                 <DialogContent>
-                <TextField 
-                    id="Title"
-                    label="Title"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    margin="normal"
-                    sx = {{mb: 3}}
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DesktopDatePicker
-                        label="Goal Review Date"
-                        inputFormat="MM/dd/yyyy"
-                        value={goal_review_date}
-                        onChange={handlereviewDateChange}
-                        renderInput={(params) => <TextField fullWidth {...params} />}
-                        minDate={new Date()}
+                    <TextField 
+                        id="Title"
+                        label="Title"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        margin="normal"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
-                </LocalizationProvider>
-                <TextField
-                    id="Contents"
-                    label="Contents"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    multiline
-                    rows={6}
-                    margin="normal"
-                    value = {contents}
-                    onChange={(e) => setContents(e.target.value)}
-                />
+                    <FormControl sx={{mt: 1, mb: 3}} variant="outlined" fullWidth required margin="normal">
+                        <InputLabel id="mentee-label">Mentee Name</InputLabel>
+                        <Select
+                            id="Mentee"
+                            labelId="mentee-label"
+                            label="Mentee Name"
+                            required
+                            value={menteeId}
+                            onChange={e => setMenteeId(e.target.value)}
+                        >
+                            {Object.values(props.menteeList).map((data: any) => 
+                                <MenuItem value={data.user.id}>{data.user.first_name} {data.user.last_name}</MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DesktopDatePicker
+                            label="Goal Review Date"
+                            inputFormat="MM/dd/yyyy"
+                            value={goal_review_date}
+                            onChange={handlereviewDateChange}
+                            renderInput={(params) => <TextField fullWidth {...params} />}
+                            minDate={new Date()}
+                        />
+                    </LocalizationProvider>
+                    <TextField
+                        id="Contents"
+                        label="Contents"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        multiline
+                        rows={6}
+                        margin="normal"
+                        value = {contents}
+                        onChange={(e) => setContents(e.target.value)}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button disabled={contents===''||title===''|| goal_review_date===null } onClick={() => { handleSubmit(); handleClose();}}>Submit</Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </>
     )
 };
 

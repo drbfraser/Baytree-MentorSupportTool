@@ -13,6 +13,8 @@ import ResetPassword from "./Components/ResetPassword";
 import { createMemoryHistory } from "history";
 import { useEffect, useState } from "react";
 import { verify } from "./api/auth";
+import CreateAccount from "./Components/CreateAccount";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const history = createMemoryHistory();
@@ -30,11 +32,14 @@ const BrowserRoute = () => {
 
   useEffect(() => {
     async function verifyClient() {
-      if (await verify()) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-        setRedirectToLogin(true);
+      // verify only on authenticated routes
+      if (window.location.pathname !== "/createAccount") {
+        if (await verify()) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          setRedirectToLogin(true);
+        }
       }
     }
 
@@ -46,6 +51,11 @@ const BrowserRoute = () => {
       <BrowserRouter>
         <div>
           <Switch>
+            <Route
+              exact
+              path="/createAccount"
+              component={CreateAccount}
+            ></Route>
             <Route exact path="/" component={Login} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/resetpassword" component={ResetPassword} />
