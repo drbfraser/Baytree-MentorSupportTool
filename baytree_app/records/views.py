@@ -36,7 +36,7 @@ class ViewsAppSessionView(APIView):
         parsedNote = xmltodict.parse(responseNote.text)
 
         #Check to see if the mentor has zero sessions entered
-        if(parsedSession["volunteer"]["sessions"] == None):
+        if parsedSession["volunteer"]["sessions"] is None:
             volunteer = []
             jsonVolunteer = json.dumps(volunteer)
             return Response(jsonVolunteer,status=200)
