@@ -94,7 +94,7 @@ class ViewsAppSessionView(APIView):
         ############################
 
         # Mentors can only create sessions for themselves or an admin
-        if (request.data['LeadStaff'] != request.user.id \
+        if (int(request.data['LeadStaff']) != request.user.id \
             and not userIsAdmin(request.user) and not userIsSuperUser(request.user)):
             return Response({'errors': 'You are not permitted to access this resource.'}, status=status.HTTP_401_UNAUTHORIZED)
 
