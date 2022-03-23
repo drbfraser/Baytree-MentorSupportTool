@@ -127,8 +127,7 @@ const Sessions = () => {
     })
     .then(response => response.json())
       
-
-   // window.location.replace('/dashboard/home'); 
+    window.location.replace('/dashboard/home'); 
   }
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
