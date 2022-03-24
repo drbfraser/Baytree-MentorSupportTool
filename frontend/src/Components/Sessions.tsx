@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import DatePicker from '@mui/lab/DatePicker';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
@@ -16,28 +16,72 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import TimePicker from '@mui/lab/TimePicker';
 import Typography  from "@mui/material/Typography";
+import { format, intervalToDuration } from 'date-fns'
 import { API_BASE_URL } from '../api/url';
+
+
 
 const Sessions = () => {
 
   const [mentee, setMentee] = useState('');
   const [mentorAttendance, setMentorAttendance] = useState(false);
   const [menteeAttendance, setMenteeAttendance] = useState(false);
-  const [date, setDate] = useState<Date | null>(null);
-  const [clockInTime, setClockInTime] = useState<Date | null>(null);
-  const [clockOutTime, setClockOutTime] = useState<Date | null>(null);
+  const [sessionCancelled, setSessionCancelled] = useState(false);
+  const [date, setDate] = useState<Date>(new Date());
+  const [clockInTime, setClockInTime] = useState<Date>(new Date());
+  const [clockOutTime, setClockOutTime] = useState<Date >(new Date());
   const [notes, setNotes] = useState('');
   const [menteeList, setMenteeList] = useState([] as any[]);
   
   const handleDateChange = (newValue: Date | null) => {
-    setDate(newValue);
+    if(newValue){
+      setDate(newValue); 
+    }
   };
   const handleClockInChange = (newValue: Date | null) => {
-    setClockInTime(newValue);
+    if(newValue){
+      setClockInTime(newValue);
+    }
   };
   const handleClockOutChange = (newValue: Date | null) => {
-    setClockOutTime(newValue);
+    if(newValue){
+      setClockOutTime(newValue);
+    }
   };
+
+  const handleDuration = ()=>{
+    const minute = intervalToDuration({
+      start: clockInTime,
+      end: clockOutTime
+    }).minutes
+    if (minute && minute < 10){
+      return(`${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).hours}:0${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).minutes}`)
+    }
+    else{
+      return(`${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).hours}:${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).minutes}`)
+    }
+  }
+
+  const handleStartTime= ()=>{
+    if(clockInTime.getMinutes() < 10){
+      return `${clockInTime.getHours()}:0${clockInTime.getMinutes()}`
+    }
+    else{
+      return `${clockInTime.getHours()}:${clockInTime.getMinutes()}`
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     alert('Thank you! Your answers have been submitted');
@@ -53,6 +97,16 @@ const Sessions = () => {
       notes: notes
     };
 
+    const viewSession = {
+      StartDate: `${format(date, 'yyyy-MM-dd')}`,
+      StartTime: handleStartTime(),
+      Duration: handleDuration(),
+      CancelledSession: (sessionCancelled === true) ? '1' : '0' ,
+      CancelledAttendee: (sessionCancelled === true) ? '0' : '1',
+      LeadStaff: localStorage.getItem('user_id'),
+      Notes: notes
+    };
+
     fetch(`${API_BASE_URL}/sessions/`, {
         method: 'POST',
         headers: {
@@ -63,13 +117,23 @@ const Sessions = () => {
     })
     .then(response => response.json())
 
+    fetch(`${API_BASE_URL}/sessions/viewsapp/`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(viewSession),
+      credentials: "include"
+    })
+    .then(response => response.json())
+      
     window.location.replace('/dashboard/home'); 
   }
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/users/mentors/1`, {
+    fetch(`${API_BASE_URL}/users/mentors?id=${localStorage.getItem('user_id')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -77,7 +141,7 @@ const Sessions = () => {
       credentials: "include"
     })
     .then (response => response.json())
-    .then (data => setMenteeList(data.data.menteeuser))
+    .then (data => setMenteeList(data.data.menteeuser || []))
     .catch((error) => {
       console.error('Error:', error);
     });
@@ -113,7 +177,18 @@ const Sessions = () => {
             )}
             </Select>
             <Divider sx = {{pt: 2, pb: 2}}/>
-
+            <Grid container spacing = {2}>
+              <Grid item xs = {6}>
+                <Grid container spacing = {1}>
+                  <Grid item xs = {10}>
+                    <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Check if the session didn't take place?</Typography>
+                  </Grid>
+                  <Grid item xs = {2} sx = {{mt: 1.8}}>
+                    <Checkbox checked={sessionCancelled} onChange={e => setSessionCancelled(e.target.checked)} {...label} />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
             <Grid container spacing = {2}>
               <Grid item xs = {6}>
                 <Grid container spacing = {1}>
@@ -137,12 +212,14 @@ const Sessions = () => {
               </Grid>
             </Grid>
             <Divider sx = {{pt: 2, pb: 2}}/>
-            
+
+            <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{sessionCancelled ?'If you or the mentee did not attend the session, please enter when the session was suppose to happen' :''}
+           </Typography>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid container spacing = {1}>
                 <Grid item xs = {4}>
                   <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Date</Typography>
-                  <DesktopDatePicker
+                  <DatePicker
                     inputFormat="MM/dd/yyyy"
                     value={date}
                     onChange={handleDateChange}
@@ -169,7 +246,8 @@ const Sessions = () => {
             </LocalizationProvider>
             <Divider sx = {{pt: 2, pb: 2}}/>
 
-            <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Session Notes. If you or the mentee did not attend the session, please explain why</Typography>
+            <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{sessionCancelled ?'If you or the mentee did not attend the session, please explain why' :'Please enter your notes'}
+           </Typography>
             <TextField 
               variant="outlined"
               sx = {{mt: 0, pt: 0, mb: 5}}
