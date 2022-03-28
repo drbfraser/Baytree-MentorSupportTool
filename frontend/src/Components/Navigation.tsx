@@ -63,7 +63,7 @@ export default function Navigation() {
   }
 
   const fetchResourcePage = () =>{
-    fetch(`${API_BASE_URL}/resources/${localStorage.getItem('user_id')}`, {
+    fetch(`${API_BASE_URL}/resources/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
