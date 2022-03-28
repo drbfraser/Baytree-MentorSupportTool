@@ -1,5 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from users.permissions import AdminPermissions, userIsAdmin, userIsSuperUser
+from rest_framework import status
 
 from users.models import MentorUser
 from .constants import views_base_url, views_username, views_password
@@ -9,7 +12,7 @@ import xmltodict
 import json
 
 class ViewsAppSessionView(APIView):
-    permission_classes = [IsOwner]
+    permission_classes = [IsAuthenticated & (AdminPermissions | IsUserAMentor)]
 
     def get(self, request, id=None):
 
