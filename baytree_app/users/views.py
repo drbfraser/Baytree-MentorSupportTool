@@ -1,16 +1,11 @@
-from http.client import INTERNAL_SERVER_ERROR, HTTPResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from baytree_app.views import create_object
 from baytree_app.settings import EMAIL_USER
-from emails.constants import BAYTREE_EMAIL
 from emails.email import generateEmailTemplateHtml
-from views_api.volunteers import get_volunteers
-from .serializers import AdminSerializer, MentorSerializer
-from .models import AccountCreationLink, CustomUser, MentorUser
+from .models import AccountCreationLink, ResetPasswordLink, CustomUser, MentorUser
 from sessions.models import MentorSession
-from rest_framework.permissions import AllowAny
 from .permissions import *
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 import os
@@ -170,3 +165,54 @@ class StatisticViews(APIView):
                                            "sessions_missed": sessions_missed,
                                            "sessions_remaining": sessions_remaining}},
             status=status.HTTP_200_OK)
+
+# Allow non-authenticated users to send a reset email (be careful!)
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def sendResetPasswordEmail(request):
+    try:
+        mentor_first_name = request.data['firstName']
+        email = request.data['email']
+        account_type = request.data['accountType']
+
+        mentor_user = MentorUser.objects.filter(email=email)
+        if not mentor_user.exists():
+            # Send 200 OK so malicious users can't tell registered emails
+            return Response({"status": "Successfully sent reset link email!"},
+                status=status.HTTP_200_OK)
+
+        # Delete before resending reset password email and generate new link
+        found_reset_password_link = \
+                ResetPasswordLink.objects.filter(email=email)
+        if found_reset_password_link.exists():
+            found_reset_password_link.first().delete()
+
+        password_reset_link = ResetPasswordLink(account_type=account_type, email=email)
+        password_reset_link.save()
+
+        
+        if (os.environ.get("DEBUG", "") != "yes" and os.environ.get("DOMAIN") != None):
+            reset_password_link = "https://" + os.environ["DOMAIN"] \
+                + "/resetPassword?id=" + str(password_reset_link.link_id)
+        else:
+            reset_password_link = "http://localhost:3000" \
+                + "/resetPassword?id=" + str(password_reset_link.link_id)
+
+        email_html = generateEmailTemplateHtml("mentorResetPassword", {"mentorFirstName": mentor_first_name, \
+            "resetPassswordButtonLink": reset_password_link})
+
+        # Send email to Mentor to confirm their account
+        send_mail(subject='Welcome to The Baytree Centre!',
+            message='Welcome to The Baytree Centre! Click this link to reset your password: ' \
+            + reset_password_link,
+            from_email=EMAIL_USER,
+            recipient_list=[email],
+            html_message=email_html)
+
+        return Response({"status": "Successfully sent reset link email!"},
+                status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": "Failed to send account creation email"},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
