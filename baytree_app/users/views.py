@@ -174,7 +174,6 @@ def sendResetPasswordEmail(request):
     SUCCESS_RESPONSE_MESSAGE = "Successfully sent reset link email!"
 
     try:
-        first_name = request.data['firstName']
         email = request.data['email']
         account_type = request.data['accountType']
 
@@ -214,7 +213,7 @@ def sendResetPasswordEmail(request):
                 + "/resetPassword?id=" + str(password_reset_link.link_id)
 
         if account_type == 'Mentor':
-            email_html = generateEmailTemplateHtml("mentorResetPassword", {"mentorFirstName": first_name, \
+            email_html = generateEmailTemplateHtml("mentorResetPassword", {
                 "resetPasswordButtonLink": reset_password_link})
 
         # Send email to Mentor to confirm their account
