@@ -6,6 +6,7 @@ import BaytreeLogo from "../Assets/baytree-logo.png";
 import BaytreePhoto from "../Assets/baytree-photo.jpg";
 import { createMentorAccount } from "../api/mentorAccount";
 import { ToastContainer, toast } from "react-toastify";
+import { checkPassword } from "../Utils/password";
 
 const CreateAccount = (props: any) => {
   const [password, setPassword] = useState("");
@@ -15,14 +16,6 @@ const CreateAccount = (props: any) => {
     useState(false);
   const [passwordInvalid, setPasswordInvalid] = useState(false);
 
-  const checkPassword = () => {
-    // Regex from https://stackoverflow.com/questions/1559751/regex-to-make-sure-that-the-string-contains-at-least-one-lower-case-char-upper
-    // Check if at least one lower case, upper case, digit, symbol, and at least 8 characters
-    const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/g;
-    const found = password.match(regex);
-    return password.length >= 8 && found;
-  };
-
   const createAccount = async () => {
     const params = new URLSearchParams(window.location.search);
     const accountCreationLinkId = params.get("id");
@@ -31,7 +24,7 @@ const CreateAccount = (props: any) => {
         setPasswordsDontMatch(true);
         setPasswordInvalid(false);
     }
-    else if (checkPassword()) {
+    else if (checkPassword(password)) {
       if (accountCreationLinkId) {
         try {
           const apiRes = await createMentorAccount(

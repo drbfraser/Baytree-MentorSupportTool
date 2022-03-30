@@ -1,66 +1,281 @@
-import React, { useState } from 'react';
+import { Button, TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import styled from "styled-components";
+import { MOBILE_BREAKPOINT } from "../constants/constants";
+import BaytreeLogo from "../Assets/baytree-logo.png";
+import BaytreePhoto from "../Assets/baytree-photo.jpg";
+import { resetPassword, sendPasswordResetEmail } from "../api/mentorAccount";
+import { ToastContainer, toast } from "react-toastify";
+import { checkPassword } from "../Utils/password";
 
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
-import Card from '@mui/material/Card';
-import Typography from '@mui/material/Typography';
+const ResetPassword = (props: any) => {
+  const [email, setEmail] = useState("");
 
-import { CardContent } from '@mui/material';
+  const [password, setPassword] = useState("");
+  const [passwordsDontMatch, setPasswordsDontMatch] = useState(false);
+  const [passwordAgain, setPasswordAgain] = useState("");
+  const [resetPasswordSuccessful, setPasswordResetSuccessful] = useState(false);
+  const [passwordInvalid, setPasswordInvalid] = useState(false);
+  const [isSendingPasswordResetEmail, setIsSendingPasswordResetEmail] =
+    useState(!new URLSearchParams(window.location.search).has("id"));
 
-export default function ResetPassword(){
+  const resetMentorPassword = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const resetPasswordLinkId = params.get("id");
 
-    const [email, setEmail] = useState('');
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    if (password !== passwordAgain) {
+      setPasswordsDontMatch(true);
+      setPasswordInvalid(false);
+    } else if (checkPassword(password)) {
+      if (resetPasswordLinkId) {
+        try {
+          const apiRes = await resetPassword(password, resetPasswordLinkId);
+          if (apiRes.status === 200) {
+            setPasswordResetSuccessful(true);
+          } else if (apiRes.status === 410) {
+            toast.error(
+              "Link expired. Please contact an administrator for further assistance."
+            );
+          } else {
+            toast.error(
+              "Invalid link. Please contact an administrator for further assistance."
+            );
+          }
+        } catch {
+          toast.error(
+            "Failed to reset password. Please contact an administrator for further assistance."
+          );
+        }
+      }
+    } else {
+      setPasswordInvalid(true);
+      setPasswordsDontMatch(false);
     }
-  
-    return (
-        <div className="content">
-            <Container component="main" maxWidth="xs">
-                <Card>
-                <CardContent style = {{padding: "30px"}}>
-                <Typography variant = "h4" 
-                            display = "flex" 
-                            alignItems = "center" 
-                            justifyContent = "center"
-                            sx = {{mb: 3}}>
-                                Reset Password
-                </Typography>
-                <Typography display = "flex" align = "center" justifyContent = "center" sx = {{mb: 3}}>
-                    Please enter your email address to request a password reset
-                </Typography>
-                <Divider sx = {{mb: 3}}/>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx = {{ mt: 1 }}>
-                    <TextField
-                    margin = "normal"
+  };
+
+  const sendPassResetEmail = async () => {
+    const apiRes = await sendPasswordResetEmail(email);
+    if (apiRes.status === 200) {
+      toast.success(
+        "An email has been sent to the specified address for a password reset!"
+      );
+    } else {
+      toast.error(
+        "Failed to send password reset email. Please contact an administrator for further assistance."
+      );
+    }
+  };
+
+  return (
+    <PageLayout>
+      <CardLayout>
+        <Logo>
+          <img
+            src={BaytreeLogo}
+            style={{
+              height: "auto",
+              width: "11rem",
+            }}
+            alt="Logo"
+          />
+        </Logo>
+        <PasswordEntry>
+          {resetPasswordSuccessful ? (
+            <Typography variant="h4">Successfully reset password!</Typography>
+          ) : (
+            <>
+              {isSendingPasswordResetEmail ? (
+                <>
+                  <Typography variant="h4">Enter your email:</Typography>
+                  <TextField
+                    margin="normal"
                     required
                     fullWidth
-                    id = "email"
-                    label = "Email Address"
-                    name = "email"
-                    autoComplete = "email"
-                    value = {email}
-                    autoFocus
-                    onChange={e => setEmail(e.target.value)}
-                    />
-                    <Button 
-                    type = "submit" 
-                    value = "Login" 
-                    fullWidth variant="contained" 
-                    color = "success"
-                    sx={{ mt: 3, mb: 2 }}> Reset Password
-                    </Button>
-                    <Typography variant = "caption" display = "block" align = "center">
-                        <a href="/login">Back to login</a>
-                    </Typography>
-                </Box>
-                </CardContent>
-                </Card>
-            </Container>
-        </div>
-    )
+                    name="email"
+                    label="Email"
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </>
+              ) : (
+                <>
+                  <Typography variant="h4">Create a new password:</Typography>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password (again)"
+                    label="Password (again)"
+                    type="password"
+                    id="password-again"
+                    value={passwordAgain}
+                    onChange={(e) => setPasswordAgain(e.target.value)}
+                  />
+                </>
+              )}
+
+              {passwordInvalid && (
+                <Typography variant="body1" color="red">
+                  Error: password should be at least 8 characters and contain at
+                  least one number, symbol, lowercase letter, and uppercase
+                  letter
+                </Typography>
+              )}
+              {passwordsDontMatch && (
+                <Typography variant="body1" color="red">
+                  Error: both password fields should match
+                </Typography>
+              )}
+            </>
+          )}
+        </PasswordEntry>
+        <ResetPasswordButton>
+          {resetPasswordSuccessful ? (
+            <Button
+              variant="contained"
+              onClick={() => {
+                window.location.replace("/login");
+              }}
+              size="large"
+              color="success"
+            >
+              Login
+            </Button>
+          ) : isSendingPasswordResetEmail ? (
+            <Button
+              variant="contained"
+              onClick={sendPassResetEmail}
+              size="large"
+              color="success"
+            >
+              Send Password Reset Email
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={resetMentorPassword}
+              size="large"
+              color="success"
+            >
+              Reset Password
+            </Button>
+          )}
+        </ResetPasswordButton>
+        <Photo>
+          <img
+            src={BaytreePhoto}
+            alt="BaytreeBackground"
+            style={{
+              objectFit: "cover",
+              maxHeight: "95vh",
+              height: "auto",
+              width: "100%",
+              boxShadow: "0 0 0.3rem grey",
+            }}
+          />
+        </Photo>
+      </CardLayout>
+      <ToastContainer></ToastContainer>
+    </PageLayout>
+  );
 };
+
+const PageLayout = styled.div`
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  height: auto;
+  justify-content: center;
+  align-items: center;
+  background: #f3f5f9;
+`;
+
+const CardLayout = styled.div`
+  display: grid;
+  width: 85vw;
+  height: auto;
+  box-shadow: 0 0 0.7rem 0.3rem lightgrey;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 5rem;
+  grid-gap: 2rem;
+  background: white;
+
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "Logo Photo"
+    "PasswordEntry Photo"
+    "ResetPasswordButton Photo";
+
+  @media all and (max-width: ${MOBILE_BREAKPOINT}) {
+    width: 100vw;
+    min-height: 100vh;
+    padding: 0 0 2rem 0;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      "Photo"
+      "Logo"
+      "PasswordEntry"
+      "ResetPasswordButton";
+  }
+`;
+
+const Photo = styled.div`
+  width: 100%;
+  height: 100%;
+  grid-area: Photo;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media all and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
+`;
+
+const Logo = styled.div`
+  width: 100%;
+  height: 100%;
+  grid-area: Logo;
+  display: flex;
+  justify-content: center;
+`;
+
+const PasswordEntry = styled.div`
+  width: 100%;
+  height: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 2rem;
+  grid-area: PasswordEntry;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ResetPasswordButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-area: ResetPasswordButton;
+`;
+
+export default ResetPassword;
