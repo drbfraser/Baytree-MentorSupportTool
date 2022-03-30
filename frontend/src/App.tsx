@@ -25,6 +25,14 @@ function App() {
   );
 }
 
+const doesCurRouteRequireAuthentication = () => {
+  const NON_AUTHENTICATED_ROUTES = ["/createaccount", "/resetpassword"];
+
+  return !NON_AUTHENTICATED_ROUTES.includes(
+    window.location.pathname.toLowerCase()
+  );
+};
+
 const BrowserRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [redirectToLogin, setRedirectToLogin] = useState(false);
@@ -33,7 +41,7 @@ const BrowserRoute = () => {
   useEffect(() => {
     async function verifyClient() {
       // verify only on authenticated routes
-      if (window.location.pathname !== "/createAccount") {
+      if (doesCurRouteRequireAuthentication()) {
         if (await verify()) {
           setIsAuthenticated(true);
         } else {
