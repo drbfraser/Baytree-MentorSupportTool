@@ -17,8 +17,9 @@ const ResetPassword = (props: any) => {
   const [passwordAgain, setPasswordAgain] = useState("");
   const [resetPasswordSuccessful, setPasswordResetSuccessful] = useState(false);
   const [passwordInvalid, setPasswordInvalid] = useState(false);
-  const [isSendingPasswordResetEmail, setIsSendingPasswordResetEmail] =
-    useState(!new URLSearchParams(window.location.search).has("id"));
+  const [isSendingPasswordResetEmail] = useState(
+    !new URLSearchParams(window.location.search).has("id")
+  );
   const [isPageLoading, setIsPageLoading] = useState(false);
 
   const resetMentorPassword = async () => {
