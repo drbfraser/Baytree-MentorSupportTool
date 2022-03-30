@@ -171,16 +171,30 @@ class StatisticViews(APIView):
 @authentication_classes([])
 @permission_classes([])
 def sendResetPasswordEmail(request):
+    SUCCESS_RESPONSE_MESSAGE = "Successfully sent reset link email!"
+
     try:
-        mentor_first_name = request.data['firstName']
+        first_name = request.data['firstName']
         email = request.data['email']
         account_type = request.data['accountType']
 
-        mentor_user = MentorUser.objects.filter(email=email)
-        if not mentor_user.exists():
-            # Send 200 OK so malicious users can't tell registered emails
-            return Response({"status": "Successfully sent reset link email!"},
-                status=status.HTTP_200_OK)
+        user = None
+        if account_type == 'Mentor':
+            user = CustomUser.objects.filter(email=email)
+            if not user.exists():
+                # Send 200 OK so malicious users can't tell if email is registered
+                return Response({"status": SUCCESS_RESPONSE_MESSAGE},
+                    status=status.HTTP_200_OK)
+
+            user = MentorUser.objects.filter(user_id=user.first().id)
+            if not user.exists():
+                # Send 200 OK so malicious users can't tell if email is registered
+                return Response({"status": SUCCESS_RESPONSE_MESSAGE},
+                    status=status.HTTP_200_OK)
+        
+        if user == None:
+            return Response({"error": "Account type is not recognized!"},
+                status=status.HTTP_400_BAD_REQUEST)
 
         # Delete before resending reset password email and generate new link
         found_reset_password_link = \
@@ -199,20 +213,24 @@ def sendResetPasswordEmail(request):
             reset_password_link = "http://localhost:3000" \
                 + "/resetPassword?id=" + str(password_reset_link.link_id)
 
-        email_html = generateEmailTemplateHtml("mentorResetPassword", {"mentorFirstName": mentor_first_name, \
-            "resetPassswordButtonLink": reset_password_link})
+        if account_type == 'Mentor':
+            email_html = generateEmailTemplateHtml("mentorResetPassword", {"mentorFirstName": first_name, \
+                "resetPasswordButtonLink": reset_password_link})
 
         # Send email to Mentor to confirm their account
-        send_mail(subject='Welcome to The Baytree Centre!',
-            message='Welcome to The Baytree Centre! Click this link to reset your password: ' \
+        send_mail(subject='Password Reset',
+            message='Click this link to reset your Baytree account password: ' \
             + reset_password_link,
             from_email=EMAIL_USER,
             recipient_list=[email],
             html_message=email_html)
 
-        return Response({"status": "Successfully sent reset link email!"},
+        return Response({"status": SUCCESS_RESPONSE_MESSAGE},
                 status=status.HTTP_200_OK)
 
+    except KeyError as e:
+        return Response({"error": "Incorrect POST request body format."},
+                        status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({"error": "Failed to send account creation email"},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
