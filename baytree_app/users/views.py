@@ -104,8 +104,8 @@ def sendAccountCreationEmail(request):
         return Response({"error": "Failed to send account creation email"},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-def isAccountCreationLinkExpired(accountCreationLink):
-    return make_aware(datetime.datetime.now()) >= accountCreationLink.link_expiry_date
+def isLinkExpired(link):
+    return make_aware(datetime.datetime.now()) >= link.link_expiry_date
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -118,7 +118,7 @@ def createMentorAccount(request):
             foundAccountCreationLink = \
                 AccountCreationLink.objects.filter(link_id=create_account_link_id)
             if foundAccountCreationLink.exists():
-                if isAccountCreationLinkExpired(foundAccountCreationLink.first()):
+                if isLinkExpired(foundAccountCreationLink.first()):
                     return Response({"error": "Link is expired"},
                         status=status.HTTP_410_GONE)
 
@@ -233,4 +233,46 @@ def sendResetPasswordEmail(request):
                         status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({"error": "Failed to send account creation email"},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Allow non-authenticated users to reset password (be careful!)
+@api_view(['PUT'])
+@authentication_classes([])
+@permission_classes([])
+def resetAccountPassword(request):
+    try:
+        password = request.data['password']
+        reset_password_link_id = request.data['resetPasswordLinkId']
+        found_password_reset_link = \
+            ResetPasswordLink.objects.filter(link_id=reset_password_link_id)
+
+        if found_password_reset_link.exists():
+            found_password_reset_link = found_password_reset_link.first()
+            if isLinkExpired(found_password_reset_link):
+                return Response({"error": "Link is expired"},
+                    status=status.HTTP_410_GONE)
+            
+            email = found_password_reset_link.email
+            user = CustomUser.objects.filter(email=email)
+            if not user.exists():
+                return Response({"error": "User doesn't exist!"},
+                    status=status.HTTP_404_NOT_FOUND)
+            user = user.first()
+            
+            user.set_password(password)
+            user.save()
+
+            found_password_reset_link.delete()
+
+            return Response({"status": "Successfully created mentor account"},
+                    status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Link invalid"},
+                    status=status.HTTP_401_UNAUTHORIZED)        
+
+    except KeyError as e:
+        return Response({"error": "Request POST body parameters in invalid format."},
+                        status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error": "Failed to create mentor account"},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
