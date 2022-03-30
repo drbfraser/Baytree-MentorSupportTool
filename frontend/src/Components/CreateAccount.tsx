@@ -7,6 +7,7 @@ import BaytreePhoto from "../Assets/baytree-photo.jpg";
 import { createMentorAccount } from "../api/mentorAccount";
 import { ToastContainer, toast } from "react-toastify";
 import { checkPassword } from "../Utils/password";
+import OverlaySpinner from "./shared/overlaySpinner";
 
 const CreateAccount = (props: any) => {
   const [password, setPassword] = useState("");
@@ -15,31 +16,42 @@ const CreateAccount = (props: any) => {
   const [accountCreationSuccessful, setAccountCreationSuccessful] =
     useState(false);
   const [passwordInvalid, setPasswordInvalid] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
   const createAccount = async () => {
     const params = new URLSearchParams(window.location.search);
     const accountCreationLinkId = params.get("id");
 
     if (password !== passwordAgain) {
-        setPasswordsDontMatch(true);
-        setPasswordInvalid(false);
-    }
-    else if (checkPassword(password)) {
+      setPasswordsDontMatch(true);
+      setPasswordInvalid(false);
+    } else if (checkPassword(password)) {
       if (accountCreationLinkId) {
         try {
+          setIsPageLoading(true);
           const apiRes = await createMentorAccount(
             password,
             accountCreationLinkId
           );
           if (apiRes.status === 200) {
+            setIsPageLoading(false);
             setAccountCreationSuccessful(true);
           } else if (apiRes.status === 410) {
-              toast.error("Link expired. Please contact an administrator for further assistance.");
+            setIsPageLoading(false);
+            toast.error(
+              "Link expired. Please contact an administrator for further assistance."
+            );
           } else {
-            toast.error("Invalid link. Please contact an administrator for further assistance.");
+            setIsPageLoading(false);
+            toast.error(
+              "Invalid link. Please contact an administrator for further assistance."
+            );
           }
         } catch {
-          toast.error("Failed to create mentor account. Please contact an administrator for further assistance.");
+          setIsPageLoading(false);
+          toast.error(
+            "Failed to create mentor account. Please contact an administrator for further assistance."
+          );
         }
       }
     } else {
@@ -94,15 +106,15 @@ const CreateAccount = (props: any) => {
               {passwordInvalid && (
                 <Typography variant="body1" color="red">
                   Error: password should be at least 8 characters and contain at
-                  least one number, symbol, lowercase letter, and uppercase letter
+                  least one number, symbol, lowercase letter, and uppercase
+                  letter
                 </Typography>
               )}
               {passwordsDontMatch && (
                 <Typography variant="body1" color="red">
                   Error: both password fields should match
                 </Typography>
-              )
-              }
+              )}
             </>
           )}
         </PasswordEntry>
@@ -144,6 +156,7 @@ const CreateAccount = (props: any) => {
         </Photo>
       </CardLayout>
       <ToastContainer></ToastContainer>
+      <OverlaySpinner active={isPageLoading}></OverlaySpinner>
     </PageLayout>
   );
 };

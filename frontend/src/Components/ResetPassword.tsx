@@ -7,6 +7,7 @@ import BaytreePhoto from "../Assets/baytree-photo.jpg";
 import { resetPassword, sendPasswordResetEmail } from "../api/mentorAccount";
 import { ToastContainer, toast } from "react-toastify";
 import { checkPassword } from "../Utils/password";
+import OverlaySpinner from "./shared/overlaySpinner";
 
 const ResetPassword = (props: any) => {
   const [email, setEmail] = useState("");
@@ -18,6 +19,7 @@ const ResetPassword = (props: any) => {
   const [passwordInvalid, setPasswordInvalid] = useState(false);
   const [isSendingPasswordResetEmail, setIsSendingPasswordResetEmail] =
     useState(!new URLSearchParams(window.location.search).has("id"));
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
   const resetMentorPassword = async () => {
     const params = new URLSearchParams(window.location.search);
@@ -29,19 +31,24 @@ const ResetPassword = (props: any) => {
     } else if (checkPassword(password)) {
       if (resetPasswordLinkId) {
         try {
+          setIsPageLoading(true);
           const apiRes = await resetPassword(password, resetPasswordLinkId);
           if (apiRes.status === 200) {
             setPasswordResetSuccessful(true);
+            setIsPageLoading(false);
           } else if (apiRes.status === 410) {
+            setIsPageLoading(false);
             toast.error(
               "Link expired. Please contact an administrator for further assistance."
             );
           } else {
+            setIsPageLoading(false);
             toast.error(
               "Invalid link. Please contact an administrator for further assistance."
             );
           }
         } catch {
+          setIsPageLoading(false);
           toast.error(
             "Failed to reset password. Please contact an administrator for further assistance."
           );
@@ -54,12 +61,15 @@ const ResetPassword = (props: any) => {
   };
 
   const sendPassResetEmail = async () => {
+    setIsPageLoading(true);
     const apiRes = await sendPasswordResetEmail(email);
     if (apiRes.status === 200) {
+      setIsPageLoading(false);
       toast.success(
         "An email has been sent to the specified address for a password reset!"
       );
     } else {
+      setIsPageLoading(false);
       toast.error(
         "Failed to send password reset email. Please contact an administrator for further assistance."
       );
@@ -189,6 +199,7 @@ const ResetPassword = (props: any) => {
         </Photo>
       </CardLayout>
       <ToastContainer></ToastContainer>
+      <OverlaySpinner active={isPageLoading}></OverlaySpinner>
     </PageLayout>
   );
 };
