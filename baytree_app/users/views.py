@@ -1,3 +1,4 @@
+import re
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -107,12 +108,29 @@ def sendAccountCreationEmail(request):
 def isLinkExpired(link):
     return make_aware(datetime.datetime.now()) >= link.link_expiry_date
 
+def isValidPassword(password: str) -> bool:
+    '''Returns True if password contains at least one lower case,
+       upper case, digit, symbol, and at least 8 characters and no more than 30'''
+
+    if password == None:
+        return False
+
+    VALID_PASS_REGEX = r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)"
+    password_len = len(password)
+    return re.match(VALID_PASS_REGEX, password) != None \
+        and password_len >= 8 and password_len <= 30
+
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
 def createMentorAccount(request):
     try:
         password = request.data['password']
+
+        if not isValidPassword(password):
+            return Response({"error": "Invalid password format."},
+                    status=status.HTTP_400_BAD_REQUEST)
+
         create_account_link_id = request.data['createAccountLinkId']
         if password != None and create_account_link_id != None:
             foundAccountCreationLink = \
@@ -241,6 +259,11 @@ def sendResetPasswordEmail(request):
 def resetAccountPassword(request):
     try:
         password = request.data['password']
+
+        if not isValidPassword(password):
+            return Response({"error": "Invalid password format."},
+                    status=status.HTTP_400_BAD_REQUEST)
+
         reset_password_link_id = request.data['resetPasswordLinkId']
         found_password_reset_link = \
             ResetPasswordLink.objects.filter(link_id=reset_password_link_id)

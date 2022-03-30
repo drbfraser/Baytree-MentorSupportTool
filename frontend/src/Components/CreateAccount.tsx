@@ -105,7 +105,7 @@ const CreateAccount = (props: any) => {
               />
               {passwordInvalid && (
                 <Typography variant="body1" color="red">
-                  Error: password should be at least 8 characters and contain at
+                  Error: password should be at least 8 characters, no more than 30 characters, and contain at
                   least one number, symbol, lowercase letter, and uppercase
                   letter
                 </Typography>
