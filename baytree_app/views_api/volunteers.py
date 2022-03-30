@@ -31,12 +31,23 @@ def get_volunteers(id: str = None, limit: int = 5, offset: int = 0, searchEmail:
     but skip the first 5 in the total volunteers returned by the Views API."
     """
 
-    if searchEmail != None:
-        response = requests.get(
-            volunteers_base_url + "/search?Email=" + searchEmail,
+    if searchEmail != None and searchEmail != "":
+        views_request_url = volunteers_base_url + "search?Email=" + searchEmail
+
+        if limit != None:
+            views_request_url += "&pageFold=" + str(limit)
+
+        if offset != None:
+            views_request_url += "&offset=" + str(offset)
+
+        response = requests.get(views_request_url,
             auth=(views_username, views_password))
 
         parsed = xmltodict.parse(response.text)
+
+        # Check if no volunteers were returned from Views:
+        if parsed["contacts"]["volunteers"]["@count"] == '0':
+            return {"total": parsed["contacts"]["volunteers"]["@count"], "data": []}
 
         # Make sure the volunteers are wrapped in a list, if there is a single volunteer
         if not isinstance(parsed["contacts"]["volunteers"]["volunteer"], list):
@@ -89,8 +100,9 @@ def get_volunteers_endpoint(request):
     id = request.GET.get('id', None)
     searchEmail = request.GET.get('searchEmail', None)
 
-    if searchEmail != None:
-        response = get_volunteers(searchEmail=searchEmail)
+    if searchEmail != None and searchEmail != '':
+        response = get_volunteers(limit=request.GET.get(
+            'limit', None), offset=request.GET.get('offset', None), searchEmail=searchEmail)
     elif id != None:
         response = get_volunteers(id)
     else:

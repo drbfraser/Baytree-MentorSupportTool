@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import {
   getVolunteersFromViews,
@@ -9,40 +9,56 @@ import DataGrid from "../../shared/datagrid";
 import { ModalComponent } from "../../shared/Modal";
 import Pager from "../../shared/pager";
 import OverlaySpinner from "../../shared/overlaySpinner";
-import {
-  addMentorUser,
-  sendMentorAccountCreationEmail,
-} from "../../../api/backend/mentorUsers";
-import { addUsers } from "../../../api/backend/users";
+import { sendMentorAccountCreationEmail } from "../../../api/backend/mentorUsers";
 import { MdCheck } from "react-icons/md";
+import { TextField } from "@mui/material";
 
 const AddMentorModal: ModalComponent = (props) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [maxPageNumber, setMaxPageNumber] = useState(1);
   const [pageData, setPageData] = useState<Volunteer[]>([]);
   const [loadingData, setLoadingData] = useState(false);
+  const [emailFilter, setEmailFilter] = useState("");
   const PAGE_LIMIT = 8;
 
-  useEffect(() => {
-    async function getData() {
-      setLoadingData(true);
-      const mentorsData = await getVolunteersFromViews(
-        PAGE_LIMIT,
-        (pageNumber - 1) * PAGE_LIMIT
-      );
+  const getData = async () => {
+    setLoadingData(true);
+    const mentorsData = await getVolunteersFromViews(
+      PAGE_LIMIT,
+      (pageNumber - 1) * PAGE_LIMIT,
+      { searchEmail: emailFilter }
+    );
 
-      if (mentorsData && mentorsData.data !== null) {
-        setMaxPageNumber(Math.ceil(mentorsData.total / PAGE_LIMIT));
-        setPageData(mentorsData.data);
-        setLoadingData(false);
-      } else {
-        toast.error(HELP_MESSAGE);
-        setLoadingData(false);
-      }
+    if (mentorsData && mentorsData.data !== null) {
+      setMaxPageNumber(Math.ceil(mentorsData.total / PAGE_LIMIT));
+      setPageData(mentorsData.data);
+      setLoadingData(false);
+    } else {
+      toast.error(HELP_MESSAGE);
+      setLoadingData(false);
     }
+  };
 
+  useEffect(() => {
     getData();
   }, [pageNumber]);
+
+  // Use to tell if useEffect is being called on first mount of add mentor
+  // to prevent getting data from backend on mount and update (twice unnecessary)
+  const isMountSideEffect = useRef(true);
+  useEffect(() => {
+    if (!isMountSideEffect.current) {
+      // Use timeouts to debounce input so no backend call per character
+      clearTimeout(delayTimerRef.current as number);
+      delayTimerRef.current = setTimeout(function () {
+        getData();
+      }, 1000);
+    }
+
+    isMountSideEffect.current = false;
+  }, [emailFilter]);
+
+  const delayTimerRef = useRef<NodeJS.Timeout | number | undefined>(undefined);
 
   return (
     <div>
@@ -55,6 +71,16 @@ const AddMentorModal: ModalComponent = (props) => {
         ></OverlaySpinner>
       ) : (
         <>
+          <TextField
+            margin="normal"
+            fullWidth
+            name="emailFilter"
+            label="Search by Email"
+            type="emailFilter"
+            id="emailFilter"
+            value={emailFilter}
+            onChange={(e) => setEmailFilter(e.target.value)}
+          />
           <DataGrid
             data={pageData}
             cols={[

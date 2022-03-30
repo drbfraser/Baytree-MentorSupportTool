@@ -10,9 +10,7 @@ import DataGrid from "../components/shared/datagrid";
 import Modal from "../components/shared/Modal";
 import { HELP_MESSAGE } from "../constants/constants";
 import {
-  deleteMentorUser,
   getMentorUsers,
-  MentorUserResponse,
 } from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
 import OverlaySpinner from "../components/shared/overlaySpinner";
