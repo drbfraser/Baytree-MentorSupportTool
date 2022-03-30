@@ -101,7 +101,7 @@ export default function Goals() {
 
   const toBeUpdatedGoal = toBeUpdatedGoalId && goals ? goals.find(g => g.id === toBeUpdatedGoalId) : undefined;
 
-  const handleCSV = () => {
+  const exportGoalsToCsv = () => {
     const mentorName = (localStorage.getItem('firstname') || '') + ' ' + (localStorage.getItem('lastname') || '')
     let csvContent = "data:text/csv;charset=utf-8," 
     csvContent+= "Mentor Name, Mentee Name, Goal Creation Date, Goal Review Date, Title, Description, Update Date, Status \n"
@@ -117,7 +117,9 @@ export default function Goals() {
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "Goals.csv");
     document.body.appendChild(link);
+
     link.click(); 
+    document.body.removeChild(link);
   }
 
   return (
@@ -128,7 +130,7 @@ export default function Goals() {
             <Button
               variant="contained"
               color="success"
-              onClick={() => handleCSV()}
+              onClick={() => exportGoalsToCsv()}
             >
               Export
             </Button>
