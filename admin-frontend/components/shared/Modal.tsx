@@ -55,7 +55,7 @@ const Modal: React.FC<ModalProps> = (props) => {
             useMobileLayout={onMobileDevice}
           >
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              {props.enableCloseButton && (
+              {props.enableCloseButton !== false && (
                 <Button
                   variant="contained"
                   color="error"

@@ -52,6 +52,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
               modalComponent={actionButton.modalComponent}
               modalHeight={actionButton.modalHeight}
               modalWidth={actionButton.modalWidth}
+              enableModalCloseButton={actionButton.enableModalCloseButton}
             ></SidebarItem>
           );
         })}
@@ -76,6 +77,7 @@ interface SidebarItemProps {
   iconColor?: string;
   url?: string;
   modalComponent?: ModalComponent;
+  enableModalCloseButton?: boolean;
   modalWidth?: string;
   modalHeight?: string;
   setSidebarActive: (active: boolean) => void;
@@ -121,6 +123,7 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
           onOutsideClick={() => {
             setShowModal(false);
           }}
+          enableCloseButton={props.enableModalCloseButton}
         ></Modal>
       )}
     </>

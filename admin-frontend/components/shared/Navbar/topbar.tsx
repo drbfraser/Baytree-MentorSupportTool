@@ -64,6 +64,7 @@ const Topbar: React.FC<TopBarProps> = (props) => {
                 modalComponent={action.modalComponent}
                 modalWidth={action.modalWidth}
                 modalHeight={action.modalHeight}
+                enableModalCloseButton={action.enableModalCloseButton}
                 color={action.iconColor}
               ></TopbarActionButton>
             ))
@@ -87,6 +88,7 @@ interface TopbarActionProps {
   icon: React.FC<IconBaseProps>;
   onClick?: () => void;
   modalComponent?: ModalComponent;
+  enableModalCloseButton?: boolean;
   modalWidth?: string;
   modalHeight?: string;
   color?: string;
@@ -123,6 +125,7 @@ const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
           modalComponent={props.modalComponent}
           width={props.modalWidth}
           height={props.modalHeight}
+          enableCloseButton={props.enableModalCloseButton}
         ></Modal>
       )}
     </>
