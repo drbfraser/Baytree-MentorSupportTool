@@ -34,6 +34,7 @@ const Pager: React.FC<PagerProps> = (props) => {
           inputRef={currentPageNumberInputRef}
           margin="normal"
           placeholder={`${props.currentPageNumber}`}
+          style={{ maxWidth: "6rem" }}
         />
         <div
           style={{
