@@ -20,13 +20,12 @@ import CheckBox from "./checkBox";
 import { Table } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { stringToBool } from "../../util/misc";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { RootState } from "../../stores/store";
 import { ThemeState } from "../../reducers/theme";
 import styled from "styled-components";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
-import { MdCheck, MdMoreVert } from "react-icons/md";
+import { MdMoreVert } from "react-icons/md";
 import { IconBaseProps } from "react-icons";
 import useMobileLayout from "../../hooks/useMobileLayout";
 
@@ -126,18 +125,20 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
         height={props.height}
         component={Paper}
       >
-        <Table>
+        <Table style={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead>
             <TableRow>
               {cols.map((col, i) => (
                 <TableCell
-                  style={{ fontWeight: "bold" }}
+                  style={{ fontWeight: "bold", overflow: "hidden" }}
                   key={`datagrid_headercell_${i}`}
                 >
                   {col.header}
                 </TableCell>
               ))}
-              {props.dataRowActions && <TableCell width="3rem"></TableCell>}
+              {props.dataRowActions && (
+                <TableCell style={{ width: "6rem" }}></TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -155,6 +156,8 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                         selectedRowIndex === i
                           ? `${theme.colors.primaryColor}30`
                           : undefined,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
                     }}
                     height="fit-content"
                     key={`datagrid_cell_${i}_${j}`}
@@ -176,7 +179,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                 ))}
                 {props.dataRowActions && props.dataRowActions.length === 1 && (
                   <TableCell
-                    width="3rem"
+                    width="6rem"
                     key={`datagrid_cell_more_options_row_${i}`}
                   >
                     <div>
@@ -197,7 +200,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                 )}
                 {props.dataRowActions && props.dataRowActions.length > 1 && (
                   <TableCell
-                    width="3rem"
+                    style={{ width: "3rem" }}
                     key={`datagrid_cell_more_options_row_${i}`}
                   >
                     <PopupState variant="popover">
