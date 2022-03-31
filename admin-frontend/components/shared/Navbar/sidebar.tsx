@@ -121,7 +121,6 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
           onOutsideClick={() => {
             setShowModal(false);
           }}
-          useMobileLayout={props.useMobileLayout}
         ></Modal>
       )}
     </>
