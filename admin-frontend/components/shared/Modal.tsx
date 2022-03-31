@@ -16,6 +16,7 @@ interface ModalProps {
   modalComponent: ModalComponent;
   width?: string;
   height?: string;
+  enableCloseButton?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = (props) => {
@@ -54,19 +55,21 @@ const Modal: React.FC<ModalProps> = (props) => {
             useMobileLayout={onMobileDevice}
           >
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button
-                variant="contained"
-                color="error"
-                style={{
-                  padding: "0.3rem 0.6rem 0.3rem 0.6rem",
-                  height: "fit-content",
-                  margin: "0.6rem 0.6rem 0 0",
-                }}
-                onClick={() => props.onOutsideClick()}
-              >
-                <MdClose size="2rem"></MdClose>
-                Close
-              </Button>
+              {props.enableCloseButton && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  style={{
+                    padding: "0.3rem 0.6rem 0.3rem 0.6rem",
+                    height: "fit-content",
+                    margin: "0.6rem 0.6rem 0 0",
+                  }}
+                  onClick={() => props.onOutsideClick()}
+                >
+                  <MdClose size="2rem"></MdClose>
+                  Close
+                </Button>
+              )}
             </div>
             {React.createElement(props.modalComponent, {
               onOutsideClick: props.onOutsideClick,

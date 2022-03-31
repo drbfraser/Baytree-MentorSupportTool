@@ -120,6 +120,7 @@ const Mentors: NextPage = () => {
           setDataGridKey(dataGridKey + 1);
         }}
         modalComponent={AddMentorModal}
+        enableCloseButton={true}
         height="100vh"
       ></Modal>
       <OverlaySpinner
