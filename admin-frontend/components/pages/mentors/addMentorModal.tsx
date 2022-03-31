@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import {
   getVolunteersFromViews,
   Volunteer,
@@ -153,7 +153,6 @@ const AddMentorModal: ModalComponent = (props) => {
             maxPageNumber={maxPageNumber}
             currentPageNumber={pageNumber}
           ></Pager>
-          <ToastContainer></ToastContainer>
         </>
       )}
     </div>

@@ -27,7 +27,11 @@ const Modal: React.FC<ModalProps> = (props) => {
       if (
         !onMobileDevice &&
         modalElementRef.current &&
-        !modalElementRef.current.contains(event.target as Node)
+        !modalElementRef.current.contains(event.target as Node) &&
+        (document.getElementsByClassName("Toastify").length == 0 ||
+          !document
+            .getElementsByClassName("Toastify")[0]
+            .contains(event.target as Node))
       ) {
         props.onOutsideClick();
       }

@@ -2,7 +2,7 @@ import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import AddMentorModal from "../components/pages/mentors/addMentorModal";
 import Button from "../components/shared/button";
@@ -59,7 +59,7 @@ const Mentors: NextPage = () => {
     <>
       <Paper>
         <Header>
-          <Typography padding="0.75rem" variant="h4">
+          <Typography padding="0.75rem" variant="h5">
             Mentors
           </Typography>
           <Button
@@ -122,7 +122,6 @@ const Mentors: NextPage = () => {
         modalComponent={AddMentorModal}
         height="100vh"
       ></Modal>
-      <ToastContainer />
       <OverlaySpinner
         active={loadingData}
         onClick={() => {

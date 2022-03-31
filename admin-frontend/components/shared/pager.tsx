@@ -1,7 +1,7 @@
 import { TextField, Typography } from "@mui/material";
 import React, { useRef } from "react";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import useMobileLayout from "../../hooks/useMobileLayout";
 import Button from "./button";
 
@@ -63,14 +63,14 @@ const Pager: React.FC<PagerProps> = (props) => {
                   parsedCurrentPageNumber < 1 ||
                   parsedCurrentPageNumber > props.maxPageNumber
                 ) {
-                  toast(
+                  toast.error(
                     `Page number must be between 1 and ${props.maxPageNumber}`
                   );
                 } else {
                   props.onGotoPagePressed(parsedCurrentPageNumber);
                 }
               } else {
-                toast(
+                toast.error(
                   `Page number must be between 1 and ${props.maxPageNumber}`
                 );
               }
@@ -86,7 +86,6 @@ const Pager: React.FC<PagerProps> = (props) => {
   return (
     <>
       <div style={{ width: "100%", justifyContent: "center", display: "flex" }}>
-        <ToastContainer></ToastContainer>
         <Button
           style={{
             padding: "0.5rem 0.6rem",
@@ -101,7 +100,7 @@ const Pager: React.FC<PagerProps> = (props) => {
               if (props.currentPageNumber > 1) {
                 props.onNextPagePressed(props.currentPageNumber - 1);
               } else {
-                toast("There are no more previous pages!");
+                toast.error("There are no more previous pages!");
               }
             }
           }}
@@ -123,7 +122,7 @@ const Pager: React.FC<PagerProps> = (props) => {
             if (props.currentPageNumber < props.maxPageNumber) {
               props.onNextPagePressed(props.currentPageNumber + 1);
             } else {
-              toast("There are no more pages left!");
+              toast.error("There are no more pages left!");
             }
           }}
         >

@@ -1,7 +1,7 @@
 import { Skeleton, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import {
   ResponsiveContainer,
   BarChart,
@@ -179,7 +179,6 @@ const SessionStatsCard: React.FC<{}> = () => {
           data={data}
         ></Chart>
       </StyledSessionStatsCard>
-      <ToastContainer></ToastContainer>
     </>
   );
 };
