@@ -1,6 +1,9 @@
+import { Button } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
+import { MdClose } from "react-icons/md";
 import styled from "styled-components";
+import useMobileLayout from "../../hooks/useMobileLayout";
 
 export type ModalComponent = React.FC<{
   onOutsideClick: () => void;
@@ -11,19 +14,18 @@ interface ModalProps {
   isOpen: boolean;
   onOutsideClick: () => void;
   modalComponent: ModalComponent;
-  useMobileLayout?: boolean;
   width?: string;
   height?: string;
 }
 
 const Modal: React.FC<ModalProps> = (props) => {
+  const onMobileDevice = useMobileLayout();
   const modalElementRef = useRef<HTMLDivElement>(null);
-  const useMobileLayoutRef = useRef(props.useMobileLayout);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        !useMobileLayoutRef.current &&
+        !onMobileDevice &&
         modalElementRef.current &&
         !modalElementRef.current.contains(event.target as Node)
       ) {
@@ -45,11 +47,26 @@ const Modal: React.FC<ModalProps> = (props) => {
             ref={modalElementRef}
             width={props.width}
             height={props.height}
-            useMobileLayout={props.useMobileLayout}
+            useMobileLayout={onMobileDevice}
           >
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                variant="contained"
+                color="error"
+                style={{
+                  padding: "0.3rem 0.6rem 0.3rem 0.6rem",
+                  height: "fit-content",
+                  margin: "0.6rem 0.6rem 0 0",
+                }}
+                onClick={() => props.onOutsideClick()}
+              >
+                <MdClose size="2rem"></MdClose>
+                Close
+              </Button>
+            </div>
             {React.createElement(props.modalComponent, {
               onOutsideClick: props.onOutsideClick,
-              useMobileLayout: props.useMobileLayout,
+              useMobileLayout: onMobileDevice,
             })}
           </StyledModal>
         </Overlay>,
@@ -84,7 +101,9 @@ const StyledModal = styled.div<StyledModalProps>`
   top: ${(props) =>
     props.useMobileLayout
       ? "0"
-      : props.height && props.height !== 'auto' && props.height !== 'fit-content'
+      : props.height &&
+        props.height !== "auto" &&
+        props.height !== "fit-content"
       ? `calc((100vh - ${props.height}) / 2)`
       : "20vh"};
   left: ${(props) =>

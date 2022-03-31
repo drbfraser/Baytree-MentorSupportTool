@@ -9,9 +9,7 @@ import Button from "../components/shared/button";
 import DataGrid from "../components/shared/datagrid";
 import Modal from "../components/shared/Modal";
 import { HELP_MESSAGE } from "../constants/constants";
-import {
-  getMentorUsers,
-} from "../api/backend/mentorUsers";
+import { getMentorUsers } from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
 import OverlaySpinner from "../components/shared/overlaySpinner";
 
@@ -39,6 +37,7 @@ const Mentors: NextPage = () => {
 
       if (mentorsData && mentorsData.data !== null) {
         setMaxPageNum(Math.ceil(mentorsData.total / PAGE_LIMIT));
+        console.log(mentorsData);
         setPageData(
           mentorsData.data.map((mentorData) => ({
             email: mentorData.user.email,
@@ -82,11 +81,10 @@ const Mentors: NextPage = () => {
           key={`${dataGridKey}`}
           data={pageData}
           cols={[
-            { header: "Email", dataField: "email", dataType: "string" },
             {
-              header: "Views ID",
-              dataField: "viewsPersonId",
-              dataType: "string",
+              header: "Email",
+              dataField: "email",
+              dataType: "email",
             },
           ]}
           dataRowActions={[

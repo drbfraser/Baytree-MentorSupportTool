@@ -19,7 +19,7 @@ const AddMentorModal: ModalComponent = (props) => {
   const [pageData, setPageData] = useState<Volunteer[]>([]);
   const [loadingData, setLoadingData] = useState(false);
   const [emailFilter, setEmailFilter] = useState("");
-  const PAGE_LIMIT = 8;
+  const PAGE_LIMIT = 6;
 
   const getData = async () => {
     setLoadingData(true);
@@ -84,6 +84,7 @@ const AddMentorModal: ModalComponent = (props) => {
           <DataGrid
             data={pageData}
             cols={[
+              { header: "Email", dataField: "email", dataType: "email", keepOnMobile: true },
               { header: "First Name", dataField: "firstname" },
               { header: "Last Name", dataField: "surname" },
             ]}

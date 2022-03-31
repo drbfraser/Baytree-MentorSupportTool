@@ -18,7 +18,7 @@ import {
 import Button from "./button";
 import CheckBox from "./checkBox";
 import { Table } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { stringToBool } from "../../util/misc";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useSelector } from "react-redux";
@@ -28,6 +28,7 @@ import styled from "styled-components";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import { MdCheck, MdMoreVert } from "react-icons/md";
 import { IconBaseProps } from "react-icons";
+import useMobileLayout from "../../hooks/useMobileLayout";
 
 export interface DataRowAction {
   name: string;
@@ -38,7 +39,8 @@ export interface DataRowAction {
 export interface DataGridColumn {
   header: string;
   dataField?: string;
-  dataType?: "dateTime" | "currency" | "date" | "string" | "rating";
+  dataType?: "dateTime" | "currency" | "date" | "string" | "rating" | "email";
+  keepOnMobile?: boolean; // Keep this column on a mobile device screen
   componentFunc?: (dataRow: any) => React.ReactElement;
 }
 
@@ -54,6 +56,20 @@ export interface DataGridProps {
 const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   const theme = useSelector<RootState, ThemeState>((state) => state.theme);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number>(-1);
+
+  // Remove non-mobile columns on a mobile device
+  const onMobileDevice = useMobileLayout();
+  const atLeastOneColHasKeepOnMobile = (cols: DataGridColumn[]) => {
+    return props.cols.some((col) => col.keepOnMobile);
+  };
+  const [cols, setCols] = useState<DataGridColumn[]>(props.cols);
+  useEffect(() => {
+    if (onMobileDevice && atLeastOneColHasKeepOnMobile(props.cols)) {
+      setCols(props.cols.filter((col) => col.keepOnMobile));
+    } else {
+      setCols(props.cols);
+    }
+  }, [onMobileDevice]);
 
   const renderDateTimeValue = (dateTime: Date | string | null) => {
     if (!dateTime) {
@@ -88,6 +104,20 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
     );
   };
 
+  const renderEmailValue = (email: string | null) => {
+    return (
+      <a
+        style={{
+          color: theme.colors.primaryColor,
+          textDecoration: "underline",
+        }}
+        href={`mailto:${email}`}
+      >
+        {email}
+      </a>
+    );
+  };
+
   return (
     <>
       {props.caption && <Typography variant="h2">{props.caption}</Typography>}
@@ -99,7 +129,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
         <Table>
           <TableHead>
             <TableRow>
-              {props.cols.map((col, i) => (
+              {cols.map((col, i) => (
                 <TableCell
                   style={{ fontWeight: "bold" }}
                   key={`datagrid_headercell_${i}`}
@@ -118,7 +148,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                 }}
                 key={`datagrid_row_${i}`}
               >
-                {props.cols.map((col: DataGridColumn, j) => (
+                {cols.map((col: DataGridColumn, j) => (
                   <TableCell
                     style={{
                       backgroundColor:
@@ -139,6 +169,8 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                       ? renderDateTimeValue(dataRow[col.dataField])
                       : typeof dataRow[col.dataField] === "boolean"
                       ? renderBooleanValue(dataRow[col.dataField])
+                      : col.dataType === "email"
+                      ? renderEmailValue(dataRow[col.dataField])
                       : dataRow[col.dataField]}
                   </TableCell>
                 ))}
@@ -193,7 +225,10 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                               {props.dataRowActions &&
                                 props.dataRowActions.map((dataRowAction, i) => {
                                   return (
-                                    <ListItem key={`listItem_${i}`} disablePadding>
+                                    <ListItem
+                                      key={`listItem_${i}`}
+                                      disablePadding
+                                    >
                                       <ListItemButton
                                         onClick={() =>
                                           dataRowAction.action(dataRow)
