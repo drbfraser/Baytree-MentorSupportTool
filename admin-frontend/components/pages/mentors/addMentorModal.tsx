@@ -40,6 +40,11 @@ const AddMentorModal: ModalComponent = (props) => {
     }
   };
 
+  useEffect(() => {
+    getPageData(1);
+    setPageNumber(1);
+  }, []);
+
   // Use to tell if useEffect is being called on first mount of add mentor
   // to prevent getting data from backend on mount and update (twice unnecessary)
   const isMountSideEffect = useRef(true);
@@ -47,7 +52,7 @@ const AddMentorModal: ModalComponent = (props) => {
     if (!isMountSideEffect.current) {
       // Use timeouts to debounce input so no backend call per character
       clearTimeout(delayTimerRef.current as number);
-      delayTimerRef.current = setTimeout(async function () {
+      delayTimerRef.current = setTimeout(function () {
         getPageData(1);
         setPageNumber(1);
       }, 1000);
