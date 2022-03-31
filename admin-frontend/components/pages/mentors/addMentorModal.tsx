@@ -21,11 +21,12 @@ const AddMentorModal: ModalComponent = (props) => {
   const [emailFilter, setEmailFilter] = useState("");
   const PAGE_LIMIT = 6;
 
-  const getData = async () => {
+  const getPageData = async (pageNumberOverride?: number) => {
     setLoadingData(true);
     const mentorsData = await getVolunteersFromViews(
       PAGE_LIMIT,
-      (pageNumber - 1) * PAGE_LIMIT,
+      (pageNumberOverride ? pageNumberOverride - 1 : pageNumber - 1) *
+        PAGE_LIMIT,
       { searchEmail: emailFilter }
     );
 
@@ -39,10 +40,6 @@ const AddMentorModal: ModalComponent = (props) => {
     }
   };
 
-  useEffect(() => {
-    getData();
-  }, [pageNumber]);
-
   // Use to tell if useEffect is being called on first mount of add mentor
   // to prevent getting data from backend on mount and update (twice unnecessary)
   const isMountSideEffect = useRef(true);
@@ -50,8 +47,9 @@ const AddMentorModal: ModalComponent = (props) => {
     if (!isMountSideEffect.current) {
       // Use timeouts to debounce input so no backend call per character
       clearTimeout(delayTimerRef.current as number);
-      delayTimerRef.current = setTimeout(function () {
-        getData();
+      delayTimerRef.current = setTimeout(async function () {
+        getPageData(1);
+        setPageNumber(1);
       }, 1000);
     }
 
@@ -84,7 +82,12 @@ const AddMentorModal: ModalComponent = (props) => {
           <DataGrid
             data={pageData}
             cols={[
-              { header: "Email", dataField: "email", dataType: "email", keepOnMobile: true },
+              {
+                header: "Email",
+                dataField: "email",
+                dataType: "email",
+                keepOnMobile: true,
+              },
               { header: "First Name", dataField: "firstname" },
               { header: "Last Name", dataField: "surname" },
             ]}
@@ -130,9 +133,18 @@ const AddMentorModal: ModalComponent = (props) => {
             ]}
           ></DataGrid>
           <Pager
-            onNextPagePressed={setPageNumber}
-            onPreviousPagePressed={setPageNumber}
-            onGotoPagePressed={setPageNumber}
+            onNextPagePressed={(num: number) => {
+              getPageData(num);
+              setPageNumber(num);
+            }}
+            onPreviousPagePressed={(num: number) => {
+              getPageData(num);
+              setPageNumber(num);
+            }}
+            onGotoPagePressed={(num: number) => {
+              getPageData(num);
+              setPageNumber(num);
+            }}
             maxPageNumber={maxPageNumber}
             currentPageNumber={pageNumber}
           ></Pager>
