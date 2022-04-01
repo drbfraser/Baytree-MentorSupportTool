@@ -193,7 +193,10 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                               {props.dataRowActions &&
                                 props.dataRowActions.map((dataRowAction, i) => {
                                   return (
-                                    <ListItem key={`listItem_${i}`} disablePadding>
+                                    <ListItem
+                                      key={`listItem_${i}`}
+                                      disablePadding
+                                    >
                                       <ListItemButton
                                         onClick={() =>
                                           dataRowAction.action(dataRow)

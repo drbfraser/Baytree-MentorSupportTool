@@ -103,9 +103,7 @@ const AddMentorModal: ModalComponent = (props) => {
             ]}
           ></DataGrid>
           <Pager
-            onNextPagePressed={setPageNumber}
-            onPreviousPagePressed={setPageNumber}
-            onGotoPagePressed={setPageNumber}
+            onChangePage={setPageNumber}
             maxPageNumber={maxPageNumber}
             currentPageNumber={pageNumber}
           ></Pager>

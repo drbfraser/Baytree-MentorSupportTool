@@ -112,6 +112,11 @@ def get_sessions(
             )
 
         parsed = xmltodict.parse(response.text)
+
+        # Handle edge case where no sessions were returned from views
+        if parsed["sessions"]["@count"] == "0":
+            return {"total": parsed["sessions"]["@count"], "data": []}
+
         parsed_session_list = parsed["sessions"]["session"]
         if not isinstance(parsed_session_list, list):
             parsed_session_list = [parsed_session_list]

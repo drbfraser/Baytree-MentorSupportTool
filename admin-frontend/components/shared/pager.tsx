@@ -5,9 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import Button from "./button";
 
 export interface PagerProps {
-  onNextPagePressed: (nextPageNumber: number) => void;
-  onPreviousPagePressed: (prevPageNumber: number) => void;
-  onGotoPagePressed: (gotoPageNumber: number) => void;
+  onChangePage: (newPage: number) => void;
   currentPageNumber: number;
   maxPageNumber: number;
 }
@@ -30,7 +28,7 @@ const Pager: React.FC<PagerProps> = (props) => {
           if (currentPageNumberInputRef.current) {
             currentPageNumberInputRef.current.value = "";
             if (props.currentPageNumber > 1) {
-              props.onNextPagePressed(props.currentPageNumber - 1);
+              props.onChangePage(props.currentPageNumber - 1);
             } else {
               toast("There are no more previous pages!");
             }
@@ -52,7 +50,7 @@ const Pager: React.FC<PagerProps> = (props) => {
             currentPageNumberInputRef.current.value = "";
           }
           if (props.currentPageNumber < props.maxPageNumber) {
-            props.onNextPagePressed(props.currentPageNumber + 1);
+            props.onChangePage(props.currentPageNumber + 1);
           } else {
             toast("There are no more pages left!");
           }
@@ -107,7 +105,7 @@ const Pager: React.FC<PagerProps> = (props) => {
                   `Page number must be between 1 and ${props.maxPageNumber}`
                 );
               } else {
-                props.onGotoPagePressed(parsedCurrentPageNumber);
+                props.onChangePage(parsedCurrentPageNumber);
               }
             } else {
               toast(`Page number must be between 1 and ${props.maxPageNumber}`);
