@@ -10,6 +10,7 @@ interface MentorSessionCount {
   id: string;
   firstName: string;
   numSessions: number;
+  numSessionsOutOfTotal: string;
 }
 
 interface SessionTrackingTableProps {
@@ -27,7 +28,7 @@ const SessionTrackingTable: React.FunctionComponent<
     MentorSessionCount[]
   >([]);
 
-  const PAGE_SIZE = 5;
+  const PAGE_SIZE = 6;
   const [pageNum, setPageNum] = useState(1);
   const [maxPageNum, setMaxPageNum] = useState(1);
 
@@ -48,13 +49,14 @@ const SessionTrackingTable: React.FunctionComponent<
     mentors: Volunteer[],
     sessionsForMonth: Session[]
   ) => {
-    const aggregatedSessionsByMentor: MentorSessionCount[] = [];
+    let aggregatedSessionsByMentor: MentorSessionCount[] = [];
 
     mentors.forEach((mentor, i) =>
       aggregatedSessionsByMentor.push({
         id: mentor.viewsPersonId,
         firstName: mentor.firstname,
         numSessions: 0,
+        numSessionsOutOfTotal: "",
       })
     );
 
@@ -75,6 +77,14 @@ const SessionTrackingTable: React.FunctionComponent<
       return mentor1.numSessions - mentor2.numSessions;
     });
 
+    // Add / total
+    aggregatedSessionsByMentor = aggregatedSessionsByMentor.map((mentor) => {
+      return {
+        ...mentor,
+        numSessionsOutOfTotal: `${mentor.numSessions} / ${props.expectedSessionNumberForMonth}`,
+      };
+    });
+
     return aggregatedSessionsByMentor;
   };
 
@@ -85,7 +95,11 @@ const SessionTrackingTable: React.FunctionComponent<
       <DataGrid
         cols={[
           { header: "Name", dataField: "firstName" },
-          { header: "Sessions", dataField: "numSessions" },
+          {
+            header: "Sessions",
+            dataField: "numSessionsOutOfTotal",
+            dataType: "string",
+          },
         ]}
         data={pagedMentorSessionCounts}
       ></DataGrid>

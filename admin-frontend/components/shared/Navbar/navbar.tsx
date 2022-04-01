@@ -10,6 +10,10 @@ import { TopbarAction } from "./topbarActions";
 
 export const NAVBAR_ICON_SIZE = "1.6rem";
 
+export type NavbarModalComponent = React.FC<{
+  onOutsideClick: () => void;
+}>;
+
 interface NavbarProps {
   useMobileLayout: boolean;
   sidebarActive: boolean;

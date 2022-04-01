@@ -7,9 +7,9 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { NAVBAR_Z_INDEX, TOPBAR_HEIGHT } from "../../../constants/constants";
 import { RootState } from "../../../stores/store";
-import Modal, { ModalComponent } from "../Modal";
+import Modal from "../Modal";
 import Logo from "./logo";
-import { NAVBAR_ICON_SIZE } from "./navbar";
+import { NavbarModalComponent, NAVBAR_ICON_SIZE } from "./navbar";
 import { TopbarAction } from "./topbarActions";
 
 interface TopBarProps {
@@ -86,7 +86,7 @@ const StyledTopBar = styled.div`
 interface TopbarActionProps {
   icon: React.FC<IconBaseProps>;
   onClick?: () => void;
-  modalComponent?: ModalComponent;
+  modalComponent?: NavbarModalComponent;
   modalWidth?: string;
   modalHeight?: string;
   color?: string;
@@ -98,6 +98,10 @@ const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
   const primaryColor = useSelector<RootState, string>(
     (state) => state.theme.colors.primaryColor
   );
+
+  const onOutsideModalClick = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -116,11 +120,10 @@ const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
       {props.modalComponent && (
         <Modal
           isOpen={isModalOpen}
-          onOutsideClick={() => {
-            console.log("hey3");
-            setIsModalOpen(false);
-          }}
-          modalComponent={props.modalComponent}
+          onOutsideClick={onOutsideModalClick}
+          modalComponent={React.createElement(props.modalComponent, {
+            onOutsideClick: onOutsideModalClick,
+          })}
           width={props.modalWidth}
           height={props.modalHeight}
         ></Modal>

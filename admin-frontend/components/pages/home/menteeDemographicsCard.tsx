@@ -164,7 +164,7 @@ const StyledMenteeDemographicsCard = styled(Paper)`
   display: grid;
   grid-area: menteeDemographicsCard;
   grid-template-columns: 1.5fr 1fr;
-  grid-template-rows: 1fr 3fr;
+  grid-template-rows: auto auto;
   grid-template-areas:
     "header header"
     "chart legend";
@@ -229,13 +229,6 @@ const StyledMoreInfoButton = styled.div`
   grid-area: moreInfo;
 `;
 
-const StyledMoreInfoText = styled(Typography)`
-  text-decoration: underline;
-  :hover {
-    cursor: pointer;
-  }
-`;
-
 const Options: React.FC<{
   selectedDemographicCategory: DemographicCategory;
   setSelectedDemographicCategory: React.Dispatch<
@@ -288,6 +281,7 @@ const Options: React.FC<{
 
 const StyledOptions = styled.div`
   grid-area: options;
+  padding-top: 0.3rem;
 `;
 
 const Chart: React.FC<{

@@ -5,7 +5,7 @@ import { MOBILE_BREAKPOINT } from "../constants/constants";
 import SessionStatsCard from "../components/pages/home/sessionStatsCard";
 import MentorDemographicsCard from "../components/pages/home/mentorDemographicsCard";
 import MenteeDemographicsCard from "../components/pages/home/menteeDemographicsCard";
-import MentorSessionTrackingCard from "../components/pages/home/MentorSessionTrackingCard";
+import MentorSessionTrackingCard from "../components/pages/home/MentorSessionTrackingCard/MentorSessionTrackingCard";
 import MentorQuestionnaireTrackingCard from "../components/pages/home/MentorQuestionnaireTrackingCard";
 import {
   getVolunteersFromViews,
@@ -49,7 +49,7 @@ const HomePageLayout = styled.div`
   grid-gap: 1rem;
 
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(3, auto);
   grid-template-areas:
     "mentorSessionTrackingCard mentorQuestionnaireTrackingCard"
     "mentorDemographicsCard menteeDemographicsCard"
@@ -57,7 +57,7 @@ const HomePageLayout = styled.div`
 
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-rows: repeat(5, auto);
     grid-template-areas:
       "mentorSessionTrackingCard"
       "mentorQuestionnaireTrackingCard"

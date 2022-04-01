@@ -1,29 +1,23 @@
 import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
-
-export type ModalComponent = React.FC<{
-  onOutsideClick: () => void;
-  useMobileLayout?: boolean;
-}>;
-
+import useMobileLayout from "../../hooks/useMobileLayout";
 interface ModalProps {
   isOpen: boolean;
   onOutsideClick: () => void;
-  modalComponent: ModalComponent;
-  useMobileLayout?: boolean;
+  modalComponent: React.ReactElement;
   width?: string;
   height?: string;
 }
 
 const Modal: React.FC<ModalProps> = (props) => {
   const modalElementRef = useRef<HTMLDivElement>(null);
-  const useMobileLayoutRef = useRef(props.useMobileLayout);
+  const onMobileDevice = useMobileLayout();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        !useMobileLayoutRef.current &&
+        !onMobileDevice &&
         modalElementRef.current &&
         !modalElementRef.current.contains(event.target as Node)
       ) {
@@ -45,12 +39,9 @@ const Modal: React.FC<ModalProps> = (props) => {
             ref={modalElementRef}
             width={props.width}
             height={props.height}
-            useMobileLayout={props.useMobileLayout}
+            useMobileLayout={onMobileDevice}
           >
-            {React.createElement(props.modalComponent, {
-              onOutsideClick: props.onOutsideClick,
-              useMobileLayout: props.useMobileLayout,
-            })}
+            {props.modalComponent}
           </StyledModal>
         </Overlay>,
         document.getElementById("modalContainer") as HTMLElement
@@ -84,7 +75,9 @@ const StyledModal = styled.div<StyledModalProps>`
   top: ${(props) =>
     props.useMobileLayout
       ? "0"
-      : props.height && props.height !== 'auto' && props.height !== 'fit-content'
+      : props.height &&
+        props.height !== "auto" &&
+        props.height !== "fit-content"
       ? `calc((100vh - ${props.height}) / 2)`
       : "20vh"};
   left: ${(props) =>

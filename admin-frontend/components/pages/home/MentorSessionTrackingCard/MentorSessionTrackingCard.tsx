@@ -23,6 +23,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
   MentorSessionTrackingCardProps
 > = (props) => {
   const [curMonth, setCurMonth] = useState<number>(new Date().getMonth());
+  const [curYear, setCurYear] = useState<number>(new Date().getFullYear());
   const [sessionsForCurMonth, setSessionsForCurMonth] = useState<Session[]>([]);
   const [expectedSessionNumbersPerMonth, setExpectedSessionNumbersPerMonth] =
     useState<number[]>([]);
@@ -41,7 +42,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     if (selectedSessionGroupId !== null) {
       getInitialSessionsData();
     }
-  }, [selectedSessionGroupId, curMonth]);
+  }, [selectedSessionGroupId, curMonth, curYear]);
 
   const getSessionsForCurMonth = async () => {
     setIsLoading(true);
@@ -66,13 +67,13 @@ const MentorSessionTrackingCard: React.FunctionComponent<
 
   // get current month end date like: '2022-03-01'
   const getCurMonthStartDate = (): string => {
-    const firstDayOfMonth = new Date(new Date().getFullYear(), curMonth, 1);
+    const firstDayOfMonth = new Date(curYear, curMonth, 1);
     return firstDayOfMonth.toISOString().split("T")[0];
   };
 
   // get current month end date like: '2022-03-31'
   const getCurMonthEndDate = (): string => {
-    const lastDayOfMonth = new Date(new Date().getFullYear(), curMonth + 1, 0);
+    const lastDayOfMonth = new Date(curYear, curMonth + 1, 0);
     return lastDayOfMonth.toISOString().split("T")[0];
   };
 
@@ -120,6 +121,8 @@ const MentorSessionTrackingCard: React.FunctionComponent<
         onSessionGroupSelectOptionChange={onSessionGroupSelectOptionChange}
         onSetMonth={setCurMonth}
         curMonth={curMonth}
+        onSetYear={setCurYear}
+        curYear={curYear}
       ></Header>
       <SessionTrackingTable
         key={`body_${key}`}

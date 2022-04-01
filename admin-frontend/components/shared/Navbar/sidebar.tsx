@@ -7,8 +7,8 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { NAVBAR_Z_INDEX, SIDEBAR_WIDTH } from "../../../constants/constants";
 import { RootState } from "../../../stores/store";
-import Modal, { ModalComponent } from "../Modal";
-import { NAVBAR_ICON_SIZE } from "./navbar";
+import Modal from "../Modal";
+import { NavbarModalComponent, NAVBAR_ICON_SIZE } from "./navbar";
 import { SidebarLink } from "./sidebarLinks";
 import { TopbarAction } from "./topbarActions";
 
@@ -75,7 +75,7 @@ interface SidebarItemProps {
   icon: React.FC<IconBaseProps>;
   iconColor?: string;
   url?: string;
-  modalComponent?: ModalComponent;
+  modalComponent?: NavbarModalComponent;
   modalWidth?: string;
   modalHeight?: string;
   setSidebarActive: (active: boolean) => void;
@@ -89,6 +89,10 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
   const primaryColor = useSelector<RootState, string>(
     (state) => state.theme.colors.primaryColor
   );
+
+  const onOutsideModalClick = () => {
+    setShowModal(false);
+  };
 
   return (
     <>
@@ -117,11 +121,10 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
       {props.modalComponent && (
         <Modal
           isOpen={showModal}
-          modalComponent={props.modalComponent}
-          onOutsideClick={() => {
-            setShowModal(false);
-          }}
-          useMobileLayout={props.useMobileLayout}
+          modalComponent={React.createElement(props.modalComponent, {
+            onOutsideClick: onOutsideModalClick,
+          })}
+          onOutsideClick={onOutsideModalClick}
         ></Modal>
       )}
     </>

@@ -1,13 +1,13 @@
 import { IconBaseProps } from "react-icons";
 import { MdLogout } from "react-icons/md";
-import { ModalComponent } from "../Modal";
 import LogoutModal from "./logoutModal";
+import { NavbarModalComponent } from "./navbar";
 
 export interface TopbarAction {
   icon: React.FC<IconBaseProps>;
   title: string;
   iconColor?: string;
-  modalComponent: ModalComponent;
+  modalComponent: NavbarModalComponent;
   modalWidth?: string;
   modalHeight?: string;
 }

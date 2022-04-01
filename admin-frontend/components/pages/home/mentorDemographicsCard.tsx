@@ -163,7 +163,7 @@ const StyledMentorDemographicsCard = styled(Paper)`
   display: grid;
   grid-area: mentorDemographicsCard;
   grid-template-columns: 1.5fr 1fr;
-  grid-template-rows: 1fr 3fr;
+  grid-template-rows: auto auto;
   grid-template-areas:
     "header header"
     "chart legend";
@@ -287,6 +287,7 @@ const Options: React.FC<{
 
 const StyledOptions = styled.div`
   grid-area: options;
+  padding-top: 0.3rem;
 `;
 
 const Chart: React.FC<{

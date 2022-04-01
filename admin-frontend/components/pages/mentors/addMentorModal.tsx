@@ -6,17 +6,16 @@ import {
 } from "../../../api/backend/views/volunteers";
 import { HELP_MESSAGE } from "../../../constants/constants";
 import DataGrid from "../../shared/datagrid";
-import { ModalComponent } from "../../shared/Modal";
 import Pager from "../../shared/pager";
 import OverlaySpinner from "../../shared/overlaySpinner";
-import {
-  addMentorUser,
-  sendMentorAccountCreationEmail,
-} from "../../../api/backend/mentorUsers";
-import { addUsers } from "../../../api/backend/users";
+import { sendMentorAccountCreationEmail } from "../../../api/backend/mentorUsers";
 import { MdCheck } from "react-icons/md";
 
-const AddMentorModal: ModalComponent = (props) => {
+interface AddMentorModalProps {
+  onOutsideClick: () => void;
+}
+
+const AddMentorModal: React.FC<AddMentorModalProps> = (props) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [maxPageNumber, setMaxPageNumber] = useState(1);
   const [pageData, setPageData] = useState<Volunteer[]>([]);

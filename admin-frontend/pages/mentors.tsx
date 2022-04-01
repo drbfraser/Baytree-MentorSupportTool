@@ -58,6 +58,11 @@ const Mentors: NextPage = () => {
     getData();
   }, [pageNum, dataGridKey]);
 
+  const onOutsideAddMentorModalClick = () => {
+    setShowAddMentorModal(false);
+    setDataGridKey(dataGridKey + 1);
+  };
+
   return (
     <>
       <Paper>
@@ -119,11 +124,10 @@ const Mentors: NextPage = () => {
       </Paper>
       <Modal
         isOpen={showAddMentorModal}
-        onOutsideClick={() => {
-          setShowAddMentorModal(false);
-          setDataGridKey(dataGridKey + 1);
-        }}
-        modalComponent={AddMentorModal}
+        onOutsideClick={onOutsideAddMentorModalClick}
+        modalComponent={
+          <AddMentorModal onOutsideClick={onOutsideAddMentorModalClick} />
+        }
         height="100vh"
       ></Modal>
       <ToastContainer />
