@@ -75,6 +75,7 @@ export default function Navigation() {
       setResourcesURL(JSON.parse(data)[0].Resource);
     });
   }
+  
   useEffect(() => {
     fetchResourcePage();
     fetchNumNotifications();
