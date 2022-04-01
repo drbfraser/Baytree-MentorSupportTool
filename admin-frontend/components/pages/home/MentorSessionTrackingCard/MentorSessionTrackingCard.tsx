@@ -130,6 +130,8 @@ const MentorSessionTrackingCard: React.FunctionComponent<
         mentors={props.mentors}
         expectedSessionNumberForMonth={expectedSessionNumbersPerMonth[curMonth]}
         sessionsForMonth={sessionsForCurMonth}
+        month={curMonth + 1}
+        year={curYear}
       ></SessionTrackingTable>
     </CardLayout>
   );

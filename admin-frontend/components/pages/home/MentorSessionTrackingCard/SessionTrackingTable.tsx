@@ -1,10 +1,14 @@
-import { Skeleton } from "@mui/material";
+import { Skeleton, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Session } from "../../../../api/backend/views/sessions";
 import { Volunteer } from "../../../../api/backend/views/volunteers";
+import { BAYTREE_PRIMARY_COLOR } from "../../../../constants/constants";
 import DataGrid from "../../../shared/datagrid";
+import Modal from "../../../shared/Modal";
 import Pager from "../../../shared/pager";
+import MentorSessionsModal from "./MentorSessionsModal";
 
 interface MentorSessionCount {
   id: string;
@@ -18,6 +22,8 @@ interface SessionTrackingTableProps {
   mentors: Volunteer[];
   expectedSessionNumberForMonth: number;
   isLoading: boolean;
+  month: number;
+  year: number;
 }
 
 const SessionTrackingTable: React.FunctionComponent<
@@ -27,6 +33,11 @@ const SessionTrackingTable: React.FunctionComponent<
   const [pagedMentorSessionCounts, setPagedMentorSessionCounts] = useState<
     MentorSessionCount[]
   >([]);
+
+  const [isMentorSessionsModalOpen, setIsMentorSessionsModalOpen] =
+    useState(false);
+  const [mentorSessionsModalMentor, setMentorSessionsModalMentor] =
+    useState<Volunteer | null>(null);
 
   const PAGE_SIZE = 6;
   const [pageNum, setPageNum] = useState(1);
@@ -88,34 +99,78 @@ const SessionTrackingTable: React.FunctionComponent<
     return aggregatedSessionsByMentor;
   };
 
+  const clickableMentorNameText = (dataRow: any) => {
+    return (
+      <ClickableMentorNameText
+        onClick={() => {
+          const mentor = props.mentors.find(
+            (mentor) => mentor.viewsPersonId === dataRow.id
+          );
+
+          if (mentor) {
+            setMentorSessionsModalMentor(mentor);
+            setIsMentorSessionsModalOpen(true);
+          } else {
+            toast.error(
+              "Something went wrong! Please contact technical support for further assistance."
+            );
+          }
+        }}
+      >
+        {dataRow.firstName}
+      </ClickableMentorNameText>
+    );
+  };
+
   return props.isLoading ? (
     <LoadingSessionTrackingTable></LoadingSessionTrackingTable>
   ) : (
-    <SessionTrackingTableLayout>
-      <DataGrid
-        cols={[
-          { header: "Name", dataField: "firstName" },
-          {
-            header: "Sessions",
-            dataField: "numSessionsOutOfTotal",
-            dataType: "string",
-          },
-        ]}
-        data={pagedMentorSessionCounts}
-      ></DataGrid>
-      <Pager
-        currentPageNumber={pageNum}
-        maxPageNumber={maxPageNum}
-        onChangePage={(newPage) => {
-          const offset = (newPage - 1) * PAGE_SIZE;
-          const limit = PAGE_SIZE;
-          setPageNum(newPage);
-          setPagedMentorSessionCounts(
-            mentorSessionCountsRef.current.slice(offset, offset + limit)
-          );
-        }}
-      ></Pager>
-    </SessionTrackingTableLayout>
+    <>
+      <SessionTrackingTableLayout>
+        <DataGrid
+          cols={[
+            {
+              header: "Name",
+              dataField: "firstName",
+              componentFunc: clickableMentorNameText,
+            },
+            {
+              header: "Sessions",
+              dataField: "numSessionsOutOfTotal",
+              dataType: "string",
+            },
+          ]}
+          data={pagedMentorSessionCounts}
+        ></DataGrid>
+        <Pager
+          currentPageNumber={pageNum}
+          maxPageNumber={maxPageNum}
+          onChangePage={(newPage) => {
+            const offset = (newPage - 1) * PAGE_SIZE;
+            const limit = PAGE_SIZE;
+            setPageNum(newPage);
+            setPagedMentorSessionCounts(
+              mentorSessionCountsRef.current.slice(offset, offset + limit)
+            );
+          }}
+        ></Pager>
+      </SessionTrackingTableLayout>
+      <Modal
+        isOpen={isMentorSessionsModalOpen}
+        onOutsideClick={() => setIsMentorSessionsModalOpen(false)}
+        modalComponent={
+          <MentorSessionsModal
+            mentor={mentorSessionsModalMentor as Volunteer}
+            mentorSessions={props.sessionsForMonth.filter(
+              (session) =>
+                session.leadStaff === mentorSessionsModalMentor?.viewsPersonId
+            )}
+            month={props.month}
+            year={props.year}
+          ></MentorSessionsModal>
+        }
+      ></Modal>
+    </>
   );
 };
 
@@ -137,5 +192,13 @@ const LoadingSessionTrackingTable: React.FunctionComponent<{}> = () => {
     </>
   );
 };
+
+const ClickableMentorNameText = styled(Typography)`
+  color: ${BAYTREE_PRIMARY_COLOR};
+  text-decoration: underline;
+  :hover {
+    cursor: pointer;
+  }
+`;
 
 export default SessionTrackingTable;

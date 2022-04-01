@@ -13,11 +13,12 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = (props) => {
   const modalElementRef = useRef<HTMLDivElement>(null);
   const onMobileDevice = useMobileLayout();
+  const onMobileDeviceRef = useRef(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        !onMobileDevice &&
+        !onMobileDeviceRef.current &&
         modalElementRef.current &&
         !modalElementRef.current.contains(event.target as Node)
       ) {
@@ -30,6 +31,18 @@ const Modal: React.FC<ModalProps> = (props) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    onMobileDeviceRef.current = onMobileDevice;
+  }, [onMobileDevice]);
+
+  useEffect(() => {
+    if (props.isOpen) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "auto";
+    }
+  }, [props.isOpen, onMobileDevice]);
 
   return props.isOpen
     ? ReactDOM.createPortal(
