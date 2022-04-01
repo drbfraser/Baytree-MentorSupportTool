@@ -41,12 +41,24 @@ export interface Session {
 export const getSessionsFromViews = async (
   viewsSessionGroupId: string,
   limit?: number,
-  offset?: number
+  offset?: number,
+  startDateFrom?: string,
+  startDateTo?: string
 ): Promise<BackendGetResponse<Session>> => {
+  const filters: Record<string, any> = { sessionGroupId: viewsSessionGroupId };
+
+  if (startDateFrom) {
+    filters.startDateFrom = startDateFrom;
+  }
+
+  if (startDateTo) {
+    filters.startDateTo = startDateTo;
+  }
+
   const sessionsResponse = await getSessionsFromViewsBackendGetFunc(
     limit,
     offset,
-    { sessionGroupId: viewsSessionGroupId }
+    filters
   );
 
   if (sessionsResponse && sessionsResponse.data) {

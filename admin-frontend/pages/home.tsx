@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
 import styled from "styled-components";
 import { MOBILE_BREAKPOINT } from "../constants/constants";
@@ -7,11 +7,33 @@ import MentorDemographicsCard from "../components/pages/home/mentorDemographicsC
 import MenteeDemographicsCard from "../components/pages/home/menteeDemographicsCard";
 import MentorSessionTrackingCard from "../components/pages/home/MentorSessionTrackingCard";
 import MentorQuestionnaireTrackingCard from "../components/pages/home/MentorQuestionnaireTrackingCard";
+import {
+  getVolunteersFromViews,
+  Volunteer,
+} from "../api/backend/views/volunteers";
+import { toast } from "react-toastify";
 
 const Home: NextPage = () => {
+  const [mentors, setMentors] = useState<Volunteer[]>([]);
+
+  useEffect(() => {
+    const getMentorsFromViews = async () => {
+      const response = await getVolunteersFromViews();
+      if (response && response.status === 200 && response.data) {
+        setMentors(response.data);
+      } else {
+        toast.error(
+          "Something went wrong! Please contact technical support for further assistance."
+        );
+      }
+    };
+
+    getMentorsFromViews();
+  }, []);
+
   return (
     <HomePageLayout>
-      <MentorSessionTrackingCard></MentorSessionTrackingCard>
+      <MentorSessionTrackingCard mentors={mentors}></MentorSessionTrackingCard>
       <MentorQuestionnaireTrackingCard></MentorQuestionnaireTrackingCard>
       <MentorDemographicsCard></MentorDemographicsCard>
       <MenteeDemographicsCard></MenteeDemographicsCard>
