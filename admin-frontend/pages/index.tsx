@@ -10,7 +10,6 @@ import { login } from "../actions/auth/actionCreators";
 import { RootState } from "../stores/store";
 import { FRONTEND_BASE_URL } from "../api/backend/url";
 import { basePath } from "../next.config";
-import { NoServerSideRender } from "../components/shared/noServerSideRender";
 
 const Login: NextPage = () => {
   const [email, setEmail] = useState("");
@@ -75,10 +74,20 @@ const Login: NextPage = () => {
             height: "95vh",
             background: "white",
             borderRadius: "20px",
-            boxShadow: "0 0 0.3rem grey"
+            boxShadow: "0 0 0.3rem grey",
           }}
         >
-          <Grid item xs={8} style={{display: "flex", alignItems: "center", height: "100%", width: "100%", padding: "2rem" }}>
+          <Grid
+            item
+            xs={8}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+              padding: "2rem",
+            }}
+          >
             <img
               src={`${basePath}/images/login/photo.jpg`}
               style={{
@@ -145,12 +154,6 @@ const Login: NextPage = () => {
             >
               Sign In
             </Button>
-
-            <NoServerSideRender>
-              <Typography variant="caption" display="block" align="center">
-                <a href={`${FRONTEND_BASE_URL}/ResetPassword`}>Forgot Password?</a>
-              </Typography>
-            </NoServerSideRender>
           </Grid>
         </Grid>
       )}
@@ -161,7 +164,9 @@ const Login: NextPage = () => {
 const BackgroundPhoto: React.FC<{}> = () => {
   return (
     <BackgroundPhotoContainer>
-      <StyledBackgroundPhoto src={`${basePath}/images/login/photo.jpg`}></StyledBackgroundPhoto>
+      <StyledBackgroundPhoto
+        src={`${basePath}/images/login/photo.jpg`}
+      ></StyledBackgroundPhoto>
     </BackgroundPhotoContainer>
   );
 };
@@ -178,7 +183,9 @@ const BaytreeLogo: React.FC<{}> = () => {
   return (
     <BaytreeLogoContainer>
       <LogoCircleContainer>
-        <StyledBaytreeLogo src={`${basePath}/images/baytree-logo.svg`}></StyledBaytreeLogo>
+        <StyledBaytreeLogo
+          src={`${basePath}/images/baytree-logo.svg`}
+        ></StyledBaytreeLogo>
       </LogoCircleContainer>
     </BaytreeLogoContainer>
   );
@@ -225,9 +232,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
       <Typography variant="h4" padding="1rem" align="center">
         Admin Login
       </Typography>
-      {props.errors && (
-        <Alert severity="warning">Failed to login.</Alert>
-      )}
+      {props.errors && <Alert severity="warning">Failed to login.</Alert>}
       <TextField
         margin="normal"
         required
@@ -261,12 +266,6 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
       >
         Sign In
       </Button>
-
-      <NoServerSideRender>
-        <Typography variant="caption" display="block" align="center">
-          <a href={`${FRONTEND_BASE_URL}/ResetPassword`}>Forgot Password?</a>
-        </Typography>
-      </NoServerSideRender>
     </StyledLoginForm>
   );
 };
