@@ -215,7 +215,9 @@ const StyledTitle = styled.div`
 const MoreInfoButton: React.FC<{}> = () => {
   return (
     <StyledMoreInfoButton>
-      <StyledMoreInfoText variant="button">See More Info</StyledMoreInfoText>
+      <Button variant="outlined" color="success">
+        More
+      </Button>
     </StyledMoreInfoButton>
   );
 };
