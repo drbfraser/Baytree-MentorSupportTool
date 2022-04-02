@@ -42,7 +42,7 @@ const Modal: React.FC<ModalProps> = (props) => {
     } else {
       document.body.style.overflowY = "auto";
     }
-  }, [props.isOpen, onMobileDevice]);
+  });
 
   return props.isOpen
     ? ReactDOM.createPortal(

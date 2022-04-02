@@ -172,14 +172,22 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     let apiRes = await updateMonthlyExpectedSessionCount(
       newMonthlySessionCounts
     );
+
+    const SUCCESS_MESSAGE = "Successfully saved monthly session counts!";
+    const ERROR_MESSAGE = "Failed to save monthly session counts.";
     // There is no existing entry, so create a year
     if (apiRes !== null && apiRes.status === 404) {
       apiRes = await addMonthlyExpectedSessionCount(newMonthlySessionCounts);
       if (apiRes && apiRes.status === 200) {
-        toast.success("Successfully saved monthly session counts!");
+        toast.success(SUCCESS_MESSAGE);
       } else {
-        toast.error("Failed to save monthly session counts.");
+        toast.error(ERROR_MESSAGE);
       }
+    } else if (apiRes && apiRes.status === 200) {
+      toast.success(SUCCESS_MESSAGE);
+    } else {
+      toast.error("Failed to save. Are all months correct whole numbers?");
+      throw new Error("Failed to save.");
     }
   };
 

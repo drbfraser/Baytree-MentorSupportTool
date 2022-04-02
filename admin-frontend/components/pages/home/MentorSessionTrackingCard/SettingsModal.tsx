@@ -1,17 +1,17 @@
 import {
   Button,
-  Input,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Skeleton,
   TextField,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { MdSave } from "react-icons/md";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { getMonthlyExpectedSessionCount } from "../../../../api/backend/monthlyExpectedSessionCounts";
-import { MONTH_NAMES, tryParseInt } from "../../../../util/misc";
 
 interface SettingsModalProps {
   curYear: number;
@@ -21,11 +21,22 @@ interface SettingsModalProps {
 
 const SettingsModal: React.FunctionComponent<SettingsModalProps> = (props) => {
   const [selectedYear, setSelectedYear] = useState(props.curYear);
-  const [sessionNumbers, setSessionNumbers] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ]);
+  const [januaryCount, setJanuaryCount] = useState("0");
+  const [februaryCount, setFebruaryCount] = useState("0");
+  const [marchCount, setMarchCount] = useState("0");
+  const [aprilCount, setAprilCount] = useState("0");
+  const [mayCount, setMayCount] = useState("0");
+  const [juneCount, setJuneCount] = useState("0");
+  const [julyCount, setJulyCount] = useState("0");
+  const [augustCount, setAugustCount] = useState("0");
+  const [septemberCount, setSeptemberCount] = useState("0");
+  const [octoberCount, setOctoberCount] = useState("0");
+  const [novemberCount, setNovemberCount] = useState("0");
+  const [decemberCount, setDecemberCount] = useState("0");
+  const [isLoading, setIsLoading] = useState(false);
 
   const getExpectedSessionNumbersPerMonth = async () => {
+    setIsLoading(true);
     const apiRes = await getMonthlyExpectedSessionCount(undefined, undefined, {
       id: selectedYear.toString(),
     });
@@ -36,83 +47,251 @@ const SettingsModal: React.FunctionComponent<SettingsModalProps> = (props) => {
       apiRes.data &&
       apiRes.data.length > 0
     ) {
-      let expectedSessionsPerMonth: number[] = [];
       const expectedSessionsPerMonthRes = apiRes.data[0];
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.january_count);
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.february_count);
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.march_count);
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.april_count);
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.may_count);
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.june_count);
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.july_count);
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.august_count);
-      expectedSessionsPerMonth.push(
-        expectedSessionsPerMonthRes.september_count
-      );
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.october_count);
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.november_count);
-      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.december_count);
-
-      setSessionNumbers(expectedSessionsPerMonth);
+      setJanuaryCount(expectedSessionsPerMonthRes.january_count.toString());
+      setFebruaryCount(expectedSessionsPerMonthRes.february_count.toString());
+      setMarchCount(expectedSessionsPerMonthRes.march_count.toString());
+      setAprilCount(expectedSessionsPerMonthRes.april_count.toString());
+      setMayCount(expectedSessionsPerMonthRes.may_count.toString());
+      setJuneCount(expectedSessionsPerMonthRes.june_count.toString());
+      setJulyCount(expectedSessionsPerMonthRes.july_count.toString());
+      setAugustCount(expectedSessionsPerMonthRes.august_count.toString());
+      setSeptemberCount(expectedSessionsPerMonthRes.september_count.toString());
+      setOctoberCount(expectedSessionsPerMonthRes.october_count.toString());
+      setNovemberCount(expectedSessionsPerMonthRes.november_count.toString());
+      setDecemberCount(expectedSessionsPerMonthRes.december_count.toString());
     } else {
-      setSessionNumbers([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      setJanuaryCount("0");
+      setFebruaryCount("0");
+      setMarchCount("0");
+      setAprilCount("0");
+      setMayCount("0");
+      setJuneCount("0");
+      setJulyCount("0");
+      setAugustCount("0");
+      setSeptemberCount("0");
+      setOctoberCount("0");
+      setNovemberCount("0");
+      setDecemberCount("0");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     getExpectedSessionNumbersPerMonth();
   }, [selectedYear]);
 
-  return (
+  return isLoading ? (
+    <LoadingSkeletons></LoadingSkeletons>
+  ) : (
     <SettingsModalLayout>
-      <Title variant="h5">Expected Sessions for: </Title>
-      <SelectYear
-        curYear={selectedYear}
-        onSetYear={setSelectedYear}
-      ></SelectYear>
+      <TitleAndYear>
+        <Title variant="h5">Expected Sessions for: </Title>
+        <SelectYear
+          curYear={selectedYear}
+          onSetYear={setSelectedYear}
+        ></SelectYear>
+      </TitleAndYear>
+
       <SaveButton
-        onClick={() => {
-          props.saveExpectedMonthCounts(selectedYear, sessionNumbers);
+        onClick={async () => {
+          try {
+            setIsLoading(true);
+            await props.saveExpectedMonthCounts(selectedYear, [
+              parseInt(januaryCount),
+              parseInt(februaryCount),
+              parseInt(marchCount),
+              parseInt(aprilCount),
+              parseInt(mayCount),
+              parseInt(juneCount),
+              parseInt(julyCount),
+              parseInt(augustCount),
+              parseInt(septemberCount),
+              parseInt(octoberCount),
+              parseInt(novemberCount),
+              parseInt(decemberCount),
+            ]);
+          } catch {
+          } finally {
+            setIsLoading(false);
+          }
         }}
         startIcon={<MdSave></MdSave>}
         color="success"
         size="medium"
-        variant="outlined"
+        variant="contained"
       >
         Save
       </SaveButton>
       <MonthInputs>
-        {sessionNumbers.map((sessionNumber, i) => (
-          <MonthInput>
-            <Typography variant="h5">{`${MONTH_NAMES[i]}: `}</Typography>
-            <TextField
-              value={sessionNumbers[i]}
-              margin="normal"
-              style={{ maxWidth: "6rem" }}
-              onChange={(event) => {
-                let curSessionNumbers = sessionNumbers;
-                curSessionNumbers[i] = tryParseInt(event.target.value, 0);
-                setSessionNumbers(curSessionNumbers);
-              }}
-            />
-          </MonthInput>
-        ))}
+        <MonthInput>
+          <MonthCaption variant="h6">{`January:`}</MonthCaption>
+          <TextField
+            value={januaryCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setJanuaryCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`February:`}</MonthCaption>
+          <TextField
+            value={februaryCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setFebruaryCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`March:`}</MonthCaption>
+          <TextField
+            value={marchCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setMarchCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`April:`}</MonthCaption>
+          <TextField
+            value={aprilCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setAprilCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`May:`}</MonthCaption>
+          <TextField
+            value={mayCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setMayCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`June:`}</MonthCaption>
+          <TextField
+            value={juneCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setJuneCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`July:`}</MonthCaption>
+          <TextField
+            value={julyCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setJulyCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`August:`}</MonthCaption>
+          <TextField
+            value={augustCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setAugustCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`September:`}</MonthCaption>
+          <TextField
+            value={septemberCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setSeptemberCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`October:`}</MonthCaption>
+          <TextField
+            value={octoberCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setOctoberCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`November:`}</MonthCaption>
+          <TextField
+            value={novemberCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setNovemberCount(event.target.value);
+            }}
+          />
+        </MonthInput>
+        <MonthInput>
+          <MonthCaption variant="h6">{`December:`}</MonthCaption>
+          <TextField
+            value={decemberCount}
+            margin="normal"
+            style={{ maxWidth: "6rem" }}
+            onChange={(event) => {
+              setDecemberCount(event.target.value);
+            }}
+          />
+        </MonthInput>
       </MonthInputs>
     </SettingsModalLayout>
   );
 };
 
+const LoadingSkeletons: React.FunctionComponent<{}> = () => {
+  const NUM_SKELETONS = 20;
+
+  return (
+    <>
+      {Array.from(Array(NUM_SKELETONS)).map((skeleton) => (
+        <Skeleton></Skeleton>
+      ))}
+    </>
+  );
+};
+
 const Title = styled(Typography)`
-  grid-area: title;
+  width: auto;
+  padding-right: 2rem;
+`;
+
+const TitleAndYear = styled.div`
+  grid-area: titleAndYear;
+  display: flex;
+  align-items: center;
 `;
 
 const SettingsModalLayout = styled.div`
   display: grid;
-  grid-template-columns: auto auto auto;
+  align-items: center;
+  grid-template-columns: auto auto;
   grid-template-rows: auto auto;
   grid-template-areas:
-    "title selectYear saveButton"
-    "monthInputs monthInputs monthInputs";
+    "titleAndYear saveButton"
+    "monthInputs monthInputs";
 `;
 
 interface SelectYearProps {
@@ -160,6 +339,8 @@ const StyledSelectYear = styled.div`
 
 const SaveButton = styled(Button)`
   grid-area: saveButton;
+  max-width: 10rem;
+  justify-self: flex-end;
 `;
 
 const MonthInputs = styled.div`
@@ -170,7 +351,13 @@ const MonthInputs = styled.div`
 
 const MonthInput = styled.div`
   display: flex;
-  width: 100%;
+  align-items: center;
+  width: 16rem;
+`;
+
+const MonthCaption = styled(Typography)`
+  padding-right: 2rem;
+  width: 8rem;
 `;
 
 export default SettingsModal;

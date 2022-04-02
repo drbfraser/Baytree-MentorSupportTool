@@ -4,10 +4,10 @@ export const stringToBool = (str: string) => {
 };
 
 export const tryParseInt = (strNum: string, defaultVal: number) => {
-  try {
-    const parsed = parseInt(strNum);
+  const parsed = parseInt(strNum);
+  if (!isNaN(parsed)) {
     return parsed;
-  } catch (error) {
+  } else {
     return defaultVal;
   }
 };
