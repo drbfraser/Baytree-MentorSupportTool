@@ -19,13 +19,30 @@ export interface MentorSessionsModalProps {
 const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
   props
 ) => {
+  const MONTH_NAMES = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
   return (
     <MentorSessionsModalLayout>
       <Name>
         <Typography variant="h5">{`${props.mentor.firstname} ${props.mentor.surname}'s Sessions`}</Typography>
       </Name>
       <Date>
-        <Typography variant="h5">{`${props.year}/${props.month}`}</Typography>
+        <Typography variant="h5">{`${props.year} / ${
+          MONTH_NAMES[props.month - 1]
+        }`}</Typography>
       </Date>
       <Email>
         <EmailText href={`mailto:${props.mentor.email}`}>

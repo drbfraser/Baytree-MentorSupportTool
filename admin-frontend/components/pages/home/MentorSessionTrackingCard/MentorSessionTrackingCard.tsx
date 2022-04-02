@@ -123,6 +123,8 @@ const MentorSessionTrackingCard: React.FunctionComponent<
         curMonth={curMonth}
         onSetYear={setCurYear}
         curYear={curYear}
+        expectedMonthCounts={expectedSessionNumbersPerMonth}
+        setExpectedMonthCounts={setExpectedSessionNumbersPerMonth}
       ></Header>
       <SessionTrackingTable
         key={`body_${key}`}
