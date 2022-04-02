@@ -20,7 +20,7 @@ const Modal: React.FC<ModalProps> = (props) => {
       if (
         !onMobileDeviceRef.current &&
         modalElementRef.current &&
-        !modalElementRef.current.contains(event.target as Node)
+        (event.target as any).id === "ModalOverlay"
       ) {
         props.onOutsideClick();
       }
@@ -46,7 +46,7 @@ const Modal: React.FC<ModalProps> = (props) => {
 
   return props.isOpen
     ? ReactDOM.createPortal(
-        <Overlay>
+        <Overlay id="ModalOverlay">
           <div></div>
           <StyledModal
             ref={modalElementRef}

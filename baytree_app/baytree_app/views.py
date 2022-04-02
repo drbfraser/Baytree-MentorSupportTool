@@ -271,12 +271,21 @@ class GenerateCrudEndpointsForModel(APIView):
             ids = []
             if "array" in request.data:
                 for object in request.data["array"]:
+                    if "id" in object:
+                        del object["id"]
+
                     ids.append(create_object(object, self.model))
 
                 return Response({"ids": ids},
                                 status=status.HTTP_200_OK)
             else:
+                object = request.data
+
+                if "id" in object:
+                    del object["id"]
+                        
                 ids.append(create_object(request.data, self.model))
+
                 return Response({"ids": ids},
                                 status=status.HTTP_200_OK)
         except Exception as e:
@@ -296,8 +305,14 @@ class GenerateCrudEndpointsForModel(APIView):
                                 status=status.HTTP_200_OK)
             else:
                 object = request.data
-                update_object(self.model.objects.get(
-                        pk=object['id']), object, self.model)
+                existing_object = self.model.objects.filter(pk=object['id'])
+                if (not existing_object.exists()):
+                    return Response({"error": "Failed to update object"},
+                            status=status.HTTP_404_NOT_FOUND)
+                
+                existing_object = existing_object.first()
+
+                update_object(existing_object, object, self.model)
                 return Response({"success": "Successfully updated object"},
                                 status=status.HTTP_200_OK)
         except Exception as e:

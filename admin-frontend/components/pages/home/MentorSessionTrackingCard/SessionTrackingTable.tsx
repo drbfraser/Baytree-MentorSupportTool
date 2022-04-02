@@ -13,6 +13,7 @@ import MentorSessionsModal from "./MentorSessionsModal";
 interface MentorSessionCount {
   id: string;
   firstName: string;
+  lastName: string;
   numSessions: number;
   numSessionsOutOfTotal: string;
 }
@@ -70,6 +71,7 @@ const SessionTrackingTable: React.FunctionComponent<
       aggregatedSessionsByMentor.push({
         id: mentor.viewsPersonId,
         firstName: mentor.firstname,
+        lastName: mentor.surname,
         numSessions: 0,
         numSessionsOutOfTotal: "",
       })
@@ -92,11 +94,12 @@ const SessionTrackingTable: React.FunctionComponent<
       return mentor1.numSessions - mentor2.numSessions;
     });
 
-    // Add / total
+    // Add / total and get full name
     aggregatedSessionsByMentor = aggregatedSessionsByMentor.map((mentor) => {
       return {
         ...mentor,
         numSessionsOutOfTotal: `${mentor.numSessions} / ${props.expectedSessionNumberForMonth}`,
+        fullName: `${mentor.firstName} ${mentor.lastName}`,
       };
     });
 
@@ -121,7 +124,7 @@ const SessionTrackingTable: React.FunctionComponent<
           }
         }}
       >
-        {dataRow.firstName}
+        {dataRow.fullName}
       </ClickableMentorNameText>
     );
   };
@@ -135,7 +138,7 @@ const SessionTrackingTable: React.FunctionComponent<
           cols={[
             {
               header: "Name",
-              dataField: "firstName",
+              dataField: "fullName",
               componentFunc: clickableMentorNameText,
             },
             {

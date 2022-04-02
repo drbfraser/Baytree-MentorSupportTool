@@ -34,6 +34,9 @@ interface HeaderProps {
 
   setExpectedMonthCounts: (newMonthCounts: number[]) => void;
   expectedMonthCounts: number[];
+
+  // save to database
+  saveExpectedMonthCounts: (year: number, newMonthCounts: number[]) => void;
 }
 
 const Header: React.FunctionComponent<HeaderProps> = (props) => {
@@ -67,8 +70,9 @@ const Header: React.FunctionComponent<HeaderProps> = (props) => {
         isOpen={isSettingsModalOpen}
         modalComponent={
           <SettingsModal
-            setExpectedMonthCounts={props.setExpectedMonthCounts}
-            expectedMonthCounts={props.expectedMonthCounts}
+            saveExpectedMonthCounts={props.saveExpectedMonthCounts}
+            curMonth={props.curMonth}
+            curYear={props.curYear}
           ></SettingsModal>
         }
         onOutsideClick={() => setIsSettingsModalOpen(false)}

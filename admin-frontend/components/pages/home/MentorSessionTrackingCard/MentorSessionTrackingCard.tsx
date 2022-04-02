@@ -2,7 +2,13 @@ import { Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import { getMonthlyExpectedSessionCount } from "../../../../api/backend/monthlyExpectedSessionCounts";
+import {
+  addMonthlyExpectedSessionCount,
+  getMonthlyExpectedSessionCount,
+  MonthlyExpectedSessionCountCreate,
+  MonthlyExpectedSessionCountUpdate,
+  updateMonthlyExpectedSessionCount,
+} from "../../../../api/backend/monthlyExpectedSessionCounts";
 import { getSessionGroupsFromViews } from "../../../../api/backend/views/sessionGroups";
 import {
   getSessionsFromViews,
@@ -145,9 +151,42 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     setSelectedSessionGroupId(selectedSessionGroup.value);
   };
 
+  const saveExpectedMonthCounts = async (year: number, newCounts: number[]) => {
+    const newMonthlySessionCounts: MonthlyExpectedSessionCountUpdate = {
+      year: year,
+      id: year,
+      january_count: newCounts[0],
+      february_count: newCounts[1],
+      march_count: newCounts[2],
+      april_count: newCounts[3],
+      may_count: newCounts[4],
+      june_count: newCounts[5],
+      july_count: newCounts[6],
+      august_count: newCounts[7],
+      september_count: newCounts[8],
+      october_count: newCounts[9],
+      november_count: newCounts[10],
+      december_count: newCounts[11],
+    };
+
+    let apiRes = await updateMonthlyExpectedSessionCount(
+      newMonthlySessionCounts
+    );
+    // There is no existing entry, so create a year
+    if (apiRes !== null && apiRes.status === 404) {
+      apiRes = await addMonthlyExpectedSessionCount(newMonthlySessionCounts);
+      if (apiRes && apiRes.status === 200) {
+        toast.success("Successfully saved monthly session counts!");
+      } else {
+        toast.error("Failed to save monthly session counts.");
+      }
+    }
+  };
+
   return (
     <CardLayout>
       <Header
+        saveExpectedMonthCounts={saveExpectedMonthCounts}
         loadSessionGroupOptions={loadSessionGroupOptions}
         onSessionGroupSelectOptionChange={onSessionGroupSelectOptionChange}
         onSetMonth={setCurMonth}

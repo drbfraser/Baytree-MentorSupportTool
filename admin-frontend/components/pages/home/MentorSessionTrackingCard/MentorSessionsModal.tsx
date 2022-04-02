@@ -7,6 +7,7 @@ import {
   BAYTREE_PRIMARY_COLOR,
   MOBILE_BREAKPOINT,
 } from "../../../../constants/constants";
+import { MONTH_NAMES } from "../../../../util/misc";
 import DataGrid from "../../../shared/datagrid";
 
 export interface MentorSessionsModalProps {
@@ -19,21 +20,6 @@ export interface MentorSessionsModalProps {
 const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
   props
 ) => {
-  const MONTH_NAMES = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   return (
     <MentorSessionsModalLayout>
       <Name>

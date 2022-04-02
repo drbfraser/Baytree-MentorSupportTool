@@ -25,7 +25,7 @@ export type MonthlyExpectedSessionCountResponse =
   MonthlyExpectedSessionCountCreate;
 
 export type MonthlyExpectedSessionCountUpdate =
-  MonthlyExpectedSessionCountCreate;
+  MonthlyExpectedSessionCountCreate & { id: number };
 
 export const monthlyExpectedSessionCountEndpoint = `${API_BASE_URL}/sessions/monthly-expected-session-counts`;
 
