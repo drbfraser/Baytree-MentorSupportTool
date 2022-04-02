@@ -175,7 +175,7 @@ const SessionTrackingTable: React.FunctionComponent<
 };
 
 const SessionTrackingTableLayout = styled.div`
-  grid-area: "Body";
+  grid-area: "SessionTrackingTable";
   margin-top: 1rem;
 `;
 

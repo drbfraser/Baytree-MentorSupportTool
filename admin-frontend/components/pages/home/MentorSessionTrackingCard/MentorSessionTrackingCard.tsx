@@ -34,9 +34,11 @@ const MentorSessionTrackingCard: React.FunctionComponent<
   const [key, setKey] = useState(0);
 
   useEffect(() => {
-    const getInitialSessionsData = () => {
-      getSessionsForCurMonth();
-      getExpectedSessionNumbersPerMonth();
+    const getInitialSessionsData = async () => {
+      setIsLoading(true);
+      await getSessionsForCurMonth();
+      getExpectedSessionNumbersPerMonth(); // TODO: make async call
+      setIsLoading(false);
     };
 
     if (selectedSessionGroupId !== null) {
@@ -45,7 +47,6 @@ const MentorSessionTrackingCard: React.FunctionComponent<
   }, [selectedSessionGroupId, curMonth, curYear]);
 
   const getSessionsForCurMonth = async () => {
-    setIsLoading(true);
     const curMonthStartDate = getCurMonthStartDate();
     const curMonthEndDate = getCurMonthEndDate();
     const response = await getSessionsFromViews(
@@ -55,7 +56,6 @@ const MentorSessionTrackingCard: React.FunctionComponent<
       curMonthStartDate,
       curMonthEndDate
     );
-    setIsLoading(false);
 
     if (response && response.status === 200 && response.data) {
       setSessionsForCurMonth(response.data);
@@ -126,15 +126,19 @@ const MentorSessionTrackingCard: React.FunctionComponent<
         expectedMonthCounts={expectedSessionNumbersPerMonth}
         setExpectedMonthCounts={setExpectedSessionNumbersPerMonth}
       ></Header>
-      <SessionTrackingTable
-        key={`body_${key}`}
-        isLoading={isLoading}
-        mentors={props.mentors}
-        expectedSessionNumberForMonth={expectedSessionNumbersPerMonth[curMonth]}
-        sessionsForMonth={sessionsForCurMonth}
-        month={curMonth + 1}
-        year={curYear}
-      ></SessionTrackingTable>
+      {selectedSessionGroupId !== null && (
+        <SessionTrackingTable
+          key={`body_${key}`}
+          isLoading={isLoading}
+          mentors={props.mentors}
+          expectedSessionNumberForMonth={
+            expectedSessionNumbersPerMonth[curMonth]
+          }
+          sessionsForMonth={sessionsForCurMonth}
+          month={curMonth + 1}
+          year={curYear}
+        ></SessionTrackingTable>
+      )}
     </CardLayout>
   );
 };
@@ -143,7 +147,7 @@ const CardLayout = styled(Paper)`
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 0.1fr 0.9fr;
-  grid-template-areas: "Header" "Body";
+  grid-template-areas: "Header" "SessionTrackingTable";
   grid-area: "mentorSessionTrackingCard";
   padding: 1rem 2rem 1rem 2rem;
 `;
