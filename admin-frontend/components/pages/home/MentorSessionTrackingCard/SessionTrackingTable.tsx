@@ -54,7 +54,11 @@ const SessionTrackingTable: React.FunctionComponent<
     setPagedMentorSessionCounts(
       mentorSessionCountsRef.current.slice(0, PAGE_SIZE)
     );
-  }, [props.mentors, props.sessionsForMonth]);
+  }, [
+    props.mentors,
+    props.sessionsForMonth,
+    props.expectedSessionNumberForMonth,
+  ]);
 
   const getMentorSessionCounts = (
     mentors: Volunteer[],

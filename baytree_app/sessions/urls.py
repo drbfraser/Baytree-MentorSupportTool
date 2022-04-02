@@ -1,4 +1,5 @@
 from django.urls import path
+from sessions.serializers import MonthlyExpectedSessionCountsSerializer
 from sessions.models import MonthlyExpectedSessionCounts
 from sessions.permissions import AdminPermissions
 
@@ -12,7 +13,9 @@ urlpatterns = [
     path(
         "monthly-expected-session-counts",
         GenerateCrudEndpointsForModel.as_view(
-            model=MonthlyExpectedSessionCounts, permission_classes=[AdminPermissions]
+            model=MonthlyExpectedSessionCounts,
+            permission_classes=[AdminPermissions],
+            serializer=MonthlyExpectedSessionCountsSerializer,
         ),
     ),
 ]

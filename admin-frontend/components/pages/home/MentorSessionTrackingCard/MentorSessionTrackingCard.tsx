@@ -2,6 +2,7 @@ import { Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
+import { getMonthlyExpectedSessionCount } from "../../../../api/backend/monthlyExpectedSessionCounts";
 import { getSessionGroupsFromViews } from "../../../../api/backend/views/sessionGroups";
 import {
   getSessionsFromViews,
@@ -37,7 +38,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     const getInitialSessionsData = async () => {
       setIsLoading(true);
       await getSessionsForCurMonth();
-      getExpectedSessionNumbersPerMonth(); // TODO: make async call
+      await getExpectedSessionNumbersPerMonth();
       setIsLoading(false);
     };
 
@@ -59,7 +60,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
 
     if (response && response.status === 200 && response.data) {
       setSessionsForCurMonth(response.data);
-      setKey(key + 1); // Force re-render of rechart
+      setKey(key + 1); // Force re-render of table
     } else {
       toast.error(ERROR_MESSAGE);
     }
@@ -77,8 +78,38 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     return lastDayOfMonth.toISOString().split("T")[0];
   };
 
-  const getExpectedSessionNumbersPerMonth = () => {
-    setExpectedSessionNumbersPerMonth([3, 1, 2, 4, 3, 1, 3, 6, 8, 3, 5, 6]);
+  const getExpectedSessionNumbersPerMonth = async () => {
+    const apiRes = await getMonthlyExpectedSessionCount(undefined, undefined, {
+      id: curYear.toString(),
+    });
+
+    if (
+      apiRes &&
+      apiRes.status === 200 &&
+      apiRes.data &&
+      apiRes.data.length > 0
+    ) {
+      let expectedSessionsPerMonth: number[] = [];
+      const expectedSessionsPerMonthRes = apiRes.data[0];
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.january_count);
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.february_count);
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.march_count);
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.april_count);
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.may_count);
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.june_count);
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.july_count);
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.august_count);
+      expectedSessionsPerMonth.push(
+        expectedSessionsPerMonthRes.september_count
+      );
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.october_count);
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.november_count);
+      expectedSessionsPerMonth.push(expectedSessionsPerMonthRes.december_count);
+
+      setExpectedSessionNumbersPerMonth(expectedSessionsPerMonth);
+    } else {
+      setExpectedSessionNumbersPerMonth([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    }
   };
 
   const loadSessionGroupOptions = async (search: any, prevOptions: any) => {
