@@ -107,7 +107,7 @@ const Sessions = () => {
       Notes: notes
     };
 
-    fetch(`${API_BASE_URL}/sessions/`, {
+    /*fetch(`${API_BASE_URL}/sessions/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -115,7 +115,7 @@ const Sessions = () => {
         body: JSON.stringify(session),
         credentials: "include"
     })
-    .then(response => response.json())
+    .then(response => response.json())*/
 
     fetch(`${API_BASE_URL}/sessions/viewsapp/`, {
       method: 'POST',
@@ -127,7 +127,7 @@ const Sessions = () => {
     })
     .then(response => response.json())
       
-    window.location.replace('/dashboard/home'); 
+    //window.location.replace('/dashboard/home'); 
   }
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
