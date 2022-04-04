@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react'
-
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -101,9 +100,7 @@ const Sessions = () => {
       body: JSON.stringify(viewSession),
       credentials: "include"
     })
-    .then(response => response.json())
-      
-    //window.location.replace('/dashboard/home'); 
+    .then(response => response.json()) 
   }
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
