@@ -77,3 +77,19 @@ class AccountCreationLink(models.Model):
     views_person_id = models.CharField(max_length=30, default=None)
     link_id = models.UUIDField(default=uuid.uuid4, editable=False)
     link_expiry_date = models.DateTimeField(default=generateAccountCreationLinkExpiryDateTime, blank=True)
+
+def generateResetPasswordLinkExpiryDateTime():
+    RESET_PASSWORD_LINK_EXPIRY_TIME_IN_DAYS = 7 # 1 week
+    return make_aware(datetime.datetime.now()) \
+        + datetime.timedelta(days=RESET_PASSWORD_LINK_EXPIRY_TIME_IN_DAYS)
+class ResetPasswordLink(models.Model):
+    ACCOUNT_TYPES = (
+        ('Mentor', 'Mentor'),
+        ('Mentee', 'Mentee'),
+        ('Admin', 'Admin')
+    )
+
+    email = models.EmailField(_('email address'), unique=True, blank=True, null=True)
+    account_type = models.CharField(max_length=30, default='Mentor', choices=ACCOUNT_TYPES)
+    link_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    link_expiry_date = models.DateTimeField(default=generateResetPasswordLinkExpiryDateTime, blank=True)

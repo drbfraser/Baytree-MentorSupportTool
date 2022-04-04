@@ -40,12 +40,12 @@ import Sessions from './Sessions';
 import Records from './Records';
 import Notification from './Notification';
 const drawerWidth = 240;
-const resourcesURL = `${process.env.REACT_APP_RESOURCES_URL}`;
 
 export default function Navigation() {
   let match = useRouteMatch();
   
   const [numNotifications, setNumNotifications] = React.useState(0);
+  const [resourcesURL, setResourcesURL] = React.useState("");
   
   const fetchNumNotifications = () => {
     fetch(`${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${localStorage.getItem('user_id')}`, {
@@ -61,7 +61,23 @@ export default function Navigation() {
       console.error('Error:', error);
     });
   }
+
+  const fetchResourcePage = () =>{
+    fetch(`${API_BASE_URL}/resources/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+          },
+          credentials: "include"
+    })
+    .then(response => response.json())
+    .then((data) => {
+      setResourcesURL(JSON.parse(data)[0].Resource);
+    });
+  }
+  
   useEffect(() => {
+    fetchResourcePage();
     fetchNumNotifications();
   }, []);
 
