@@ -6,7 +6,6 @@ from baytree_app.views import create_object
 from baytree_app.settings import EMAIL_USER
 from emails.email import generateEmailTemplateHtml
 from .models import AccountCreationLink, ResetPasswordLink, CustomUser, MentorUser
-from sessions.models import MentorSession
 from .permissions import *
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 import os
@@ -165,18 +164,9 @@ class StatisticViews(APIView):
     def get(self, request, type):
         id = request.GET.get('id', None)
         if type == "mentor":
-            sessions_total = MentorSession.objects.filter(mentor_id=id).count()
-            sessions_attended = MentorSession.objects.filter(
-                mentor_id=id).filter(attended_by_mentor=True).count()
-            sessions_missed = MentorSession.objects.filter(
-                mentor_id=id).filter(attended_by_mentor=False).count()
-            sessions_remaining = 52 - sessions_total  # sessions assumed to be once a week
-        elif type == "mentee":
-            sessions_total = MentorSession.objects.filter(mentee_id=id).count()
-            sessions_attended = MentorSession.objects.filter(
-                mentee_id=id).filter(attended_by_mentee=True).count()
-            sessions_missed = MentorSession.objects.filter(
-                mentee_id=id).filter(attended_by_mentee=False).count()
+            sessions_total = 0
+            sessions_attended = 0
+            sessions_missed = 0
             sessions_remaining = 52 - sessions_total  # sessions assumed to be once a week
         return Response(
             {"status": "success", "data": {"sessions_total": sessions_total, "sessions_attended": sessions_attended,

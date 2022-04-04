@@ -19,17 +19,13 @@ import Typography  from "@mui/material/Typography";
 import { format, intervalToDuration } from 'date-fns'
 import { API_BASE_URL } from '../api/url';
 
-
-
 const Sessions = () => {
 
   const [mentee, setMentee] = useState('');
-  const [mentorAttendance, setMentorAttendance] = useState(false);
-  const [menteeAttendance, setMenteeAttendance] = useState(false);
   const [sessionCancelled, setSessionCancelled] = useState(false);
   const [date, setDate] = useState<Date>(new Date());
   const [clockInTime, setClockInTime] = useState<Date>(new Date());
-  const [clockOutTime, setClockOutTime] = useState<Date >(new Date());
+  const [clockOutTime, setClockOutTime] = useState<Date>(new Date(clockInTime.getTime() + 60000)); // 1 minute is 60000 miliseconds
   const [notes, setNotes] = useState('');
   const [menteeList, setMenteeList] = useState([] as any[]);
   
@@ -87,16 +83,6 @@ const Sessions = () => {
     alert('Thank you! Your answers have been submitted');
     e.preventDefault();
 
-    const session = {
-      mentor: localStorage.getItem('id'),
-      mentee: mentee,
-      attended_by_mentor: mentorAttendance,
-      attended_by_mentee: menteeAttendance,
-      clock_in: clockInTime,
-      clock_out: clockOutTime,
-      notes: notes
-    };
-
     const viewSession = {
       StartDate: `${format(date, 'yyyy-MM-dd')}`,
       StartTime: handleStartTime(),
@@ -106,16 +92,6 @@ const Sessions = () => {
       LeadStaff: localStorage.getItem('user_id'),
       Notes: notes
     };
-
-    /*fetch(`${API_BASE_URL}/sessions/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(session),
-        credentials: "include"
-    })
-    .then(response => response.json())*/
 
     fetch(`${API_BASE_URL}/sessions/viewsapp/`, {
       method: 'POST',
@@ -165,18 +141,6 @@ const Sessions = () => {
           autoComplete="off">
         
           <FormControl fullWidth>
-            <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Mentee Name</Typography>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={mentee}
-              onChange={e => setMentee(e.target.value)}
-            >
-            {Object.values(menteeList).map((data) => 
-              <MenuItem value={data.user.id}>{data.user.first_name} {data.user.last_name}</MenuItem>
-            )}
-            </Select>
-            <Divider sx = {{pt: 2, pb: 2}}/>
             <Grid container spacing = {2}>
               <Grid item xs = {6}>
                 <Grid container spacing = {1}>
@@ -189,31 +153,20 @@ const Sessions = () => {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid container spacing = {2}>
-              <Grid item xs = {6}>
-                <Grid container spacing = {1}>
-                  <Grid item xs = {10}>
-                    <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Did the mentor attend the session?</Typography>
-                  </Grid>
-                  <Grid item xs = {2} sx = {{mt: 1.8}}>
-                    <Checkbox checked={mentorAttendance} onChange={e => setMentorAttendance(e.target.checked)} {...label} />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs = {6}>
-                <Grid container spacing = {1}>
-                  <Grid item xs = {10}>
-                    <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Did the mentee attend the session?</Typography>
-                  </Grid>
-                  <Grid item xs = {2} sx = {{mt: 1.8}}>
-                    <Checkbox checked={menteeAttendance} onChange={e => setMenteeAttendance(e.target.checked)} {...label} />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
             <Divider sx = {{pt: 2, pb: 2}}/>
-
-            <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{sessionCancelled ?'If you or the mentee did not attend the session, please enter when the session was suppose to happen' :''}
+            <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">Mentee Name</Typography>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={mentee}
+              onChange={e => setMentee(e.target.value)}
+            >
+            {Object.values(menteeList).map((data) => 
+              <MenuItem value={data.user.id}>{data.user.first_name} {data.user.last_name}</MenuItem>
+            )}
+            </Select>
+            <Divider sx = {{pt: 2, pb: 2}}/>
+            <Typography sx={{mb: 1, mt: 3, fontWeight: 'bold', fontStyle: 'underlined'}} color="text.secondary">{sessionCancelled ?'If you or the mentee did not attend the session, please enter when the session was suppose to happen!' :''}
            </Typography>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid container spacing = {1}>
