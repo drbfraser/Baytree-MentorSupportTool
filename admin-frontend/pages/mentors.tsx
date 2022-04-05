@@ -2,18 +2,14 @@ import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import AddMentorModal from "../components/pages/mentors/addMentorModal";
 import Button from "../components/shared/button";
 import DataGrid from "../components/shared/datagrid";
 import Modal from "../components/shared/Modal";
 import { HELP_MESSAGE } from "../constants/constants";
-import {
-  deleteMentorUser,
-  getMentorUsers,
-  MentorUserResponse,
-} from "../api/backend/mentorUsers";
+import { getMentorUsers } from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
 import OverlaySpinner from "../components/shared/overlaySpinner";
 
@@ -41,6 +37,7 @@ const Mentors: NextPage = () => {
 
       if (mentorsData && mentorsData.data !== null) {
         setMaxPageNum(Math.ceil(mentorsData.total / PAGE_LIMIT));
+        console.log(mentorsData);
         setPageData(
           mentorsData.data.map((mentorData) => ({
             email: mentorData.user.email,
@@ -62,7 +59,7 @@ const Mentors: NextPage = () => {
     <>
       <Paper>
         <Header>
-          <Typography padding="0.75rem" variant="h4">
+          <Typography padding="0.75rem" variant="h5">
             Mentors
           </Typography>
           <Button
@@ -84,11 +81,10 @@ const Mentors: NextPage = () => {
           key={`${dataGridKey}`}
           data={pageData}
           cols={[
-            { header: "Email", dataField: "email", dataType: "string" },
             {
-              header: "Views ID",
-              dataField: "viewsPersonId",
-              dataType: "string",
+              header: "Email",
+              dataField: "email",
+              dataType: "email",
             },
           ]}
           dataRowActions={[
@@ -126,7 +122,6 @@ const Mentors: NextPage = () => {
         modalComponent={AddMentorModal}
         height="100vh"
       ></Modal>
-      <ToastContainer />
       <OverlaySpinner
         active={loadingData}
         onClick={() => {

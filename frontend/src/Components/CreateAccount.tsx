@@ -5,7 +5,7 @@ import { MOBILE_BREAKPOINT } from "../constants/constants";
 import BaytreeLogo from "../Assets/baytree-logo.png";
 import BaytreePhoto from "../Assets/baytree-photo.jpg";
 import { createMentorAccount } from "../api/mentorAccount";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { checkPassword } from "../Utils/password";
 import OverlaySpinner from "./shared/overlaySpinner";
 
@@ -105,9 +105,9 @@ const CreateAccount = (props: any) => {
               />
               {passwordInvalid && (
                 <Typography variant="body1" color="red">
-                  Error: password should be at least 8 characters, no more than 30 characters, and contain at
-                  least one number, symbol, lowercase letter, and uppercase
-                  letter
+                  Error: password should be at least 8 characters, no more than
+                  30 characters, and contain at least one number, symbol,
+                  lowercase letter, and uppercase letter
                 </Typography>
               )}
               {passwordsDontMatch && (
@@ -155,7 +155,6 @@ const CreateAccount = (props: any) => {
           />
         </Photo>
       </CardLayout>
-      <ToastContainer></ToastContainer>
       <OverlaySpinner active={isPageLoading}></OverlaySpinner>
     </PageLayout>
   );

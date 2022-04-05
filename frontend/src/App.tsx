@@ -15,13 +15,17 @@ import { useEffect, useState } from "react";
 import { verify } from "./api/auth";
 import CreateAccount from "./Components/CreateAccount";
 import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const history = createMemoryHistory();
   return (
-    <Router history={history}>
-      <BrowserRoute></BrowserRoute>
-    </Router>
+    <>
+      <ToastContainer></ToastContainer>
+      <Router history={history}>
+        <BrowserRoute></BrowserRoute>
+      </Router>
+    </>
   );
 }
 
