@@ -171,7 +171,7 @@ class StatisticViews(APIView):
         sessions_total = 0
         sessions_attended = 0
         sessions_missed = 0
-        sessions_total_perYear = 52 # sessions assumed to be once a day
+        sessions_total_perYear = 52 # sessions assumed to be once a week
 
         if type == "mentor":
             mentorUser = MentorUser.objects.all().filter(user_id=id)
