@@ -1,4 +1,3 @@
-from sessions.models import MentorSession
 from users.models import MentorUser
 import schedule
 import time

@@ -6,13 +6,15 @@ from baytree_app.views import create_object
 from baytree_app.settings import EMAIL_USER
 from emails.email import generateEmailTemplateHtml
 from .models import AccountCreationLink, ResetPasswordLink, CustomUser, MentorUser
-from sessions.models import MentorSession
+from .constants import views_username, views_password, views_mentor_base_url, views_mentee_base_url
 from .permissions import *
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 import os
 from django.core.mail import send_mail
 import datetime
 from django.utils.timezone import make_aware
+import requests
+import xmltodict
 
 def createUsers(users: dict):
     ids = []
@@ -163,21 +165,78 @@ class StatisticViews(APIView):
     permission_classes = [MentorsViewPermissions]
 
     def get(self, request, type):
+
         id = request.GET.get('id', None)
+
+        sessions_total = 0
+        sessions_attended = 0
+        sessions_missed = 0
+        sessions_total_perYear = 52 # sessions assumed to be once a week
+
         if type == "mentor":
-            sessions_total = MentorSession.objects.filter(mentor_id=id).count()
-            sessions_attended = MentorSession.objects.filter(
-                mentor_id=id).filter(attended_by_mentor=True).count()
-            sessions_missed = MentorSession.objects.filter(
-                mentor_id=id).filter(attended_by_mentor=False).count()
-            sessions_remaining = 52 - sessions_total  # sessions assumed to be once a week
+            mentorUser = MentorUser.objects.all().filter(user_id=id)
+            all_volunteer_url = views_mentor_base_url + str(mentorUser[0].viewsPersonId)
+
+            #get mentor sessions from Viewsapp
+            try:
+                responseSession = requests.get(all_volunteer_url + '/sessions', 
+                headers = {"content-type": "text/xml"},
+                auth=(views_username, views_password))
+            except Exception as e:
+                return Response({'errors': 'Request to viewsapp for session failed'}, status=400)
+            
+            #turn the xml response to dictionary
+            parsedSession = xmltodict.parse(responseSession.text)
+
+            #Check to see if the mentor has zero sessions entered
+            if parsedSession["volunteer"]["sessions"] is None:
+                return Response({"status": "success", "data": {"sessions_total": sessions_total, "sessions_attended": sessions_attended, "sessions_missed": sessions_missed, "sessions_remaining": (sessions_total_perYear-sessions_total)}},status=status.HTTP_200_OK)
+            
+            #sort throught the dictionary
+            volunteerSessionList = parsedSession["volunteer"]["sessions"]["session"]
+
+            #counting the session atteded and not attended
+            for sessionDict in volunteerSessionList:
+                sessions_total += 1
+                if sessionDict["Status"] == "Attended":
+                    sessions_attended += 1
+                else:
+                    sessions_missed += 1
+            sessions_remaining = sessions_total_perYear - sessions_total
+
         elif type == "mentee":
-            sessions_total = MentorSession.objects.filter(mentee_id=id).count()
-            sessions_attended = MentorSession.objects.filter(
-                mentee_id=id).filter(attended_by_mentee=True).count()
-            sessions_missed = MentorSession.objects.filter(
-                mentee_id=id).filter(attended_by_mentee=False).count()
-            sessions_remaining = 52 - sessions_total  # sessions assumed to be once a week
+            #TODO: The mentee ID is hard coded here as 4. Once the Mentee portal is created
+            # replace the hardcoded mentee ID. after replacing the hardcoded 4, then this 
+            # section would be completed and ready to be used for mentee's statistics
+            all_participants_url = views_mentee_base_url + "4"
+
+            #get mentee sessions from Viewsapp
+            try:
+                responseSession = requests.get(all_participants_url + '/sessions', 
+                headers = {"content-type": "text/xml"},
+                auth=(views_username, views_password))
+            except Exception as e:
+                return Response({'errors': 'Request to viewsapp for session failed'}, status=400)
+            
+            #turn the xml response to dictionary
+            parsedSession = xmltodict.parse(responseSession.text)
+
+            #Check to see if the mentee has zero sessions entered
+            if parsedSession["participant"]["sessions"] is None:
+                return Response({"status": "success", "data": {"sessions_total": sessions_total, "sessions_attended": sessions_attended, "sessions_missed": sessions_missed, "sessions_remaining": (sessions_total_perYear-sessions_total)}},status=status.HTTP_200_OK)
+            
+            #sort throught the dictionary
+            participantSessionList = parsedSession["participant"]["sessions"]["session"]
+
+            #counting the session atteded and not attended
+            for sessionDict in participantSessionList:
+                sessions_total += 1
+                if sessionDict["Status"] == "Attended":
+                    sessions_attended += 1
+                else:
+                    sessions_missed += 1
+            sessions_remaining = sessions_total_perYear - sessions_total
+
         return Response(
             {"status": "success", "data": {"sessions_total": sessions_total, "sessions_attended": sessions_attended,
                                            "sessions_missed": sessions_missed,
