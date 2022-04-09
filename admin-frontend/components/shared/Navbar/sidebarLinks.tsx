@@ -18,3 +18,4 @@ const sidebarLinks: SidebarLink[] = [
   { url: "/goals", title: "Goals", icon: MdAutoGraph},
 ];
 
+export default sidebarLinks;
