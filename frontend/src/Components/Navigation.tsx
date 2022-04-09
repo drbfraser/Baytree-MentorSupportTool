@@ -56,7 +56,7 @@ export default function Navigation() {
       credentials: "include"
     })
     .then (response => response.json())
-    .then (data => setNumNotifications(data))
+    .then (data => setNumNotifications(data[0]))
     .catch((error) => {
       console.error('Error:', error);
     });

@@ -19,6 +19,20 @@ class GoalViews(generics.ListAPIView):
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['mentee', 'title', 'date', 'goal_review_date', 'status', 'last_update_date']
 
+    def get(self, request):
+        mentor_id = request.GET.get('mentor_id', None)
+
+        if mentor_id is not None:
+            try:
+                queryset = Goal.objects.prefetch_related('mentor').filter(mentor=mentor_id).order_by('-date')
+            except Goal.DoesNotExist:
+                return Response([], status=200)
+            read_serializer = GoalSerializer(queryset, many=True)
+        else:
+            queryset = Goal.objects.all()
+            read_serializer = GoalSerializer(queryset, many=True)
+        return Response(read_serializer.data)
+
     def post(self, request):
         serializer = GoalSerializer(data=request.data)
         if serializer.is_valid():
