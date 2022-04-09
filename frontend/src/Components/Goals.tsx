@@ -102,9 +102,8 @@ export default function Goals() {
   const toBeUpdatedGoal = toBeUpdatedGoalId && goals ? goals.find(g => g.id === toBeUpdatedGoalId) : undefined;
 
   const exportGoalsToCsv = () => {
-    const mentorName = (localStorage.getItem('firstname') || '') + ' ' + (localStorage.getItem('lastname') || '')
     let csvContent = "data:text/csv;charset=utf-8," 
-    csvContent+= "Mentor Name, Mentee Name, Goal Creation Date, Goal Review Date, Title, Description, Update Date, Status \n"
+    csvContent += "Mentor Name, Mentee Name, Goal Creation Date, Goal Review Date, Title, Description, Update Date, Status \n"
     
     for(var i = 0; i < goals.length; i++){
       csvContent+= '"' + goals[i].mentor.email + '","' +  goals[i].mentee + '","' + goals[i].date + '","' + goals[i].goal_review_date + '","' +
