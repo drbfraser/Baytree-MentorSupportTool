@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import filters
 from rest_framework import generics
 
-from .serializers import GoalSerializer
+from .serializers import GoalSerializer, GoalSerializerPost
 from .models import Goal
 from .permissions import *
 
@@ -34,7 +34,8 @@ class GoalViews(generics.ListAPIView):
         return Response(read_serializer.data)
 
     def post(self, request):
-        serializer = GoalSerializer(data=request.data)
+        print(request.data)
+        serializer = GoalSerializerPost(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
@@ -43,7 +44,7 @@ class GoalViews(generics.ListAPIView):
      
     def patch(self, request, id=None):
         item = Goal.objects.get(id=id)
-        serializer = GoalSerializer(item, data=request.data, partial=True)
+        serializer = GoalSerializerPost(item, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success", "data": serializer.data})

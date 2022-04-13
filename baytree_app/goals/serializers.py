@@ -12,3 +12,8 @@ class GoalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goal
         fields = ['id', 'mentor', 'mentee', 'title', 'date', 'goal_review_date', 'last_update_date', 'content', 'status']
+
+class GoalSerializerPost(serializers.ModelSerializer):
+    class Meta:
+        model = Goal
+        fields = ['id', 'mentor', 'mentee', 'title', 'date', 'goal_review_date', 'last_update_date', 'content', 'status']
