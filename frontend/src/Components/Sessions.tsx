@@ -45,12 +45,22 @@ const Sessions = () => {
   };
 
   const handleDuration = ()=>{
+
+    // getting the Duration hour
+    const hour = intervalToDuration({
+      start: clockInTime,
+      end: clockOutTime
+    }).hours
+
+    // getting the Duration minute
     const minute = intervalToDuration({
       start: clockInTime,
       end: clockOutTime
     }).minutes
-    if (minute && minute < 10){
-      return(`${intervalToDuration({
+
+    // check if both hour and minute are one digit
+    if((minute && minute < 10) && (hour && hour < 10)){
+      return(`0${intervalToDuration({
         start: clockInTime,
         end: clockOutTime
       }).hours}:0${intervalToDuration({
@@ -58,6 +68,31 @@ const Sessions = () => {
         end: clockOutTime
       }).minutes}`)
     }
+
+    // check if the hour is one digit
+    else if (hour && hour < 10){
+      return(`0${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).hours}:${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).minutes}`)
+    }
+
+    // check if the minute is one digit
+    else if (minute && minute < 10){
+      return(`${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).hours}:0${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).minutes}`)
+    
+    }
+
+    //both minute and hour are 2 digit
     else{
       return(`${intervalToDuration({
         start: clockInTime,
