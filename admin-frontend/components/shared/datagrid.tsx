@@ -54,6 +54,8 @@ export interface DataGridProps {
 }
 
 const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
+  const ALTERNATE_ROW_COLOR = "#ebebeb";
+
   const theme = useSelector<RootState, ThemeState>((state) => state.theme);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number>(-1);
   const [expandedRowIndices, setExpandedRowIndices] = useState<number[]>([]);
@@ -155,12 +157,14 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                   }}
                   key={`datagrid_row_${i}`}
                 >
-                  {props.cols.map((col: DataGridColumn, j) => (
+                  {cols.map((col: DataGridColumn, j) => (
                     <TableCell
                       style={{
                         backgroundColor:
                           selectedRowIndex === i
                             ? `${theme.colors.primaryColor}30`
+                            : i % 2 == 1
+                            ? ALTERNATE_ROW_COLOR
                             : undefined,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
@@ -185,7 +189,15 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                   ))}
                   {props.expandRowComponentFunc && (
                     <TableCell
-                      style={{ width: "6rem" }}
+                      style={{
+                        width: "6rem",
+                        backgroundColor:
+                          selectedRowIndex === i
+                            ? `${theme.colors.primaryColor}30`
+                            : i % 2 == 1
+                            ? ALTERNATE_ROW_COLOR
+                            : undefined,
+                      }}
                       key={`datagrid_cell_more_options_row_${i}`}
                     >
                       <div
@@ -218,7 +230,15 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                   )}
                   {props.dataRowActions && props.dataRowActions.length === 1 && (
                     <TableCell
-                      style={{ width: "6rem" }}
+                      style={{
+                        width: "6rem",
+                        backgroundColor:
+                          selectedRowIndex === i
+                            ? `${theme.colors.primaryColor}30`
+                            : i % 2 == 1
+                            ? ALTERNATE_ROW_COLOR
+                            : undefined,
+                      }}
                       key={`datagrid_cell_more_options_row_${i}`}
                     >
                       <div>
@@ -239,7 +259,15 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                   )}
                   {props.dataRowActions && props.dataRowActions.length > 1 && (
                     <TableCell
-                      style={{ width: "6rem" }}
+                      style={{
+                        width: "6rem",
+                        backgroundColor:
+                          selectedRowIndex === i
+                            ? `${theme.colors.primaryColor}30`
+                            : i % 2 == 1
+                            ? ALTERNATE_ROW_COLOR
+                            : undefined,
+                      }}
                       key={`datagrid_cell_more_options_row_${i}`}
                     >
                       <PopupState variant="popover">

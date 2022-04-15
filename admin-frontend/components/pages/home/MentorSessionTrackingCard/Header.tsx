@@ -4,8 +4,11 @@ import {
   Select,
   SelectChangeEvent,
   TextField,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import React from "react";
+import { MdSearch } from "react-icons/md";
 import styled from "styled-components";
 import { MOBILE_BREAKPOINT } from "../../../../constants/constants";
 import PaginatedSelect from "../../../shared/paginatedSelect";
@@ -240,6 +243,16 @@ const SearchBox: React.FunctionComponent<SearchBoxProps> = (props) => {
         id="mentorFilter"
         value={props.mentorFilter}
         onChange={(e: any) => props.setMentorFilter(e.target.value)}
+        sx={{ maxWidth: "24rem" }}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="start">
+              <IconButton>
+                <MdSearch />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
     </StyledSearchBox>
   );

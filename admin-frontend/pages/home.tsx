@@ -109,9 +109,10 @@ const HomePageLayout = styled.div`
   grid-gap: 1rem;
 
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, auto);
+  grid-template-rows: repeat(4, auto);
   grid-template-areas:
-    "mentorSessionTrackingCard mentorQuestionnaireTrackingCard"
+    "mentorSessionTrackingCard mentorSessionTrackingCard"
+    "mentorQuestionnaireTrackingCard mentorQuestionnaireTrackingCard"
     "mentorDemographicsCard menteeDemographicsCard"
     "sessionStatsCard sessionStatsCard";
 

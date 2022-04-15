@@ -141,22 +141,31 @@ const SessionTrackingTable: React.FunctionComponent<
               header: "Name",
               dataField: "fullName",
               componentFunc: clickableMentorNameText,
+              keepOnMobile: true,
             },
-            { header: "Email", dataField: "email", dataType: "email" },
+            {
+              header: "Email",
+              dataField: "email",
+              dataType: "email",
+              keepOnMobile: false,
+            },
             {
               header: "Completed",
               dataField: "numSessionsCompleted",
               dataType: "string",
+              keepOnMobile: true,
             },
             {
               header: "Cancelled",
               dataField: "numSessionsCancelled",
               dataType: "string",
+              keepOnMobile: true,
             },
             {
               header: "Missed",
               dataField: "numSessionsMissed",
               dataType: "string",
+              keepOnMobile: true,
             },
           ]}
           data={pagedMentorSessionCounts}

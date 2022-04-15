@@ -174,8 +174,10 @@ const CardLayout = styled(Paper)`
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 0.1fr 0.9fr;
-  grid-template-areas: "Header" "SessionTrackingTable";
-  grid-area: "mentorSessionTrackingCard";
+  grid-template-areas:
+    "Header"
+    "SessionTrackingTable";
+  grid-area: mentorSessionTrackingCard;
   padding: 1rem 2rem 1rem 2rem;
 `;
 

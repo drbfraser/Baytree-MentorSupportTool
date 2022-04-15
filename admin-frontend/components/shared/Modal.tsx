@@ -106,6 +106,7 @@ interface StyledModalProps {
 const StyledModal = styled.div<StyledModalProps>`
   position: fixed;
   background: white;
+  border-radius: 12px;
   width: ${(props) =>
     props.useMobileLayout ? "100vw" : props.width ?? "80vw"};
   height: ${(props) =>

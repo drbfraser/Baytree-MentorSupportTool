@@ -9,8 +9,8 @@ import DataGrid from "../../shared/datagrid";
 import Pager from "../../shared/pager";
 import OverlaySpinner from "../../shared/overlaySpinner";
 import { sendMentorAccountCreationEmail } from "../../../api/backend/mentorUsers";
-import { MdCheck } from "react-icons/md";
-import { TextField } from "@mui/material";
+import { MdCheck, MdSearch } from "react-icons/md";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 
 interface AddMentorModalProps {
   onOutsideClick: () => void;
@@ -86,6 +86,15 @@ const AddMentorModal: React.FC<AddMentorModalProps> = (props) => {
             id="emailFilter"
             value={emailFilter}
             onChange={(e) => setEmailFilter(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <IconButton>
+                    <MdSearch />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           <DataGrid
             data={pageData}

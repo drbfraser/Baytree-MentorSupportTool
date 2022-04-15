@@ -15,8 +15,10 @@ const CardLayout = styled(Paper)`
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 0.1fr 0.9fr;
-  grid-template-areas: "Header" "Body";
-  grid-area: "mentorQuestionnaireTrackingCard";
+  grid-template-areas:
+    "Header"
+    "Body";
+  grid-area: mentorQuestionnaireTrackingCard;
   padding: 1rem 2rem 1rem 2rem;
 `;
 
