@@ -7,24 +7,52 @@ import MentorDemographicsCard from "../components/pages/home/mentorDemographicsC
 import MenteeDemographicsCard from "../components/pages/home/menteeDemographicsCard";
 import MentorSessionTrackingCard from "../components/pages/home/MentorSessionTrackingCard/MentorSessionTrackingCard";
 import MentorQuestionnaireTrackingCard from "../components/pages/home/MentorQuestionnaireTrackingCard";
-import {
-  getVolunteersFromViews,
-  Volunteer,
-} from "../api/backend/views/volunteers";
+import { getVolunteersFromViews } from "../api/backend/views/volunteers";
 import { toast } from "react-toastify";
+import { getMentorUsers } from "../api/backend/mentorUsers";
+
+export interface Mentor {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
 
 const Home: NextPage = () => {
-  const [mentors, setMentors] = useState<Volunteer[]>([]);
+  const [mentors, setMentors] = useState<Mentor[]>([]);
 
   useEffect(() => {
     const getMentorsFromViews = async () => {
-      const response = await getVolunteersFromViews();
-      if (response && response.status === 200 && response.data) {
-        setMentors(response.data);
+      const ERROR_MESSAGE =
+        "Something went wrong! Please contact technical support for further assistance.";
+
+      const volunteersRes = await getVolunteersFromViews();
+      if (volunteersRes && volunteersRes.status === 200 && volunteersRes.data) {
+        const mentorsRes = await getMentorUsers();
+        if (
+          mentorsRes &&
+          mentorsRes.status === 200 &&
+          mentorsRes.data !== null
+        ) {
+          setMentors(
+            mentorsRes.data.map((mentor) => {
+              const matchingVolunteer = volunteersRes.data.find(
+                (volunteer) => volunteer.viewsPersonId === mentor.viewsPersonId
+              );
+
+              return {
+                id: mentor.user.id,
+                email: mentor.user.email,
+                firstName: matchingVolunteer ? matchingVolunteer.firstname : "",
+                lastName: matchingVolunteer ? matchingVolunteer.surname : "",
+              };
+            })
+          );
+        } else {
+          toast.error(ERROR_MESSAGE);
+        }
       } else {
-        toast.error(
-          "Something went wrong! Please contact technical support for further assistance."
-        );
+        toast.error(ERROR_MESSAGE);
       }
     };
 
