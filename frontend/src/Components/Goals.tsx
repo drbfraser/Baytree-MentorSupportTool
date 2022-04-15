@@ -46,7 +46,7 @@ export default function Goals() {
   };
 
   const fetchGoals = () => {
-    fetch(`${API_BASE_URL}/goals/goal/`, {
+    fetch(`${API_BASE_URL}/goals/goal/?mentor_id=${localStorage.getItem('user_id')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -102,12 +102,11 @@ export default function Goals() {
   const toBeUpdatedGoal = toBeUpdatedGoalId && goals ? goals.find(g => g.id === toBeUpdatedGoalId) : undefined;
 
   const exportGoalsToCsv = () => {
-    const mentorName = (localStorage.getItem('firstname') || '') + ' ' + (localStorage.getItem('lastname') || '')
     let csvContent = "data:text/csv;charset=utf-8," 
-    csvContent+= "Mentor Name, Mentee Name, Goal Creation Date, Goal Review Date, Title, Description, Update Date, Status \n"
+    csvContent += "Mentor Name, Mentee Name, Goal Creation Date, Goal Review Date, Title, Description, Update Date, Status \n"
     
     for(var i = 0; i < goals.length; i++){
-      csvContent+= '"' + mentorName + '","' +  goals[i].mentee + '","' + goals[i].date + '","' + goals[i].goal_review_date + '","' +
+      csvContent+= '"' + goals[i].mentor.email + '","' +  goals[i].mentee + '","' + goals[i].date + '","' + goals[i].goal_review_date + '","' +
         goals[i].title.replaceAll('"', '""') + '","' + goals[i].content.replaceAll('"', '""')  + '","'+ goals[i].last_update_date + '","' + 
         goals[i].status + '"\n'
     }
