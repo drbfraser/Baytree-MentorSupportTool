@@ -59,11 +59,6 @@ const Sessions = () => {
       end: clockOutTime
     }).minutes
 
-    const t = intervalToDuration({
-      start: clockInTime,
-      end: clockOutTime
-    })
-
     // check if both hour and minute are one digit
     if((minute && minute < 10) && (hour && hour < 10)){
       return(`0${intervalToDuration({
@@ -169,7 +164,6 @@ const Sessions = () => {
         <Box component="form"
           sx = {{margin: 5, mt: 2}}
           onSubmit = {handleSubmit} 
-          noValidate
           autoComplete="off">
         
           <FormControl fullWidth>
