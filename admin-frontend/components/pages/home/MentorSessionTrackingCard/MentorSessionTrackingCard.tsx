@@ -18,6 +18,8 @@ import SessionTrackingTable from "./SessionTrackingTable";
 
 interface MentorSessionTrackingCardProps {
   mentors: Mentor[];
+  mentorFilter: string;
+  setMentorFilter: (newMentorFilter: string) => void;
 }
 
 const ERROR_MESSAGE =
@@ -151,6 +153,8 @@ const MentorSessionTrackingCard: React.FunctionComponent<
         curMonth={curMonth}
         onSetYear={setCurYear}
         curYear={curYear}
+        mentorFilter={props.mentorFilter}
+        setMentorFilter={props.setMentorFilter}
       ></Header>
       {selectedSessionGroupId !== null && (
         <SessionTrackingTable

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NextPage } from "next";
 import styled from "styled-components";
 import { MOBILE_BREAKPOINT } from "../constants/constants";
@@ -20,6 +20,34 @@ export interface Mentor {
 
 const Home: NextPage = () => {
   const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [filteredMentors, setFilteredMentors] = useState<Mentor[]>([]);
+  const [mentorFilter, setMentorFilter] = useState("");
+
+  useEffect(() => {
+    // Use timeouts to debounce input so no searching is done until 1 second
+    // after to eliminate choppy typing
+    const DEBOUNCE_TIME = 1000; // 1 second
+    clearTimeout(delayTimerRef.current as number);
+    delayTimerRef.current = setTimeout(function () {
+      setFilteredMentors(
+        mentors.filter((mentor) => {
+          return (
+            mentorFilter === "" ||
+            (mentor.firstName + mentor.lastName)
+              .toLowerCase()
+              .includes(mentorFilter.toLowerCase()) ||
+            mentor.email.toLowerCase().includes(mentorFilter.toLowerCase())
+          );
+        })
+      );
+    }, DEBOUNCE_TIME);
+  }, [mentorFilter]);
+
+  useEffect(() => {
+    setFilteredMentors(mentors);
+  }, [mentors]);
+
+  const delayTimerRef = useRef<NodeJS.Timeout | number | undefined>(undefined);
 
   useEffect(() => {
     const getMentorsFromViews = async () => {
@@ -61,7 +89,11 @@ const Home: NextPage = () => {
 
   return (
     <HomePageLayout>
-      <MentorSessionTrackingCard mentors={mentors}></MentorSessionTrackingCard>
+      <MentorSessionTrackingCard
+        mentorFilter={mentorFilter}
+        setMentorFilter={setMentorFilter}
+        mentors={filteredMentors}
+      ></MentorSessionTrackingCard>
       <MentorQuestionnaireTrackingCard></MentorQuestionnaireTrackingCard>
       <MentorDemographicsCard></MentorDemographicsCard>
       <MenteeDemographicsCard></MenteeDemographicsCard>

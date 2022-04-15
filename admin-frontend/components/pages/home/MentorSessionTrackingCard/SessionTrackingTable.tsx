@@ -142,6 +142,7 @@ const SessionTrackingTable: React.FunctionComponent<
               dataField: "fullName",
               componentFunc: clickableMentorNameText,
             },
+            { header: "Email", dataField: "email", dataType: "email" },
             {
               header: "Completed",
               dataField: "numSessionsCompleted",

@@ -1,4 +1,10 @@
-import { Typography, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import {
+  Typography,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 import { MOBILE_BREAKPOINT } from "../../../../constants/constants";
@@ -22,6 +28,9 @@ interface HeaderProps {
 
   onSetYear: (year: number) => void;
   curYear: number;
+
+  mentorFilter: string;
+  setMentorFilter: (newMentorFilter: string) => void;
 }
 
 const Header: React.FunctionComponent<HeaderProps> = (props) => {
@@ -45,6 +54,10 @@ const Header: React.FunctionComponent<HeaderProps> = (props) => {
             onSetMonth={props.onSetMonth}
           ></SelectMonth>
         </SelectDate>
+        <SearchBox
+          mentorFilter={props.mentorFilter}
+          setMentorFilter={props.setMentorFilter}
+        ></SearchBox>
       </HeaderLayout>
     </>
   );
@@ -59,15 +72,16 @@ const HeaderLayout = styled.div`
   grid-row-gap: 1rem;
   grid-template-areas:
     "title selectSessionGroup settingsButton"
-    "selectDate selectDate selectDate";
+    "selectDate searchBox searchBox";
 
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     grid-template-columns: auto auto;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto auto auto auto;
     grid-template-areas:
       "title settingsButton"
       "selectSessionGroup selectSessionGroup"
-      "selectDate selectDate";
+      "selectDate selectDate"
+      "searchBox searchBox";
   }
 `;
 
@@ -125,6 +139,7 @@ const StyledSessionGroup = styled.div`
 const SelectDate = styled.div`
   display: flex;
   grid-area: selectDate;
+  align-items: center;
 `;
 
 interface SelectYearProps {
@@ -207,6 +222,37 @@ const StyledSelectMonth = styled.div`
   padding-left: 2rem;
   grid-area: selectMonth;
   justify-self: flex-start;
+`;
+
+interface SearchBoxProps {
+  mentorFilter: string;
+  setMentorFilter: (newMentorFilter: string) => void;
+}
+
+const SearchBox: React.FunctionComponent<SearchBoxProps> = (props) => {
+  return (
+    <StyledSearchBox>
+      <TextField
+        fullWidth
+        name="mentorFilter"
+        label="Search Mentor Name or Email"
+        type="mentorFilter"
+        id="mentorFilter"
+        value={props.mentorFilter}
+        onChange={(e) => props.setMentorFilter(e.target.value)}
+      />
+    </StyledSearchBox>
+  );
+};
+
+const StyledSearchBox = styled.div`
+  grid-area: searchBox;
+  align-self: center;
+  margin-left: 2rem;
+
+  @media all and (max-width: ${MOBILE_BREAKPOINT}) {
+    margin-left: 0;
+  }
 `;
 
 export default Header;
