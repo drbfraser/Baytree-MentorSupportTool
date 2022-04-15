@@ -15,24 +15,24 @@ import moment from "moment";
 const Goals: NextPage = () => {
  
     const [goals, setGoals] = useState([] as any[]);
-    const [goalType, setGoalType] = useState("IN PROGRESS");
+    const [goalType, setGoalType] = useState<"IN PROGRESS" | "ACHIEVED" | "ALL">("IN PROGRESS");
     const [tabValue, setTabValue] = useState(0);
     const [expanded, setExpanded] = React.useState('');
 
-    const handleChange = (
+    const handleGoalTypeChange = (
         _event: React.SyntheticEvent<Element, Event>,
-        newValue: number
+        newGoalType: number
       ) => {
-        if (newValue === 0) {
+        if (newGoalType === 0) {
           setGoalType("IN PROGRESS");
         }
-        if (newValue === 1) {
+        if (newGoalType === 1) {
           setGoalType("ACHIEVED");
         }
-        if (newValue === 2) {
+        if (newGoalType === 2) {
           setGoalType("ALL");
         }
-        setTabValue(newValue);
+        setTabValue(newGoalType);
       };
 
     const fetchGoals = () => {
@@ -54,7 +54,7 @@ const Goals: NextPage = () => {
         fetchGoals();
     }, []);
   
-    const handleChange1 = (panel: any) => (_event: any, isExpanded:any) => {
+    const handleChangeExpandedGoal = (panel: any) => (_event: any, isExpanded:any) => {
         setExpanded(isExpanded ? panel : false);
     };
    
@@ -96,7 +96,7 @@ const Goals: NextPage = () => {
                 
                 <Tabs
                   value={tabValue}
-                  onChange={handleChange}
+                  onChange={handleGoalTypeChange}
                   centered
                   sx={{ mb: 3 }}
                 >
@@ -112,7 +112,7 @@ const Goals: NextPage = () => {
                   <Accordion 
                     key={data.id}
                     expanded={expanded === data.id}
-                    onChange={handleChange1(data.id)}
+                    onChange={handleChangeExpandedGoal(data.id)}
                     style={{ width: "100%" }}
                   >
                     <AccordionSummary
