@@ -105,7 +105,13 @@ const Sessions = () => {
   }
 
   const handleStartTime= ()=>{
-    if(clockInTime.getMinutes() < 10){
+    if((clockInTime.getHours() < 10) && (clockInTime.getMinutes() < 10)){
+      return `0${clockInTime.getHours()}:0${clockInTime.getMinutes()}`
+    }
+    else if(clockInTime.getHours() < 10){
+      return `0${clockInTime.getHours()}:${clockInTime.getMinutes()}`
+    }
+    else if(clockInTime.getMinutes() < 10){
       return `${clockInTime.getHours()}:0${clockInTime.getMinutes()}`
     }
     else{
