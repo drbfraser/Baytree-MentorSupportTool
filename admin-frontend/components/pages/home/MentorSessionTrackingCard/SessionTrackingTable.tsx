@@ -2,24 +2,24 @@ import { Skeleton, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import { Session } from "../../../../api/backend/views/sessions";
-import { Volunteer } from "../../../../api/backend/views/volunteers";
+import { Session as ViewsSession } from "../../../../api/backend/views/sessions";
+import { SessionResponse as DjangoSession } from "../../../../api/backend/sessions";
 import { BAYTREE_PRIMARY_COLOR } from "../../../../constants/constants";
 import DataGrid from "../../../shared/datagrid";
 import Modal from "../../../shared/Modal";
 import Pager from "../../../shared/pager";
 import MentorSessionsModal from "./MentorSessionsModal";
+import { Mentor } from "../../../../pages/home";
 
-interface MentorSessionCount {
-  id: string;
-  firstName: string;
-  lastName: string;
-  numSessions: number;
+interface MentorSessionCount extends Mentor {
+  numSessionsCompleted: number;
+  numSessionsMissed: number;
+  numSessionsCancelled: number;
 }
 
 interface SessionTrackingTableProps {
-  sessionsForMonth: Session[];
-  mentors: Volunteer[];
+  sessionsForMonth: ((ViewsSession & DjangoSession) | DjangoSession)[];
+  mentors: Mentor[];
   isLoading: boolean;
   month: number;
   year: number;
@@ -36,7 +36,7 @@ const SessionTrackingTable: React.FunctionComponent<
   const [isMentorSessionsModalOpen, setIsMentorSessionsModalOpen] =
     useState(false);
   const [mentorSessionsModalMentor, setMentorSessionsModalMentor] =
-    useState<Volunteer | null>(null);
+    useState<Mentor | null>(null);
 
   const PAGE_SIZE = 5;
   const [pageNum, setPageNum] = useState(1);
@@ -56,35 +56,44 @@ const SessionTrackingTable: React.FunctionComponent<
   }, [props.mentors, props.sessionsForMonth]);
 
   const getMentorSessionCounts = (
-    mentors: Volunteer[],
-    sessionsForMonth: Session[]
+    mentors: Mentor[],
+    sessionsForMonth: ((ViewsSession & DjangoSession) | DjangoSession)[]
   ) => {
     let aggregatedSessionsByMentor: MentorSessionCount[] = [];
 
     mentors.forEach((mentor, i) =>
       aggregatedSessionsByMentor.push({
-        id: mentor.viewsPersonId,
-        firstName: mentor.firstname,
-        lastName: mentor.surname,
-        numSessions: 0,
+        id: mentor.id,
+        firstName: mentor.firstName,
+        lastName: mentor.lastName,
+        email: mentor.email,
+        numSessionsCompleted: 0,
+        numSessionsCancelled: 0,
+        numSessionsMissed: 0,
       })
     );
 
     sessionsForMonth.forEach((session) => {
-      const sessionStaffId = session.leadStaff;
+      const sessionMentorId = session.mentor;
 
       const aggregatedMentor = aggregatedSessionsByMentor.find(
-        (mentor) => mentor.id === sessionStaffId
+        (mentor) => mentor.id === sessionMentorId
       );
 
       if (aggregatedMentor) {
-        aggregatedMentor.numSessions++;
+        if (session.cancelled) {
+          aggregatedMentor.numSessionsCancelled++;
+        } else if (!session.attended_by_mentee || !session.attended_by_mentor) {
+          aggregatedMentor.numSessionsMissed++;
+        } else {
+          aggregatedMentor.numSessionsCompleted++;
+        }
       }
     });
 
-    // Show mentors with least sessions first
+    // Show mentors with least completed sessions first
     aggregatedSessionsByMentor.sort((mentor1, mentor2) => {
-      return mentor1.numSessions - mentor2.numSessions;
+      return mentor1.numSessionsCompleted - mentor2.numSessionsCompleted;
     });
 
     // Add / total and get full name
@@ -103,7 +112,7 @@ const SessionTrackingTable: React.FunctionComponent<
       <ClickableMentorNameText
         onClick={() => {
           const mentor = props.mentors.find(
-            (mentor) => mentor.viewsPersonId === dataRow.id
+            (mentor) => mentor.id === dataRow.id
           );
 
           if (mentor) {
@@ -169,10 +178,9 @@ const SessionTrackingTable: React.FunctionComponent<
         onOutsideClick={() => setIsMentorSessionsModalOpen(false)}
         modalComponent={
           <MentorSessionsModal
-            mentor={mentorSessionsModalMentor as Volunteer}
+            mentor={mentorSessionsModalMentor as Mentor}
             mentorSessions={props.sessionsForMonth.filter(
-              (session) =>
-                session.leadStaff === mentorSessionsModalMentor?.viewsPersonId
+              (session) => session.mentor === mentorSessionsModalMentor?.id
             )}
             month={props.month}
             year={props.year}

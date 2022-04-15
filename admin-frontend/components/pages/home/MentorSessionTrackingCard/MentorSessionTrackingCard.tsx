@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import {
-  getSession,
+  getSessions,
   SessionResponse as DjangoSession,
 } from "../../../../api/backend/sessions";
 import { getSessionGroupsFromViews } from "../../../../api/backend/views/sessionGroups";
@@ -11,13 +11,13 @@ import {
   getSessionsFromViews,
   Session as ViewsSession,
 } from "../../../../api/backend/views/sessions";
-import { Volunteer } from "../../../../api/backend/views/volunteers";
+import { Mentor } from "../../../../pages/home";
 import { PaginatedSelectOption } from "../../../shared/paginatedSelect";
 import Header from "./Header";
 import SessionTrackingTable from "./SessionTrackingTable";
 
 interface MentorSessionTrackingCardProps {
-  mentors: Volunteer[];
+  mentors: Mentor[];
 }
 
 const ERROR_MESSAGE =
@@ -29,7 +29,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
   const [curMonth, setCurMonth] = useState<number>(new Date().getMonth());
   const [curYear, setCurYear] = useState<number>(new Date().getFullYear());
   const [sessionsForCurMonth, setSessionsForCurMonth] = useState<
-    (ViewsSession & DjangoSession)[]
+    ((ViewsSession & DjangoSession) | DjangoSession)[]
   >([]);
   const [selectedSessionGroupId, setSelectedSessionGroupId] = useState<
     string | null
@@ -65,24 +65,32 @@ const MentorSessionTrackingCard: React.FunctionComponent<
       viewsSessionRes.status === 200 &&
       viewsSessionRes.data
     ) {
-      const sessionRes = await getSession();
-      if (sessionRes && sessionRes.status === 200 && sessionRes.data) {
-        const sessionsInCurMonth = sessionRes.data.filter(
+      const sessionRes = await getSessions();
+      if (sessionRes !== null) {
+        const sessionsInCurMonth = sessionRes.filter(
           (session) =>
-            session.created_at >= new Date(curMonthStartDate) &&
-            session.created_at <= new Date(curMonthEndDate)
+            new Date(session.clock_in) >= new Date(curMonthStartDate) &&
+            new Date(session.clock_in) <= new Date(curMonthEndDate)
         );
 
+        // Combine Sessions from django backend with views session
         const combinedViewsAndDjangoSessions = sessionsInCurMonth.map(
-          (session) => {
+          (djangoSession) => {
             const matchingViewsSession = viewsSessionRes.data.find(
               (viewsSession) =>
-                viewsSession.viewsSessionId == session.viewsSessionId
+                viewsSession.viewsSessionId === djangoSession.viewsSessionId
             );
+
+            if (matchingViewsSession) {
+              return { ...djangoSession, ...matchingViewsSession };
+            } else {
+              return djangoSession;
+            }
           }
         );
+
+        setSessionsForCurMonth(combinedViewsAndDjangoSessions);
       }
-      setSessionsForCurMonth(viewsSessionRes.data);
       setKey(key + 1); // Force re-render of table
     } else {
       toast.error(ERROR_MESSAGE);
