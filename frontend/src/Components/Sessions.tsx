@@ -17,6 +17,7 @@ import TimePicker from '@mui/lab/TimePicker';
 import Typography  from "@mui/material/Typography";
 import { format, intervalToDuration } from 'date-fns'
 import { API_BASE_URL } from '../api/url';
+import moment from 'moment'
 
 const Sessions = () => {
 
@@ -58,6 +59,11 @@ const Sessions = () => {
       end: clockOutTime
     }).minutes
 
+    const t = intervalToDuration({
+      start: clockInTime,
+      end: clockOutTime
+    })
+
     // check if both hour and minute are one digit
     if((minute && minute < 10) && (hour && hour < 10)){
       return(`0${intervalToDuration({
@@ -89,7 +95,6 @@ const Sessions = () => {
         start: clockInTime,
         end: clockOutTime
       }).minutes}`)
-    
     }
 
     //both minute and hour are 2 digit
@@ -105,18 +110,7 @@ const Sessions = () => {
   }
 
   const handleStartTime= ()=>{
-    if((clockInTime.getHours() < 10) && (clockInTime.getMinutes() < 10)){
-      return `0${clockInTime.getHours()}:0${clockInTime.getMinutes()}`
-    }
-    else if(clockInTime.getHours() < 10){
-      return `0${clockInTime.getHours()}:${clockInTime.getMinutes()}`
-    }
-    else if(clockInTime.getMinutes() < 10){
-      return `${clockInTime.getHours()}:0${clockInTime.getMinutes()}`
-    }
-    else{
-      return `${clockInTime.getHours()}:${clockInTime.getMinutes()}`
-    }
+    return moment(clockInTime).format("HH:mm")
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
