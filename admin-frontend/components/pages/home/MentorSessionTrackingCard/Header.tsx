@@ -174,8 +174,10 @@ const SelectYear: React.FunctionComponent<SelectYearProps> = (props) => {
           props.onSetYear(parseInt(event.target.value));
         }}
       >
-        {getPastYears().map((year) => (
-          <MenuItem value={year}>{year.toString()}</MenuItem>
+        {getPastYears().map((year, i) => (
+          <MenuItem key={i} value={year}>
+            {year.toString()}
+          </MenuItem>
         ))}
       </Select>
     </StyledSelectYear>

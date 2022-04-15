@@ -173,7 +173,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
 const CardLayout = styled(Paper)`
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 0.1fr 0.9fr;
+  grid-template-rows: repeat(2, auto);
   grid-template-areas:
     "Header"
     "SessionTrackingTable";

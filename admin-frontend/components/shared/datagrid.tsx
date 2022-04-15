@@ -109,15 +109,17 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
 
   const renderEmailValue = (email: string | null) => {
     return (
-      <a
-        style={{
-          color: theme.colors.primaryColor,
-          textDecoration: "underline",
-        }}
-        href={`mailto:${email}`}
-      >
-        {email}
-      </a>
+      <Typography variant="body1">
+        <a
+          style={{
+            color: theme.colors.primaryColor,
+            textDecoration: "underline",
+          }}
+          href={`mailto:${email}`}
+        >
+          {email}
+        </a>
+      </Typography>
     );
   };
 
