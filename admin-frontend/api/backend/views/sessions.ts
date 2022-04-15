@@ -27,8 +27,8 @@ export interface Session {
   activity: string;
   leadStaff: string;
   venueName: string;
-  viewsSessionId: number;
-  viewsSessionGroupId: number;
+  viewsSessionId: string;
+  viewsSessionGroupId: string;
   startDate: Date;
   durationInMinutes: number;
   cancelled: boolean;
@@ -69,8 +69,8 @@ export const getSessionsFromViews = async (
         name: session.name,
         leadStaff: session.leadStaff,
         venueName: session.venueName,
-        viewsSessionId: parseInt(session.viewsSessionId),
-        viewsSessionGroupId: parseInt(session.viewsSessionGroupId),
+        viewsSessionId: session.viewsSessionId,
+        viewsSessionGroupId: session.viewsSessionGroupId,
         startDate: new Date(
           Date.parse(`${session.startDate} ${session.startTime}:00`)
         ),
