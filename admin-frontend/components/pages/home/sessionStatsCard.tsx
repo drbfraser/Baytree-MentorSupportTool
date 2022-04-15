@@ -274,7 +274,7 @@ const Chart: React.FC<{
           <Skeleton />
         </div>
       ) : (
-        <ResponsiveContainer width="99%" height={240}>
+        <ResponsiveContainer height={240}>
           <BarChart data={props.data}>
             <CartesianGrid></CartesianGrid>
             {props.selectedSessionGroups.map((selectedSessionGroup, i) => (
@@ -306,6 +306,7 @@ const Chart: React.FC<{
 
 const StyledChart = styled.div`
   grid-area: chart;
+  overflow: hidden;
 `;
 
 const LegendText = styled.span`

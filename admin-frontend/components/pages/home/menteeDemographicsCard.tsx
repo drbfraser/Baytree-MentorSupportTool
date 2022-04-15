@@ -367,7 +367,7 @@ const Chart: React.FC<{
 
   return (
     <StyledChart>
-      <ResponsiveContainer width="99%" height={200}>
+      <ResponsiveContainer height={200}>
         <PieChart width={400} height={400}>
           <Pie
             data={convertDemographicDataToPieChartData(
@@ -381,6 +381,7 @@ const Chart: React.FC<{
             outerRadius={80}
             fill="#8884d8"
             dataKey="value"
+            isAnimationActive={false}
           >
             {convertDemographicDataToPieChartData(
               props.data,
@@ -400,6 +401,7 @@ const Chart: React.FC<{
 
 const StyledChart = styled.div`
   grid-area: chart;
+  overflow: hidden;
 `;
 
 interface LegendEntry {
