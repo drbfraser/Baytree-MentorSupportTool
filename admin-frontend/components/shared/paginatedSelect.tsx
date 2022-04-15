@@ -6,20 +6,18 @@ import { RootState } from "../../stores/store";
 var G_PAGINATED_SELECT_NUMBER = 0;
 
 export interface PaginatedSelectOption<ValueType> {
-    value: ValueType;
-    label: string;
+  value: ValueType;
+  label: string;
 }
 
-const PaginatedSelect: React.FC<
-  React.ComponentProps<typeof AsyncPaginate>
-> = (props) => {
+const PaginatedSelect: React.FC<React.ComponentProps<typeof AsyncPaginate>> = (
+  props
+) => {
   const themeColors = useSelector((state: RootState) => state.theme.colors);
 
   const [options, setOptions] = useState<any[]>([]);
 
-  const [key, setKey] = useState<any>(
-    "key" + (++G_PAGINATED_SELECT_NUMBER)
-  );
+  const [key, setKey] = useState<any>("key" + ++G_PAGINATED_SELECT_NUMBER);
 
   useEffect(() => {
     const func = async () => {
@@ -43,6 +41,7 @@ const PaginatedSelect: React.FC<
         container: (base: any) => ({
           ...base,
           width: "100%",
+          zIndex: 99,
         }),
         control: (base: any) => ({
           ...base,
