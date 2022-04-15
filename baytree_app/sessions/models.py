@@ -20,6 +20,9 @@ class MentorSession(models.Model):
     notes = models.CharField(blank=True, max_length=1000)
     cancelled = models.BooleanField(blank=False, default=False)
 
+    # Is null when no corresponding session in views (missed or cancelled)
+    viewsSessionId = models.CharField(null=True, max_length=50)
+
     def __str__(self):
         result = str(self.id) + ", " + self.mentor.email + ", " + self.mentee.email
         return result

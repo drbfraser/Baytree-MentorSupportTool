@@ -2,10 +2,14 @@ import { Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
+import {
+  getSession,
+  SessionResponse as DjangoSession,
+} from "../../../../api/backend/sessions";
 import { getSessionGroupsFromViews } from "../../../../api/backend/views/sessionGroups";
 import {
   getSessionsFromViews,
-  Session,
+  Session as ViewsSession,
 } from "../../../../api/backend/views/sessions";
 import { Volunteer } from "../../../../api/backend/views/volunteers";
 import { PaginatedSelectOption } from "../../../shared/paginatedSelect";
@@ -24,7 +28,9 @@ const MentorSessionTrackingCard: React.FunctionComponent<
 > = (props) => {
   const [curMonth, setCurMonth] = useState<number>(new Date().getMonth());
   const [curYear, setCurYear] = useState<number>(new Date().getFullYear());
-  const [sessionsForCurMonth, setSessionsForCurMonth] = useState<Session[]>([]);
+  const [sessionsForCurMonth, setSessionsForCurMonth] = useState<
+    (ViewsSession & DjangoSession)[]
+  >([]);
   const [selectedSessionGroupId, setSelectedSessionGroupId] = useState<
     string | null
   >(null);
@@ -46,7 +52,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
   const getSessionsForCurMonth = async () => {
     const curMonthStartDate = getCurMonthStartDate();
     const curMonthEndDate = getCurMonthEndDate();
-    const response = await getSessionsFromViews(
+    const viewsSessionRes = await getSessionsFromViews(
       selectedSessionGroupId as string,
       undefined,
       undefined,
@@ -54,8 +60,29 @@ const MentorSessionTrackingCard: React.FunctionComponent<
       curMonthEndDate
     );
 
-    if (response && response.status === 200 && response.data) {
-      setSessionsForCurMonth(response.data);
+    if (
+      viewsSessionRes &&
+      viewsSessionRes.status === 200 &&
+      viewsSessionRes.data
+    ) {
+      const sessionRes = await getSession();
+      if (sessionRes && sessionRes.status === 200 && sessionRes.data) {
+        const sessionsInCurMonth = sessionRes.data.filter(
+          (session) =>
+            session.created_at >= new Date(curMonthStartDate) &&
+            session.created_at <= new Date(curMonthEndDate)
+        );
+
+        const combinedViewsAndDjangoSessions = sessionsInCurMonth.map(
+          (session) => {
+            const matchingViewsSession = viewsSessionRes.data.find(
+              (viewsSession) =>
+                viewsSession.viewsSessionId == session.viewsSessionId
+            );
+          }
+        );
+      }
+      setSessionsForCurMonth(viewsSessionRes.data);
       setKey(key + 1); // Force re-render of table
     } else {
       toast.error(ERROR_MESSAGE);

@@ -134,8 +134,18 @@ const SessionTrackingTable: React.FunctionComponent<
               componentFunc: clickableMentorNameText,
             },
             {
-              header: "Sessions",
-              dataField: "numSessions",
+              header: "Completed",
+              dataField: "numSessionsCompleted",
+              dataType: "string",
+            },
+            {
+              header: "Cancelled",
+              dataField: "numSessionsCancelled",
+              dataType: "string",
+            },
+            {
+              header: "Missed",
+              dataField: "numSessionsMissed",
               dataType: "string",
             },
           ]}
