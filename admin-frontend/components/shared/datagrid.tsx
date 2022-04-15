@@ -26,7 +26,7 @@ import { RootState } from "../../stores/store";
 import { ThemeState } from "../../reducers/theme";
 import styled from "styled-components";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
-import { MdCheck, MdMoreVert } from "react-icons/md";
+import { MdMoreVert, MdExpandMore, MdExpandLess } from "react-icons/md";
 import { IconBaseProps } from "react-icons";
 
 export interface DataRowAction {
@@ -49,11 +49,13 @@ export interface DataGridProps {
   height?: string;
   width?: string;
   dataRowActions?: DataRowAction[];
+  expandRowComponentFunc?: (dataRow: any) => React.ReactElement;
 }
 
 const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   const theme = useSelector<RootState, ThemeState>((state) => state.theme);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number>(-1);
+  const [expandedRowIndices, setExpandedRowIndices] = useState<number[]>([]);
 
   const renderDateTimeValue = (dateTime: Date | string | null) => {
     if (!dateTime) {
@@ -107,121 +109,166 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                   {col.header}
                 </TableCell>
               ))}
+              {props.expandRowComponentFunc && (
+                <TableCell width="3rem"></TableCell>
+              )}
               {props.dataRowActions && <TableCell width="3rem"></TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
             {props.data.map((dataRow, i) => (
-              <TableRow
-                onClick={() => {
-                  setSelectedRowIndex(i);
-                }}
-                key={`datagrid_row_${i}`}
-              >
-                {props.cols.map((col: DataGridColumn, j) => (
-                  <TableCell
-                    style={{
-                      backgroundColor:
-                        selectedRowIndex === i
-                          ? `${theme.colors.primaryColor}30`
-                          : undefined,
-                    }}
-                    height="fit-content"
-                    key={`datagrid_cell_${i}_${j}`}
-                  >
-                    {col.componentFunc
-                      ? col.componentFunc(dataRow)
-                      : !col.dataField
-                      ? null
-                      : col.dataType === "date"
-                      ? renderDateValue(dataRow[col.dataField])
-                      : col.dataType === "dateTime"
-                      ? renderDateTimeValue(dataRow[col.dataField])
-                      : typeof dataRow[col.dataField] === "boolean"
-                      ? renderBooleanValue(dataRow[col.dataField])
-                      : dataRow[col.dataField]}
-                  </TableCell>
-                ))}
-                {props.dataRowActions && props.dataRowActions.length === 1 && (
-                  <TableCell
-                    width="3rem"
-                    key={`datagrid_cell_more_options_row_${i}`}
-                  >
-                    <div>
-                      <Button
-                        backgroundColor={theme.colors.primaryColor}
-                        variant="contained"
-                        onClick={() => {
-                          if (props.dataRowActions) {
-                            props.dataRowActions[0].action(dataRow);
-                          }
-                        }}
+              <>
+                <TableRow
+                  onClick={() => {
+                    setSelectedRowIndex(i);
+                  }}
+                  key={`datagrid_row_${i}`}
+                >
+                  {props.cols.map((col: DataGridColumn, j) => (
+                    <TableCell
+                      style={{
+                        backgroundColor:
+                          selectedRowIndex === i
+                            ? `${theme.colors.primaryColor}30`
+                            : undefined,
+                      }}
+                      height="fit-content"
+                      key={`datagrid_cell_${i}_${j}`}
+                    >
+                      {col.componentFunc
+                        ? col.componentFunc(dataRow)
+                        : !col.dataField
+                        ? null
+                        : col.dataType === "date"
+                        ? renderDateValue(dataRow[col.dataField])
+                        : col.dataType === "dateTime"
+                        ? renderDateTimeValue(dataRow[col.dataField])
+                        : typeof dataRow[col.dataField] === "boolean"
+                        ? renderBooleanValue(dataRow[col.dataField])
+                        : dataRow[col.dataField]}
+                    </TableCell>
+                  ))}
+                  {props.expandRowComponentFunc && (
+                    <TableCell
+                      width="3rem"
+                      key={`datagrid_cell_more_options_row_${i}`}
+                    >
+                      <IconButton>
+                        {expandedRowIndices.includes(i) ? (
+                          <MdExpandLess
+                            onClick={() => {
+                              setExpandedRowIndices(
+                                expandedRowIndices.filter(
+                                  (expandedRowIndex) => expandedRowIndex !== i
+                                )
+                              );
+                            }}
+                          ></MdExpandLess>
+                        ) : (
+                          <MdExpandMore
+                            onClick={() => {
+                              setExpandedRowIndices([...expandedRowIndices, i]);
+                            }}
+                          ></MdExpandMore>
+                        )}
+                      </IconButton>
+                    </TableCell>
+                  )}
+                  {props.dataRowActions && props.dataRowActions.length === 1 && (
+                    <TableCell
+                      width="3rem"
+                      key={`datagrid_cell_more_options_row_${i}`}
+                    >
+                      <div>
+                        <Button
+                          backgroundColor={theme.colors.primaryColor}
+                          variant="contained"
+                          onClick={() => {
+                            if (props.dataRowActions) {
+                              props.dataRowActions[0].action(dataRow);
+                            }
+                          }}
+                        >
+                          {props.dataRowActions &&
+                            React.createElement(props.dataRowActions[0].icon)}
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
+                  {props.dataRowActions && props.dataRowActions.length > 1 && (
+                    <TableCell
+                      width="3rem"
+                      key={`datagrid_cell_more_options_row_${i}`}
+                    >
+                      <PopupState variant="popover">
+                        {(popupState) => (
+                          <div>
+                            <Button
+                              backgroundColor={theme.colors.primaryColor}
+                              variant="contained"
+                              {...bindTrigger(popupState)}
+                            >
+                              <MdMoreVert></MdMoreVert>
+                            </Button>
+                            <Popover
+                              {...bindPopover(popupState)}
+                              anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "center",
+                              }}
+                              transformOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
+                              }}
+                            >
+                              <List>
+                                {props.dataRowActions &&
+                                  props.dataRowActions.map(
+                                    (dataRowAction, i) => {
+                                      return (
+                                        <ListItem
+                                          key={`listItem_${i}`}
+                                          disablePadding
+                                        >
+                                          <ListItemButton
+                                            onClick={() =>
+                                              dataRowAction.action(dataRow)
+                                            }
+                                          >
+                                            <ListItemIcon>
+                                              {React.createElement(
+                                                dataRowAction.icon
+                                              )}
+                                            </ListItemIcon>
+                                            <ListItemText
+                                              primary={dataRowAction.name}
+                                            />
+                                          </ListItemButton>
+                                        </ListItem>
+                                      );
+                                    }
+                                  )}
+                              </List>
+                            </Popover>
+                          </div>
+                        )}
+                      </PopupState>
+                    </TableCell>
+                  )}
+                </TableRow>
+                {expandedRowIndices.includes(i) &&
+                  props.expandRowComponentFunc && (
+                    <TableRow>
+                      <TableCell
+                        colSpan={
+                          props.cols.length + 1 + (props.dataRowActions ? 1 : 0)
+                        }
                       >
-                        {props.dataRowActions &&
-                          React.createElement(props.dataRowActions[0].icon)}
-                      </Button>
-                    </div>
-                  </TableCell>
-                )}
-                {props.dataRowActions && props.dataRowActions.length > 1 && (
-                  <TableCell
-                    width="3rem"
-                    key={`datagrid_cell_more_options_row_${i}`}
-                  >
-                    <PopupState variant="popover">
-                      {(popupState) => (
-                        <div>
-                          <Button
-                            backgroundColor={theme.colors.primaryColor}
-                            variant="contained"
-                            {...bindTrigger(popupState)}
-                          >
-                            <MdMoreVert></MdMoreVert>
-                          </Button>
-                          <Popover
-                            {...bindPopover(popupState)}
-                            anchorOrigin={{
-                              vertical: "bottom",
-                              horizontal: "center",
-                            }}
-                            transformOrigin={{
-                              vertical: "top",
-                              horizontal: "center",
-                            }}
-                          >
-                            <List>
-                              {props.dataRowActions &&
-                                props.dataRowActions.map((dataRowAction, i) => {
-                                  return (
-                                    <ListItem
-                                      key={`listItem_${i}`}
-                                      disablePadding
-                                    >
-                                      <ListItemButton
-                                        onClick={() =>
-                                          dataRowAction.action(dataRow)
-                                        }
-                                      >
-                                        <ListItemIcon>
-                                          {React.createElement(
-                                            dataRowAction.icon
-                                          )}
-                                        </ListItemIcon>
-                                        <ListItemText
-                                          primary={dataRowAction.name}
-                                        />
-                                      </ListItemButton>
-                                    </ListItem>
-                                  );
-                                })}
-                            </List>
-                          </Popover>
-                        </div>
-                      )}
-                    </PopupState>
-                  </TableCell>
-                )}
-              </TableRow>
+                        {props.expandRowComponentFunc(dataRow)}
+                      </TableCell>
+                    </TableRow>
+                  )}
+              </>
             ))}
           </TableBody>
         </Table>
