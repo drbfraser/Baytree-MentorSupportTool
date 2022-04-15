@@ -46,7 +46,7 @@ const Pager: React.FC<PagerProps> = (props) => {
         </div>
         <Button
           style={{
-            padding: "1.2rem 1rem",
+            padding: "0.7rem 1rem",
             height: "fit-content",
             margin: "0.6rem 0.6rem 0px 0px",
           }}
@@ -84,10 +84,17 @@ const Pager: React.FC<PagerProps> = (props) => {
 
   return (
     <>
-      <div style={{ width: "100%", justifyContent: "center", display: "flex" }}>
+      <div
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex",
+        }}
+      >
         <Button
           style={{
-            padding: "0.5rem 0.6rem",
+            padding: "0 0.6rem",
             height: "fit-content",
             margin: "0.6rem 0.6rem 0px 0px",
           }}
@@ -108,7 +115,7 @@ const Pager: React.FC<PagerProps> = (props) => {
         </Button>
         <Button
           style={{
-            padding: "0.5rem 0.6rem",
+            padding: "0 0.6rem",
             height: "fit-content",
             margin: "0.6rem 0.6rem 0px 0px",
           }}
@@ -131,7 +138,12 @@ const Pager: React.FC<PagerProps> = (props) => {
       </div>
       {onMobileDevice && (
         <div
-          style={{ width: "100%", justifyContent: "center", display: "flex" }}
+          style={{
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+            display: "flex",
+          }}
         >
           {renderPageNumberPicker()}
         </div>

@@ -353,7 +353,7 @@ interface StyledTableContainerProps {
   component?: any;
 }
 
-const StyledTableContainer = styled(Table)<StyledTableContainerProps>`
+const StyledTableContainer = styled(Paper)<StyledTableContainerProps>`
   height: ${(props) => props.height ?? "auto"};
   width: ${(props) => props.width ?? "100%"};
 `;
