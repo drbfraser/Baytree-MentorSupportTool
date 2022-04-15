@@ -62,7 +62,6 @@ const  CreateGoals = (props:any) =>   {
         setTimeout(() => {
             setSubmit(false);
         }, 5000);
-
         if (contents === ''){
             setErrors(true);
         } else {

@@ -15,15 +15,27 @@ import { useEffect, useState } from "react";
 import { verify } from "./api/auth";
 import CreateAccount from "./Components/CreateAccount";
 import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const history = createMemoryHistory();
   return (
-    <Router history={history}>
-      <BrowserRoute></BrowserRoute>
-    </Router>
+    <>
+      <ToastContainer></ToastContainer>
+      <Router history={history}>
+        <BrowserRoute></BrowserRoute>
+      </Router>
+    </>
   );
 }
+
+const doesCurRouteRequireAuthentication = () => {
+  const NON_AUTHENTICATED_ROUTES = ["/createaccount", "/resetpassword"];
+
+  return !NON_AUTHENTICATED_ROUTES.includes(
+    window.location.pathname.toLowerCase()
+  );
+};
 
 const BrowserRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -33,7 +45,7 @@ const BrowserRoute = () => {
   useEffect(() => {
     async function verifyClient() {
       // verify only on authenticated routes
-      if (window.location.pathname !== "/createAccount") {
+      if (doesCurRouteRequireAuthentication()) {
         if (await verify()) {
           setIsAuthenticated(true);
         } else {

@@ -21,6 +21,7 @@ import { logout, verify } from "../actions/auth/actionCreators";
 import OverlaySpinner from "../components/shared/overlaySpinner";
 import styled from "styled-components";
 import { basePath } from "../next.config";
+import { ToastContainer } from "react-toastify";
 
 export const BODY_PADDING = "1rem";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,9 +30,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   const store = useStore(pageProps.initialReduxState);
 
   return (
-    <Provider store={store}>
-      <PageChooser pageProps={pageProps} component={Component}></PageChooser>
-    </Provider>
+    <>
+      <ToastContainer></ToastContainer>
+      <Provider store={store}>
+        <PageChooser pageProps={pageProps} component={Component}></PageChooser>
+      </Provider>
+    </>
   );
 }
 

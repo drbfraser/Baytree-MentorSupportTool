@@ -46,7 +46,7 @@ export default function Goals() {
   };
 
   const fetchGoals = () => {
-    fetch(`${API_BASE_URL}/goals/goal/`, {
+    fetch(`${API_BASE_URL}/goals/goal/?mentor_id=${localStorage.getItem('user_id')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -101,12 +101,41 @@ export default function Goals() {
 
   const toBeUpdatedGoal = toBeUpdatedGoalId && goals ? goals.find(g => g.id === toBeUpdatedGoalId) : undefined;
 
+  const exportGoalsToCsv = () => {
+    let csvContent = "data:text/csv;charset=utf-8," 
+    csvContent += "Mentor Name, Mentee Name, Goal Creation Date, Goal Review Date, Title, Description, Update Date, Status \n"
+    
+    for(var i = 0; i < goals.length; i++){
+      csvContent+= '"' + goals[i].mentor.email + '","' +  goals[i].mentee + '","' + goals[i].date + '","' + goals[i].goal_review_date + '","' +
+        goals[i].title.replaceAll('"', '""') + '","' + goals[i].content.replaceAll('"', '""')  + '","'+ goals[i].last_update_date + '","' + 
+        goals[i].status + '"\n'
+    }
+
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "Goals.csv");
+    document.body.appendChild(link);
+
+    link.click(); 
+    document.body.removeChild(link);
+  }
+
   return (
     <Grow in={true}>
       <Container>
         <Grid container spacing={1}>
-          <Grid item xs={1}></Grid>
+          <Grid item xs={1}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => exportGoalsToCsv()}
+            >
+              Export
+            </Button>
+          </Grid>
           <Grid item xs={10}>
+            
             <Tabs
               value={tabValue}
               onChange={handleChange}

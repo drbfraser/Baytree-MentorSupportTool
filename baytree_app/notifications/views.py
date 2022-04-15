@@ -24,8 +24,6 @@ class NotificationViews(generics.ListAPIView):
     def get(self, request):
         mentor_id = request.GET.get('mentor_id', None)
 
-        print(mentor_id)
-
         if mentor_id is not None:
             try:
                 queryset = Notification.objects.prefetch_related('notification_type').filter(mentor=mentor_id).order_by('-creation_date')

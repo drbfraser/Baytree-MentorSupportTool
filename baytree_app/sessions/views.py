@@ -3,8 +3,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from users.permissions import AdminPermissions, userIsAdmin, userIsSuperUser
-from .models import MentorSession
-from .serializers import SessionSerializer
+from users.models import MentorUser
+from sessions.serializers import SessionSerializer
+from sessions.models import MentorSession
 from .permissions import *
 from .constants import views_username, views_password, views_base_url
 import requests

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import {
   getVolunteersFromViews,
   Volunteer,
@@ -10,6 +10,7 @@ import Pager from "../../shared/pager";
 import OverlaySpinner from "../../shared/overlaySpinner";
 import { sendMentorAccountCreationEmail } from "../../../api/backend/mentorUsers";
 import { MdCheck } from "react-icons/md";
+import { TextField } from "@mui/material";
 
 interface AddMentorModalProps {
   onOutsideClick: () => void;
@@ -20,28 +21,50 @@ const AddMentorModal: React.FC<AddMentorModalProps> = (props) => {
   const [maxPageNumber, setMaxPageNumber] = useState(1);
   const [pageData, setPageData] = useState<Volunteer[]>([]);
   const [loadingData, setLoadingData] = useState(false);
-  const PAGE_LIMIT = 8;
+  const [emailFilter, setEmailFilter] = useState("");
+  const PAGE_LIMIT = 6;
+
+  const getPageData = async (pageNumberOverride?: number) => {
+    setLoadingData(true);
+    const mentorsData = await getVolunteersFromViews(
+      PAGE_LIMIT,
+      (pageNumberOverride ? pageNumberOverride - 1 : pageNumber - 1) *
+        PAGE_LIMIT,
+      { searchEmail: emailFilter }
+    );
+
+    if (mentorsData && mentorsData.data !== null) {
+      setMaxPageNumber(Math.ceil(mentorsData.total / PAGE_LIMIT));
+      setPageData(mentorsData.data);
+      setLoadingData(false);
+    } else {
+      toast.error(HELP_MESSAGE);
+      setLoadingData(false);
+    }
+  };
 
   useEffect(() => {
-    async function getData() {
-      setLoadingData(true);
-      const mentorsData = await getVolunteersFromViews(
-        PAGE_LIMIT,
-        (pageNumber - 1) * PAGE_LIMIT
-      );
+    getPageData(1);
+    setPageNumber(1);
+  }, []);
 
-      if (mentorsData && mentorsData.data !== null) {
-        setMaxPageNumber(Math.ceil(mentorsData.total / PAGE_LIMIT));
-        setPageData(mentorsData.data);
-        setLoadingData(false);
-      } else {
-        toast.error(HELP_MESSAGE);
-        setLoadingData(false);
-      }
+  // Use to tell if useEffect is being called on first mount of add mentor
+  // to prevent getting data from backend on mount and update (twice unnecessary)
+  const isMountSideEffect = useRef(true);
+  useEffect(() => {
+    if (!isMountSideEffect.current) {
+      // Use timeouts to debounce input so no backend call per character
+      clearTimeout(delayTimerRef.current as number);
+      delayTimerRef.current = setTimeout(function () {
+        getPageData(1);
+        setPageNumber(1);
+      }, 1000);
     }
 
-    getData();
-  }, [pageNumber]);
+    isMountSideEffect.current = false;
+  }, [emailFilter]);
+
+  const delayTimerRef = useRef<NodeJS.Timeout | number | undefined>(undefined);
 
   return (
     <div>
@@ -54,9 +77,25 @@ const AddMentorModal: React.FC<AddMentorModalProps> = (props) => {
         ></OverlaySpinner>
       ) : (
         <>
+          <TextField
+            margin="normal"
+            fullWidth
+            name="emailFilter"
+            label="Search by Email"
+            type="emailFilter"
+            id="emailFilter"
+            value={emailFilter}
+            onChange={(e) => setEmailFilter(e.target.value)}
+          />
           <DataGrid
             data={pageData}
             cols={[
+              {
+                header: "Email",
+                dataField: "email",
+                dataType: "email",
+                keepOnMobile: true,
+              },
               { header: "First Name", dataField: "firstname" },
               { header: "Last Name", dataField: "surname" },
             ]}
@@ -106,7 +145,6 @@ const AddMentorModal: React.FC<AddMentorModalProps> = (props) => {
             maxPageNumber={maxPageNumber}
             currentPageNumber={pageNumber}
           ></Pager>
-          <ToastContainer></ToastContainer>
         </>
       )}
     </div>

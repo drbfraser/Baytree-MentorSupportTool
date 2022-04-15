@@ -1,5 +1,7 @@
+import { Button } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
+import { MdClose } from "react-icons/md";
 import styled from "styled-components";
 import useMobileLayout from "../../hooks/useMobileLayout";
 interface ModalProps {
@@ -8,6 +10,7 @@ interface ModalProps {
   modalComponent: React.ReactElement;
   width?: string;
   height?: string;
+  enableCloseButton?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = (props) => {
@@ -54,6 +57,23 @@ const Modal: React.FC<ModalProps> = (props) => {
             height={props.height}
             useMobileLayout={onMobileDevice}
           >
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              {props.enableCloseButton !== false && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  style={{
+                    padding: "0.3rem 0.6rem 0.3rem 0.6rem",
+                    height: "fit-content",
+                    margin: "0.6rem 0.6rem 0 0",
+                  }}
+                  onClick={() => props.onOutsideClick()}
+                >
+                  <MdClose size="2rem"></MdClose>
+                  Close
+                </Button>
+              )}
+            </div>
             {props.modalComponent}
           </StyledModal>
         </Overlay>,

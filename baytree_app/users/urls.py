@@ -5,7 +5,7 @@ from .models import AdminUser, CustomUser, MenteeUser, MentorUser
 from .permissions import AdminPermissions, MenteesViewPermissions, MentorsViewPermissions
 from .serializers import AdminSerializer, MenteeSerializer, MentorSerializer, UserSerializer
 
-from .views import StatisticViews, postUser, sendAccountCreationEmail, createMentorAccount
+from .views import StatisticViews, postUser, resetAccountPassword, sendAccountCreationEmail, createMentorAccount, sendResetPasswordEmail
 
 urlpatterns = [
     path('mentees', GenerateCrudEndpointsForModel.as_view(model=MenteeUser,
@@ -21,5 +21,7 @@ urlpatterns = [
                                                           serializer=AdminSerializer, permission_classes=[AdminPermissions])),
     path('statistics/<type>', StatisticViews.as_view()),
     path('sendAccountCreationEmail', sendAccountCreationEmail),
-    path('mentors/createAccount', createMentorAccount)
+    path('sendResetPasswordEmail', sendResetPasswordEmail),
+    path('mentors/createAccount', createMentorAccount),
+    path('resetPassword', resetAccountPassword)
 ]
