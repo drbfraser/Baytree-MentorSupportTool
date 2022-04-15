@@ -41,7 +41,7 @@ const PaginatedSelect: React.FC<React.ComponentProps<typeof AsyncPaginate>> = (
         container: (base: any) => ({
           ...base,
           width: "100%",
-          zIndex: 99,
+          zIndex: 8,
         }),
         control: (base: any) => ({
           ...base,
