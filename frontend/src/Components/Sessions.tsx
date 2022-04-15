@@ -17,6 +17,7 @@ import TimePicker from '@mui/lab/TimePicker';
 import Typography  from "@mui/material/Typography";
 import { format, intervalToDuration } from 'date-fns'
 import { API_BASE_URL } from '../api/url';
+import moment from 'moment'
 
 const Sessions = () => {
 
@@ -45,11 +46,43 @@ const Sessions = () => {
   };
 
   const handleDuration = ()=>{
+
+    // getting the Duration hour
+    const hour = intervalToDuration({
+      start: clockInTime,
+      end: clockOutTime
+    }).hours
+
+    // getting the Duration minute
     const minute = intervalToDuration({
       start: clockInTime,
       end: clockOutTime
     }).minutes
-    if (minute && minute < 10){
+
+    // check if both hour and minute are one digit
+    if((minute && minute < 10) && (hour && hour < 10)){
+      return(`0${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).hours}:0${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).minutes}`)
+    }
+
+    // check if the hour is one digit
+    else if (hour && hour < 10){
+      return(`0${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).hours}:${intervalToDuration({
+        start: clockInTime,
+        end: clockOutTime
+      }).minutes}`)
+    }
+
+    // check if the minute is one digit
+    else if (minute && minute < 10){
       return(`${intervalToDuration({
         start: clockInTime,
         end: clockOutTime
@@ -58,6 +91,8 @@ const Sessions = () => {
         end: clockOutTime
       }).minutes}`)
     }
+
+    //both minute and hour are 2 digit
     else{
       return(`${intervalToDuration({
         start: clockInTime,
@@ -70,12 +105,7 @@ const Sessions = () => {
   }
 
   const handleStartTime= ()=>{
-    if(clockInTime.getMinutes() < 10){
-      return `${clockInTime.getHours()}:0${clockInTime.getMinutes()}`
-    }
-    else{
-      return `${clockInTime.getHours()}:${clockInTime.getMinutes()}`
-    }
+    return moment(clockInTime).format("HH:mm")
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -134,7 +164,6 @@ const Sessions = () => {
         <Box component="form"
           sx = {{margin: 5, mt: 2}}
           onSubmit = {handleSubmit} 
-          noValidate
           autoComplete="off">
         
           <FormControl fullWidth>
