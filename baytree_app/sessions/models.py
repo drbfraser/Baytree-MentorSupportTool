@@ -18,6 +18,7 @@ class MentorSession(models.Model):
     clock_in = models.DateTimeField(blank=True, null=True)
     clock_out = models.DateTimeField(blank=True, null=True)
     notes = models.CharField(blank=True, max_length=1000)
+    cancelled = models.BooleanField(blank=False, default=False)
 
     def __str__(self):
         result = str(self.id) + ", " + self.mentor.email + ", " + self.mentee.email
