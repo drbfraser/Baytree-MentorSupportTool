@@ -8,11 +8,11 @@ from .serializers import SessionSerializer
 from .permissions import *
 from .constants import views_username, views_password, views_base_url
 import requests
-import re
 from users.models import MentorUser
 
 
 # Based on https://medium.com/beyond-light-creations/build-a-rest-api-with-django-rest-framework-and-mysql-ddff0c1126ae#04e7
+
 
 class SessionView(APIView):
     permission_classes = [(IsAuthenticated & (IsUserAMentor | AdminPermissions))]
@@ -23,17 +23,26 @@ class SessionView(APIView):
                 queryset = MentorSession.objects.get(id=id)
 
                 # Only the mentor the session belongs to can access the session or an admin
-                if (queryset.mentor_id != request.user.id \
-                    and not userIsAdmin(request.user) and not userIsSuperUser(request.user)):
-                    return Response({'errors': 'You are not permitted to access this resource.'}, status=status.HTTP_401_UNAUTHORIZED)
+                if (
+                    queryset.mentor_id != request.user.id
+                    and not userIsAdmin(request.user)
+                    and not userIsSuperUser(request.user)
+                ):
+                    return Response(
+                        {"errors": "You are not permitted to access this resource."},
+                        status=status.HTTP_401_UNAUTHORIZED,
+                    )
 
             except MentorSession.DoesNotExist:
-                return Response({'errors': 'This session does not exist.'}, status=400)
+                return Response({"errors": "This session does not exist."}, status=400)
             read_serializer = SessionSerializer(queryset)
         else:
             # Only admins can access all session information of all mentors at Baytree
-            if (not userIsAdmin(request.user) and not userIsSuperUser(request.user)):
-                return Response({'errors': 'You are not permitted to access these resources'}, status=status.HTTP_401_UNAUTHORIZED)
+            if not userIsAdmin(request.user) and not userIsSuperUser(request.user):
+                return Response(
+                    {"errors": "You are not permitted to access these resources"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
 
             queryset = MentorSession.objects.all()
             read_serializer = SessionSerializer(queryset, many=True)
@@ -52,12 +61,18 @@ class SessionView(APIView):
             session = MentorSession.objects.get(id=id)
 
             # Only the mentor the session belongs to can access the session or an admin
-            if (session.mentor_id != request.user.id \
-                and not userIsAdmin(request.user) and not userIsSuperUser(request.user)):
-                return Response({'errors': 'You are not permitted to access this resource.'}, status=status.HTTP_401_UNAUTHORIZED)
+            if (
+                session.mentor_id != request.user.id
+                and not userIsAdmin(request.user)
+                and not userIsSuperUser(request.user)
+            ):
+                return Response(
+                    {"errors": "You are not permitted to access this resource."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
 
         except MentorSession.DoesNotExist:
-            return Response({'errors': 'This session does not exist.'}, status=400)
+            return Response({"errors": "This session does not exist."}, status=400)
         update_serializer = SessionSerializer(session, data=request.data)
 
         if update_serializer.is_valid():
@@ -71,16 +86,23 @@ class SessionView(APIView):
             session = MentorSession.objects.get(id=id)
 
             # Only the mentor the session belongs to can access the session or an admin
-            if (session.mentor_id != request.user.id \
-                and not userIsAdmin(request.user) and not userIsSuperUser(request.user)):
-                return Response({'errors': 'You are not permitted to access this resource.'}, status=status.HTTP_401_UNAUTHORIZED)
+            if (
+                session.mentor_id != request.user.id
+                and not userIsAdmin(request.user)
+                and not userIsSuperUser(request.user)
+            ):
+                return Response(
+                    {"errors": "You are not permitted to access this resource."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
 
         except MentorSession.DoesNotExist:
-            return Response({'errors': 'This session does not exist.'}, status=400)
+            return Response({"errors": "This session does not exist."}, status=400)
 
         session.delete()
 
         return Response(status=204)
+
 
 class ViewsAppSessionView(APIView):
     permission_classes = [IsAuthenticated & (AdminPermissions | IsUserAMentor)]
@@ -94,17 +116,23 @@ class ViewsAppSessionView(APIView):
         ############################
 
         # Mentors can only create sessions for themselves or an admin
-        if (int(request.data['LeadStaff']) != request.user.id \
-            and not userIsAdmin(request.user) and not userIsSuperUser(request.user)):
-            return Response({'errors': 'You are not permitted to access this resource.'}, status=status.HTTP_401_UNAUTHORIZED)
+        if (
+            int(request.data["LeadStaff"]) != request.user.id
+            and not userIsAdmin(request.user)
+            and not userIsSuperUser(request.user)
+        ):
+            return Response(
+                {"errors": "You are not permitted to access this resource."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
-        mentorUser = MentorUser.objects.all().filter(user_id=request.data['LeadStaff'])
+        mentorUser = MentorUser.objects.all().filter(user_id=request.data["LeadStaff"])
 
         mentorID = str(mentorUser[0].viewsPersonId)
 
         # NOTE: Activity, Session Group ID, VenueID is needed here
 
-        viewSessionData = '''<?xml version="1.0" encoding="utf-8"?>
+        viewSessionData = """<?xml version="1.0" encoding="utf-8"?>
                         <session id="">
                             <SessionGroupID>{0}</SessionGroupID>
                             <SessionType>Individual</SessionType>
@@ -118,65 +146,112 @@ class ViewsAppSessionView(APIView):
                             <VenueID>{7}</VenueID>
                             <RestrictedRecord>0</RestrictedRecord>
                             <ContactType>Individual</ContactType>
-                        </session>'''.format(3, request.data['StartDate'], request.data['StartTime'], request.data['Duration'], request.data['CancelledSession'], 'Budgeting', mentorID, 2)
+                        </session>""".format(
+            3,
+            request.data["StartDate"],
+            request.data["StartTime"],
+            request.data["Duration"],
+            request.data["CancelledSession"],
+            "Budgeting",
+            mentorID,
+            2,
+        )
 
         # NOTE: Session Group ID needed here
 
-        session_url = views_base_url + '3/sessions'
+        session_url = views_base_url + "3/sessions"
         try:
-            response = requests.post(session_url, data = viewSessionData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
+            response = requests.post(
+                session_url,
+                data=viewSessionData,
+                headers={"content-type": "text/xml"},
+                auth=(views_username, views_password),
+            )
             # getting session ID from response
-            sessionID = response.text[(response.text.find("<SessionID>")+ len("<SessionID>")):(response.text.find("</SessionID>"))]
-            
+            sessionID = response.text[
+                (response.text.find("<SessionID>") + len("<SessionID>")) : (
+                    response.text.find("</SessionID>")
+                )
+            ]
+
         except Exception as e:
-            return Response({'Error':'Making a post request for session failed!'}, status=400)
-        
+            return Response(
+                {"Error": "Making a post request for session failed!"}, status=400
+            )
+
         #################################
         # POST request for Session Note #
         #################################
 
-        viewNoteData =  '''<?xml version="1.0" encoding="utf-8"?>
+        viewNoteData = """<?xml version="1.0" encoding="utf-8"?>
                             <notes>
                                 <Note>{0}</Note>
-                            </notes>'''.format(request.data['Notes'])
-        note_url = views_base_url + 'sessions/' + sessionID + '/notes'
+                            </notes>""".format(
+            request.data["Notes"]
+        )
+        note_url = views_base_url + "sessions/" + sessionID + "/notes"
         try:
-            response = requests.post(note_url, data = viewNoteData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
-        except Exception as e: 
-            return Response({'Error':'Making a post request for note failed!'}, status=400)
+            response = requests.post(
+                note_url,
+                data=viewNoteData,
+                headers={"content-type": "text/xml"},
+                auth=(views_username, views_password),
+            )
+        except Exception as e:
+            return Response(
+                {"Error": "Making a post request for note failed!"}, status=400
+            )
 
         ###########################
         # POST request for Mentor #
         ###########################
 
-        viewMentorData =  '''<?xml version="1.0" encoding="utf-8"?>
+        viewMentorData = """<?xml version="1.0" encoding="utf-8"?>
                             <staff>
                                 <ContactID>{0}</ContactID>
                                 <Attended>{1}</Attended>
                                 <Role>Lead</Role>
                                 <Volunteering>Mentoring</Volunteering>
-                            </staff>'''.format(mentorID, request.data['CancelledAttendee'])
-        mentor_url = views_base_url + 'sessions/' + sessionID + '/staff'
+                            </staff>""".format(
+            mentorID, request.data["CancelledAttendee"]
+        )
+        mentor_url = views_base_url + "sessions/" + sessionID + "/staff"
         try:
-            response = requests.post(mentor_url, data =  viewMentorData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
+            response = requests.post(
+                mentor_url,
+                data=viewMentorData,
+                headers={"content-type": "text/xml"},
+                auth=(views_username, views_password),
+            )
         except Exception as e:
-            return Response({'Error':'Making a post request for mentor failed!'}, status=400)
+            return Response(
+                {"Error": "Making a post request for mentor failed!"}, status=400
+            )
 
         ###########################
         # POST request for Mentee #
         ###########################
-        
+
         # NOTE: Mentee ID is neede here
 
-        viewMenteeData =  '''<?xml version="1.0" encoding="utf-8"?>
+        viewMenteeData = """<?xml version="1.0" encoding="utf-8"?>
                             <participants>
                                 <ContactID>{0}</ContactID>
                                 <Attended>{1}</Attended>
-                            </participants>'''.format(4,request.data['CancelledAttendee'])
-        mentee_url = views_base_url + 'sessions/' + sessionID + '/participants'
+                            </participants>""".format(
+            4, request.data["CancelledAttendee"]
+        )
+        mentee_url = views_base_url + "sessions/" + sessionID + "/participants"
         try:
-            response = requests.post(mentee_url, data =  viewMenteeData, headers = {"content-type": "text/xml"}, auth=(views_username, views_password))
+            response = requests.post(
+                mentee_url,
+                data=viewMenteeData,
+                headers={"content-type": "text/xml"},
+                auth=(views_username, views_password),
+            )
         except Exception as e:
-            return Response({'Error':'Making a post request for mentee failed!'}, status=400)
+            return Response(
+                {"Error": "Making a post request for mentee failed!"}, status=400
+            )
 
-        return Response(response,status=200)
+        return Response(response, status=200)

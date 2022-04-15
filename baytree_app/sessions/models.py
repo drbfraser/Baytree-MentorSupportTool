@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.db import models
 
 # Create your models here.
@@ -23,19 +22,3 @@ class MentorSession(models.Model):
     def __str__(self):
         result = str(self.id) + ", " + self.mentor.email + ", " + self.mentee.email
         return result
-
-
-class MonthlyExpectedSessionCounts(models.Model):
-    year = models.IntegerField(primary_key=True)
-    january_count = models.IntegerField(default=0)
-    february_count = models.IntegerField(default=0)
-    march_count = models.IntegerField(default=0)
-    april_count = models.IntegerField(default=0)
-    may_count = models.IntegerField(default=0)
-    june_count = models.IntegerField(default=0)
-    july_count = models.IntegerField(default=0)
-    august_count = models.IntegerField(default=0)
-    september_count = models.IntegerField(default=0)
-    october_count = models.IntegerField(default=0)
-    november_count = models.IntegerField(default=0)
-    december_count = models.IntegerField(default=0)

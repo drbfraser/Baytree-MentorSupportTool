@@ -1,17 +1,8 @@
-import {
-  Typography,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  IconButton,
-} from "@mui/material";
-import React, { useState } from "react";
-import { MdMoreVert } from "react-icons/md";
+import { Typography, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import React from "react";
 import styled from "styled-components";
 import { MOBILE_BREAKPOINT } from "../../../../constants/constants";
-import Modal from "../../../shared/Modal";
 import PaginatedSelect from "../../../shared/paginatedSelect";
-import SettingsModal from "./SettingsModal";
 
 interface HeaderProps {
   loadSessionGroupOptions: (
@@ -31,17 +22,9 @@ interface HeaderProps {
 
   onSetYear: (year: number) => void;
   curYear: number;
-
-  setExpectedMonthCounts: (newMonthCounts: number[]) => void;
-  expectedMonthCounts: number[];
-
-  // save to database
-  saveExpectedMonthCounts: (year: number, newMonthCounts: number[]) => void;
 }
 
 const Header: React.FunctionComponent<HeaderProps> = (props) => {
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-
   return (
     <>
       <HeaderLayout>
@@ -62,21 +45,7 @@ const Header: React.FunctionComponent<HeaderProps> = (props) => {
             onSetMonth={props.onSetMonth}
           ></SelectMonth>
         </SelectDate>
-        <SettingsButton
-          onClick={() => setIsSettingsModalOpen(true)}
-        ></SettingsButton>
       </HeaderLayout>
-      <Modal
-        isOpen={isSettingsModalOpen}
-        modalComponent={
-          <SettingsModal
-            saveExpectedMonthCounts={props.saveExpectedMonthCounts}
-            curMonth={props.curMonth}
-            curYear={props.curYear}
-          ></SettingsModal>
-        }
-        onOutsideClick={() => setIsSettingsModalOpen(false)}
-      ></Modal>
     </>
   );
 };
@@ -238,27 +207,6 @@ const StyledSelectMonth = styled.div`
   padding-left: 2rem;
   grid-area: selectMonth;
   justify-self: flex-start;
-`;
-
-interface SettingsButtonProps {
-  onClick: () => void;
-}
-
-const SettingsButton: React.FunctionComponent<SettingsButtonProps> = (
-  props
-) => {
-  return (
-    <StyledSettingsButton>
-      <IconButton onClick={props.onClick}>
-        <MdMoreVert></MdMoreVert>
-      </IconButton>
-    </StyledSettingsButton>
-  );
-};
-
-const StyledSettingsButton = styled.div`
-  grid-area: settingsButton;
-  justify-self: flex-end;
 `;
 
 export default Header;

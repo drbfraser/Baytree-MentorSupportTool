@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import MentorSession, MonthlyExpectedSessionCounts
+from .models import MentorSession
 
 
 class SessionSerializer(serializers.ModelSerializer):
@@ -31,9 +31,3 @@ class SessionSerializer(serializers.ModelSerializer):
             clock_out=validated_data.get("clock_out"),
             notes=validated_data.get("notes"),
         )
-
-
-class MonthlyExpectedSessionCountsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MonthlyExpectedSessionCounts
-        fields = "__all__"

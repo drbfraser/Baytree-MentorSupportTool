@@ -15,13 +15,11 @@ interface MentorSessionCount {
   firstName: string;
   lastName: string;
   numSessions: number;
-  numSessionsOutOfTotal: string;
 }
 
 interface SessionTrackingTableProps {
   sessionsForMonth: Session[];
   mentors: Volunteer[];
-  expectedSessionNumberForMonth: number;
   isLoading: boolean;
   month: number;
   year: number;
@@ -55,11 +53,7 @@ const SessionTrackingTable: React.FunctionComponent<
     setPagedMentorSessionCounts(
       mentorSessionCountsRef.current.slice(0, PAGE_SIZE)
     );
-  }, [
-    props.mentors,
-    props.sessionsForMonth,
-    props.expectedSessionNumberForMonth,
-  ]);
+  }, [props.mentors, props.sessionsForMonth]);
 
   const getMentorSessionCounts = (
     mentors: Volunteer[],
@@ -73,7 +67,6 @@ const SessionTrackingTable: React.FunctionComponent<
         firstName: mentor.firstname,
         lastName: mentor.surname,
         numSessions: 0,
-        numSessionsOutOfTotal: "",
       })
     );
 
@@ -98,7 +91,6 @@ const SessionTrackingTable: React.FunctionComponent<
     aggregatedSessionsByMentor = aggregatedSessionsByMentor.map((mentor) => {
       return {
         ...mentor,
-        numSessionsOutOfTotal: `${mentor.numSessions} / ${props.expectedSessionNumberForMonth}`,
         fullName: `${mentor.firstName} ${mentor.lastName}`,
       };
     });
@@ -143,7 +135,7 @@ const SessionTrackingTable: React.FunctionComponent<
             },
             {
               header: "Sessions",
-              dataField: "numSessionsOutOfTotal",
+              dataField: "numSessions",
               dataType: "string",
             },
           ]}
