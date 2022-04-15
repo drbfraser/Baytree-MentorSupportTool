@@ -88,6 +88,7 @@ interface TopbarActionProps {
   icon: React.FC<IconBaseProps>;
   onClick?: () => void;
   modalComponent?: NavbarModalComponent;
+  enableModalCloseButton?: boolean;
   modalWidth?: string;
   modalHeight?: string;
   color?: string;

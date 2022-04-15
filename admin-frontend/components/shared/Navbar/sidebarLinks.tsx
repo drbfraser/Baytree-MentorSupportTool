@@ -7,6 +7,7 @@ export interface SidebarLink {
   title: string;
   icon: React.FC<IconBaseProps>;
   modalComponent?: NavbarModalComponent;
+  enableModalCloseButton?: boolean;
   modalWidth?: string;
   modalHeight?: string;
 }

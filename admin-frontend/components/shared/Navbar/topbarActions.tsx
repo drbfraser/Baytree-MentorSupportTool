@@ -8,6 +8,7 @@ export interface TopbarAction {
   title: string;
   iconColor?: string;
   modalComponent: NavbarModalComponent;
+  enableModalCloseButton?: boolean;
   modalWidth?: string;
   modalHeight?: string;
 }
@@ -17,6 +18,7 @@ const topbarActions: TopbarAction[] = [
     icon: MdLogout,
     title: "Log out",
     modalComponent: LogoutModal,
+    enableModalCloseButton: false,
     modalHeight: "auto",
     iconColor: "#ff0000",
   },

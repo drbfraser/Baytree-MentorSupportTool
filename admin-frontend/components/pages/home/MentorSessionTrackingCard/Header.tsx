@@ -239,7 +239,7 @@ const SearchBox: React.FunctionComponent<SearchBoxProps> = (props) => {
         type="mentorFilter"
         id="mentorFilter"
         value={props.mentorFilter}
-        onChange={(e) => props.setMentorFilter(e.target.value)}
+        onChange={(e: any) => props.setMentorFilter(e.target.value)}
       />
     </StyledSearchBox>
   );

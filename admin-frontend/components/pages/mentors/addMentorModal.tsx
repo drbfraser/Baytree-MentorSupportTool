@@ -141,7 +141,10 @@ const AddMentorModal: React.FC<AddMentorModalProps> = (props) => {
             ]}
           ></DataGrid>
           <Pager
-            onChangePage={setPageNumber}
+            onChangePage={(num: number) => {
+              getPageData(num);
+              setPageNumber(num);
+            }}
             maxPageNumber={maxPageNumber}
             currentPageNumber={pageNumber}
           ></Pager>

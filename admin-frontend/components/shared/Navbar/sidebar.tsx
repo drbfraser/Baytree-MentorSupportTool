@@ -50,6 +50,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
               setSidebarActive={props.setSidebarActive}
               useMobileLayout={props.useMobileLayout}
               modalComponent={actionButton.modalComponent}
+              enableModalCloseButton={actionButton.enableModalCloseButton}
               modalHeight={actionButton.modalHeight}
               modalWidth={actionButton.modalWidth}
             ></SidebarItem>
@@ -118,7 +119,11 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
       {props.modalComponent && (
         <Modal
           isOpen={showModal}
-          modalComponent={props.modalComponent}
+          modalComponent={React.createElement(props.modalComponent, {
+            onOutsideClick: () => {
+              setShowModal(false);
+            },
+          })}
           onOutsideClick={() => {
             setShowModal(false);
           }}

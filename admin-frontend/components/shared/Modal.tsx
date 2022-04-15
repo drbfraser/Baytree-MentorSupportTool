@@ -4,6 +4,11 @@ import ReactDOM from "react-dom";
 import { MdClose } from "react-icons/md";
 import styled from "styled-components";
 import useMobileLayout from "../../hooks/useMobileLayout";
+
+export type ModalComponent = React.FC<{
+  onOutsideClick: () => void;
+  useMobileLayout?: boolean;
+}>;
 interface ModalProps {
   isOpen: boolean;
   onOutsideClick: () => void;
@@ -102,9 +107,9 @@ const StyledModal = styled.div<StyledModalProps>`
   position: fixed;
   background: white;
   width: ${(props) =>
-    props.useMobileLayout ? "100vw" : props.width ?? "60vw"};
+    props.useMobileLayout ? "100vw" : props.width ?? "80vw"};
   height: ${(props) =>
-    props.useMobileLayout ? "100vh" : props.height ?? "60vh"};
+    props.useMobileLayout ? "100vh" : props.height ?? "80vh"};
   top: ${(props) =>
     props.useMobileLayout
       ? "0"
@@ -112,13 +117,13 @@ const StyledModal = styled.div<StyledModalProps>`
         props.height !== "auto" &&
         props.height !== "fit-content"
       ? `calc((100vh - ${props.height}) / 2)`
-      : "20vh"};
+      : "10vh"};
   left: ${(props) =>
     props.useMobileLayout
       ? "0"
       : props.width
       ? `calc((100vw - ${props.width}) / 2)`
-      : "20vw"};
+      : "10vw"};
   z-index: 501;
   padding: 2rem;
   overflow-y: auto;
