@@ -16,6 +16,8 @@ class SessionSerializer(serializers.ModelSerializer):
             "clock_in",
             "clock_out",
             "notes",
+            "cancelled",
+            "viewsSessionId",
         ]
 
     def create(self, validated_data):
@@ -30,4 +32,6 @@ class SessionSerializer(serializers.ModelSerializer):
             clock_in=validated_data.get("clock_in"),
             clock_out=validated_data.get("clock_out"),
             notes=validated_data.get("notes"),
+            cancelled = False if validated_data.get("cancelled") == None else validated_data.get("cancelled"),
+            viewsSessionId=validated_data.get("cancelled")
         )
