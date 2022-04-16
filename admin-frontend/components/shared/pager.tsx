@@ -6,9 +6,7 @@ import useMobileLayout from "../../hooks/useMobileLayout";
 import Button from "./button";
 
 export interface PagerProps {
-  onNextPagePressed: (nextPageNumber: number) => void;
-  onPreviousPagePressed: (prevPageNumber: number) => void;
-  onGotoPagePressed: (gotoPageNumber: number) => void;
+  onChangePage: (newPage: number) => void;
   currentPageNumber: number;
   maxPageNumber: number;
 }
@@ -48,7 +46,7 @@ const Pager: React.FC<PagerProps> = (props) => {
         </div>
         <Button
           style={{
-            padding: "1.2rem 1rem",
+            padding: "0.7rem 1rem",
             height: "fit-content",
             margin: "0.6rem 0.6rem 0px 0px",
           }}
@@ -68,7 +66,7 @@ const Pager: React.FC<PagerProps> = (props) => {
                     `Page number must be between 1 and ${props.maxPageNumber}`
                   );
                 } else {
-                  props.onGotoPagePressed(parsedCurrentPageNumber);
+                  props.onChangePage(parsedCurrentPageNumber);
                 }
               } else {
                 toast.error(
@@ -86,10 +84,17 @@ const Pager: React.FC<PagerProps> = (props) => {
 
   return (
     <>
-      <div style={{ width: "100%", justifyContent: "center", display: "flex" }}>
+      <div
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex",
+        }}
+      >
         <Button
           style={{
-            padding: "0.5rem 0.6rem",
+            padding: "0 0.6rem",
             height: "fit-content",
             margin: "0.6rem 0.6rem 0px 0px",
           }}
@@ -99,7 +104,7 @@ const Pager: React.FC<PagerProps> = (props) => {
             if (currentPageNumberInputRef.current) {
               currentPageNumberInputRef.current.value = "";
               if (props.currentPageNumber > 1) {
-                props.onNextPagePressed(props.currentPageNumber - 1);
+                props.onChangePage(props.currentPageNumber - 1);
               } else {
                 toast.error("There are no more previous pages!");
               }
@@ -110,7 +115,7 @@ const Pager: React.FC<PagerProps> = (props) => {
         </Button>
         <Button
           style={{
-            padding: "0.5rem 0.6rem",
+            padding: "0 0.6rem",
             height: "fit-content",
             margin: "0.6rem 0.6rem 0px 0px",
           }}
@@ -121,7 +126,7 @@ const Pager: React.FC<PagerProps> = (props) => {
               currentPageNumberInputRef.current.value = "";
             }
             if (props.currentPageNumber < props.maxPageNumber) {
-              props.onNextPagePressed(props.currentPageNumber + 1);
+              props.onChangePage(props.currentPageNumber + 1);
             } else {
               toast.error("There are no more pages left!");
             }
@@ -133,7 +138,12 @@ const Pager: React.FC<PagerProps> = (props) => {
       </div>
       {onMobileDevice && (
         <div
-          style={{ width: "100%", justifyContent: "center", display: "flex" }}
+          style={{
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+            display: "flex",
+          }}
         >
           {renderPageNumberPicker()}
         </div>

@@ -163,7 +163,7 @@ const StyledMentorDemographicsCard = styled(Paper)`
   display: grid;
   grid-area: mentorDemographicsCard;
   grid-template-columns: 1.5fr 1fr;
-  grid-template-rows: 1fr 3fr;
+  grid-template-rows: auto auto;
   grid-template-areas:
     "header header"
     "chart legend";
@@ -214,7 +214,9 @@ const StyledTitle = styled.div`
 const MoreInfoButton: React.FC<{}> = () => {
   return (
     <StyledMoreInfoButton>
-      <StyledMoreInfoText variant="button">See More Info</StyledMoreInfoText>
+      <Button variant="outlined" color="success">
+        More
+      </Button>
     </StyledMoreInfoButton>
   );
 };
@@ -285,6 +287,7 @@ const Options: React.FC<{
 
 const StyledOptions = styled.div`
   grid-area: options;
+  padding-top: 0.3rem;
 `;
 
 const Chart: React.FC<{
@@ -370,7 +373,7 @@ const Chart: React.FC<{
 
   return (
     <StyledChart>
-      <ResponsiveContainer width="99%" height={200}>
+      <ResponsiveContainer height={200}>
         <PieChart width={400} height={400}>
           <Pie
             data={convertDemographicDataToPieChartData(
@@ -384,6 +387,7 @@ const Chart: React.FC<{
             outerRadius={80}
             fill="#8884d8"
             dataKey="value"
+            isAnimationActive={false}
           >
             {convertDemographicDataToPieChartData(
               props.data,
@@ -403,6 +407,7 @@ const Chart: React.FC<{
 
 const StyledChart = styled.div`
   grid-area: chart;
+  overflow: hidden; // fixes resizing issues***
 `;
 
 interface LegendEntry {

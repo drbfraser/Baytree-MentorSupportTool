@@ -21,7 +21,7 @@ session_views_response_fields = [
     "VenueID",
     "Created",
     "Updated",
-    "VenueName"
+    "VenueName",
 ]
 session_translated_fields = [
     "viewsSessionId",
@@ -36,7 +36,7 @@ session_translated_fields = [
     "venueId",
     "created",
     "updated",
-    "venueName"
+    "venueName",
 ]
 
 """
@@ -48,7 +48,15 @@ Mentors can also take note of attendance by attaching "Session Attendance" in vi
 particular session.
 """
 
-def get_sessions(id: str = None, session_group_id: str = None, limit: int = None, offset: int = None):
+
+def get_sessions(
+    id: str = None,
+    session_group_id: str = None,
+    limit: int = None,
+    offset: int = None,
+    startDateFrom: str = None,
+    startDateTo: str = None,
+):
     """
     Gets sessions from Views API.
     If an id argument is provided, the session with a matching id will be returned.
@@ -61,47 +69,90 @@ def get_sessions(id: str = None, session_group_id: str = None, limit: int = None
     """
 
     if id != None and session_group_id != None:
-        response = requests.get(sessions_base_url.format(session_group_id) + "/" + id, auth=(views_username, views_password))
+        response = requests.get(
+            sessions_base_url.format(session_group_id) + "/" + id,
+            auth=(views_username, views_password),
+        )
         parsed = xmltodict.parse(response.text)
-        session = {session_translated_fields[i]: parsed["session"][field]
-                     for i, field in enumerate(session_views_response_fields)}
+        session = {
+            session_translated_fields[i]: parsed["session"][field]
+            for i, field in enumerate(session_views_response_fields)
+        }
         return session
     else:
         if limit != None and offset != None:
+            request_url = (
+                sessions_base_url.format(session_group_id)
+                + "?pageFold="
+                + str(limit)
+                + "&offset="
+                + str(offset)
+            )
+
+            if startDateFrom != None:
+                request_url += "&StartDate-from={}".format(startDateFrom)
+            if startDateTo != None:
+                request_url += "&StartDate-to={}".format(startDateTo)
+
             response = requests.get(
-                sessions_base_url.format(session_group_id) + "?pageFold=" +
-                str(limit) + "&offset=" + str(offset),
-                auth=(views_username, views_password))
+                request_url,
+                auth=(views_username, views_password),
+            )
         else:
+            request_url = sessions_base_url.format(session_group_id) + "?"
+
+            if startDateFrom != None:
+                request_url += "&StartDate-from={}".format(startDateFrom)
+            if startDateTo != None:
+                request_url += "&StartDate-to={}".format(startDateTo)
+
             response = requests.get(
-                sessions_base_url.format(session_group_id),
-                auth=(views_username, views_password))
-        
+                request_url,
+                auth=(views_username, views_password),
+            )
+
         parsed = xmltodict.parse(response.text)
+
+        # Handle edge case where no sessions were returned from views
+        if parsed["sessions"]["@count"] == "0":
+            return {"total": parsed["sessions"]["@count"], "data": []}
+
         parsed_session_list = parsed["sessions"]["session"]
         if not isinstance(parsed_session_list, list):
             parsed_session_list = [parsed_session_list]
 
-        sessions = [{session_translated_fields[i]: session[field] for i, field in enumerate(session_views_response_fields)}
-                      for session in parsed_session_list]
-        return {"total": parsed['sessions']['@count'], "data": sessions}
+        sessions = [
+            {
+                session_translated_fields[i]: session[field]
+                for i, field in enumerate(session_views_response_fields)
+            }
+            for session in parsed_session_list
+        ]
+        return {"total": parsed["sessions"]["@count"], "data": sessions}
 
-@api_view(('GET',))
-@permission_classes((AdminPermissions, ))
+
+@api_view(("GET",))
+@permission_classes((AdminPermissions,))
 def get_sessions_endpoint(request):
     """
-    Handles a request from the client browser and calls get_session_groups
+    Handles a request from the client browser and calls get_sessions()
     to return its response to the client.
     """
-    id = request.GET.get('id', None)
-    session_group_id = request.GET.get('sessionGroupId', None)
-
+    id = request.GET.get("id", None)
+    session_group_id = request.GET.get("sessionGroupId", None)
     if id != None and session_group_id != None:
         response = get_sessions(id, session_group_id=session_group_id)
     elif session_group_id != None:
-        response = get_sessions(session_group_id=session_group_id, limit=request.GET.get(
-            'limit', None), offset=request.GET.get('offset', None))
+        response = get_sessions(
+            session_group_id=session_group_id,
+            limit=request.GET.get("limit", None),
+            offset=request.GET.get("offset", None),
+            startDateFrom=request.GET.get("startDateFrom", None),
+            startDateTo=request.GET.get("startDateTo", None),
+        )
     else:
-        return Response({"error": "A session group ID must be provided"}, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "A session group ID must be provided"}, status=status.HTTP_200_OK
+        )
 
     return Response(response, status=status.HTTP_200_OK)

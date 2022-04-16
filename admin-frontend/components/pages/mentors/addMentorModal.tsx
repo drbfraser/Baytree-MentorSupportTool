@@ -6,14 +6,17 @@ import {
 } from "../../../api/backend/views/volunteers";
 import { HELP_MESSAGE } from "../../../constants/constants";
 import DataGrid from "../../shared/datagrid";
-import { ModalComponent } from "../../shared/Modal";
 import Pager from "../../shared/pager";
 import OverlaySpinner from "../../shared/overlaySpinner";
 import { sendMentorAccountCreationEmail } from "../../../api/backend/mentorUsers";
-import { MdCheck } from "react-icons/md";
-import { TextField } from "@mui/material";
+import { MdCheck, MdSearch } from "react-icons/md";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 
-const AddMentorModal: ModalComponent = (props) => {
+interface AddMentorModalProps {
+  onOutsideClick: () => void;
+}
+
+const AddMentorModal: React.FC<AddMentorModalProps> = (props) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [maxPageNumber, setMaxPageNumber] = useState(1);
   const [pageData, setPageData] = useState<Volunteer[]>([]);
@@ -83,6 +86,15 @@ const AddMentorModal: ModalComponent = (props) => {
             id="emailFilter"
             value={emailFilter}
             onChange={(e) => setEmailFilter(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <IconButton>
+                    <MdSearch />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           <DataGrid
             data={pageData}
@@ -138,15 +150,7 @@ const AddMentorModal: ModalComponent = (props) => {
             ]}
           ></DataGrid>
           <Pager
-            onNextPagePressed={(num: number) => {
-              getPageData(num);
-              setPageNumber(num);
-            }}
-            onPreviousPagePressed={(num: number) => {
-              getPageData(num);
-              setPageNumber(num);
-            }}
-            onGotoPagePressed={(num: number) => {
+            onChangePage={(num: number) => {
               getPageData(num);
               setPageNumber(num);
             }}

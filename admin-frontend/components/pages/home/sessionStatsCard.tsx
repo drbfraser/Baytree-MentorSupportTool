@@ -18,7 +18,11 @@ import {
   getSessionsFromViews,
   Session,
 } from "../../../api/backend/views/sessions";
-import { COLORS, HELP_MESSAGE, MOBILE_BREAKPOINT } from "../../../constants/constants";
+import {
+  COLORS,
+  HELP_MESSAGE,
+  MOBILE_BREAKPOINT,
+} from "../../../constants/constants";
 import PaginatedSelect, {
   PaginatedSelectOption,
 } from "../../shared/paginatedSelect";
@@ -186,7 +190,7 @@ const SessionStatsCard: React.FC<{}> = () => {
 const StyledSessionStatsCard = styled(Paper)`
   width: 100%;
   height: 100%;
-  padding: 2rem 2rem 0rem 0.2rem;
+  padding: 2rem 2rem 1rem 0.2rem;
   grid-area: sessionStatsCard;
   display: grid;
   grid-template-columns: 1fr;
@@ -214,7 +218,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = (props) => {
   return (
     <StyledHeader>
-      <HeaderTitle variant="h4">Group Statistics</HeaderTitle>
+      <HeaderTitle variant="h5">Group Statistics</HeaderTitle>
       <PaginatedSelect
         isMulti={true}
         loadOptions={props.loadSessionGroupOptions}
@@ -270,7 +274,7 @@ const Chart: React.FC<{
           <Skeleton />
         </div>
       ) : (
-        <ResponsiveContainer width="99%" height={240}>
+        <ResponsiveContainer height={240}>
           <BarChart data={props.data}>
             <CartesianGrid></CartesianGrid>
             {props.selectedSessionGroups.map((selectedSessionGroup, i) => (
@@ -302,6 +306,7 @@ const Chart: React.FC<{
 
 const StyledChart = styled.div`
   grid-area: chart;
+  overflow: hidden;
 `;
 
 const LegendText = styled.span`
