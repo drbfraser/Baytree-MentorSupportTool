@@ -1,10 +1,23 @@
-import { Route, Redirect } from "react-router-dom";
-import React from "react";
+import { useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-export default function PublicRoute({ ...routeProps }) {
-  if (localStorage.getItem("token") == null) {
-    return <Route {...routeProps} />;
-  } else {
-    return <Redirect to={{ pathname: "/dashboard" }} />;
-  }
-}
+const PublicRoute = () => {
+  const [loading, setLoading] = useState(true);
+  const { userId, verifyClient } = useAuth();
+
+  useEffect(() => {
+    verifyClient();
+    setLoading(false);
+  }, [verifyClient]);
+
+  return loading ? (
+    <div>Loading...</div>
+  ) : userId ? (
+    <Navigate to="dashboard/home" replace />
+  ) : (
+    <Outlet />
+  );
+};
+
+export default PublicRoute;

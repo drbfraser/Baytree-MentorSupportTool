@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import "date-fns";
 import moment from "moment";
 
@@ -32,7 +32,7 @@ const CreateGoals = (props: any) => {
   );
   const [open, setOpen] = useState(props.goalId !== undefined);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const [, setErrors] = useState(false);
   const [, setSubmit] = useState(false);
 
@@ -83,7 +83,7 @@ const CreateGoals = (props: any) => {
         .then((response) => console.log(response))
         .then(() => {
           props.onSubmit();
-          history.push("/dashboard/Goals");
+          navigate("/dashboard/goals");
         });
     }
   };

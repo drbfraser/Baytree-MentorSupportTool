@@ -1,87 +1,48 @@
 import {
-  BrowserRouter,
-  Switch,
-  Redirect,
-  Route,
-  useLocation,
-  Router
-} from "react-router-dom";
-
-import Login from "./Components/Login";
-import Dashboard from "./Components/Dashboard";
-import ResetPassword from "./Components/ResetPassword";
-import { createMemoryHistory } from "history";
-import { useEffect, useState } from "react";
-import { verify } from "./api/auth";
-import CreateAccount from "./Components/CreateAccount";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+  BrowserRouter, Navigate, Route, Routes
+} from "react-router-dom"
+import { ToastContainer } from 'react-toastify'
+import './App.css'
+import CreateAccount from './Components/CreateAccount'
+import Dashboard from "./Components/Dashboard"
+import Goals from "./Components/Goals"
+import Home from "./Components/Home"
+import Login from './Components/Login'
+import Notification from "./Components/Notification"
+import Questionnaire from "./Components/Questionnaire"
+import Records from "./Components/Records"
+import ResetPassword from "./Components/ResetPassword"
+import Sessions from "./Components/Sessions"
+import AuthRoute from "./Utils/PrivateRoute"
+import PublicRoute from "./Utils/PublicRoute"
 
 function App() {
-  const history = createMemoryHistory();
   return (
     <>
       <ToastContainer></ToastContainer>
-      <Router history={history}>
-        <BrowserRoute></BrowserRoute>
-      </Router>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/resetPassword' element={<ResetPassword />} />
+          <Route path='/createAccount' element={<CreateAccount />} />
+          <Route element={<PublicRoute />}>
+            <Route path='/login' element={<Login />} />
+          </Route>
+          <Route element={<AuthRoute />}>
+            <Route path='/dashboard' element={<Dashboard />}>
+              <Route path='home' element={<Home />} />
+              <Route path='sessions' element={<Sessions />} />
+              <Route path='questionnaires' element={<Questionnaire />} />
+              <Route path='goals' element={<Goals />} />
+              <Route path='records' element={<Records />} />
+              <Route path='notifications' element={<Notification />} />
+              <Route path='home' element={<Home />} />
+            </Route>
+            <Route path='/' element={<Navigate to='/dashboard/home' replace />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
-  );
+  )
 }
 
-const doesCurRouteRequireAuthentication = () => {
-  const NON_AUTHENTICATED_ROUTES = ["/createaccount", "/resetpassword"];
-
-  return !NON_AUTHENTICATED_ROUTES.includes(
-    window.location.pathname.toLowerCase()
-  );
-};
-
-const BrowserRoute = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [redirectToLogin, setRedirectToLogin] = useState(false);
-  const location = useLocation();
-
-  useEffect(() => {
-    async function verifyClient() {
-      // verify only on authenticated routes
-      if (doesCurRouteRequireAuthentication()) {
-        if (await verify()) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-          setRedirectToLogin(true);
-        }
-      }
-    }
-
-    verifyClient();
-  }, [location]);
-
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <div>
-          <Switch>
-            <Route
-              exact
-              path="/createAccount"
-              component={CreateAccount}
-            ></Route>
-            <Route exact path="/" component={Login} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/resetpassword" component={ResetPassword} />
-            {isAuthenticated && (
-              <>
-                <Route path="/dashboard" component={Dashboard}></Route>
-              </>
-            )}
-            {redirectToLogin && <Redirect to={{ pathname: "/login" }} />}
-          </Switch>
-        </div>
-      </BrowserRouter>
-    </div>
-  );
-};
-
-export default App;
+export default App

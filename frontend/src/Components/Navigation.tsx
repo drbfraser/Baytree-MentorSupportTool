@@ -1,63 +1,55 @@
-import React, { useEffect } from "react";
-import { Switch, Route, useRouteMatch, Link } from "react-router-dom";
-
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import AutoGraphIcon from "@mui/icons-material/AutoGraph";
+import BookIcon from "@mui/icons-material/Book";
+import CreateIcon from "@mui/icons-material/Create";
+import HomeIcon from "@mui/icons-material/Home";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
+import LogoutIcon from "@mui/icons-material/Logout";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import PermDeviceInformationIcon from "@mui/icons-material/PermDeviceInformation";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import AppBar from "@mui/material/AppBar";
+import Badge from "@mui/material/Badge";
+import Box from "@mui/material/Box";
+import pink from "@mui/material/colors/pink";
 import CssBaseline from "@mui/material/CssBaseline";
-import Toolbar from "@mui/material/Toolbar";
+import Drawer from "@mui/material/Drawer";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import pink from "@mui/material/colors/pink";
-
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import CreateIcon from "@mui/icons-material/Create";
-import AutoGraphIcon from "@mui/icons-material/AutoGraph";
-import BookIcon from "@mui/icons-material/Book";
-import HomeIcon from "@mui/icons-material/Home";
-import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
-import LogoutIcon from "@mui/icons-material/Logout";
-import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
-import PermDeviceInformationIcon from "@mui/icons-material/PermDeviceInformation";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import Badge from "@mui/material/Badge";
-
+import Toolbar from "@mui/material/Toolbar";
+import React, { useEffect } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api/url";
-
-import Home from "./Home";
-import Goals from "./Goals";
-import Logo from "../Assets/baytree-logo.png";
-import SideLogo from "../Assets/changing-aspirations.png";
-import Logout from "./Logout";
+import Logo from "../assets/baytree-logo.png";
+import SideLogo from "../assets/changing-aspirations.png";
+import { useAuth } from "../context/AuthContext";
 import Messages from "./Messages";
-import Profile from "./Profile";
-import Questionnaire from "./Questionnaire";
-import Sessions from "./Sessions";
-import Records from "./Records";
-import Notification from "./Notification";
+
+
+
+
 const drawerWidth = 240;
 
-export default function Navigation() {
-  let match = useRouteMatch();
+export default function Dashboard() {
+  const { userId, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const [numNotifications, setNumNotifications] = React.useState(0);
   const [resourcesURL, setResourcesURL] = React.useState("");
 
   const fetchNumNotifications = () => {
     fetch(
-      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${localStorage.getItem(
-        "user_id"
-      )}`,
+      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${userId}`,
       {
         method: "GET",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        credentials: "include"
+        credentials: "include",
       }
     )
       .then((response) => response.json())
@@ -71,9 +63,9 @@ export default function Navigation() {
     fetch(`${API_BASE_URL}/resources/`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      credentials: "include"
+      credentials: "include",
     })
       .then((response) => response.json())
       .then((data) => {
@@ -85,6 +77,11 @@ export default function Navigation() {
     fetchResourcePage();
     fetchNumNotifications();
   }, []);
+
+  const logout = async () => {
+    await signOut();
+    navigate("/login", { replace: true });
+  };
 
   return (
     <div
@@ -101,7 +98,7 @@ export default function Navigation() {
             background: "white",
             width: "100%",
             height: "auto",
-            margin: "auto"
+            margin: "auto",
           }}
           sx={{ zIndex: (theme) => theme.zIndex.drawer + 5 }}
         >
@@ -127,7 +124,7 @@ export default function Navigation() {
                   </Grid>
                   <Grid item xs={3}>
                     <Link
-                      to={`${match.url}/notifications`}
+                      to={`/dashboard/notifications`}
                       style={{ textDecoration: "none", color: "black" }}
                     >
                       <IconButton color="inherit" size="large">
@@ -139,7 +136,7 @@ export default function Navigation() {
                   </Grid>
                   <Grid item xs={3}>
                     <Link
-                      to={`${match.url}/profile`}
+                      to={`/dashboard/profile`}
                       style={{ textDecoration: "none", color: "black" }}
                     >
                       <IconButton color="inherit" size="large">
@@ -149,7 +146,7 @@ export default function Navigation() {
                   </Grid>
                   <Grid item xs={3}>
                     <IconButton
-                      onClick={Logout}
+                      onClick={logout}
                       style={{ color: "red" }}
                       size="large"
                     >
@@ -168,8 +165,8 @@ export default function Navigation() {
             flexShrink: 0,
             [`& .MuiDrawer-paper`]: {
               width: drawerWidth,
-              boxSizing: "border-box"
-            }
+              boxSizing: "border-box",
+            },
           }}
         >
           <Toolbar />
@@ -182,10 +179,10 @@ export default function Navigation() {
                   "Questionnaires",
                   "Goals",
                   "Records",
-                  "Notifications"
+                  "Notifications",
                 ].map((text, index) => (
                   <Link
-                    to={`${match.url}/${text}`}
+                    to={`/dashboard/${text}`}
                     style={{ textDecoration: "none", color: "black" }}
                     key={text}
                   >
@@ -255,32 +252,7 @@ export default function Navigation() {
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <Toolbar />
-          <Switch>
-            <Route path={`${match.path}/home`}>
-              <Home />
-            </Route>
-            <Route path={`${match.path}/sessions`}>
-              <Sessions />
-            </Route>
-            <Route path={`${match.path}/questionnaires`}>
-              <Questionnaire />
-            </Route>
-            <Route path={`${match.path}/profile`}>
-              <Profile />
-            </Route>
-            <Route path={`${match.path}/goals`}>
-              <Goals />
-            </Route>
-            <Route path={`${match.path}/records`}>
-              <Records />
-            </Route>
-            <Route path={`${match.path}/messages`}>
-              <Messages />
-            </Route>
-            <Route path={`${match.path}/notifications`}>
-              <Notification />
-            </Route>
-          </Switch>
+          <Outlet />
         </Box>
       </Box>
     </div>

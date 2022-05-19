@@ -8,8 +8,8 @@ import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 
-import Logo from "../Assets/baytree-logo.png";
-import Photo from "../Assets/baytree-photo.jpg";
+import Logo from "../assets/baytree-logo.png";
+import Photo from "../assets/baytree-photo.jpg";
 import { CardContent } from "@mui/material";
 import { login, verify } from "../api/auth";
 
