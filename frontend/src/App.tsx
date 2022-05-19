@@ -35,7 +35,7 @@ function App() {
               <Route path='goals' element={<Goals />} />
               <Route path='records' element={<Records />} />
               <Route path='notifications' element={<Notification />} />
-              <Route path='home' element={<Home />} />
+              <Route path='profile' element={<Home />} />
             </Route>
             <Route path='/' element={<Navigate to='/dashboard/home' replace />} />
           </Route>
