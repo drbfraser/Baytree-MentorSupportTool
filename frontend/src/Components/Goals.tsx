@@ -46,34 +46,42 @@ export default function Goals() {
   };
 
   const fetchGoals = () => {
-    fetch(`${API_BASE_URL}/goals/goal/?mentor_id=${localStorage.getItem('user_id')}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: "include"
-    })
-    .then (response => response.json())
-    .then (data => setGoals(data))
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  }
+    fetch(
+      `${API_BASE_URL}/goals/goal/?mentor_id=${localStorage.getItem(
+        "user_id"
+      )}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include"
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => setGoals(data))
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   const fetchMenteeList = () => {
-    fetch(`${API_BASE_URL}/users/mentors?id=${localStorage.getItem('user_id')}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: "include"
-    })
-    .then (response => response.json())
-    .then (data => setMenteeList(data.data.menteeuser || []))
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  }
+    fetch(
+      `${API_BASE_URL}/users/mentors?id=${localStorage.getItem("user_id")}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include"
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => setMenteeList(data.data.menteeuser || []))
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
   useEffect(() => {
     fetchGoals();
     fetchMenteeList();
@@ -88,7 +96,7 @@ export default function Goals() {
     fetch(`${API_BASE_URL}/goals/goal/${goalId}`, {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ status: "ACHIEVED" }),
       credentials: "include"
@@ -99,16 +107,35 @@ export default function Goals() {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const toBeUpdatedGoal = toBeUpdatedGoalId && goals ? goals.find(g => g.id === toBeUpdatedGoalId) : undefined;
+  const toBeUpdatedGoal =
+    toBeUpdatedGoalId && goals
+      ? goals.find((g) => g.id === toBeUpdatedGoalId)
+      : undefined;
 
   const exportGoalsToCsv = () => {
-    let csvContent = "data:text/csv;charset=utf-8," 
-    csvContent += "Mentor Name, Mentee Name, Goal Creation Date, Goal Review Date, Title, Description, Update Date, Status \n"
-    
-    for(var i = 0; i < goals.length; i++){
-      csvContent+= '"' + goals[i].mentor.email + '","' +  goals[i].mentee + '","' + goals[i].date + '","' + goals[i].goal_review_date + '","' +
-        goals[i].title.replaceAll('"', '""') + '","' + goals[i].content.replaceAll('"', '""')  + '","'+ goals[i].last_update_date + '","' + 
-        goals[i].status + '"\n'
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent +=
+      "Mentor Name, Mentee Name, Goal Creation Date, Goal Review Date, Title, Description, Update Date, Status \n";
+
+    for (var i = 0; i < goals.length; i++) {
+      csvContent +=
+        '"' +
+        goals[i].mentor.email +
+        '","' +
+        goals[i].mentee +
+        '","' +
+        goals[i].date +
+        '","' +
+        goals[i].goal_review_date +
+        '","' +
+        goals[i].title.replaceAll('"', '""') +
+        '","' +
+        goals[i].content.replaceAll('"', '""') +
+        '","' +
+        goals[i].last_update_date +
+        '","' +
+        goals[i].status +
+        '"\n';
     }
 
     var encodedUri = encodeURI(csvContent);
@@ -117,9 +144,9 @@ export default function Goals() {
     link.setAttribute("download", "Goals.csv");
     document.body.appendChild(link);
 
-    link.click(); 
+    link.click();
     document.body.removeChild(link);
-  }
+  };
 
   return (
     <Grow in={true}>
@@ -135,7 +162,6 @@ export default function Goals() {
             </Button>
           </Grid>
           <Grid item xs={10}>
-            
             <Tabs
               value={tabValue}
               onChange={handleChange}
@@ -148,7 +174,10 @@ export default function Goals() {
             </Tabs>
           </Grid>
           <Grid item xs={1}>
-            <CreateGoals menteeList={menteeList} onSubmit={handleSubmitCreateGoal} />
+            <CreateGoals
+              menteeList={menteeList}
+              onSubmit={handleSubmitCreateGoal}
+            />
           </Grid>
         </Grid>
         <GoalsStatistics
@@ -161,19 +190,20 @@ export default function Goals() {
           totalGoals={goals.length}
         />
 
-        {toBeUpdatedGoal && 
-          <CreateGoals 
-              goal={toBeUpdatedGoal}
-              goalId={toBeUpdatedGoalId}
-              menteeList={menteeList}
-              onSubmit={handleSubmitCreateGoal}
-              onClose={() => setToBeUpdatedGoalId(undefined)} />
-        }
+        {toBeUpdatedGoal && (
+          <CreateGoals
+            goal={toBeUpdatedGoal}
+            goalId={toBeUpdatedGoalId}
+            menteeList={menteeList}
+            onSubmit={handleSubmitCreateGoal}
+            onClose={() => setToBeUpdatedGoalId(undefined)}
+          />
+        )}
 
         <Grid container style={{ marginTop: "24px" }}>
           {Object.values(goals).map((data) =>
             data.status === goalType || goalType === "ALL" ? (
-              <Accordion 
+              <Accordion
                 key={data.id}
                 expanded={expanded === data.id}
                 onChange={handleChange1(data.id)}
@@ -184,56 +214,111 @@ export default function Goals() {
                   aria-controls="panel1bh-content"
                   id="panel1bh-header"
                 >
-                  <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
-                    <Typography variant="h6">
-                      {data.title}
-                    </Typography>
-                    <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', paddingRight: '8px'}}>
+                  <div
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "space-between"
+                    }}
+                  >
+                    <Typography variant="h6">{data.title}</Typography>
+                    <div
+                      style={{
+                        flexShrink: 0,
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        paddingRight: "8px"
+                      }}
+                    >
                       <Typography
                         sx={{
                           color: "text.secondary",
                           margin: "8px",
-                          paddingRight: '8px'
+                          paddingRight: "8px"
                         }}
                       >
                         {moment(data.date).fromNow()}
                       </Typography>
-                      <Typography sx={{ color: "text.secondary", margin: "6px" }}>
+                      <Typography
+                        sx={{ color: "text.secondary", margin: "6px" }}
+                      >
                         {data.status}
                       </Typography>
                       {data.status === "IN PROGRESS" ? (
-                        <TimelineDot color="error" sx={{ backgroundColor: "red", alignSelf: 'center' }} />
+                        <TimelineDot
+                          color="error"
+                          sx={{ backgroundColor: "red", alignSelf: "center" }}
+                        />
                       ) : data.status === "ACHIEVED" ? (
-                        <TimelineDot color="success" sx={{ backgroundColor: "green", alignSelf: 'center'  }} />
+                        <TimelineDot
+                          color="success"
+                          sx={{ backgroundColor: "green", alignSelf: "center" }}
+                        />
                       ) : (
-                        <TimelineDot color="success" sx={{ backgroundColor: "blue", alignSelf: 'center'  }} />
+                        <TimelineDot
+                          color="success"
+                          sx={{ backgroundColor: "blue", alignSelf: "center" }}
+                        />
                       )}
                     </div>
                   </div>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Created Date</Typography>
+                  <Typography
+                    sx={{ fontSize: 14, mt: 2 }}
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Created Date
+                  </Typography>
                   <Typography variant="body2" gutterBottom>
                     {moment(data.date).format("dddd, MMMM Do YYYY")} <br />
                   </Typography>
 
-                  <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Goal Review Date</Typography>
+                  <Typography
+                    sx={{ fontSize: 14, mt: 2 }}
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Goal Review Date
+                  </Typography>
                   <Typography variant="body2" gutterBottom>
-                    {moment(data.goal_review_date).format("dddd, MMMM Do YYYY")} <br />
+                    {moment(data.goal_review_date).format("dddd, MMMM Do YYYY")}{" "}
+                    <br />
                   </Typography>
 
-                  <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Last Update Date</Typography>
+                  <Typography
+                    sx={{ fontSize: 14, mt: 2 }}
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Last Update Date
+                  </Typography>
                   <Typography variant="body2" gutterBottom>
-                    {moment(data.last_update_date).format("dddd, MMMM Do YYYY")}<br />
+                    {moment(data.last_update_date).format("dddd, MMMM Do YYYY")}
+                    <br />
                   </Typography>
 
-                  <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Mentee Name</Typography>
+                  <Typography
+                    sx={{ fontSize: 14, mt: 2 }}
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Mentee Name
+                  </Typography>
                   <Typography variant="body2">{data.menteeName}</Typography>
 
-                  <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Goal Description</Typography>
+                  <Typography
+                    sx={{ fontSize: 14, mt: 2 }}
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Goal Description
+                  </Typography>
                   <Typography variant="body2">{data.content}</Typography>
                 </AccordionDetails>
-                {data.status === "IN PROGRESS" && 
+                {data.status === "IN PROGRESS" && (
                   <>
                     <Divider />
                     <AccordionActions>
@@ -254,7 +339,7 @@ export default function Goals() {
                       </Button>
                     </AccordionActions>
                   </>
-                }
+                )}
               </Accordion>
             ) : null
           )}

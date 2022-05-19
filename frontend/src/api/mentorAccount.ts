@@ -8,10 +8,10 @@ export const createMentorAccount = async (
     method: "POST",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
     credentials: "include",
-    body: JSON.stringify({ createAccountLinkId, password }),
+    body: JSON.stringify({ createAccountLinkId, password })
   });
 
   return apiRes;
@@ -25,13 +25,13 @@ export const resetPassword = async (
     method: "PUT",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
     credentials: "include",
     body: JSON.stringify({
       resetPasswordLinkId: resetPasswordLinkId,
-      password,
-    }),
+      password
+    })
   });
 
   return apiRes;
@@ -42,13 +42,13 @@ export const sendPasswordResetEmail = async (email: string) => {
     method: "POST",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
     credentials: "include",
     body: JSON.stringify({
       email: email,
-      accountType: "Mentor",
-    }),
+      accountType: "Mentor"
+    })
   });
 
   return apiRes;

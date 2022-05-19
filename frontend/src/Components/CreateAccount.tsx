@@ -68,7 +68,7 @@ const CreateAccount = (props: any) => {
             src={BaytreeLogo}
             style={{
               height: "auto",
-              width: "11rem",
+              width: "11rem"
             }}
             alt="Logo"
           />
@@ -150,7 +150,7 @@ const CreateAccount = (props: any) => {
               maxHeight: "95vh",
               height: "auto",
               width: "100%",
-              boxShadow: "0 0 0.3rem grey",
+              boxShadow: "0 0 0.3rem grey"
             }}
           />
         </Photo>
