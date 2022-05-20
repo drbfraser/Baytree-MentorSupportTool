@@ -291,7 +291,7 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
                 <Select
                   fullWidth
                   defaultValue={dataRow[col.dataField]}
-                  onChange={() => {
+                  onChange={(event) => {
                     const primaryKey = props.primaryKey as string;
 
                     if (!hasCellBeenChanged(dataRow, j)) {
@@ -306,6 +306,7 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
                         changedDataRow[primaryKey] === dataRow[primaryKey]
                     );
 
+                    dataRow[col.dataField] = event.target.value;
                     if (changedDataRowIdx !== -1) {
                       props.changedDataRows[changedDataRowIdx] = dataRow;
                       props.setChangedDataRows(props.changedDataRows);

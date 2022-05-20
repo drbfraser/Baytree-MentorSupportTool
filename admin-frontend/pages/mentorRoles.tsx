@@ -35,6 +35,7 @@ const MentorRoles: NextPage = () => {
         ]}
         onSaveRows={(dataRows) => {
           const promise = new Promise<void>((resolve, reject) => {
+            console.log(dataRows);
             setTimeout(() => {
               console.log(dataRows);
               resolve();
