@@ -32,15 +32,16 @@ import Messages from "./Messages";
 const drawerWidth = 240;
 
 export default function Dashboard() {
-  const { userId, signOut } = useAuth();
+  const { signOut } = useAuth();
   const navigate = useNavigate();
 
   const [numNotifications, setNumNotifications] = React.useState(0);
   const [resourcesURL, setResourcesURL] = React.useState("");
 
+  // This is a temporary fix for the warning: react-hooks/exhaustive-deps
   const fetchNumNotifications = () => {
     fetch(
-      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${userId}`,
+      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${localStorage.getItem('user_id')}`,
       {
         method: "GET",
         headers: {
