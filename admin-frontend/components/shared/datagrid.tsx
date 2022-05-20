@@ -189,6 +189,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
               setChangedDataRows={setChangedDataRows}
               cols={cols}
               primaryKey={props.primaryKey}
+              dataRowActions={props.dataRowActions}
             ></TableRows>
           </TableBody>
         </Table>
