@@ -9,6 +9,7 @@ import Goals from "./Components/Goals"
 import Home from "./Components/Home"
 import Login from './Components/Login'
 import Notification from "./Components/Notification"
+import Profile from "./Components/Profile"
 import Questionnaire from "./Components/Questionnaire"
 import Records from "./Components/Records"
 import ResetPassword from "./Components/ResetPassword"
@@ -35,7 +36,7 @@ function App() {
               <Route path='goals' element={<Goals />} />
               <Route path='records' element={<Records />} />
               <Route path='notifications' element={<Notification />} />
-              <Route path='profile' element={<Home />} />
+              <Route path='profile' element={<Profile />} />
             </Route>
             <Route path='/' element={<Navigate to='/dashboard/home' replace />} />
           </Route>
