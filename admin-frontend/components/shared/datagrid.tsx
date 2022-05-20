@@ -14,6 +14,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import Button from "./button";
 import CheckBox from "./checkBox";
@@ -25,7 +27,7 @@ import { RootState } from "../../stores/store";
 import { ThemeState } from "../../reducers/theme";
 import styled from "styled-components";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
-import { MdMoreVert } from "react-icons/md";
+import { MdMoreVert, MdSave } from "react-icons/md";
 import { IconBaseProps } from "react-icons";
 import useMobileLayout from "../../hooks/useMobileLayout";
 
@@ -37,10 +39,17 @@ export interface DataRowAction {
 
 export interface DataGridColumn {
   header: string;
-  dataField?: string;
+  dataField: string;
   dataType?: "dateTime" | "currency" | "date" | "string" | "rating" | "email";
   keepOnMobile?: boolean; // Keep this column on a mobile device screen
   componentFunc?: (dataRow: any) => React.ReactElement;
+  selectOptions?: SelectOption[];
+  onSelectOptionChanged?: (newOption: SelectOption) => void;
+}
+
+export interface SelectOption {
+  name: string;
+  id: number;
 }
 
 export interface DataGridProps {
@@ -50,11 +59,25 @@ export interface DataGridProps {
   height?: string;
   width?: string;
   dataRowActions?: DataRowAction[];
+  onRowSave?: (dataRow: any) => void;
 }
 
 const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
+  const BUTTON_ICON_SIZE = 32;
+
   const theme = useSelector<RootState, ThemeState>((state) => state.theme);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number>(-1);
+
+  let dataRowActions: DataRowAction[] = [];
+  if (props.dataRowActions) {
+    dataRowActions = props.dataRowActions;
+  }
+  if (props.onRowSave) {
+    dataRowActions = [
+      ...dataRowActions,
+      { action: props.onRowSave, icon: MdSave, name: "Save" },
+    ];
+  }
 
   // Remove non-mobile columns on a mobile device
   const onMobileDevice = useMobileLayout();
@@ -136,7 +159,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                   {col.header}
                 </TableCell>
               ))}
-              {props.dataRowActions && (
+              {dataRowActions && (
                 <TableCell style={{ width: "6rem" }}></TableCell>
               )}
             </TableRow>
@@ -162,22 +185,30 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                     height="fit-content"
                     key={`datagrid_cell_${i}_${j}`}
                   >
-                    {col.componentFunc
-                      ? col.componentFunc(dataRow)
-                      : !col.dataField
-                      ? null
-                      : col.dataType === "date"
-                      ? renderDateValue(dataRow[col.dataField])
-                      : col.dataType === "dateTime"
-                      ? renderDateTimeValue(dataRow[col.dataField])
-                      : typeof dataRow[col.dataField] === "boolean"
-                      ? renderBooleanValue(dataRow[col.dataField])
-                      : col.dataType === "email"
-                      ? renderEmailValue(dataRow[col.dataField])
-                      : dataRow[col.dataField]}
+                    {col.selectOptions ? (
+                      <Select fullWidth value={dataRow[col.dataField]}>
+                        {col.selectOptions.map((selectOption) => (
+                          <MenuItem value={selectOption.id}>
+                            {selectOption.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    ) : col.componentFunc ? (
+                      col.componentFunc(dataRow)
+                    ) : !col.dataField ? null : col.dataType === "date" ? (
+                      renderDateValue(dataRow[col.dataField])
+                    ) : col.dataType === "dateTime" ? (
+                      renderDateTimeValue(dataRow[col.dataField])
+                    ) : typeof dataRow[col.dataField] === "boolean" ? (
+                      renderBooleanValue(dataRow[col.dataField])
+                    ) : col.dataType === "email" ? (
+                      renderEmailValue(dataRow[col.dataField])
+                    ) : (
+                      dataRow[col.dataField]
+                    )}
                   </TableCell>
                 ))}
-                {props.dataRowActions && props.dataRowActions.length === 1 && (
+                {dataRowActions && dataRowActions.length === 1 && (
                   <TableCell
                     width="6rem"
                     key={`datagrid_cell_more_options_row_${i}`}
@@ -187,18 +218,20 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                         backgroundColor={theme.colors.primaryColor}
                         variant="contained"
                         onClick={() => {
-                          if (props.dataRowActions) {
-                            props.dataRowActions[0].action(dataRow);
+                          if (dataRowActions) {
+                            dataRowActions[0].action(dataRow);
                           }
                         }}
                       >
-                        {props.dataRowActions &&
-                          React.createElement(props.dataRowActions[0].icon)}
+                        {dataRowActions &&
+                          React.createElement(dataRowActions[0].icon, {
+                            size: BUTTON_ICON_SIZE,
+                          })}
                       </Button>
                     </div>
                   </TableCell>
                 )}
-                {props.dataRowActions && props.dataRowActions.length > 1 && (
+                {dataRowActions && dataRowActions.length > 1 && (
                   <TableCell
                     style={{ width: "3rem" }}
                     key={`datagrid_cell_more_options_row_${i}`}
@@ -225,8 +258,8 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                             }}
                           >
                             <List>
-                              {props.dataRowActions &&
-                                props.dataRowActions.map((dataRowAction, i) => {
+                              {dataRowActions &&
+                                dataRowActions.map((dataRowAction, i) => {
                                   return (
                                     <ListItem
                                       key={`listItem_${i}`}

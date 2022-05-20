@@ -1,5 +1,11 @@
 import { IconBaseProps } from "react-icons";
-import { MdNotifications, MdHome, MdPerson, MdAutoGraph } from "react-icons/md";
+import {
+  MdNotifications,
+  MdHome,
+  MdPerson,
+  MdAutoGraph,
+  MdSupervisorAccount,
+} from "react-icons/md";
 import { ModalComponent } from "../Modal";
 
 export interface SidebarLink {
@@ -15,7 +21,8 @@ const sidebarLinks: SidebarLink[] = [
   { url: "/home", title: "Home", icon: MdHome },
   { url: "/mentors", title: "Mentors", icon: MdPerson },
   { url: "/notifications", title: "Notifications", icon: MdNotifications },
-  { url: "/goals", title: "Goals", icon: MdAutoGraph},
+  { url: "/goals", title: "Goals", icon: MdAutoGraph },
+  { url: "/mentorRoles", title: "Mentor Roles", icon: MdSupervisorAccount },
 ];
 
 export default sidebarLinks;
