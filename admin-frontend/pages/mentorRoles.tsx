@@ -19,7 +19,10 @@ const MentorRoles: NextPage = () => {
           {
             header: "Activity",
             dataField: "activity",
-            selectOptions: [{ name: "Youth mentoring", id: 1 }],
+            selectOptions: [
+              { name: "Youth mentoring", id: 1 },
+              { name: "Into School mentoring", id: 2 },
+            ],
             onSelectOptionChanged: (newOption) => {},
           },
         ]}
@@ -30,7 +33,9 @@ const MentorRoles: NextPage = () => {
             activity: 1,
           },
         ]}
-        onRowSave={(dataRow) => {}}
+        onSaveRows={(dataRows) => {
+          console.log(dataRows);
+        }}
       ></DataGrid>
     </MentorRolesCard>
   );
