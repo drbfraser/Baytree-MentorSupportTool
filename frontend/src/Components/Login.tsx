@@ -8,8 +8,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Logo from "../assets/baytree-logo.png";
-import Photo from "../assets/baytree-photo.jpg";
+import Logo from "../Assets/baytree-logo.png";
+import Photo from "../Assets/baytree-photo.jpg";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {

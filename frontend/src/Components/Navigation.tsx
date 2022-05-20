@@ -24,8 +24,8 @@ import Toolbar from "@mui/material/Toolbar";
 import React, { useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api/url";
-import Logo from "../assets/baytree-logo.png";
-import SideLogo from "../assets/changing-aspirations.png";
+import Logo from "../Assets/baytree-logo.png";
+import SideLogo from "../Assets/changing-aspirations.png";
 import { useAuth } from "../context/AuthContext";
 import Messages from "./Messages";
 

@@ -1,11 +1,11 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import styled from "styled-components";
-import { MOBILE_BREAKPOINT } from "../constants/constants";
-import BaytreeLogo from "../assets/baytree-logo.png";
-import BaytreePhoto from "../assets/baytree-photo.jpg";
 import { resetPassword, sendPasswordResetEmail } from "../api/mentorAccount";
-import { ToastContainer, toast } from "react-toastify";
+import BaytreeLogo from "../Assets/baytree-logo.png";
+import BaytreePhoto from "../Assets/baytree-photo.jpg";
+import { MOBILE_BREAKPOINT } from "../constants/constants";
 import { checkPassword } from "../Utils/password";
 import OverlaySpinner from "./shared/overlaySpinner";
 
