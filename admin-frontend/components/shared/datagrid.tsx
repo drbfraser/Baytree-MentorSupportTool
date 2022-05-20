@@ -20,7 +20,7 @@ import {
 import Button from "./button";
 import CheckBox from "./checkBox";
 import { Table } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { stringToBool } from "../../util/misc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../stores/store";
@@ -31,6 +31,7 @@ import { MdCheck, MdMoreVert, MdOutlineClose, MdSave } from "react-icons/md";
 import { IconBaseProps } from "react-icons";
 import useMobileLayout from "../../hooks/useMobileLayout";
 import { green, red } from "@mui/material/colors";
+import OverlaySpinner from "./overlaySpinner";
 
 export interface DataRowAction {
   name: string;
@@ -62,8 +63,10 @@ export interface DataGridProps {
   dataRowActions?: DataRowAction[];
 
   primaryKey?: string; // necessary for editable/savable datagrids
-  onSaveRows?: (dataRow: Record<string, any>[]) => void;
+  onSaveRows?: onSaveRowsFunc; // resolve/reject
 }
+
+type onSaveRowsFunc = (dataRow: Record<string, any>[]) => Promise<void>;
 
 const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   const BUTTON_ICON_SIZE = 22;
@@ -76,6 +79,8 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
     []
   );
   const [isPreviewingChanges, setIsPreviewingChanges] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // Remove non-mobile columns on a mobile device
   const onMobileDevice = useMobileLayout();
@@ -99,7 +104,13 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
         height={props.height}
         component={Paper}
       >
-        <Table style={{ tableLayout: "fixed", width: "100%" }}>
+        <Table
+          style={{ tableLayout: "fixed", width: "100%", position: "relative" }}
+        >
+          <OverlaySpinner
+            active={isLoading}
+            coverRelativeParentComponent={true}
+          ></OverlaySpinner>
           <TableHead>
             <TableRow>
               {cols.map((col, i) => (
@@ -120,6 +131,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                         onClick={() => {
                           setIsPreviewingChanges(true);
                         }}
+                        disabled={changedDataRows.length === 0}
                       >
                         <MdSave size={BUTTON_ICON_SIZE}></MdSave>
                       </Button>
@@ -132,6 +144,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                           onClick={() => {
                             setIsPreviewingChanges(false);
                           }}
+                          disabled={isLoading}
                         >
                           <MdOutlineClose
                             size={BUTTON_ICON_SIZE}
@@ -141,11 +154,21 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                           backgroundColor={green[500]}
                           variant="contained"
                           onClick={() => {
-                            setIsPreviewingChanges(false);
-                            (props.onSaveRows as any)(changedDataRows);
-                            setChangedDataRows([]);
-                            setChangedCellIndices([]);
+                            setIsLoading(true);
+                            (props.onSaveRows as onSaveRowsFunc)(
+                              changedDataRows
+                            )
+                              .then(() => {
+                                setChangedDataRows([]);
+                                setChangedCellIndices([]);
+                                setIsLoading(false);
+                                setIsPreviewingChanges(false);
+                              })
+                              .catch(() => {
+                                setIsLoading(false);
+                              });
                           }}
+                          disabled={isLoading}
                         >
                           <MdCheck size={BUTTON_ICON_SIZE}></MdCheck>
                         </Button>

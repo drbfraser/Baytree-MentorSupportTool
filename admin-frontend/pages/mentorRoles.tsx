@@ -34,7 +34,14 @@ const MentorRoles: NextPage = () => {
           },
         ]}
         onSaveRows={(dataRows) => {
-          console.log(dataRows);
+          const promise = new Promise<void>((resolve, reject) => {
+            setTimeout(() => {
+              console.log(dataRows);
+              resolve();
+            }, 2000);
+          });
+
+          return promise;
         }}
       ></DataGrid>
     </MentorRolesCard>
