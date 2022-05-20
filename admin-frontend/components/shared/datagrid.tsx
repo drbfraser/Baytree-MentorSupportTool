@@ -32,6 +32,7 @@ import { IconBaseProps } from "react-icons";
 import useMobileLayout from "../../hooks/useMobileLayout";
 import { green, red } from "@mui/material/colors";
 import OverlaySpinner from "./overlaySpinner";
+import { toast } from "react-toastify";
 
 export interface DataRowAction {
   name: string;
@@ -88,13 +89,20 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
     return props.cols.some((col) => col.keepOnMobile);
   };
   const [cols, setCols] = useState<DataGridColumn[]>(props.cols);
-  useEffect(() => {
+  // Updates columns based on current mobile layout and current props.cols
+  const updateColumns = () => {
     if (onMobileDevice && atLeastOneColHasKeepOnMobile(props.cols)) {
       setCols(props.cols.filter((col) => col.keepOnMobile));
     } else {
       setCols(props.cols);
     }
-  }, [onMobileDevice]);
+  };
+
+  // Update cols if device screen width changes to mobile
+  useEffect(updateColumns, [onMobileDevice]);
+
+  // Update cols state if props.cols changes
+  useEffect(updateColumns, [props.cols]);
 
   return (
     <>
@@ -163,9 +171,13 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                                 setChangedCellIndices([]);
                                 setIsLoading(false);
                                 setIsPreviewingChanges(false);
+                                toast.success("Successfully saved changes!");
                               })
                               .catch(() => {
                                 setIsLoading(false);
+                                toast.error(
+                                  "Failed to save changes. Please try again."
+                                );
                               });
                           }}
                           disabled={isLoading}
@@ -187,7 +199,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
               buttonIconSize={BUTTON_ICON_SIZE}
               changedDataRows={changedDataRows}
               setChangedDataRows={setChangedDataRows}
-              cols={cols}
+              cols={props.cols}
               primaryKey={props.primaryKey}
               dataRowActions={props.dataRowActions}
             ></TableRows>
@@ -320,10 +332,7 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
                   }}
                 >
                   {col.selectOptions.map((selectOption, k) => (
-                    <MenuItem
-                      key={`datagrid_cell_${i}_${j}_select_option_${k}`}
-                      value={selectOption.id}
-                    >
+                    <MenuItem key={selectOption.id} value={selectOption.id}>
                       {selectOption.name}
                     </MenuItem>
                   ))}

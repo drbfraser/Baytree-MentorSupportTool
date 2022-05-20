@@ -1,9 +1,47 @@
 import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import styled from "styled-components";
-import DataGrid from "../components/shared/datagrid";
+import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
+import DataGrid, { SelectOption } from "../components/shared/datagrid";
 
 const MentorRoles: NextPage = () => {
+  useEffect(() => {
+    loadMentorRoles();
+    loadSessionGroupOptions();
+    loadActivityOptions();
+  }, []);
+
+  const loadMentorRoles = () => {};
+
+  const [sessionGroupOptions, setSessionGroupOptions] = useState<
+    SelectOption[]
+  >([]);
+  const loadSessionGroupOptions = async () => {
+    const response = await getSessionGroupsFromViews();
+    if (response && response.status === 200 && response.data) {
+      console.log(response.data);
+      const sessionGroups = response.data;
+      setSessionGroupOptions(
+        sessionGroups.map((sessionGroup) => ({
+          id: parseInt(sessionGroup.viewsSessionGroupId),
+          name: sessionGroup.name,
+        }))
+      );
+    } else {
+      toast.error("Failed to retrieve session group option data.");
+    }
+  };
+
+  const [activityOptions, setActivityOptions] = useState<SelectOption[]>([]);
+  const loadActivityOptions = () => {
+    // if (response && Response.status === 200 && response.data) {
+    // } else {
+    //   toast.error("Failed to retrieve activity option data.");
+    // }
+  };
+
   return (
     <MentorRolesCard>
       <MentorRolesTitle variant="h5">Mentor Roles</MentorRolesTitle>
@@ -13,7 +51,7 @@ const MentorRoles: NextPage = () => {
           {
             header: "Session Group",
             dataField: "sessionGroup",
-            selectOptions: [{ name: "YS 2021", id: 1 }],
+            selectOptions: sessionGroupOptions,
             onSelectOptionChanged: (newOption) => {},
           },
           {
@@ -29,21 +67,11 @@ const MentorRoles: NextPage = () => {
         data={[
           {
             mentorRole: "Youth Mentor",
-            sessionGroup: 1,
+            sessionGroup: 3,
             activity: 1,
           },
         ]}
-        onSaveRows={(dataRows) => {
-          const promise = new Promise<void>((resolve, reject) => {
-            console.log(dataRows);
-            setTimeout(() => {
-              console.log(dataRows);
-              resolve();
-            }, 2000);
-          });
-
-          return promise;
-        }}
+        onSaveRows={async (dataRows): Promise<void> => {}}
       ></DataGrid>
     </MentorRolesCard>
   );
