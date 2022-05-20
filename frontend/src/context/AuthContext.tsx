@@ -12,7 +12,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   signIn: async (_email: string, _password: string) => false,
   signOut: async () => true,
-  verifyClient: async () => false,
+  verifyClient: async () => false
 });
 
 export const AuthProvider = (props: PropsWithChildren<{}>) => {

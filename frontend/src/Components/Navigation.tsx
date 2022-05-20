@@ -29,9 +29,6 @@ import SideLogo from "../assets/changing-aspirations.png";
 import { useAuth } from "../context/AuthContext";
 import Messages from "./Messages";
 
-
-
-
 const drawerWidth = 240;
 
 export default function Dashboard() {
@@ -47,9 +44,9 @@ export default function Dashboard() {
       {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        credentials: "include",
+        credentials: "include"
       }
     )
       .then((response) => response.json())
@@ -63,9 +60,9 @@ export default function Dashboard() {
     fetch(`${API_BASE_URL}/resources/`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      credentials: "include",
+      credentials: "include"
     })
       .then((response) => response.json())
       .then((data) => {
@@ -98,7 +95,7 @@ export default function Dashboard() {
             background: "white",
             width: "100%",
             height: "auto",
-            margin: "auto",
+            margin: "auto"
           }}
           sx={{ zIndex: (theme) => theme.zIndex.drawer + 5 }}
         >
@@ -165,8 +162,8 @@ export default function Dashboard() {
             flexShrink: 0,
             [`& .MuiDrawer-paper`]: {
               width: drawerWidth,
-              boxSizing: "border-box",
-            },
+              boxSizing: "border-box"
+            }
           }}
         >
           <Toolbar />
@@ -179,7 +176,7 @@ export default function Dashboard() {
                   "Questionnaires",
                   "Goals",
                   "Records",
-                  "Notifications",
+                  "Notifications"
                 ].map((text, index) => (
                   <Link
                     to={`/dashboard/${text}`}
