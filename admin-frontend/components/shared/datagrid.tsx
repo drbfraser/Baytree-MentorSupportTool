@@ -13,6 +13,7 @@ import {
   ListItemText,
   Select,
   MenuItem,
+  Skeleton,
 } from "@mui/material";
 import Button from "./button";
 import CheckBox from "./checkBox";
@@ -102,11 +103,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   // Update cols state if props.cols changes
   useEffect(updateColumns, [props.cols]);
 
-  const [isLoadingSelectOptions, setIsLoadingSelectOptions] = useState(false);
-
   const loadSelectOptions = () => {
-    setIsLoadingSelectOptions(true);
-
     // Find async select columns
     const selectCols = cols.filter((col) => col.onLoadSelectOptions);
 
@@ -133,9 +130,6 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
         toast.error(
           "Failed to load select box options! Please refresh the page and ensure a stable internet connection."
         );
-      })
-      .finally(() => {
-        setIsLoadingSelectOptions(false);
       });
   };
 
@@ -153,7 +147,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
           style={{ tableLayout: "fixed", width: "100%", position: "relative" }}
         >
           <OverlaySpinner
-            active={isSavingChanges || isLoadingSelectOptions}
+            active={isSavingChanges}
             coverRelativeParentComponent={true}
           ></OverlaySpinner>
           <TableHead>
@@ -374,6 +368,12 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
                     </MenuItem>
                   ))}
                 </Select>
+              ) : col.onLoadSelectOptions ? (
+                <>
+                  <Skeleton animation="wave" />
+                  <Skeleton animation="wave" />
+                  <Skeleton animation="wave" />
+                </>
               ) : col.componentFunc ? (
                 col.componentFunc(dataRow)
               ) : !col.dataField ? null : col.dataType === "date" ? (
