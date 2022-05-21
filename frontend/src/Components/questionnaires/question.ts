@@ -21,21 +21,21 @@ export const validate = (question: Question[], answer: Answer) => {
 
 export const blankAnswers = (questions: Question[], mentorId?: number) => {
   let blank = questions
-    .map(q => q.QuestionID)
+    .map((q) => q.QuestionID)
     .reduce((acc, id) => {
       acc[id] = "";
       return acc;
     }, {} as Answer);
   if (mentorId) blank["mentorId"] = `${mentorId}`;
   return blank;
-}
+};
 
 export const submitAnswer = (answer: Answer) => {
   return axios.post(`${API_BASE_URL}/questions/`, answer, {
     headers: { "Content-Type": "application/json" },
     withCredentials: true
   });
-}
+};
 
 export const fetchQuestions = () => {
   return axios
@@ -44,11 +44,11 @@ export const fetchQuestions = () => {
       {
         headers: { "Content-Type": "application/json" },
         withCredentials: true
-      })
-    .then(response => Object.values(response.data))
-    .then(questions => {
-      console.log(questions)
-      return questions.filter(q => q.enabled === "1");
-    })
-
-}
+      }
+    )
+    .then((response) => Object.values(response.data))
+    .then((questions) => {
+      console.log(questions);
+      return questions.filter((q) => q.enabled === "1");
+    });
+};
