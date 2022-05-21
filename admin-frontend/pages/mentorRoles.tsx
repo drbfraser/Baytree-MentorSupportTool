@@ -7,28 +7,17 @@ import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
 import DataGrid, { SelectOption } from "../components/shared/datagrid";
 
 const MentorRoles: NextPage = () => {
-  useEffect(() => {
-    loadMentorRoles();
-    loadSessionGroupOptions();
-    loadActivityOptions();
-  }, []);
-
   const loadMentorRoles = () => {};
 
-  const [sessionGroupOptions, setSessionGroupOptions] = useState<
-    SelectOption[]
-  >([]);
-  const loadSessionGroupOptions = async () => {
+  const getSessionGroupOptions = async () => {
     const response = await getSessionGroupsFromViews();
     if (response && response.status === 200 && response.data) {
       console.log(response.data);
       const sessionGroups = response.data;
-      setSessionGroupOptions(
-        sessionGroups.map((sessionGroup) => ({
-          id: parseInt(sessionGroup.viewsSessionGroupId),
-          name: sessionGroup.name,
-        }))
-      );
+      return sessionGroups.map((sessionGroup) => ({
+        id: parseInt(sessionGroup.viewsSessionGroupId),
+        name: sessionGroup.name,
+      }));
     } else {
       toast.error("Failed to retrieve session group option data.");
     }
@@ -51,7 +40,14 @@ const MentorRoles: NextPage = () => {
           {
             header: "Session Group",
             dataField: "sessionGroup",
-            selectOptions: sessionGroupOptions,
+            onLoadSelectOptions: async () => {
+              const sessionGroupOptions = await getSessionGroupOptions();
+              if (sessionGroupOptions) {
+                return sessionGroupOptions;
+              } else {
+                throw "Failed to get session group options";
+              }
+            },
             onSelectOptionChanged: (newOption) => {},
           },
           {

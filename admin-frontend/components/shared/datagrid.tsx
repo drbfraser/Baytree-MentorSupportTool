@@ -1,12 +1,9 @@
 import {
-  Icon,
-  IconButton,
   List,
   ListItem,
   Paper,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -20,7 +17,7 @@ import {
 import Button from "./button";
 import CheckBox from "./checkBox";
 import { Table } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { stringToBool } from "../../util/misc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../stores/store";
@@ -47,6 +44,7 @@ export interface DataGridColumn {
   keepOnMobile?: boolean; // Keep this column on a mobile device screen
   componentFunc?: (dataRow: any) => React.ReactElement;
   selectOptions?: SelectOption[];
+  onLoadSelectOptions?: () => Promise<SelectOption[] | undefined>;
   onSelectOptionChanged?: (newOption: SelectOption) => void;
 }
 
@@ -81,7 +79,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   );
   const [isPreviewingChanges, setIsPreviewingChanges] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSavingChanges, setIsSavingChanges] = useState(false);
 
   // Remove non-mobile columns on a mobile device
   const onMobileDevice = useMobileLayout();
@@ -104,6 +102,45 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   // Update cols state if props.cols changes
   useEffect(updateColumns, [props.cols]);
 
+  const [isLoadingSelectOptions, setIsLoadingSelectOptions] = useState(false);
+
+  const loadSelectOptions = () => {
+    setIsLoadingSelectOptions(true);
+
+    // Find async select columns
+    const selectCols = cols.filter((col) => col.onLoadSelectOptions);
+
+    const loadCallbackFuncs = selectCols.map(
+      (selectCol) =>
+        (selectCol as any).onLoadSelectOptions() as Promise<
+          SelectOption[] | undefined
+        >
+    ); // Get async cbs
+
+    Promise.all(loadCallbackFuncs)
+      .then((selectOptionArrays) => {
+        selectOptionArrays.forEach((selectOptions, i) => {
+          const col = cols.find(
+            (col) => col.dataField === selectCols[i].dataField
+          );
+          if (col) {
+            col.selectOptions = selectOptions;
+          }
+        });
+        setCols(cols);
+      })
+      .catch(() => {
+        toast.error(
+          "Failed to load select box options! Please refresh the page and ensure a stable internet connection."
+        );
+      })
+      .finally(() => {
+        setIsLoadingSelectOptions(false);
+      });
+  };
+
+  useEffect(loadSelectOptions, []);
+
   return (
     <>
       {props.caption && <Typography variant="h2">{props.caption}</Typography>}
@@ -116,7 +153,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
           style={{ tableLayout: "fixed", width: "100%", position: "relative" }}
         >
           <OverlaySpinner
-            active={isLoading}
+            active={isSavingChanges || isLoadingSelectOptions}
             coverRelativeParentComponent={true}
           ></OverlaySpinner>
           <TableHead>
@@ -152,7 +189,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                           onClick={() => {
                             setIsPreviewingChanges(false);
                           }}
-                          disabled={isLoading}
+                          disabled={isSavingChanges}
                         >
                           <MdOutlineClose
                             size={BUTTON_ICON_SIZE}
@@ -162,25 +199,25 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                           backgroundColor={green[500]}
                           variant="contained"
                           onClick={() => {
-                            setIsLoading(true);
+                            setIsSavingChanges(true);
                             (props.onSaveRows as onSaveRowsFunc)(
                               changedDataRows
                             )
                               .then(() => {
                                 setChangedDataRows([]);
                                 setChangedCellIndices([]);
-                                setIsLoading(false);
+                                setIsSavingChanges(false);
                                 setIsPreviewingChanges(false);
                                 toast.success("Successfully saved changes!");
                               })
                               .catch(() => {
-                                setIsLoading(false);
+                                setIsSavingChanges(false);
                                 toast.error(
                                   "Failed to save changes. Please try again."
                                 );
                               });
                           }}
-                          disabled={isLoading}
+                          disabled={isSavingChanges}
                         >
                           <MdCheck size={BUTTON_ICON_SIZE}></MdCheck>
                         </Button>
@@ -199,7 +236,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
               buttonIconSize={BUTTON_ICON_SIZE}
               changedDataRows={changedDataRows}
               setChangedDataRows={setChangedDataRows}
-              cols={props.cols}
+              cols={cols}
               primaryKey={props.primaryKey}
               dataRowActions={props.dataRowActions}
             ></TableRows>
