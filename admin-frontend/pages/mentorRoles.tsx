@@ -1,10 +1,9 @@
 import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import styled from "styled-components";
+import { getActivities } from "../api/backend/activities";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
-import DataGrid, { SelectOption } from "../components/shared/datagrid";
+import DataGrid from "../components/shared/datagrid";
 
 const MentorRoles: NextPage = () => {
   const loadMentorRoles = () => {};
@@ -12,23 +11,24 @@ const MentorRoles: NextPage = () => {
   const getSessionGroupOptions = async () => {
     const response = await getSessionGroupsFromViews();
     if (response && response.status === 200 && response.data) {
-      console.log(response.data);
       const sessionGroups = response.data;
       return sessionGroups.map((sessionGroup) => ({
         id: parseInt(sessionGroup.viewsSessionGroupId),
         name: sessionGroup.name,
       }));
     } else {
-      toast.error("Failed to retrieve session group option data.");
+      throw "Failed to retrieve session group option data.";
     }
   };
 
-  const [activityOptions, setActivityOptions] = useState<SelectOption[]>([]);
-  const loadActivityOptions = () => {
-    // if (response && Response.status === 200 && response.data) {
-    // } else {
-    //   toast.error("Failed to retrieve activity option data.");
-    // }
+  const getActivityOptions = async () => {
+    const activities = await getActivities();
+
+    if (activities) {
+      return activities;
+    } else {
+      throw "Failed to retrieve activities option data.";
+    }
   };
 
   return (
@@ -40,24 +40,12 @@ const MentorRoles: NextPage = () => {
           {
             header: "Session Group",
             dataField: "sessionGroup",
-            onLoadSelectOptions: async () => {
-              const sessionGroupOptions = await getSessionGroupOptions();
-              if (sessionGroupOptions) {
-                return sessionGroupOptions;
-              } else {
-                throw "Failed to get session group options";
-              }
-            },
-            onSelectOptionChanged: (newOption) => {},
+            onLoadSelectOptions: getSessionGroupOptions,
           },
           {
             header: "Activity",
             dataField: "activity",
-            selectOptions: [
-              { name: "Youth mentoring", id: 1 },
-              { name: "Into School mentoring", id: 2 },
-            ],
-            onSelectOptionChanged: (newOption) => {},
+            onLoadSelectOptions: getActivityOptions,
           },
         ]}
         data={[
@@ -67,7 +55,13 @@ const MentorRoles: NextPage = () => {
             activity: 1,
           },
         ]}
-        onSaveRows={async (dataRows): Promise<void> => {}}
+        onSaveRows={async (dataRows): Promise<void> =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              resolve();
+            }, 2000);
+          })
+        }
       ></DataGrid>
     </MentorRolesCard>
   );

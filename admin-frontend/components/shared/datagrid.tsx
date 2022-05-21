@@ -143,13 +143,11 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
         height={props.height}
         component={Paper}
       >
-        <Table
-          style={{ tableLayout: "fixed", width: "100%", position: "relative" }}
-        >
-          <OverlaySpinner
-            active={isSavingChanges}
-            coverRelativeParentComponent={true}
-          ></OverlaySpinner>
+        <OverlaySpinner
+          active={isSavingChanges}
+          coverRelativeParentComponent={true}
+        ></OverlaySpinner>
+        <Table style={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead>
             <TableRow>
               {cols.map((col, i) => (
@@ -473,6 +471,7 @@ interface StyledTableContainerProps {
 const StyledTableContainer = styled(Table)<StyledTableContainerProps>`
   height: ${(props) => props.height ?? "auto"};
   width: ${(props) => props.width ?? "100%"};
+  position: relative;
 `;
 
 export default DataGrid;
