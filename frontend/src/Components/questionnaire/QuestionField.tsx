@@ -45,6 +45,7 @@ export const ChoiceQuestion: FunctionComponent<{ name: string }> = ({
     >
       {choices.map((choice, index) => (
         <FormControlLabel
+          key={`${name}-${index}`}
           value={`${index + 1}`}
           control={<Radio />}
           label={choice}

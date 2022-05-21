@@ -30,11 +30,16 @@ export const blankAnswers = (questions: Question[], mentorId?: number) => {
   return blank;
 };
 
-export const submitAnswer = (answer: Answer) => {
-  return axios.post(`${API_BASE_URL}/questions/`, answer, {
-    headers: { "Content-Type": "application/json" },
-    withCredentials: true
-  });
+export const submitAnswer = async (answer: Answer) => {
+  try {
+    const respond = await axios.post(`${API_BASE_URL}/questions/`, answer, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true
+    });
+    return {respond, error: undefined}
+  } catch(error) {
+    return {respond: undefined, error}
+  }
 };
 
 export const fetchQuestions = () => {
@@ -47,8 +52,5 @@ export const fetchQuestions = () => {
       }
     )
     .then((response) => Object.values(response.data))
-    .then((questions) => {
-      console.log(questions);
-      return questions.filter((q) => q.enabled === "1");
-    });
+    .then((questions) => questions.filter((q) => q.enabled === "1"));
 };

@@ -1,5 +1,4 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import "./App.css";
 import CreateAccount from "./Components/CreateAccount";
 import Dashboard from "./Components/dashboard/Dashboard";
@@ -8,7 +7,7 @@ import Home from "./Components/Home";
 import Login from "./Components/Login";
 import Notification from "./Components/Notification";
 import Profile from "./Components/Profile";
-import Questionnaire from "./Components/questionnaires/Questionnaire";
+import Questionnaire from "./Components/questionnaire/Questionnaire";
 import Records from "./Components/Records";
 import ResetPassword from "./Components/ResetPassword";
 import Sessions from "./Components/Sessions";
@@ -17,8 +16,6 @@ import PublicRoute from "./Utils/PublicRoute";
 
 function App() {
   return (
-    <>
-      <ToastContainer></ToastContainer>
       <BrowserRouter>
         <Routes>
           <Route path="/resetPassword" element={<ResetPassword />} />
@@ -43,7 +40,6 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
-    </>
   );
 }
 
