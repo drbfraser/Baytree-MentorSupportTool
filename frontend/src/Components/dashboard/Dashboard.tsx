@@ -12,24 +12,33 @@ const Dashboard = () => {
 
   const toggleMobileDrawer = () => {
     setIsMobileOpen((open) => !open);
-  }
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
-      <NavigationBar drawerWidth={drawerWidth} toggleDrawer={toggleMobileDrawer} />
+      <NavigationBar
+        drawerWidth={drawerWidth}
+        toggleDrawer={toggleMobileDrawer}
+      />
       <SideMenu
         drawerWidth={drawerWidth}
         mobileDrawerOpened={isMobileOpen}
-        toggleMobileDrawer={toggleMobileDrawer} />
+        toggleMobileDrawer={toggleMobileDrawer}
+      />
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { md: `calc(100% - ${drawerWidth}px)` } }}>
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { md: `calc(100% - ${drawerWidth}px)` }
+        }}
+      >
         <Toolbar />
-        <Outlet />
+        {/* The main content of the applicationm */}
+        <Outlet /> 
       </Box>
     </Box>
-
-  )
-}
+  );
+};
 
 export default Dashboard;

@@ -9,18 +9,30 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { FunctionComponent, PropsWithChildren, useState, useEffect } from "react";
+import {
+  FunctionComponent,
+  PropsWithChildren,
+  useState,
+  useEffect
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../api/url";
 import Logo from "../../Assets/baytree.png";
 import { useAuth } from "../../context/AuthContext";
 import Messages from "../Messages";
 
-const NavigationButton = (props: PropsWithChildren<{ action?: (() => void) | (() => Promise<void>) }>) => {
-  return <IconButton children={props.children} size="large" onClick={props.action} />
-}
+const NavigationButton = (
+  props: PropsWithChildren<{ action?: (() => void) | (() => Promise<void>) }>
+) => {
+  return (
+    <IconButton children={props.children} size="large" onClick={props.action} />
+  );
+};
 
-const NavigationBar: FunctionComponent<{ drawerWidth: number, toggleDrawer: () => void }> = ({ drawerWidth, toggleDrawer }) => {
+const NavigationBar: FunctionComponent<{
+  drawerWidth: number;
+  toggleDrawer: () => void;
+}> = ({ drawerWidth, toggleDrawer }) => {
   const { userId, signOut } = useAuth();
   const navigate = useNavigate();
   const [numNotifications, setNumNotifications] = useState(0);
@@ -49,42 +61,45 @@ const NavigationBar: FunctionComponent<{ drawerWidth: number, toggleDrawer: () =
     navigate("/login", { replace: true });
   };
 
-
   return (
     <AppBar
       position="fixed"
       sx={{
         background: "white",
         width: { md: `calc(100% - ${drawerWidth}px)` },
-        ml: { md: `${drawerWidth}px` },
-      }}>
+        ml: { md: `${drawerWidth}px` }
+      }}
+    >
       <Toolbar>
         {/* Hamburger buttons and miniture logo in mobile version */}
-        <Box sx={{ mr: 2, display: { xs: "flex", md: "none", sm: "flex" }, alignItems: "center" }}>
-          <IconButton
-            onClick={toggleDrawer}
-            sx={{ mr: 2 }}
-          >
+        <Box
+          sx={{
+            mr: 2,
+            display: { xs: "flex", md: "none", sm: "flex" },
+            alignItems: "center"
+          }}
+        >
+          <IconButton onClick={toggleDrawer} sx={{ mr: 2 }}>
             <MenuIcon />
           </IconButton>
           <img src={Logo} height={32} alt="Baytree Logo" />
         </Box>
-        
+
         {/* Title */}
         <Typography variant="h6" color="primary">
           Mentor Portal
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        
+
         {/* Top-right navigation buttons */}
         <Stack direction="row">
           <Messages />
-          <NavigationButton action={() => navigate('/dashboard/notifications')}>
+          <NavigationButton action={() => navigate("/dashboard/notifications")}>
             <Badge badgeContent={numNotifications} color="error">
               <NotificationsIcon />
             </Badge>
           </NavigationButton>
-          <NavigationButton action={() => navigate('/dashboard/profile')}>
+          <NavigationButton action={() => navigate("/dashboard/profile")}>
             <AccountBoxIcon />
           </NavigationButton>
           <NavigationButton action={logout}>
@@ -93,7 +108,7 @@ const NavigationBar: FunctionComponent<{ drawerWidth: number, toggleDrawer: () =
         </Stack>
       </Toolbar>
     </AppBar>
-  )
-}
+  );
+};
 
 export default NavigationBar;
