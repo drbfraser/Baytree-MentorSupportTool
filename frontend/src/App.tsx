@@ -4,7 +4,7 @@ import {
 import { ToastContainer } from 'react-toastify'
 import './App.css'
 import CreateAccount from './Components/CreateAccount'
-import Dashboard from "./Components/Dashboard"
+import Dashboard from "./Components/dashboard/Dashboard"
 import Goals from "./Components/Goals"
 import Home from "./Components/Home"
 import Login from './Components/Login'
