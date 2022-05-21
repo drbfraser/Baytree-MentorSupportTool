@@ -133,7 +133,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
       });
   };
 
-  useEffect(loadSelectOptions, []);
+  useEffect(loadSelectOptions, [props.cols]);
 
   return (
     <>

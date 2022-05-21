@@ -3,7 +3,7 @@
 from django.db import models, migrations
 
 
-def insert_mentor_roles(apps, schema_editor):
+def insert_activities(apps, schema_editor):
     # We can't import the model directly as it may be a newer
     # version than this migration expects. We use the historical version.
     Activity = apps.get_model("mentor_sessions", "Activity")
@@ -25,5 +25,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(insert_mentor_roles),
+        migrations.RunPython(insert_activities),
     ]

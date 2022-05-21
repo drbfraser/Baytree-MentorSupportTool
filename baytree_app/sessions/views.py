@@ -22,7 +22,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
 
     queryset = Activity.objects.all().order_by("name")
     serializer_class = ActivitySerializer
-    permission_classes = [IsAuthenticated & (AdminPermissions | IsUserAMentor)]
+    permission_classes = [IsAuthenticated & AdminPermissions]
 
 
 class ViewsAppSessionView(APIView):
