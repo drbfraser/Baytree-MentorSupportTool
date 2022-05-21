@@ -11,7 +11,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Skeleton from "@mui/material/Skeleton";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { API_BASE_URL } from "../api/url";
+import { API_BASE_URL } from "../../api/url";
 
 const Questionnaire = () => {
   const [formData, setFormData] = useState([] as any[]);
