@@ -14,6 +14,7 @@
     "axios": "^0.27.2",
     "cors": "^2.8.5",
     "date-fns": "^2.25.0",
+    "formik": "^2.2.9",
     "material-ui-image": "^3.3.2",
     "moment": "^2.29.1",
     "react": "^17.0.2",

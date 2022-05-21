@@ -1,82 +1,28 @@
+import { Button, Container, Divider, Grow, Typography } from "@mui/material";
+import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import Divider from "@mui/material/Divider";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Grow from "@mui/material/Grow";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import Skeleton from "@mui/material/Skeleton";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import { API_BASE_URL } from "../../api/url";
+import { useAuth } from "../../context/AuthContext";
+import LoadingScreen from "./LoadingScreen";
+import { blankAnswers, fetchQuestions, Question, submitAnswer } from "./question";
+import QuestionField from "./QuestionField";
 
 const Questionnaire = () => {
-  const [formData, setFormData] = useState([] as any[]);
-  const [answers, setAnswers] = useState({} as any);
+  const { userId } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [questions, setQuestions] = useState([] as Question[]);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/questionnaires/get_questionnaire/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    })
-      .then((response) => response.json())
-      .then((data) => setFormData(data))
+    fetchQuestions()
+      .then(setQuestions)
       .then(() => setLoading(false))
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      .catch((error) => console.log("Error: ", error));
   }, []);
 
-  const isValid = () => {
-    for (const value of Object.values(formData)) {
-      if (value.enabled !== "1" || !value.validation.includes("required")) {
-        continue;
-      }
-
-      if (
-        answers[value.QuestionID] === undefined ||
-        answers[value.QuestionID].length === 0
-      ) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-  const handleSubmitResponse = (response: any) => {
-    if (response.status === 200) {
-      alert("Succesfully Submitted, Thank you!");
-      setAnswers({});
-    } else {
-      alert("Failed to Submit, Error: " + response);
-    }
-  };
-
-  const handleSubmit = () => {
-    answers["mentorId"] = localStorage.getItem("id");
-
-    fetch(`${API_BASE_URL}/questions/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include",
-      body: JSON.stringify(answers)
-    }).then((response) => handleSubmitResponse(response));
-  };
   return (
-    <Grow in={true}>
+    <Grow in>
       <Container
         maxWidth="md"
-        sx={{ border: 0.1, boxShadow: 2, borderRadius: 5, pt: 2, mt: 3 }}
-        style={{ background: "#ffffff" }}
+        sx={{ border: 0.1, boxShadow: 2, borderRadius: 5, p: 2, width: "100%" }}
       >
         <Typography
           component="h2"
@@ -88,156 +34,29 @@ const Questionnaire = () => {
         </Typography>
         <Divider />
 
-        <Box sx={{ margin: 5 }}>
-          {loading === true && (
-            <div>
-              <Skeleton
-                variant="rectangular"
-                width={200}
-                height={30}
-                sx={{ mb: 3 }}
-              />
-              <Skeleton
-                variant="rectangular"
-                width={750}
-                height={80}
-                sx={{ mb: 3 }}
-              />
-              <Divider sx={{ mb: 3 }} />
-              <Skeleton
-                variant="rectangular"
-                width={200}
-                height={30}
-                sx={{ mb: 3 }}
-              />
-              <Skeleton
-                variant="rectangular"
-                width={750}
-                height={80}
-                sx={{ mb: 3 }}
-              />
-              <Divider sx={{ mb: 3 }} />
-              <Skeleton
-                variant="rectangular"
-                width={200}
-                height={30}
-                sx={{ mb: 3 }}
-              />
-              <Skeleton
-                variant="rectangular"
-                width={750}
-                height={80}
-                sx={{ mb: 3 }}
-              />
-              <Divider sx={{ mb: 3 }} />
-            </div>
-          )}
+        {/* Start the form */}
+        {loading
+          ? <LoadingScreen />
+          : <Formik
+            initialValues={blankAnswers(questions, userId)}
+            onSubmit={ (answer, { resetForm }) => {
+              console.log(answer);
+            }}
 
-          {loading === false && (
-            <div>
-              {Object.values(formData)
-                .filter((data) => data.enabled === "1")
-                .map((data, index) => (
-                  <FormControl key={index} fullWidth required>
-                    <Typography
-                      sx={{
-                        mb: 1,
-                        mt: 3,
-                        fontWeight: "bold",
-                        fontStyle: "underlined"
-                      }}
-                      color="text.secondary"
-                    >
-                      {index + 1}. {data.Question}
-                      {data.validation.includes("required") ? "*" : ""}
-                    </Typography>
-                    {(function () {
-                      switch (data.inputType) {
-                        case "text":
-                          return (
-                            <TextField
-                              key={data.QuestionID}
-                              variant="outlined"
-                              sx={{ mt: 0, pt: 0, mb: 5 }}
-                              required
-                              value={answers[data.QuestionID] || ""}
-                              margin="normal"
-                              onChange={(e) =>
-                                setAnswers(
-                                  Object.assign({}, answers, {
-                                    [data.QuestionID]: e.target.value
-                                  })
-                                )
-                              }
-                            />
-                          );
-                        case "number":
-                          return (
-                            <RadioGroup
-                              key={data.QuestionID}
-                              row
-                              aria-label="gender"
-                              name="radio-buttons-group"
-                              sx={{ mt: 2, pt: 0, mb: 5, gap: 5 }}
-                              value={answers[data.QuestionID] || ""}
-                              onChange={(e) =>
-                                setAnswers(
-                                  Object.assign({}, answers, {
-                                    [data.QuestionID]: e.target.value
-                                  })
-                                )
-                              }
-                            >
-                              <FormControlLabel
-                                value="1"
-                                control={<Radio />}
-                                label="Strongly Disagree"
-                                labelPlacement="top"
-                              />
-                              <FormControlLabel
-                                value="2"
-                                control={<Radio />}
-                                label="Disagree"
-                                labelPlacement="top"
-                              />
-                              <FormControlLabel
-                                value="3"
-                                control={<Radio />}
-                                label="Neutral"
-                                labelPlacement="top"
-                              />
-                              <FormControlLabel
-                                value="4"
-                                control={<Radio />}
-                                label="Agree"
-                                labelPlacement="top"
-                              />
-                              <FormControlLabel
-                                value="5"
-                                control={<Radio />}
-                                label="Strongly Agree"
-                                labelPlacement="top"
-                              />
-                            </RadioGroup>
-                          );
-                        default:
-                          break;
-                      }
-                    })()}
-                    <Divider />
-                  </FormControl>
-                ))}
-              <Button
-                variant="contained"
-                sx={{ mt: 3 }}
-                onClick={handleSubmit}
-                disabled={!isValid()}
-              >
+          >
+            <Form>
+              {questions.map((question, index) => (
+                <QuestionField
+                  question={question}
+                  numbering={index + 1}
+                  key={question.QuestionID} />
+              ))}
+              <Button variant="contained" type="submit" sx={{mt: 3}}>
                 Submit
               </Button>
-            </div>
-          )}
-        </Box>
+            </Form>
+          </Formik>
+        }
       </Container>
     </Grow>
   );
