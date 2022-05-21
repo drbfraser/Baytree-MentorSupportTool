@@ -45,7 +45,7 @@ export interface DataGridColumn {
   keepOnMobile?: boolean; // Keep this column on a mobile device screen
   componentFunc?: (dataRow: any) => React.ReactElement;
   selectOptions?: SelectOption[];
-  onLoadSelectOptions?: () => Promise<SelectOption[] | undefined>;
+  onLoadSelectOptions?: () => Promise<SelectOption[]>;
   onSelectOptionChanged?: (newOption: SelectOption) => void;
 }
 
@@ -55,7 +55,8 @@ export interface SelectOption {
 }
 
 export interface DataGridProps {
-  data: any[];
+  data?: Record<string, any>[];
+  onLoadData?: () => Promise<Record<string, any>[]>;
   cols: DataGridColumn[];
   caption?: string;
   height?: string;
@@ -135,6 +136,38 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
 
   useEffect(loadSelectOptions, [props.cols]);
 
+  const [data, setData] = useState<Record<string, any>[]>(props.data ?? []);
+
+  // Update data on props data update
+  useEffect(() => {
+    if (props.data) {
+      setData(props.data);
+    }
+  }, [props.data]);
+
+  const [isLoadingData, setIsLoadingData] = useState(false);
+
+  const loadData = () => {
+    if (props.onLoadData) {
+      setIsLoadingData(true);
+      props
+        .onLoadData()
+        .then((dataRows) => {
+          setData(dataRows);
+        })
+        .catch(() => {
+          toast.error(
+            "Failed to load data. Try refreshing the page with a stable internet connection."
+          );
+        })
+        .finally(() => {
+          setIsLoadingData(false);
+        });
+    }
+  };
+
+  useEffect(loadData, [props.onLoadData]);
+
   return (
     <>
       {props.caption && <Typography variant="h2">{props.caption}</Typography>}
@@ -144,7 +177,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
         component={Paper}
       >
         <OverlaySpinner
-          active={isSavingChanges}
+          active={isSavingChanges || isLoadingData}
           coverRelativeParentComponent={true}
         ></OverlaySpinner>
         <Table style={{ tableLayout: "fixed", width: "100%" }}>
@@ -221,7 +254,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
           </TableHead>
           <TableBody>
             <TableRows
-              dataRows={isPreviewingChanges ? changedDataRows : props.data}
+              dataRows={isPreviewingChanges ? changedDataRows : data}
               theme={theme}
               changedCellIndices={changedCellIndices}
               setChangedCellIndices={setChangedCellIndices}

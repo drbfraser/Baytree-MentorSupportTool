@@ -2,11 +2,20 @@ import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import styled from "styled-components";
 import { getActivities } from "../api/backend/activities";
+import { getMentorRoles } from "../api/backend/mentorRoles";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
 import DataGrid from "../components/shared/datagrid";
 
 const MentorRoles: NextPage = () => {
-  const loadMentorRoles = () => {};
+  const getMentorRoleData = async () => {
+    const mentorRoles = await getMentorRoles();
+
+    if (mentorRoles) {
+      return mentorRoles;
+    } else {
+      throw "Failed to retrieve activities option data.";
+    }
+  };
 
   const getSessionGroupOptions = async () => {
     const response = await getSessionGroupsFromViews();
@@ -36,7 +45,7 @@ const MentorRoles: NextPage = () => {
       <MentorRolesTitle variant="h5">Mentor Roles</MentorRolesTitle>
       <DataGrid
         cols={[
-          { header: "Mentor Role", dataField: "mentorRole" },
+          { header: "Mentor Role", dataField: "name" },
           {
             header: "Session Group",
             dataField: "sessionGroup",
@@ -48,13 +57,7 @@ const MentorRoles: NextPage = () => {
             onLoadSelectOptions: getActivityOptions,
           },
         ]}
-        data={[
-          {
-            mentorRole: "Youth Mentor",
-            sessionGroup: 3,
-            activity: 1,
-          },
-        ]}
+        onLoadData={getMentorRoleData}
         onSaveRows={async (dataRows): Promise<void> =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
