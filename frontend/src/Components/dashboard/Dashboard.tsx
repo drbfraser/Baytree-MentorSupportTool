@@ -34,8 +34,8 @@ const Dashboard = () => {
         }}
       >
         <Toolbar />
-        {/* The main content of the applicationm */}
-        <Outlet /> 
+        {/* The main content of the application */}
+        <Outlet />
       </Box>
     </Box>
   );
