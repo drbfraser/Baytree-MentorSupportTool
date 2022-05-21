@@ -14,10 +14,12 @@ const choices = [
 
 const TextQuestion: FunctionComponent<{ name: string }> = ({ name }) => {
   const [field,] = useField(name);
-  return <TextField variant="outlined" {...field} />
+  return <TextField sx={{my: 3}} variant="outlined" {...field} />
 }
 
 // Reponsive choice question
+// Horizontal on large screen
+// Vertical form in small screen
 export const ChoiceQuestion: FunctionComponent<{ name: string }> = ({ name }) => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
@@ -27,7 +29,8 @@ export const ChoiceQuestion: FunctionComponent<{ name: string }> = ({ name }) =>
     <RadioGroup
       {...field}
       row={isLargeScreen}
-      sx={{ mt: 2, pt: 0, mb: 5, gap: 5 }}>
+      sx={{ my: 3 }}
+      style={{justifyContent: isLargeScreen ? "space-between" : "inherit"}}>
       {
         choices.map((choice, index) => (
           <FormControlLabel
