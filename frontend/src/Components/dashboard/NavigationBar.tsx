@@ -86,7 +86,7 @@ const NavigationBar: FunctionComponent<{
         </Box>
 
         {/* Title */}
-        <Typography variant="h6" color="primary">
+        <Typography variant="h5" sx={{fontWeight: "bold"}} color="primary">
           Mentor Portal
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
@@ -103,7 +103,7 @@ const NavigationBar: FunctionComponent<{
             <AccountBoxIcon />
           </NavigationButton>
           <NavigationButton action={logout}>
-            <LogoutIcon color="secondary" />
+            <LogoutIcon color="primary" />
           </NavigationButton>
         </Stack>
       </Toolbar>
