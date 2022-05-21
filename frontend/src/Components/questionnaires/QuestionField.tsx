@@ -20,7 +20,7 @@ const TextQuestion: FunctionComponent<{ name: string }> = ({ name }) => {
 // Reponsive choice question
 export const ChoiceQuestion: FunctionComponent<{ name: string }> = ({ name }) => {
   const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
   const [field,] = useField(name);
 
   return (

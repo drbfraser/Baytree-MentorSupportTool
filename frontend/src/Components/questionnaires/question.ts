@@ -13,10 +13,10 @@ export type Answer = {
   [key: string]: string | undefined;
 };
 
-export const isValid = (question: Question[], answer: Answer) => {
+export const validate = (question: Question[], answer: Answer) => {
   return question
     .filter((q) => q.enabled === "1" && q.validation.includes("required"))
-    .every((q) => (answer[q.QuestionID] || "") === "");
+    .every((q) => (answer[q.QuestionID] || "") !== "");
 };
 
 export const blankAnswers = (questions: Question[], mentorId?: number) => {
