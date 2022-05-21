@@ -6,9 +6,11 @@ import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import PermDeviceInformationIcon from "@mui/icons-material/PermDeviceInformation";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
-import { Box, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
-import { FunctionComponent } from "react";
+import { Box, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar, useMediaQuery } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
+import { FunctionComponent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "../../api/url";
 import BaytreeLogoHorizontal from "../../Assets/baytree-logo-horizontal.png";
 
 const navigationLinkItems = [
@@ -20,44 +22,6 @@ const navigationLinkItems = [
   { title: "Notifications", icon: <NotificationsIcon color="secondary" />, path: "/dashboard/notifications" },
 ];
 
-const drawerContent = (
-  <>
-    <Toolbar>
-      <img src={BaytreeLogoHorizontal} alt="Baytree Logo" height={48} />
-    </Toolbar>
-    <Divider />
-    <List>
-      {navigationLinkItems.map(({ title, icon, path }) => (
-        <Link key={title} to={path}
-          style={{ textDecoration: "none", color: "inherit" }}>
-          <ListItem button>
-            <ListItemIcon>{icon}</ListItemIcon>
-            <ListItemText>{title}</ListItemText>
-          </ListItem>
-        </Link>
-      ))}
-    </List>
-    <Divider />
-    <ListItem
-      button
-      component="a"
-    >
-      <ListItemIcon>
-        <LibraryBooksIcon color="secondary" />
-      </ListItemIcon>
-      <ListItemText>Resources</ListItemText>
-    </ListItem>
-    <ListItem button component="a"
-      href="mailto: federica@baytreecentre.org.uk"
-      target="_blank"
-    >
-      <ListItemIcon>
-        <PermDeviceInformationIcon color="secondary" />
-      </ListItemIcon>
-      <ListItemText>Help</ListItemText>
-    </ListItem>
-  </>)
-
 interface SideMenuProps {
   drawerWidth: number,
   mobileDrawerOpened: boolean,
@@ -65,41 +29,83 @@ interface SideMenuProps {
 }
 
 const SideMenu: FunctionComponent<SideMenuProps> = ({ drawerWidth, mobileDrawerOpened, toggleMobileDrawer }) => {
+  const [resourcesURL, setResourcesURL] = useState("");
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+
+  useEffect(() => {
+    // Fetch the resources URL
+    fetch(`${API_BASE_URL}/resources/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setResourcesURL(JSON.parse(data)[0].Resource);
+      });
+  }, [])
+
   return (
     <Box
       component="nav"
       sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 }, backgroundColor: "primary.light" }}
     >
-      {/* Pernament drawer - desktop version */}
       <Drawer
+        variant={isMobile ? "temporary" : "permanent"}
         sx={{
           width: drawerWidth,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box"
-          },
-          display: { xs: "none", sm: "none", md: "block" }
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          display: {
+            xs: !isMobile ? "none" : "block",
+            sm: !isMobile ? "none" : "block",
+            md: isMobile ? "none" : "block"
+          }
         }}
-        variant="permanent"
-      >
-        {drawerContent}
-      </Drawer>
-
-      {/* Temporary drawer - mobile version */}
-      {/* Note, may use a script for responsive style */}
-      <Drawer
         ModalProps={{
           keepMounted: true, // Better open performance on mobile.
         }}
-        sx={{
-          display: { xs: "block", sm: 'block', md: 'none' },
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-        }}
-        variant="temporary"
         open={mobileDrawerOpened}
-        onClose={toggleMobileDrawer}
-      >
-        {drawerContent}
+        onClose={toggleMobileDrawer}>
+        <Toolbar>
+          <img src={BaytreeLogoHorizontal} alt="Baytree Logo" height={48} />
+        </Toolbar>
+        <Divider />
+        <List>
+          {navigationLinkItems.map(({ title, icon, path }) => (
+            <Link key={title} to={path}
+              style={{ textDecoration: "none", color: "inherit" }}>
+              <ListItem button>
+                <ListItemIcon>{icon}</ListItemIcon>
+                <ListItemText>{title}</ListItemText>
+              </ListItem>
+            </Link>
+          ))}
+        </List>
+        <Divider />
+        <ListItem
+          button
+          component="a"
+          target="_blank"
+          href={resourcesURL}
+        >
+          <ListItemIcon>
+            <LibraryBooksIcon color="secondary" />
+          </ListItemIcon>
+          <ListItemText>Resources</ListItemText>
+        </ListItem>
+        <ListItem button component="a"
+          href="mailto: federica@baytreecentre.org.uk"
+          target="_blank"
+        >
+          <ListItemIcon>
+            <PermDeviceInformationIcon color="secondary" />
+          </ListItemIcon>
+          <ListItemText>Help</ListItemText>
+        </ListItem>
       </Drawer>
     </Box>
   )
