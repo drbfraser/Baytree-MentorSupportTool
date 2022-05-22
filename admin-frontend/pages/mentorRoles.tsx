@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { getActivities } from "../api/backend/activities";
 import { getMentorRoles } from "../api/backend/mentorRoles";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
-import DataGrid from "../components/shared/datagrid";
+import DataGrid, { onSaveRowsFunc } from "../components/shared/datagrid";
 
 const MentorRoles: NextPage = () => {
   const getMentorRoleData = async () => {
@@ -16,6 +16,8 @@ const MentorRoles: NextPage = () => {
       throw "Failed to retrieve activities option data.";
     }
   };
+
+  const saveMentorRoleData: onSaveRowsFunc = async (dataRows) => {};
 
   const getSessionGroupOptions = async () => {
     const response = await getSessionGroupsFromViews();
@@ -58,13 +60,7 @@ const MentorRoles: NextPage = () => {
           },
         ]}
         onLoadData={getMentorRoleData}
-        onSaveRows={async (dataRows): Promise<void> =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              resolve();
-            }, 2000);
-          })
-        }
+        onSaveRows={saveMentorRoleData}
       ></DataGrid>
     </MentorRolesCard>
   );

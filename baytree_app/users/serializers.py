@@ -18,9 +18,23 @@ class MenteeSerializer(serializers.ModelSerializer):
 
 
 class MentorRoleSerializer(serializers.ModelSerializer):
+    # Need to override id as read_only=False so that it is in 'validated_data'
+    id = serializers.IntegerField(read_only=False)
+
     class Meta:
         model = MentorRole
         fields = ["id", "name", "viewsSessionGroupId", "activity"]
+
+    def create(self, validated_data):
+        answer, created = MentorRole.objects.update_or_create(
+            id=validated_data.get("id", None),
+            defaults={
+                "name": validated_data.get("name", None),
+                "viewsSessionGroupId": validated_data.get("viewsSessionGroupId", None),
+                "activity": validated_data.get("activity", None),
+            },
+        )
+        return answer
 
 
 class MentorSerializer(serializers.ModelSerializer):

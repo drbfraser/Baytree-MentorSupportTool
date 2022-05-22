@@ -67,7 +67,7 @@ export interface DataGridProps {
   onSaveRows?: onSaveRowsFunc; // resolve/reject
 }
 
-type onSaveRowsFunc = (dataRow: Record<string, any>[]) => Promise<void>;
+export type onSaveRowsFunc = (dataRow: Record<string, any>[]) => Promise<void>;
 
 const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   const BUTTON_ICON_SIZE = 22;

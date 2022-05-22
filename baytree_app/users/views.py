@@ -1,4 +1,5 @@
 import re
+from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -33,15 +34,24 @@ from django.utils.timezone import make_aware
 import requests
 import xmltodict
 
-# Code adapted from https://www.django-rest-framework.org/tutorial/quickstart/
-class MentorRoleViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows Mentor roles to be viewed or edited.
-    """
 
+# Provides Mentor Role CRUD REST API endpoints with bulk-update/create support
+# adapted from https://stackoverflow.com/a/61490489
+class MentorRoleViewSet(viewsets.ModelViewSet):
     queryset = MentorRole.objects.all().order_by("name")
     serializer_class = MentorRoleSerializer
     permission_classes = [IsAuthenticated & AdminPermissions]
+
+    update_data_pk_field = "id"
+
+    def create(self, request, *args, **kwargs):
+        serializer = MentorRoleSerializer(
+            data=request.data, many=isinstance(request.data, list)
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def createUsers(users: dict):
