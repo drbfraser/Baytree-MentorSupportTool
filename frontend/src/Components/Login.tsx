@@ -61,7 +61,7 @@ const Login = () => {
                 ? t.palette.grey[50]
                 : t.palette.grey[900],
             backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundPosition: "center"
           }}
         />
         <Grid item xs={12} sm={8} md={5}>
@@ -124,9 +124,7 @@ const Login = () => {
                   </Button>
 
                   <Typography variant="caption" display="block" align="center">
-                    <a href="/ResetPassword">
-                      Forgot Password?
-                    </a>
+                    <a href="/ResetPassword">Forgot Password?</a>
                   </Typography>
                 </Box>
               )}

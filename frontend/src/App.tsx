@@ -4,7 +4,7 @@ import {
   Redirect,
   Route,
   useLocation,
-  Router,
+  Router
 } from "react-router-dom";
 
 import Login from "./Components/Login";
