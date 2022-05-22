@@ -41,7 +41,9 @@ export default function Dashboard() {
   // This is a temporary fix for the warning: react-hooks/exhaustive-deps
   const fetchNumNotifications = () => {
     fetch(
-      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${localStorage.getItem('user_id')}`,
+      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${localStorage.getItem(
+        "user_id"
+      )}`,
       {
         method: "GET",
         headers: {
