@@ -1,9 +1,25 @@
-import { Route, Redirect } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-export default async function PrivateRoute({ ...routeProps }) {
-  if (routeProps.isAuthenticated) {
-    return <Route {...routeProps} />;
-  } else {
-    return <Redirect to={{ pathname: "/login" }} />;
-  }
-}
+// User must log in before accessing PrivateRoutes
+// If not, the routes automatically redirect to the login page
+const PrivateRoute = () => {
+  const [loading, setLoading] = useState(true);
+  const { userId, verifyClient } = useAuth();
+
+  useEffect(() => {
+    verifyClient();
+    setLoading(false);
+  }, [verifyClient]);
+
+  return loading ? (
+    <div>Loading...</div>
+  ) : !userId ? (
+    <Navigate to="/login" replace />
+  ) : (
+    <Outlet />
+  );
+};
+
+export default PrivateRoute;
