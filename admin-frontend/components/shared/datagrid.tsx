@@ -103,6 +103,15 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
     }
   };
 
+  const mountedRef = useRef(true);
+
+  // Fix memory leaks by setting data, column options after comopnent dismounted
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   // Update cols if device screen width changes to mobile
   useEffect(updateColumns, [onMobileDevice]);
 
@@ -122,6 +131,9 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
 
     Promise.all(loadCallbackFuncs)
       .then((selectOptionArrays) => {
+        // avoid memory leaks
+        if (!mountedRef.current) return null;
+
         selectOptionArrays.forEach((selectOptions, i) => {
           const col = cols.find(
             (col) => col.dataField === selectCols[i].dataField
@@ -130,7 +142,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
             col.selectOptions = selectOptions;
           }
         });
-        setCols(cols);
+        setCols([...cols]);
       })
       .catch(() => {
         toast.error(
@@ -158,6 +170,8 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
       props
         .onLoadData()
         .then((dataRows) => {
+          // avoid memory leaks
+          if (!mountedRef.current) return null;
           setData(dataRows);
         })
         .catch(() => {
@@ -166,6 +180,8 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
           );
         })
         .finally(() => {
+          // avoid memory leaks
+          if (!mountedRef.current) return null;
           setIsLoadingData(false);
         });
     }
@@ -302,6 +318,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
           </TableHead>
           <TableBody>
             <TableRows
+              isDataGridSavable={props.onSaveRows !== undefined}
               dataRows={isPreviewingChanges ? changedDataRows : data}
               theme={theme}
               originalRows={originalRows}
@@ -333,6 +350,7 @@ interface TableRowsProps {
   >;
   dataRowActions?: DataRowAction[];
   buttonIconSize: number;
+  isDataGridSavable: boolean;
 }
 
 const TableRows: React.FC<TableRowsProps> = (props) => {
@@ -522,6 +540,14 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
               )}
             </TableCell>
           ))}
+
+          {props.isDataGridSavable && !props.dataRowActions && (
+            <TableCell
+              width="6rem"
+              key={`datagrid_cell_more_options_row_${i}`}
+            ></TableCell>
+          )}
+
           {props.dataRowActions && props.dataRowActions.length === 1 && (
             <TableCell width="6rem" key={`datagrid_cell_more_options_row_${i}`}>
               <div>
@@ -544,7 +570,7 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
           )}
           {props.dataRowActions && props.dataRowActions.length > 1 && (
             <TableCell
-              style={{ width: "3rem" }}
+              style={{ width: "6rem" }}
               key={`datagrid_cell_more_options_row_${i}`}
             >
               <PopupState variant="popover">

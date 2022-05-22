@@ -37,7 +37,6 @@ const Mentors: NextPage = () => {
 
       if (mentorsData && mentorsData.data !== null) {
         setMaxPageNum(Math.ceil(mentorsData.total / PAGE_LIMIT));
-        console.log(mentorsData);
         setPageData(
           mentorsData.data.map((mentorData) => ({
             email: mentorData.user.email,
