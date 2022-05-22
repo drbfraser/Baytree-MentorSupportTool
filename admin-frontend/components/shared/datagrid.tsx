@@ -14,11 +14,12 @@ import {
   Select,
   MenuItem,
   Skeleton,
+  SelectChangeEvent,
 } from "@mui/material";
 import Button from "./button";
 import CheckBox from "./checkBox";
 import { Table } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { stringToBool } from "../../util/misc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../stores/store";
@@ -71,8 +72,6 @@ export type onSaveRowsFunc = (
   dataRow: Record<string, any>[]
 ) => Promise<boolean>;
 
-type ChangedCell = { primaryKeyVal: string; dataField: string };
-
 const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   const BUTTON_ICON_SIZE = 22;
   const DEFAULT_PRIMARY_KEY = "id";
@@ -80,11 +79,11 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   const theme = useSelector<RootState, ThemeState>((state) => state.theme);
 
   // Used for storing and displaying changes to datagrid rows
-  const [changedCells, setChangedCells] = useState<ChangedCell[]>([]);
   const [changedDataRows, setChangedDataRows] = useState<Record<string, any>[]>(
     []
   );
-  const primaryKey = props.primaryKey ?? "id"; // default primary key is id
+  const [originalRows, setOriginalRows] = useState<Record<string, any>[]>([]);
+  const primaryKey = props.primaryKey ?? DEFAULT_PRIMARY_KEY;
   const [isPreviewingChanges, setIsPreviewingChanges] = useState(false);
 
   const [isSavingChanges, setIsSavingChanges] = useState(false);
@@ -177,41 +176,61 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   const acceptAndSaveChanges = () => {
     setIsSavingChanges(true);
 
-    const dataRowsWithOnlyChangedFields = changedDataRows.map(
-      (changedDataRow) => {
+    const dataRowsWithOnlyChangedFields = changedDataRows
+      .map((changedDataRow) => {
+        const changedDataRowCopy = JSON.parse(JSON.stringify(changedDataRow));
         for (const dataField in changedDataRow) {
+          if (dataField === primaryKey) {
+            continue;
+          }
+
           if (
-            !changedCells.some(
-              (changedCell) =>
-                changedCell.primaryKeyVal === changedDataRow[primaryKey] &&
-                changedCell.dataField === dataField
-            ) &&
-            dataField !== primaryKey
+            !data.some(
+              (dataRow) =>
+                dataRow[primaryKey] === changedDataRow[primaryKey] &&
+                dataRow[dataField] !== changedDataRow[dataField]
+            )
           ) {
-            delete changedDataRow[dataField];
+            delete changedDataRowCopy[dataField];
           }
         }
 
-        return changedDataRow;
-      }
-    );
+        return changedDataRowCopy;
+      })
+      .filter((dataRow) => dataRow);
 
     (props.onSaveRows as onSaveRowsFunc)(dataRowsWithOnlyChangedFields)
       .then((savedSuccessfully) => {
         if (savedSuccessfully) {
+          // Change local data rows to avoid requesting network data again
+          changedDataRows.forEach((changedDataRow) => {
+            const dataRowIdx = data.findIndex(
+              (dataRow) => dataRow[primaryKey] === changedDataRow[primaryKey]
+            );
+
+            if (dataRowIdx !== -1) {
+              data[dataRowIdx] = changedDataRow;
+            }
+          });
+          setData(data);
+
+          setOriginalRows([]);
           setChangedDataRows([]);
-          setChangedCells([]);
           setIsSavingChanges(false);
           setIsPreviewingChanges(false);
           toast.success("Successfully saved changes!");
         } else {
           setIsSavingChanges(false);
-          toast.error("Failed to save changes. Please try again.");
+          toast.error(
+            "Failed to save changes. Ensure that there are no duplicate values for a unique column and try again."
+          );
         }
       })
       .catch(() => {
         setIsSavingChanges(false);
-        toast.error("Failed to save changes. Please try again.");
+        toast.error(
+          "Failed to save changes. Ensure that there are no duplicate values for a unique column and try again."
+        );
       });
   };
 
@@ -285,8 +304,8 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
             <TableRows
               dataRows={isPreviewingChanges ? changedDataRows : data}
               theme={theme}
-              changedCells={changedCells}
-              setChangedCells={setChangedCells}
+              originalRows={originalRows}
+              setOriginalRows={setOriginalRows}
               buttonIconSize={BUTTON_ICON_SIZE}
               changedDataRows={changedDataRows}
               setChangedDataRows={setChangedDataRows}
@@ -304,10 +323,10 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
 interface TableRowsProps {
   dataRows: Record<string, any>[];
   theme: ThemeState;
-  changedCells: ChangedCell[];
-  setChangedCells: React.Dispatch<React.SetStateAction<ChangedCell[]>>;
   cols: DataGridColumn[];
   primaryKey: string;
+  originalRows: Record<string, any>[];
+  setOriginalRows: React.Dispatch<React.SetStateAction<Record<string, any>[]>>;
   changedDataRows: Record<string, any>[];
   setChangedDataRows: React.Dispatch<
     React.SetStateAction<Record<string, any>[]>
@@ -368,11 +387,85 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
     dataRow: Record<string, any>,
     col: DataGridColumn
   ) => {
-    return props.changedCells.some(
-      (changedCellIndex) =>
-        changedCellIndex.primaryKeyVal === dataRow[props.primaryKey] &&
-        changedCellIndex.dataField === col.dataField
+    const originalRow = props.originalRows.find(
+      (row) => row[props.primaryKey] === dataRow[props.primaryKey]
     );
+    const changedDataRow = props.changedDataRows.find(
+      (changedDataRow) =>
+        changedDataRow[props.primaryKey] === dataRow[props.primaryKey]
+    );
+
+    return (
+      originalRow &&
+      changedDataRow &&
+      originalRow[col.dataField] !== changedDataRow[col.dataField]
+    );
+  };
+
+  const curSelectKeyRef = useRef(0);
+
+  const getSelectDefaultValue = (
+    dataRow: Record<string, any>,
+    col: DataGridColumn
+  ) => {
+    const changedDataRow = props.changedDataRows.find(
+      (changedDataRow) =>
+        changedDataRow[props.primaryKey] === dataRow[props.primaryKey]
+    );
+
+    return changedDataRow
+      ? changedDataRow[col.dataField]
+      : dataRow[col.dataField] ?? "";
+  };
+
+  const onChangeSelectValue = (
+    event: SelectChangeEvent<any>,
+    dataRow: Record<string, any>,
+    col: DataGridColumn
+  ) => {
+    const primaryKey = props.primaryKey;
+
+    const originalDataRow = props.originalRows.find(
+      (originalRow) => originalRow[primaryKey] === dataRow[primaryKey]
+    );
+
+    const newSelectValue = event.target.value;
+    if (originalDataRow) {
+      let changedDataRowIdx = props.changedDataRows.findIndex(
+        (changedDataRow) => changedDataRow[primaryKey] === dataRow[primaryKey]
+      );
+
+      const changedDataRow = props.changedDataRows[changedDataRowIdx];
+      changedDataRow[col.dataField] = newSelectValue;
+
+      if (
+        Object.entries(originalDataRow).every(
+          (entry) => entry[1] === changedDataRow[entry[0]]
+        )
+      ) {
+        const removeChangedDataRow = props.changedDataRows.filter(
+          (changedDataRow) =>
+            changedDataRow[primaryKey] !== originalDataRow[primaryKey]
+        );
+        const removeOriginalDataRow = props.originalRows.filter(
+          (originalRow) =>
+            originalRow[primaryKey] !== originalDataRow[primaryKey]
+        );
+
+        props.setOriginalRows(removeOriginalDataRow);
+        props.setChangedDataRows(removeChangedDataRow);
+      } else {
+        changedDataRow[col.dataField] = newSelectValue;
+
+        props.setChangedDataRows([...props.changedDataRows]);
+      }
+    } else {
+      const changedDataRow = JSON.parse(JSON.stringify(dataRow));
+      changedDataRow[col.dataField] = newSelectValue;
+
+      props.setOriginalRows([...props.originalRows, dataRow]);
+      props.setChangedDataRows([...props.changedDataRows, changedDataRow]);
+    }
   };
 
   return (
@@ -393,37 +486,13 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
             >
               {col.selectOptions ? (
                 <Select
-                  key={`select_datarow_${dataRow[props.primaryKey]}_col_${j}`}
+                  key={`select_datarow_${
+                    dataRow[props.primaryKey]
+                  }_col_${curSelectKeyRef.current++}`}
                   fullWidth
-                  defaultValue={dataRow[col.dataField] ?? ""}
+                  defaultValue={getSelectDefaultValue(dataRow, col)}
                   onChange={(event) => {
-                    const primaryKey = props.primaryKey;
-
-                    if (!hasCellBeenChanged(dataRow, col)) {
-                      props.setChangedCells([
-                        ...props.changedCells,
-                        {
-                          primaryKeyVal: dataRow[primaryKey],
-                          dataField: col.dataField,
-                        },
-                      ]);
-                    }
-
-                    let changedDataRowIdx = props.changedDataRows.findIndex(
-                      (changedDataRow) =>
-                        changedDataRow[primaryKey] === dataRow[primaryKey]
-                    );
-
-                    dataRow[col.dataField] = event.target.value;
-                    if (changedDataRowIdx !== -1) {
-                      props.changedDataRows[changedDataRowIdx] = dataRow;
-                      props.setChangedDataRows(props.changedDataRows);
-                    } else {
-                      props.setChangedDataRows([
-                        ...props.changedDataRows,
-                        dataRow,
-                      ]);
-                    }
+                    onChangeSelectValue(event, dataRow, col);
                   }}
                 >
                   {col.selectOptions.map((selectOption, k) => (
