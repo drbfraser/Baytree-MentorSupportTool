@@ -86,7 +86,7 @@ const NavigationBar: FunctionComponent<{
         </Box>
 
         {/* Title */}
-        <Typography variant="h5" sx={{fontWeight: "bold"}} color="primary">
+        <Typography variant="h5" sx={{ fontWeight: "bold" }} color="primary">
           Mentor Portal
         </Typography>
         <Box sx={{ flexGrow: 1 }} />

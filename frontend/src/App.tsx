@@ -16,30 +16,27 @@ import PublicRoute from "./Utils/PublicRoute";
 
 function App() {
   return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/resetPassword" element={<ResetPassword />} />
-          <Route path="/createAccount" element={<CreateAccount />} />
-          <Route element={<PublicRoute />}>
-            <Route path="/login" element={<Login />} />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route path="/createAccount" element={<CreateAccount />} />
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
+        <Route element={<AuthRoute />}>
+          <Route path="/dashboard" element={<Dashboard />}>
+            <Route path="home" element={<Home />} />
+            <Route path="sessions" element={<Sessions />} />
+            <Route path="questionnaires" element={<Questionnaire />} />
+            <Route path="goals" element={<Goals />} />
+            <Route path="records" element={<Records />} />
+            <Route path="notifications" element={<Notification />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
-          <Route element={<AuthRoute />}>
-            <Route path="/dashboard" element={<Dashboard />}>
-              <Route path="home" element={<Home />} />
-              <Route path="sessions" element={<Sessions />} />
-              <Route path="questionnaires" element={<Questionnaire />} />
-              <Route path="goals" element={<Goals />} />
-              <Route path="records" element={<Records />} />
-              <Route path="notifications" element={<Notification />} />
-              <Route path="profile" element={<Profile />} />
-            </Route>
-            <Route
-              path="/"
-              element={<Navigate to="/dashboard/home" replace />}
-            />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+          <Route path="/" element={<Navigate to="/dashboard/home" replace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

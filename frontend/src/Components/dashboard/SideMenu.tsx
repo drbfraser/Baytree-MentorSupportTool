@@ -17,39 +17,23 @@ import Toolbar from "@mui/material/Toolbar";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { FunctionComponent, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../../api/url";
 import BaytreeLogoHorizontal from "../../Assets/baytree-logo-horizontal.png";
 
 const navigationLinkItems = [
-  {
-    title: "Home",
-    icon: <HomeIcon color="secondary" />,
-    path: "/dashboard/home"
-  },
-  {
-    title: "Create Session",
-    icon: <CreateIcon color="secondary" />,
-    path: "/dashboard/sessions"
-  },
+  { title: "Home", Icon: HomeIcon, path: "/dashboard/home" },
+  { title: "Create Session", Icon: CreateIcon, path: "/dashboard/sessions" },
   {
     title: "Questionnaires",
-    icon: <QuestionAnswerIcon color="secondary" />,
+    Icon: QuestionAnswerIcon,
     path: "/dashboard/questionnaires"
   },
-  {
-    title: "Goals",
-    icon: <AutoGraphIcon color="secondary" />,
-    path: "/dashboard/goals"
-  },
-  {
-    title: "Records",
-    icon: <BookIcon color="secondary" />,
-    path: "/dashboard/records"
-  },
+  { title: "Goals", Icon: AutoGraphIcon, path: "/dashboard/goals" },
+  { title: "Records", Icon: BookIcon, path: "/dashboard/records" },
   {
     title: "Notifications",
-    icon: <NotificationsIcon color="secondary" />,
+    Icon: NotificationsIcon,
     path: "/dashboard/notifications"
   }
 ];
@@ -68,6 +52,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
   const [resourcesURL, setResourcesURL] = useState("");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const location = useLocation();
 
   useEffect(() => {
     // Fetch the resources URL
@@ -114,24 +99,32 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
           <img src={BaytreeLogoHorizontal} alt="Baytree Logo" height={48} />
         </Toolbar>
         <Divider />
+        {/* Navigation inside the website */}
         <List>
-          {navigationLinkItems.map(({ title, icon, path }) => (
-            <Link
-              key={title}
-              to={path}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <ListItem button>
-                <ListItemIcon>{icon}</ListItemIcon>
-                <ListItemText>{title}</ListItemText>
-              </ListItem>
-            </Link>
-          ))}
+          {navigationLinkItems.map(({ title, path, Icon }) => {
+            const active = location.pathname === path;
+
+            return (
+              <Link
+                key={title}
+                to={path}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <Icon color={active ? "secondary" : "primary"} />
+                  </ListItemIcon>
+                  <ListItemText>{title}</ListItemText>
+                </ListItem>
+              </Link>
+            );
+          })}
         </List>
         <Divider />
+        {/* Navigation outside the website */}
         <ListItem button component="a" target="_blank" href={resourcesURL}>
           <ListItemIcon>
-            <LibraryBooksIcon color="secondary" />
+            <LibraryBooksIcon color="primary" />
           </ListItemIcon>
           <ListItemText>Resources</ListItemText>
         </ListItem>
@@ -142,7 +135,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
           target="_blank"
         >
           <ListItemIcon>
-            <PermDeviceInformationIcon color="secondary" />
+            <PermDeviceInformationIcon color="primary" />
           </ListItemIcon>
           <ListItemText>Help</ListItemText>
         </ListItem>

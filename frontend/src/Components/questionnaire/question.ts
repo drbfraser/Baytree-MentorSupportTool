@@ -36,9 +36,9 @@ export const submitAnswer = async (answer: Answer) => {
       headers: { "Content-Type": "application/json" },
       withCredentials: true
     });
-    return {respond, error: undefined}
-  } catch(error) {
-    return {respond: undefined, error}
+    return { respond, error: undefined };
+  } catch (error) {
+    return { respond: undefined, error };
   }
 };
 
