@@ -26,13 +26,16 @@ class MentorRoleSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "viewsSessionGroupId", "activity"]
 
     def create(self, validated_data):
+        defaults = {
+            "viewsSessionGroupId": validated_data.get("viewsSessionGroupId", None),
+            "activity": validated_data.get("activity", None),
+        }
+
+        if "name" in validated_data:
+            defaults["name"] = validated_data.get("name", None)
+
         answer, created = MentorRole.objects.update_or_create(
-            id=validated_data.get("id", None),
-            defaults={
-                "name": validated_data.get("name", None),
-                "viewsSessionGroupId": validated_data.get("viewsSessionGroupId", None),
-                "activity": validated_data.get("activity", None),
-            },
+            id=validated_data.get("id", None), defaults=defaults
         )
         return answer
 

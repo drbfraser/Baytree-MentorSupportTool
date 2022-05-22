@@ -30,3 +30,23 @@ export const getMentorRoles = async () => {
     return null;
   }
 };
+
+export const saveMentorRoles = async (
+  mentorRoleDataRows: Record<string, any>[]
+) => {
+  try {
+    const response = await fetch(mentorRolesBackendEndpoint, {
+      method: "POST",
+      body: JSON.stringify(mentorRoleDataRows),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    return response.ok;
+  } catch {
+    return false;
+  }
+};

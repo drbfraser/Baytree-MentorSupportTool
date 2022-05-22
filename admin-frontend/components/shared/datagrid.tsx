@@ -67,18 +67,24 @@ export interface DataGridProps {
   onSaveRows?: onSaveRowsFunc; // resolve/reject
 }
 
-export type onSaveRowsFunc = (dataRow: Record<string, any>[]) => Promise<void>;
+export type onSaveRowsFunc = (
+  dataRow: Record<string, any>[]
+) => Promise<boolean>;
+
+type ChangedCell = { primaryKeyVal: string; dataField: string };
 
 const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
   const BUTTON_ICON_SIZE = 22;
+  const DEFAULT_PRIMARY_KEY = "id";
 
   const theme = useSelector<RootState, ThemeState>((state) => state.theme);
 
   // Used for storing and displaying changes to datagrid rows
-  const [changedCellIndices, setChangedCellIndices] = useState<number[][]>([]);
+  const [changedCells, setChangedCells] = useState<ChangedCell[]>([]);
   const [changedDataRows, setChangedDataRows] = useState<Record<string, any>[]>(
     []
   );
+  const primaryKey = props.primaryKey ?? "id"; // default primary key is id
   const [isPreviewingChanges, setIsPreviewingChanges] = useState(false);
 
   const [isSavingChanges, setIsSavingChanges] = useState(false);
@@ -168,6 +174,47 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
 
   useEffect(loadData, [props.onLoadData]);
 
+  const acceptAndSaveChanges = () => {
+    setIsSavingChanges(true);
+
+    const dataRowsWithOnlyChangedFields = changedDataRows.map(
+      (changedDataRow) => {
+        for (const dataField in changedDataRow) {
+          if (
+            !changedCells.some(
+              (changedCell) =>
+                changedCell.primaryKeyVal === changedDataRow[primaryKey] &&
+                changedCell.dataField === dataField
+            ) &&
+            dataField !== primaryKey
+          ) {
+            delete changedDataRow[dataField];
+          }
+        }
+
+        return changedDataRow;
+      }
+    );
+
+    (props.onSaveRows as onSaveRowsFunc)(dataRowsWithOnlyChangedFields)
+      .then((savedSuccessfully) => {
+        if (savedSuccessfully) {
+          setChangedDataRows([]);
+          setChangedCells([]);
+          setIsSavingChanges(false);
+          setIsPreviewingChanges(false);
+          toast.success("Successfully saved changes!");
+        } else {
+          setIsSavingChanges(false);
+          toast.error("Failed to save changes. Please try again.");
+        }
+      })
+      .catch(() => {
+        setIsSavingChanges(false);
+        toast.error("Failed to save changes. Please try again.");
+      });
+  };
+
   return (
     <>
       {props.caption && <Typography variant="h2">{props.caption}</Typography>}
@@ -223,25 +270,7 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
                         <Button
                           backgroundColor={green[500]}
                           variant="contained"
-                          onClick={() => {
-                            setIsSavingChanges(true);
-                            (props.onSaveRows as onSaveRowsFunc)(
-                              changedDataRows
-                            )
-                              .then(() => {
-                                setChangedDataRows([]);
-                                setChangedCellIndices([]);
-                                setIsSavingChanges(false);
-                                setIsPreviewingChanges(false);
-                                toast.success("Successfully saved changes!");
-                              })
-                              .catch(() => {
-                                setIsSavingChanges(false);
-                                toast.error(
-                                  "Failed to save changes. Please try again."
-                                );
-                              });
-                          }}
+                          onClick={acceptAndSaveChanges}
                           disabled={isSavingChanges}
                         >
                           <MdCheck size={BUTTON_ICON_SIZE}></MdCheck>
@@ -256,13 +285,13 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
             <TableRows
               dataRows={isPreviewingChanges ? changedDataRows : data}
               theme={theme}
-              changedCellIndices={changedCellIndices}
-              setChangedCellIndices={setChangedCellIndices}
+              changedCells={changedCells}
+              setChangedCells={setChangedCells}
               buttonIconSize={BUTTON_ICON_SIZE}
               changedDataRows={changedDataRows}
               setChangedDataRows={setChangedDataRows}
               cols={cols}
-              primaryKey={props.primaryKey}
+              primaryKey={primaryKey}
               dataRowActions={props.dataRowActions}
             ></TableRows>
           </TableBody>
@@ -275,10 +304,10 @@ const DataGrid: React.FunctionComponent<DataGridProps> = (props) => {
 interface TableRowsProps {
   dataRows: Record<string, any>[];
   theme: ThemeState;
-  changedCellIndices: number[][];
-  setChangedCellIndices: React.Dispatch<React.SetStateAction<number[][]>>;
+  changedCells: ChangedCell[];
+  setChangedCells: React.Dispatch<React.SetStateAction<ChangedCell[]>>;
   cols: DataGridColumn[];
-  primaryKey?: string;
+  primaryKey: string;
   changedDataRows: Record<string, any>[];
   setChangedDataRows: React.Dispatch<
     React.SetStateAction<Record<string, any>[]>
@@ -337,12 +366,12 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
 
   const hasCellBeenChanged = (
     dataRow: Record<string, any>,
-    colIndex: number
+    col: DataGridColumn
   ) => {
-    return props.changedCellIndices.some(
+    return props.changedCells.some(
       (changedCellIndex) =>
-        changedCellIndex[0] === dataRow[props.primaryKey as string] &&
-        changedCellIndex[1] === colIndex
+        changedCellIndex.primaryKeyVal === dataRow[props.primaryKey] &&
+        changedCellIndex.dataField === col.dataField
     );
   };
 
@@ -353,7 +382,7 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
           {props.cols.map((col: DataGridColumn, j) => (
             <TableCell
               style={{
-                backgroundColor: hasCellBeenChanged(dataRow, j)
+                backgroundColor: hasCellBeenChanged(dataRow, col)
                   ? `${props.theme.colors.primaryColor}30`
                   : undefined,
                 overflow: "hidden",
@@ -364,15 +393,19 @@ const TableRows: React.FC<TableRowsProps> = (props) => {
             >
               {col.selectOptions ? (
                 <Select
+                  key={`select_datarow_${dataRow[props.primaryKey]}_col_${j}`}
                   fullWidth
-                  defaultValue={dataRow[col.dataField]}
+                  defaultValue={dataRow[col.dataField] ?? ""}
                   onChange={(event) => {
-                    const primaryKey = props.primaryKey as string;
+                    const primaryKey = props.primaryKey;
 
-                    if (!hasCellBeenChanged(dataRow, j)) {
-                      props.setChangedCellIndices([
-                        ...props.changedCellIndices,
-                        [dataRow[primaryKey], j],
+                    if (!hasCellBeenChanged(dataRow, col)) {
+                      props.setChangedCells([
+                        ...props.changedCells,
+                        {
+                          primaryKeyVal: dataRow[primaryKey],
+                          dataField: col.dataField,
+                        },
                       ]);
                     }
 

@@ -44,9 +44,10 @@ class MentorRoleViewSet(viewsets.ModelViewSet):
 
     update_data_pk_field = "id"
 
+    # Method for batch updating/creating arrays of objects
     def create(self, request, *args, **kwargs):
         serializer = MentorRoleSerializer(
-            data=request.data, many=isinstance(request.data, list)
+            data=request.data, many=isinstance(request.data, list), partial=True
         )
         if serializer.is_valid():
             serializer.save()

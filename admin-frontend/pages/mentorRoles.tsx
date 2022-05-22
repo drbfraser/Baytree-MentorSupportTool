@@ -2,7 +2,7 @@ import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import styled from "styled-components";
 import { getActivities } from "../api/backend/activities";
-import { getMentorRoles } from "../api/backend/mentorRoles";
+import { getMentorRoles, saveMentorRoles } from "../api/backend/mentorRoles";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
 import DataGrid, { onSaveRowsFunc } from "../components/shared/datagrid";
 
@@ -11,13 +11,18 @@ const MentorRoles: NextPage = () => {
     const mentorRoles = await getMentorRoles();
 
     if (mentorRoles) {
-      return mentorRoles;
+      return mentorRoles.map((mentorRole) => ({
+        ...mentorRole,
+        viewsSessionGroupId: mentorRole.viewsSessionGroupId,
+      }));
     } else {
       throw "Failed to retrieve activities option data.";
     }
   };
 
-  const saveMentorRoleData: onSaveRowsFunc = async (dataRows) => {};
+  const saveMentorRoleData: onSaveRowsFunc = async (dataRows) => {
+    return await saveMentorRoles(dataRows);
+  };
 
   const getSessionGroupOptions = async () => {
     const response = await getSessionGroupsFromViews();
@@ -50,7 +55,7 @@ const MentorRoles: NextPage = () => {
           { header: "Mentor Role", dataField: "name" },
           {
             header: "Session Group",
-            dataField: "sessionGroup",
+            dataField: "viewsSessionGroupId",
             onLoadSelectOptions: getSessionGroupOptions,
           },
           {

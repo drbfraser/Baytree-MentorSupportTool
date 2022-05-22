@@ -29,7 +29,7 @@ class Mentoring(models.Model):
 
 class MentorRole(models.Model):
     name = models.CharField(max_length=50, null=False)
-    viewsSessionGroupId = models.CharField(max_length=30, default=None, null=True)
+    viewsSessionGroupId = models.IntegerField(null=True)
     activity = models.OneToOneField(
         Activity, on_delete=models.SET_NULL, default=None, null=True
     )
