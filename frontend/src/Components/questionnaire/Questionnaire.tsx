@@ -1,9 +1,10 @@
-import { Button, Container, Divider, Grow, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../context/AuthContext";
+import FormContainer from "../shared/FormContainer";
 import LoadingScreen from "./LoadingScreen";
 import {
   blankAnswers,
@@ -27,61 +28,45 @@ const Questionnaire = () => {
   }, []);
 
   return (
-    <>
-      <Grow in>
-        <Container maxWidth="md" sx={{ boxShadow: 5, borderRadius: 5, p: 2 }}>
-          {/* Title */}
-          <Typography
-            component="h2"
-            variant="h6"
-            color="text.secondary"
-            gutterBottom
-          >
-            Monthly Progress Report
-          </Typography>
-          <Divider />
-
-          {/* Start the form */}
-          {loading ? (
-            <LoadingScreen />
-          ) : (
-            <Formik
-              initialValues={blankAnswers(questions, user!.userId)}
-              onSubmit={async (answer, { resetForm, setSubmitting }) => {
-                setSubmitting(true);
-                const { respond, error } = await submitAnswer(answer);
-                if (!error && respond?.status === 200) {
-                  toast.success("Submitted successfullly, thank you");
-                  resetForm(blankAnswers(questions, user!.userId));
-                } else toast.error("Failed to submit, please try again");
-                setSubmitting(false);
-              }}
-            >
-              {({ values, isSubmitting }) => (
-                <Form>
-                  {questions.map((question, index) => (
-                    <QuestionField
-                      question={question}
-                      numbering={index + 1}
-                      key={question.QuestionID}
-                    />
-                  ))}
-                  <Button
-                    disabled={isSubmitting || !validate(questions, values)}
-                    variant="contained"
-                    type="submit"
-                    sx={{ mt: 3 }}
-                  >
-                    Submit
-                  </Button>
-                </Form>
-              )}
-            </Formik>
+    <FormContainer title="Monthly Progress Report">
+      {/* Start the form */}
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <Formik
+          initialValues={blankAnswers(questions, user!.userId)}
+          onSubmit={async (answer, { resetForm, setSubmitting }) => {
+            setSubmitting(true);
+            const { respond, error } = await submitAnswer(answer);
+            if (!error && respond?.status === 200) {
+              toast.success("Submitted successfullly, thank you");
+              resetForm(blankAnswers(questions, user!.userId));
+            } else toast.error("Failed to submit, please try again");
+            setSubmitting(false);
+          }}
+        >
+          {({ values, isSubmitting }) => (
+            <Form>
+              {questions.map((question, index) => (
+                <QuestionField
+                  question={question}
+                  numbering={index + 1}
+                  key={question.QuestionID}
+                />
+              ))}
+              <Button
+                disabled={isSubmitting || !validate(questions, values)}
+                variant="contained"
+                type="submit"
+                sx={{ mt: 3 }}
+              >
+                Submit
+              </Button>
+            </Form>
           )}
-        </Container>
-      </Grow>
-      <ToastContainer />
-    </>
+        </Formik>
+      )}
+    </FormContainer>
   );
 };
 

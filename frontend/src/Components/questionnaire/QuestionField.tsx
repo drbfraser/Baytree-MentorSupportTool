@@ -67,10 +67,8 @@ const QuestionField: FunctionComponent<{
     <FormControl fullWidth required={required}>
       <Typography
         sx={{
-          mb: 1,
           mt: 3,
-          fontWeight: "bold",
-          fontStyle: "underlined"
+          fontWeight: "bold"
         }}
         color="text.secondary"
       >
