@@ -7,7 +7,7 @@ import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
 import Card from "@mui/material/Card";
-import Holidays from "../Utils/Holidays";
+import Holidays from "../../Utils/Holidays";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -16,7 +16,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { API_BASE_URL } from "../api/url";
+import { API_BASE_URL } from "../../api/url";
 
 type Props = {
   height: string;

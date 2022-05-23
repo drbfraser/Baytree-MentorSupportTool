@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { API_BASE_URL } from "../api/url";
+import { API_BASE_URL } from "../../api/url";
 
 export default function Statistics() {
   const [statistics, setStatistics] = useState([] as any[]);

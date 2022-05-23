@@ -19,7 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import moment from "moment";
 import TimelineDot from "@mui/lab/TimelineDot";
-import { API_BASE_URL } from "../api/url";
+import { API_BASE_URL } from "../../api/url";
 
 export default function Goals() {
   const [goals, setGoals] = useState([] as any[]);

@@ -17,7 +17,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import { API_BASE_URL } from "../api/url";
+import { API_BASE_URL } from "../../api/url";
 
 const CreateGoals = (props: any) => {
   const [contents, setContents] = useState(

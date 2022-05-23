@@ -12,7 +12,7 @@ import Grow from "@mui/material/Grow";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 
-import GoalList from "./GoalsList";
+import GoalList from "../goals/GoalsList";
 
 const Home = () => {
   const [checked, setChecked] = useState(true);

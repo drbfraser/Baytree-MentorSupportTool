@@ -9,7 +9,7 @@ import moment from "moment";
 import TimelineDot from "@mui/lab/TimelineDot";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { API_BASE_URL } from "../api/url";
+import { API_BASE_URL } from "../../api/url";
 
 export default function Goals() {
   const [goals, setGoals] = useState([] as any[]);

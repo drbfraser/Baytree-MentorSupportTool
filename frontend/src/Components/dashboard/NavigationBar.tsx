@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../api/url";
 import Logo from "../../Assets/baytree.png";
 import { useAuth } from "../../context/AuthContext";
-import Messages from "../Messages";
+import Messages from "./Messages";
 
 const NavigationButton = (
   props: PropsWithChildren<{ action?: (() => void) | (() => Promise<void>) }>
