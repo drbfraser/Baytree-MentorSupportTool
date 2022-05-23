@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+// User must log out before accessing PublicRoutes
+// If not, the routes automatically redirect to the dashboard home page
 const PublicRoute = () => {
   const [loading, setLoading] = useState(true);
   const { userId, verifyClient } = useAuth();

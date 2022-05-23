@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext } from "react";
+import { createContext, FunctionComponent, useContext } from "react";
 import { login, logout, verify } from "../api/auth";
 import useLocalStorage from "../hooks/useLocalStorage";
 
@@ -15,7 +15,7 @@ const AuthContext = createContext<AuthContextType>({
   verifyClient: async () => false
 });
 
-export const AuthProvider = (props: PropsWithChildren<{}>) => {
+export const AuthProvider: FunctionComponent<{}> = (props) => {
   const [userId, setUserId] = useLocalStorage<number>("user_id", undefined);
 
   const signIn = async (email: string, password: string) => {
