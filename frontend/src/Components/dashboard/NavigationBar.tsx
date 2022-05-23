@@ -33,14 +33,14 @@ const NavigationBar: FunctionComponent<{
   drawerWidth: number;
   toggleDrawer: () => void;
 }> = ({ drawerWidth, toggleDrawer }) => {
-  const { userId, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [numNotifications, setNumNotifications] = useState(0);
 
   useEffect(() => {
     // Fetch the number of unread notifications
     fetch(
-      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${userId}`,
+      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${user!.userId}`,
       {
         method: "GET",
         headers: {
@@ -54,7 +54,7 @@ const NavigationBar: FunctionComponent<{
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, [userId]);
+  }, [user]);
 
   const logout = async () => {
     await signOut();

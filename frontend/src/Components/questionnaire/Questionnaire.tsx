@@ -2,6 +2,7 @@ import { Button, Container, Divider, Grow, Typography } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../context/AuthContext";
 import LoadingScreen from "./LoadingScreen";
 import {
@@ -12,10 +13,9 @@ import {
   validate
 } from "./question";
 import QuestionField from "./QuestionField";
-import "react-toastify/dist/ReactToastify.css";
 
 const Questionnaire = () => {
-  const { userId } = useAuth();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState([] as Question[]);
 
@@ -46,13 +46,13 @@ const Questionnaire = () => {
             <LoadingScreen />
           ) : (
             <Formik
-              initialValues={blankAnswers(questions, userId)}
+              initialValues={blankAnswers(questions, user!.userId)}
               onSubmit={async (answer, { resetForm, setSubmitting }) => {
                 setSubmitting(true);
                 const { respond, error } = await submitAnswer(answer);
                 if (!error && respond?.status === 200) {
                   toast.success("Submitted successfullly, thank you");
-                  resetForm(blankAnswers(questions, userId));
+                  resetForm(blankAnswers(questions, user!.userId));
                 } else toast.error("Failed to submit, please try again");
                 setSubmitting(false);
               }}

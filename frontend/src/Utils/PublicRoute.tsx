@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 // If not, the routes automatically redirect to the dashboard home page
 const PublicRoute = () => {
   const [loading, setLoading] = useState(true);
-  const { userId, verifyClient } = useAuth();
+  const { user, verifyClient } = useAuth();
 
   useEffect(() => {
     verifyClient();
@@ -15,7 +15,7 @@ const PublicRoute = () => {
 
   return loading ? (
     <div>Loading...</div>
-  ) : userId ? (
+  ) : user ? (
     <Navigate to="dashboard/home" replace />
   ) : (
     <Outlet />

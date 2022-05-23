@@ -2,8 +2,13 @@ import { createContext, FunctionComponent, useContext } from "react";
 import { login, logout, verify } from "../api/auth";
 import useLocalStorage from "../hooks/useLocalStorage";
 
+interface UserInfo {
+  userId: number;
+  email: string;
+}
 interface AuthContextType {
   userId?: number;
+  user?: UserInfo;
   signIn: (email: string, password: string) => Promise<boolean>;
   signOut: () => Promise<boolean>;
   verifyClient: () => Promise<boolean>;
@@ -16,31 +21,37 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider: FunctionComponent<{}> = (props) => {
-  const [userId, setUserId] = useLocalStorage<number>("user_id", undefined);
+  const [user, setUser] = useLocalStorage<UserInfo>("user", undefined);
 
   const signIn = async (email: string, password: string) => {
     const respond = await login(email, password);
-    setUserId(respond ? +respond.user_id : undefined);
-    console.log(respond);
+    setUser(respond ? {
+      userId: +respond.user_id,
+      email
+    } : undefined);
     return !!respond;
   };
 
   const signOut = async () => {
-    const res = await logout();
-    res && setUserId(undefined);
-    return res;
+    const loggedOut = await logout();
+    if (loggedOut) {
+      setUser(undefined);
+    }
+    return loggedOut;
   };
 
   const verifyClient = async () => {
-    if (!userId) return false;
+    if (!user) return false;
     const verified = await verify();
-    if (!verified) setUserId(undefined);
+    if (!verified) { 
+      setUser(undefined);
+    }
     return !!verified;
   };
 
   return (
     <AuthContext.Provider
-      value={{ userId, signIn, signOut, verifyClient }}
+      value={{ user, signIn, signOut, verifyClient }}
       {...props}
     />
   );
