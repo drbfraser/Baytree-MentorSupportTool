@@ -7,7 +7,6 @@ interface UserInfo {
   email: string;
 }
 interface AuthContextType {
-  userId?: number;
   user?: UserInfo;
   signIn: (email: string, password: string) => Promise<boolean>;
   signOut: () => Promise<boolean>;

@@ -6,16 +6,16 @@ import { useAuth } from "../context/AuthContext";
 // If not, the routes automatically redirect to the login page
 const PrivateRoute = () => {
   const [loading, setLoading] = useState(true);
-  const { userId, verifyClient } = useAuth();
+  const { user, verifyClient } = useAuth();
 
   useEffect(() => {
     verifyClient();
     setLoading(false);
-  }, [verifyClient]);
+  }, []);
 
   return loading ? (
     <div>Loading...</div>
-  ) : !userId ? (
+  ) : !user ? (
     <Navigate to="/login" replace />
   ) : (
     <Outlet />
