@@ -4,6 +4,7 @@
  */
 
 import { refreshAccessToken } from "../../actions/auth/actionCreators";
+import { API_BASE_URL } from "./url";
 
 /** Make paginated get requests to the backend to obtain model objects
  * which are implemented in the backend using the GenerateCrudEndpointsForModel
@@ -309,4 +310,86 @@ export const generateBackendCrudFuncs = <
     update: generateBackendPutFunc<UpdateObject>(backendEndpoint),
     delete: generateBackendDeleteFunc(backendEndpoint),
   };
+};
+
+const backendFetch = async (
+  relativeEndpointUrl: string,
+  method: "GET" | "POST" | "PUT" | "DELETE",
+  body?: any
+) => {
+  let response = await fetch(`${API_BASE_URL}/${relativeEndpointUrl}`, {
+    method: method,
+    body: JSON.stringify(body),
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  return response;
+};
+
+export const backendGet = async <ResponseObject>(
+  relativeEndpointUrl: string
+) => {
+  let response = await backendFetch(relativeEndpointUrl, "GET");
+
+  if (response.ok) {
+    try {
+      const objects: ResponseObject[] = await response.json();
+      return objects;
+    } catch {
+      return null;
+    }
+  } else if (response.status === 401) {
+    const refreshRes = await refreshAccessToken();
+    if (refreshRes) {
+      response = await backendFetch(relativeEndpointUrl, "GET");
+
+      if (response.ok) {
+        try {
+          const objects: ResponseObject[] = await response.json();
+          return objects;
+        } catch {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
+export const backendPost = async (relativeEndpointUrl: string, body: any) => {
+  let response = await backendFetch(relativeEndpointUrl, "POST", body);
+  if (response.ok) {
+    try {
+      return await response.json();
+    } catch {
+      return null;
+    }
+  } else if (response.status === 401) {
+    const refreshRes = await refreshAccessToken();
+    if (refreshRes) {
+      response = await backendFetch(relativeEndpointUrl, "POST", body);
+      if (response.ok) {
+        try {
+          return await response.json();
+        } catch {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
 };
