@@ -10,6 +10,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
         onLoadDataRows={props.onLoadDataRows}
         onSaveDataRows={props.onSaveDataRows}
         cols={props.cols}
+        primaryKeyDataField={props.primaryKeyDataField}
       ></DataGridBody>
     </Table>
   );
@@ -19,13 +20,14 @@ export interface DataGridProps {
   onLoadDataRows: onLoadDataRowsFunc;
   onSaveDataRows?: onSaveDataRowsFunc;
   cols: DataGridColumn[];
+  primaryKeyDataField: string;
 }
 
-type onLoadDataRowsFunc = () => Promise<DataRow[]>;
+export type onLoadDataRowsFunc = () => Promise<DataRow[]>;
 
 export type DataRow = Record<string, any>;
 
-type onSaveDataRowsFunc = (
+export type onSaveDataRowsFunc = (
   createRows: DataRow[],
   updateRows: DataRow[],
   deleteRows: DataRow[]
