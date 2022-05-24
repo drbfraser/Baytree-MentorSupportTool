@@ -26,7 +26,6 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isLoggedIn = await signIn(email, password);
-    // const isLoggedIn = true;
 
     if (!isLoggedIn) {
       setErrors(true);
@@ -34,7 +33,6 @@ const Login = () => {
       setPassword("");
       setShowModal(false);
     } else {
-      console.log("You are logging in")
       navigate("/dashboard/home", { replace: true });
       setShowModal(true);
     }
