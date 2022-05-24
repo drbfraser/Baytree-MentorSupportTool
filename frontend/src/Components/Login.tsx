@@ -25,18 +25,25 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const isLoggedIn = await signIn(email, password);
 
+    const hasLoggedIn = false; //TODO: Change this to work with view
+    if (hasLoggedIn){
+      handleLogin();
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const handleLogin = async () => {
+    const isLoggedIn = await signIn(email, password);
     if (!isLoggedIn) {
       setErrors(true);
       setEmail("");
       setPassword("");
-      setShowModal(false);
     } else {
       navigate("/dashboard/home", { replace: true });
-      setShowModal(true);
     }
-  };
+  }
 
   return (
     <div className="content">
@@ -120,18 +127,16 @@ const Login = () => {
           </Card>
         </Grid>
       </Grid>
-      {/* TODO: FINISH THE MODAL */}
       <Modal
         isOpen={showModal}
         onOutsideClick={() => {
           setShowModal(false);
-          console.log("outside has been clicked, from modal")
         }}
         modalComponent={
           <LoginModal
+            onLoginClick={handleLogin}
             onOutsideClick={() => {
               setShowModal(false);
-          console.log("outside has been clicked, from loginmodal")
             }}
           />
         }

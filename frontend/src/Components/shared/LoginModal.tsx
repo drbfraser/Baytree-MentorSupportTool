@@ -3,6 +3,7 @@ import useMobileLayout from "../../hooks/useMobileLayout";
 
 interface AddLoginModalProps {
   onOutsideClick: () => void;
+  onLoginClick: () => void;
 }
 
 const LoginModal: React.FC<AddLoginModalProps> = (props) => {
@@ -36,11 +37,7 @@ const LoginModal: React.FC<AddLoginModalProps> = (props) => {
         <Button
           variant="contained"
           color="error"
-          onClick={async () => {
-            //TODO: Login here  
-            console.log("Logging in")
-          }}
-          style={{ marginBottom: onMobileDevice ? "3rem" : "0" }}
+          onClick={props.onLoginClick}
         >
           Log in
         </Button>
