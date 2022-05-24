@@ -1,3 +1,4 @@
+import { DataUsage } from "@mui/icons-material";
 import { CardContent } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -11,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import Logo from "../Assets/baytree-logo.png";
 import Photo from "../Assets/baytree-photo.jpg";
 import { useAuth } from "../context/AuthContext";
+import LoginModal from "./shared/LoginModal";
+import Modal from "./shared/Modal";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,17 +21,22 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isLoggedIn = await signIn(email, password);
+    // const isLoggedIn = true;
 
     if (!isLoggedIn) {
       setErrors(true);
       setEmail("");
       setPassword("");
+      setShowModal(false);
     } else {
+      console.log("You are logging in")
       navigate("/dashboard/home", { replace: true });
+      setShowModal(true);
     }
   };
 
@@ -114,6 +122,23 @@ const Login = () => {
           </Card>
         </Grid>
       </Grid>
+      {/* TODO: FINISH THE MODAL */}
+      <Modal
+        isOpen={showModal}
+        onOutsideClick={() => {
+          setShowModal(false);
+          console.log("outside has been clicked, from modal")
+        }}
+        modalComponent={
+          <LoginModal
+            onOutsideClick={() => {
+              setShowModal(false);
+          console.log("outside has been clicked, from loginmodal")
+            }}
+          />
+        }
+        height="100vh"
+      ></Modal>
     </div>
   );
 };
