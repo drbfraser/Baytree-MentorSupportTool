@@ -55,7 +55,10 @@ const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
     <TableHead>
       <TableRow>
         {props.cols.map((col) => (
-          <DataGridHeaderCell header={col.header}></DataGridHeaderCell>
+          <DataGridHeaderCell
+            key={`headerCell_${col.dataField}`}
+            header={col.header}
+          ></DataGridHeaderCell>
         ))}
       </TableRow>
     </TableHead>

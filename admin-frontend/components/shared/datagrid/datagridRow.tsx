@@ -11,6 +11,9 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
     <TableRow>
       {props.cols.map((col) => (
         <DataGridCell
+          key={`pk_${props.dataRow[props.primaryKeyDataField]}_df_${
+            col.dataField
+          }`}
           isSelectCell={col.onLoadValueOptions !== undefined}
           valueOptions={col.valueOptions}
           value={props.dataRow[col.dataField]}
@@ -34,6 +37,7 @@ interface DataGridRowProps {
   changedDataRow: DataRow;
   setChangedDataRow: setChangedDataRowFunc;
   setDeletedDataRow: setDeletedDataRowFunc;
+  primaryKeyDataField: string;
 }
 
 export default DataGridRow;
