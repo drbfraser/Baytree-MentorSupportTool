@@ -22,6 +22,13 @@ class MentorsViewsApiPermissions(BasePermission):
                 for id in ids:
                     if id != mentor_user.viewsPersonId:
                         return False  # mentor can't see other mentor information
+            elif "searchEmail" in request.GET:
+                searchEmails = request.GET.getlist("searchEmail", "")
+                if not isinstance(searchEmails, list):
+                    searchEmails = [searchEmails]
+                for searchEmail in searchEmails:
+                    if searchEmail != request.user.email:
+                        return False  # mentor can't see other mentor information
             else:
                 return False  # mentor can't see all other mentor information
 
