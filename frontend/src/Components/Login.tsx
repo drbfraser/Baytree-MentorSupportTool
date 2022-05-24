@@ -135,7 +135,7 @@ const Login = () => {
             }}
           />
         }
-        height="100vh"
+        height="fit-content"
       ></Modal>
     </div>
   );
