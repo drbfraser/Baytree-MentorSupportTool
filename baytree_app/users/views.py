@@ -357,3 +357,29 @@ def resetAccountPassword(request):
     except Exception as e:
         return Response({"error": "Failed to create mentor account"},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+#TODO: Test
+@api_view(['GET'])
+@authentication_classes([])
+def checkMentorHasLoggedIn(request):
+    try:
+        user = request.user
+        
+        if not user.exists():
+            return Response({"error": "User doesn't exist!"},
+                status=status.HTTP_404_NOT_FOUND)
+
+        last_login = str(user.last_login)
+        if not last_login:
+            return Response({"status": "User has not yet logged in."},
+                status=status.HTTP_200_OK)
+
+        return Response({"date": last_login},
+                status=status.HTTP_200_OK)
+
+    except KeyError as e:
+        return Response({"error": "Failed to create mentor account"},
+                        status=status.HTTP_400_BAD_REQUEST)    
+    except Exception as e:
+        return Response({"error": "Failed to create mentor account"},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
