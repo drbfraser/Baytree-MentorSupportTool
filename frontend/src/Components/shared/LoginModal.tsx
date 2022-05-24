@@ -38,6 +38,7 @@ const LoginModal: React.FC<AddLoginModalProps> = (props) => {
           variant="contained"
           color="error"
           onClick={props.onLoginClick}
+          style={{ marginBottom: onMobileDevice ? "1rem" : "0" }}
         >
           Log in
         </Button>
