@@ -4,7 +4,7 @@ import { Button, Checkbox, Divider, FormControl, Grid, TextField, Typography } f
 import { Field, Form, Formik } from "formik";
 import { FunctionComponent } from "react";
 import { useAuth } from "../../context/AuthContext";
-import FormContainer from "../shared/FormContainer";
+import TitledContainer from "../shared/TitledContainer";
 import { initialData, submitSession } from "./session";
 
 // Reponsive container for time
@@ -17,8 +17,8 @@ const TimeInputContainer: FunctionComponent<{ label: string }> = ({ label, child
     </Grid>
     <Grid item xs={7} sm={12}>
       <FormControl fullWidth>
-      {children}
-      </FormControl>  
+        {children}
+      </FormControl>
     </Grid>
   </Grid>
 }
@@ -26,7 +26,7 @@ const TimeInputContainer: FunctionComponent<{ label: string }> = ({ label, child
 const SessionForm = () => {
   const { user } = useAuth();
   return (
-    <FormContainer title="Create Session">
+    <TitledContainer title="Create Session">
       <Formik
         initialValues={initialData()}
         onSubmit={async (data, { setSubmitting, resetForm }) => {
@@ -96,7 +96,7 @@ const SessionForm = () => {
           </Form>
         )}
       </Formik>
-    </FormContainer>
+    </TitledContainer>
   )
 };
 

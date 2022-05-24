@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../context/AuthContext";
-import FormContainer from "../shared/FormContainer";
+import TitledContainer from "../shared/TitledContainer";
 import LoadingScreen from "./LoadingScreen";
 import {
   blankAnswers,
@@ -28,7 +28,7 @@ const Questionnaire = () => {
   }, []);
 
   return (
-    <FormContainer title="Monthly Progress Report">
+    <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
       {loading ? (
         <LoadingScreen />
@@ -66,7 +66,7 @@ const Questionnaire = () => {
           )}
         </Formik>
       )}
-    </FormContainer>
+    </TitledContainer>
   );
 };
 

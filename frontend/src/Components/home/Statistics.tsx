@@ -6,12 +6,12 @@ import { useAuth } from "../../context/AuthContext";
 import { defaultCount, getSessionCount, SessionsCount } from "./stats";
 
 const Count: FunctionComponent<{ title: string, count: number, color?: string }> = (props) => {
-  return <Grid item sm={12} md={6} lg={3}>
+  return <Grid item xs={12} sm={6} xl={3}>
     <Card sx={{ p: 2, display: "flex", alignItem: "center", justifyContent: "space-between" }}>
       <Typography variant="h6" component="h6" color="text.secondary" sx={{ width: "100px"}}>
         {props.title}
       </Typography>
-      <Typography component="p" variant="h2" color={props.color || "primary"} sx={{fontWeight: "bold"}}>
+      <Typography component="p" variant="h3" color={props.color || "primary"} sx={{fontWeight: "bold"}}>
         {props.count}
       </Typography>
     </Card>

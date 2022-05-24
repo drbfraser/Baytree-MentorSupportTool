@@ -1,7 +1,7 @@
 import { Container, Divider, Grow, Typography } from "@mui/material";
 import { FunctionComponent } from "react";
 
-const FormContainer: FunctionComponent<{ title: string }> = ({ title, children }) => {
+const TitledContainer: FunctionComponent<{ title: string }> = ({ title, children }) => {
   return <Grow in>
     <Container maxWidth="md" sx={{ boxShadow: 5, borderRadius: 5, p: 2 }}>
       {/* Title */}
@@ -19,4 +19,4 @@ const FormContainer: FunctionComponent<{ title: string }> = ({ title, children }
   </Grow>
 }
 
-export default FormContainer;
+export default TitledContainer;

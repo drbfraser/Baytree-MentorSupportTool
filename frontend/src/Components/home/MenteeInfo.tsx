@@ -1,29 +1,20 @@
-import { useState, useEffect } from "react";
-
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-
+import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../api/url";
+import { useAuth } from "../../context/AuthContext";
+import TitledContainer from "../shared/TitledContainer";
 
 export default function MenteeInfo() {
+  const { user } = useAuth();
   const [menteeInfo, setMenteeInfo] = useState([] as any[]);
   const [currentMentee, setCurrentMentee] = useState(0);
-
-  const handleClick = (event: any) => {
-    var len: number = Object.values(menteeInfo).length;
-    var newValue: number = currentMentee + 1;
-
-    if (newValue >= len) {
-      newValue = 0;
-    }
-    setCurrentMentee(newValue);
-  };
-
+  
   useEffect(() => {
     fetch(
-      `${API_BASE_URL}/users/mentors?id=${localStorage.getItem("user_id")}`,
+      `${API_BASE_URL}/users/mentors?id=${user!.userId}`,
       {
         method: "GET",
         headers: {
@@ -43,7 +34,7 @@ export default function MenteeInfo() {
   }, []);
 
   return (
-    <div>
+    <>
       <Typography
         component="h2"
         variant="button"
@@ -96,10 +87,6 @@ export default function MenteeInfo() {
           ) : null
         )}
       <Divider />
-      <Button variant="outlined" onClick={handleClick} sx={{ mt: 3 }}>
-        Next Mentee
-      </Button>
-      <Card />
-    </div>
+    </>
   );
 }

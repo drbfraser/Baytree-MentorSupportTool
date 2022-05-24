@@ -1,18 +1,18 @@
-import { useState } from "react";
-
-import Statistics from "./Statistics";
-import Scheduler from "./Scheduler";
-import MenteeInfo from "./MenteeInfo";
-
-import IconButton from "@mui/material/IconButton";
+import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
+import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Grow from "@mui/material/Grow";
-
-import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
-import OpenInFullIcon from "@mui/icons-material/OpenInFull";
-
+import IconButton from "@mui/material/IconButton";
+import { useState } from "react";
 import GoalList from "../goals/GoalsList";
+import MenteeInfo from "./MenteeInfo";
+import Scheduler from "./Scheduler";
+import Statistics from "./Statistics";
+
+
+
+
 
 const Home = () => {
   const [checked, setChecked] = useState(true);
@@ -24,47 +24,33 @@ const Home = () => {
   return (
     <div>
       <Container maxWidth="xl" sx={{ pt: 0.5, mt: 0 }}>
-        {checked === false && (
+        {!checked && (
           <Grow in={!checked}>
             <div>
               <Scheduler height="80vh" />
             </div>
           </Grow>
         )}
-        {checked === true && (
-          <Grid container spacing={5}>
-            <Grid item xs={8}>
-              <Grow in={checked}>
-                <div>
-                  <Scheduler height="55vh" />
-                </div>
-              </Grow>
-              <Grow in={checked}>
-                <div>
-                  <Statistics />
-                </div>
-              </Grow>
+        {checked && (
+          <Grow in={checked}>
+            <Grid container spacing={4}>
+              <Grid item xs={12} sm={12} md={12} lg={8}>
+                <Scheduler height="55vh" />
+                <Statistics />
+              </Grid>
+              <Grid item xs={12} sm={12} md={12} lg={4}>
+                <MenteeInfo />
+                <GoalList />
+              </Grid>
             </Grid>
-            <Grid item xs={4}>
-              <Grow in={checked}>
-                <div>
-                  <MenteeInfo />
-                </div>
-              </Grow>
-              <Grow in={checked}>
-                <div>
-                  <GoalList />
-                </div>
-              </Grow>
-            </Grid>
-          </Grid>
+          </Grow>
         )}
 
         <IconButton
           color="inherit"
           size="large"
           onClick={handleChange}
-          sx={{ position: "absolute", bottom: 10, right: 5 }}
+          sx={{ position: "fixed", bottom: 10, right: 5 }}
         >
           {checked === true && <OpenInFullIcon />}
           {checked === false && <CloseFullscreenIcon />}
