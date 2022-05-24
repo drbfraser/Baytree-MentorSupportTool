@@ -42,7 +42,7 @@ const LoginModal: React.FC<AddLoginModalProps> = (props) => {
           }}
           style={{ marginBottom: onMobileDevice ? "3rem" : "0" }}
         >
-          Log out
+          Log in
         </Button>
         <Button
           variant="contained"
