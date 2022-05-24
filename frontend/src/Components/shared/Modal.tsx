@@ -108,7 +108,7 @@ const StyledModal = styled.div<StyledModalProps>`
   background: white;
   border-radius: 12px;
   width: ${(props) =>
-    props.useMobileLayout ? "100vw" : props.width ?? "80vw"};
+    props.useMobileLayout ? "fit-content" : props.width ?? "80vw"};
   height: ${(props) =>
     props.useMobileLayout ? "100vh" : props.height ?? "80vh"};
   top: ${(props) =>
