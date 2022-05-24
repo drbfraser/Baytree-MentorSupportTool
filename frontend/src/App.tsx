@@ -10,7 +10,6 @@ import Profile from "./Components/Profile";
 import Questionnaire from "./Components/questionnaire/Questionnaire";
 import Records from "./Components/Records";
 import ResetPassword from "./Components/ResetPassword";
-import SessionForm from "./Components/sessions/SessionForm";
 import Sessions from "./Components/sessions/Sessions";
 import AuthRoute from "./Utils/PrivateRoute";
 import PublicRoute from "./Utils/PublicRoute";
@@ -27,7 +26,7 @@ function App() {
         <Route element={<AuthRoute />}>
           <Route path="/dashboard" element={<Dashboard />}>
             <Route path="home" element={<Home />} />
-            <Route path="sessions" element={<SessionForm />} />
+            <Route path="sessions" element={<Sessions />} />
             <Route path="questionnaires" element={<Questionnaire />} />
             <Route path="goals" element={<Goals />} />
             <Route path="records" element={<Records />} />
