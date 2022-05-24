@@ -41,13 +41,13 @@ const navigationLinkItems = [
 interface SideMenuProps {
   drawerWidth: number;
   mobileDrawerOpened: boolean;
-  toggleMobileDrawer: () => void;
+  closeDrawer: () => void;
 }
 
 const SideMenu: FunctionComponent<SideMenuProps> = ({
   drawerWidth,
   mobileDrawerOpened,
-  toggleMobileDrawer
+  closeDrawer
 }) => {
   const [resourcesURL, setResourcesURL] = useState("");
   const theme = useTheme();
@@ -93,7 +93,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
           keepMounted: true // Better open performance on mobile.
         }}
         open={mobileDrawerOpened}
-        onClose={toggleMobileDrawer}
+        onClose={closeDrawer}
       >
         <Toolbar>
           <img src={BaytreeLogoHorizontal} alt="Baytree Logo" height={48} />
@@ -110,7 +110,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
                 to={path}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <ListItem button>
+                <ListItem button onClick={closeDrawer}>
                   <ListItemIcon>
                     <Icon color={active ? "secondary" : "primary"} />
                   </ListItemIcon>

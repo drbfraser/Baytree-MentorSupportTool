@@ -36,8 +36,8 @@ const NavigationButton:
 
 const NavigationBar: FunctionComponent<{
   drawerWidth: number;
-  toggleDrawer: () => void;
-}> = ({ drawerWidth, toggleDrawer }) => {
+  openDrawer: () => void;
+}> = ({ drawerWidth, openDrawer }) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [numNotifications, setNumNotifications] = useState(0);
@@ -84,7 +84,7 @@ const NavigationBar: FunctionComponent<{
             alignItems: "center"
           }}
         >
-          <IconButton onClick={toggleDrawer} sx={{ mr: 2 }}>
+          <IconButton onClick={openDrawer} sx={{ mr: 2 }}>
             <MenuIcon />
           </IconButton>
           <img src={Logo} height={32} alt="Baytree Logo" />

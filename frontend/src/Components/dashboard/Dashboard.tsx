@@ -8,22 +8,20 @@ import SideMenu from "./SideMenu";
 const drawerWidth = 240;
 
 const Dashboard = () => {
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isDrawerOpen, setIsMobileOpen] = useState(false);
+  const closeDrawer = () => setIsMobileOpen(false);
 
-  const toggleMobileDrawer = () => {
-    setIsMobileOpen((open) => !open);
-  };
 
   return (
     <Box sx={{ display: "flex" }}>
       <NavigationBar
         drawerWidth={drawerWidth}
-        toggleDrawer={toggleMobileDrawer}
+        openDrawer={() => setIsMobileOpen(true)}
       />
       <SideMenu
         drawerWidth={drawerWidth}
-        mobileDrawerOpened={isMobileOpen}
-        toggleMobileDrawer={toggleMobileDrawer}
+        mobileDrawerOpened={isDrawerOpen}
+        closeDrawer={() => setIsMobileOpen(false)}
       />
       <Box
         component="main"
