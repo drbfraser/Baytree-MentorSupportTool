@@ -2,7 +2,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { Badge, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
+import { Box, Badge, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -25,7 +25,7 @@ const MobileMenu = () => {
     loggedOut && navigate("/login", {replace: true});
   }
 
-  return <div>
+  return <Box sx={{display: {sm: "none"}}}>
     <IconButton size="large" onClick={(e) => setAnchorEl(e.currentTarget)}>
       <MoreVertIcon />
     </IconButton>
@@ -60,7 +60,7 @@ const MobileMenu = () => {
         <ListItemText>Logout</ListItemText>
       </MenuItem>
     </Menu>
-  </div>
+  </Box>
 }
 
 export default MobileMenu;

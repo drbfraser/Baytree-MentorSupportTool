@@ -13,7 +13,8 @@ import {
   FunctionComponent,
   PropsWithChildren,
   useState,
-  useEffect
+  useEffect,
+  MouseEventHandler
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../api/url";
@@ -22,11 +23,14 @@ import { useAuth } from "../../context/AuthContext";
 import Messages from "./Messages";
 import MobileMenu from "./MobileMenu";
 
-const NavigationButton = (
-  props: PropsWithChildren<{ action?: (() => void) | (() => Promise<void>) }>
-) => {
+const NavigationButton: 
+  FunctionComponent<{action?: MouseEventHandler<HTMLButtonElement>}> = (props) => {
   return (
-    <IconButton children={props.children} size="large" onClick={props.action} />
+    <IconButton
+      sx={{display: {xs: "none", sm: "inherit"}}}
+      children={props.children} 
+      size="large" 
+      onClick={props.action} />
   );
 };
 
