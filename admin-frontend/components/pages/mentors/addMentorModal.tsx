@@ -5,7 +5,7 @@ import {
   Volunteer,
 } from "../../../api/backend/views/volunteers";
 import { HELP_MESSAGE } from "../../../constants/constants";
-import DataGrid from "../../shared/datagrid";
+import DataGrid from "../../shared/datagrid/datagrid";
 import { ModalComponent } from "../../shared/Modal";
 import Pager from "../../shared/pager";
 import OverlaySpinner from "../../shared/overlaySpinner";

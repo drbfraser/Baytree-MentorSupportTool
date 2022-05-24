@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import AddMentorModal from "../components/pages/mentors/addMentorModal";
 import Button from "../components/shared/button";
-import DataGrid from "../components/shared/datagrid";
+import DataGrid from "../components/shared/datagrid/datagrid";
 import Modal from "../components/shared/Modal";
 import { HELP_MESSAGE } from "../constants/constants";
 import { getMentorUsers } from "../api/backend/mentorUsers";

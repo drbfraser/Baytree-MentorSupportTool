@@ -4,7 +4,9 @@ import styled from "styled-components";
 import { getActivities } from "../api/backend/activities";
 import { getMentorRoles, saveMentorRoles } from "../api/backend/mentorRoles";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
-import DataGrid, { onSaveRowsFunc } from "../components/shared/datagrid";
+import DataGrid, {
+  onSaveRowsFunc,
+} from "../components/shared/datagrid/datagrid";
 
 const MentorRoles: NextPage = () => {
   const getMentorRoleData = async () => {
