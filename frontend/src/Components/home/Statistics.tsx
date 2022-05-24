@@ -1,94 +1,39 @@
-import { useState, useEffect } from "react";
-import Card from "@mui/material/Card";
-import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { API_BASE_URL } from "../../api/url";
+import Card from "@mui/material/Card"
+import { FunctionComponent, useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { defaultCount, getSessionCount, SessionsCount } from "./stats";
+
+const Count: FunctionComponent<{ title: string, count: number, color?: string }> = (props) => {
+  return <Grid item sm={12} md={6} lg={3}>
+    <Card sx={{ p: 2, display: "flex", alignItem: "center", justifyContent: "space-between" }}>
+      <Typography variant="h6" component="h6" color="text.secondary" sx={{ width: "100px"}}>
+        {props.title}
+      </Typography>
+      <Typography component="p" variant="h2" color={props.color || "primary"} sx={{fontWeight: "bold"}}>
+        {props.count}
+      </Typography>
+    </Card>
+  </Grid>
+}
 
 export default function Statistics() {
-  const [statistics, setStatistics] = useState([] as any[]);
+  const { user } = useAuth();
+  const [data, setData] = useState<SessionsCount>(defaultCount);
 
   useEffect(() => {
-    fetch(
-      `${API_BASE_URL}/users/statistics/mentor?id=${localStorage.getItem(
-        "user_id"
-      )}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include"
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => setStatistics(data))
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+    getSessionCount(user!.userId)
+      .then(data => data && setData(data))
+      .then(() => console.log(data))
+  }, [])
 
   return (
-    <div>
-      <Card sx={{ boxShadow: 2, p: 3, mt: 1 }}>
-        <Grid style={{ display: "flex" }}>
-          <Grid item xs={3} sx={{ m: 0, p: 0 }}>
-            <Typography
-              component="h6"
-              variant="h6"
-              color="text.secondary"
-              gutterBottom
-            >
-              Sessions Attended
-            </Typography>
-            <Typography component="p" variant="h2" color="red">
-              {Object.values(statistics).map((data) => data.sessions_attended)}
-            </Typography>
-          </Grid>
-          <Divider orientation="vertical" flexItem sx={{ m: 0, p: 0 }} />
-          <Grid item xs={3} sx={{ ml: 3, p: 0 }}>
-            <Typography
-              component="h6"
-              variant="h6"
-              color="text.secondary"
-              gutterBottom
-            >
-              Missed Sessions
-            </Typography>
-            <Typography component="p" variant="h2" color="green">
-              {Object.values(statistics).map((data) => data.sessions_missed)}
-            </Typography>
-          </Grid>
-          <Divider orientation="vertical" flexItem />
-          <Grid item xs={3} sx={{ ml: 3, p: 0 }}>
-            <Typography
-              component="h6"
-              variant="h6"
-              color="text.secondary"
-              gutterBottom
-            >
-              Upcoming Sessions
-            </Typography>
-            <Typography component="p" variant="h2" color="blue">
-              {Object.values(statistics).map((data) => data.sessions_remaining)}
-            </Typography>
-          </Grid>
-          <Divider orientation="vertical" flexItem />
-          <Grid item xs={3} sx={{ ml: 3, p: 0 }}>
-            <Typography
-              component="h6"
-              variant="h6"
-              color="text.secondary"
-              gutterBottom
-            >
-              Pending Reports
-            </Typography>
-            <Typography component="p" variant="h2" color="orange">
-              {Object.values(statistics).map((data) => data.sessions_remaining)}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Card>
-    </div>
+    <Grid container spacing={1}>
+      <Count title="Sessions Attended" count={data.sessions_attended} />
+      <Count title="Missed Sessions" count={data.sessions_missed} color="red" />
+      <Count title="Upcoming Sessions" count={data.sessions_remaining} color="blue" />
+      <Count title="Pending Reports" count={data.sessions_remaining} color="orange" />
+    </Grid>
   );
 }
