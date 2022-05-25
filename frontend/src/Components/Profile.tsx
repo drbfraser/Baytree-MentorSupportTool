@@ -4,11 +4,7 @@ import Typography from "@mui/material/Typography";
 import TitledContainer from "./shared/TitledContainer";
 
 const Profile = () => {
-  return (
-    <TitledContainer title="Profile">
-      
-    </TitledContainer>
-  );
+  return <TitledContainer title="Profile"></TitledContainer>;
 };
 
 export default Profile;

@@ -11,18 +11,15 @@ export default function MenteeInfo() {
   const { user } = useAuth();
   const [menteeInfo, setMenteeInfo] = useState([] as any[]);
   const [currentMentee, setCurrentMentee] = useState(0);
-  
+
   useEffect(() => {
-    fetch(
-      `${API_BASE_URL}/users/mentors?id=${user!.userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include"
-      }
-    )
+    fetch(`${API_BASE_URL}/users/mentors?id=${user!.userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
       .then((response) => response.json())
       .then((data: any) => {
         console.log(data);

@@ -9,8 +9,6 @@ const drawerWidth = 240;
 
 const Dashboard = () => {
   const [isDrawerOpen, setIsMobileOpen] = useState(false);
-  const closeDrawer = () => setIsMobileOpen(false);
-
 
   return (
     <Box sx={{ display: "flex" }}>

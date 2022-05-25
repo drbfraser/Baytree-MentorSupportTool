@@ -14,21 +14,18 @@ import { API_BASE_URL } from "../api/url";
 import { useAuth } from "../context/AuthContext";
 
 export default function Notification() {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState([] as any[]);
   const [expanded, setExpanded] = React.useState("");
 
   const fetchNotifications = () => {
-    fetch(
-      `${API_BASE_URL}/notifications/?mentor_id=${user!.userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include"
-      }
-    )
+    fetch(`${API_BASE_URL}/notifications/?mentor_id=${user!.userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
       .then((response) => response.json())
       .then((data) => setNotifications(data))
       .catch((error) => {

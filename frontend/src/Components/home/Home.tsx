@@ -10,10 +10,6 @@ import MenteeInfo from "./MenteeInfo";
 import Scheduler from "./Scheduler";
 import Statistics from "./Statistics";
 
-
-
-
-
 const Home = () => {
   const [checked, setChecked] = useState(true);
 

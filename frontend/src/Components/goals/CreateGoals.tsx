@@ -21,7 +21,7 @@ import { API_BASE_URL } from "../../api/url";
 import { useAuth } from "../../context/AuthContext";
 
 const CreateGoals = (props: any) => {
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   const [contents, setContents] = useState(
     props.goal ? props.goal.content : ""

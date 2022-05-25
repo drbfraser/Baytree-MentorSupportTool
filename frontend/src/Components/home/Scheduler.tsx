@@ -24,7 +24,7 @@ type Props = {
 };
 
 const Scheduler: React.FC<Props> = ({ height }) => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const locales = {
     "en-US": enUS
   };

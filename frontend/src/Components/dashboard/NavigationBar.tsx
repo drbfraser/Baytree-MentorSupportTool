@@ -23,14 +23,16 @@ import { useAuth } from "../../context/AuthContext";
 import Messages from "./Messages";
 import MobileMenu from "./MobileMenu";
 
-const NavigationButton: 
-  FunctionComponent<{action?: MouseEventHandler<HTMLButtonElement>}> = (props) => {
+const NavigationButton: FunctionComponent<{
+  action?: MouseEventHandler<HTMLButtonElement>;
+}> = (props) => {
   return (
     <IconButton
-      sx={{display: {xs: "none", sm: "inherit"}}}
-      children={props.children} 
-      size="large" 
-      onClick={props.action} />
+      sx={{ display: { xs: "none", sm: "inherit" } }}
+      children={props.children}
+      size="large"
+      onClick={props.action}
+    />
   );
 };
 
@@ -45,7 +47,9 @@ const NavigationBar: FunctionComponent<{
   useEffect(() => {
     // Fetch the number of unread notifications
     fetch(
-      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${user!.userId}`,
+      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${
+        user!.userId
+      }`,
       {
         method: "GET",
         headers: {

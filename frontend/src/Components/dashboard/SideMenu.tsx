@@ -74,8 +74,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
       component="nav"
       sx={{
         width: { md: drawerWidth },
-        flexShrink: { md: 0 },
-        backgroundColor: "primary.light"
+        flexShrink: { md: 0 }
       }}
     >
       <Drawer

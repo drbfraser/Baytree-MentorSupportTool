@@ -48,16 +48,13 @@ export default function Goals() {
   };
 
   const fetchGoals = () => {
-    fetch(
-      `${API_BASE_URL}/goals/goal/?mentor_id=${user!.userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include"
-      }
-    )
+    fetch(`${API_BASE_URL}/goals/goal/?mentor_id=${user!.userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
       .then((response) => response.json())
       .then((data) => setGoals(data))
       .catch((error) => {
@@ -66,16 +63,13 @@ export default function Goals() {
   };
 
   const fetchMenteeList = () => {
-    fetch(
-      `${API_BASE_URL}/users/mentors?id=${user!.userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include"
-      }
-    )
+    fetch(`${API_BASE_URL}/users/mentors?id=${user!.userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
       .then((response) => response.json())
       .then((data) => setMenteeList(data.data.menteeuser || []))
       .catch((error) => {

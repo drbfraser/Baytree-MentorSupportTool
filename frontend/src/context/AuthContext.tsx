@@ -24,10 +24,14 @@ export const AuthProvider: FunctionComponent<{}> = (props) => {
 
   const signIn = async (email: string, password: string) => {
     const respond = await login(email, password);
-    setUser(respond ? {
-      userId: +respond.user_id,
-      email
-    } : undefined);
+    setUser(
+      respond
+        ? {
+            userId: +respond.user_id,
+            email
+          }
+        : undefined
+    );
     return !!respond;
   };
 
@@ -42,7 +46,7 @@ export const AuthProvider: FunctionComponent<{}> = (props) => {
   const verifyClient = async () => {
     if (!user) return false;
     const verified = await verify();
-    if (!verified) { 
+    if (!verified) {
       setUser(undefined);
     }
     return !!verified;
