@@ -182,7 +182,10 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         if mentor_user_query_set.exists():
             mentor_user = mentor_user_query_set.first()
             response.data["is_mentor"] = True
-            response.data["viewsPersonId"] = mentor_user.viewsPersonId
+            try:
+                response.data["viewsPersonId"] = int(mentor_user.viewsPersonId)
+            except:
+                pass
         else:
             response.data["is_mentor"] = False
 
