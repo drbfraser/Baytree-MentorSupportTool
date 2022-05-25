@@ -7,8 +7,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import { API_BASE_URL } from "../api/url";
+import { useAuth } from "../context/AuthContext";
 
 export default function Records() {
+  const { user } = useAuth();
   const [staffRecord, setStaffRecord] = useState([] as any[]);
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -24,7 +26,7 @@ export default function Records() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch(`${API_BASE_URL}/records/${localStorage.getItem("user_id")}`, {
+    fetch(`${API_BASE_URL}/records/${user!.userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"

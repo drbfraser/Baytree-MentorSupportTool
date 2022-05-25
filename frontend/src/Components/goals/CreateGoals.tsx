@@ -18,8 +18,11 @@ import TextField from "@mui/material/TextField";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { API_BASE_URL } from "../../api/url";
+import { useAuth } from "../../context/AuthContext";
 
 const CreateGoals = (props: any) => {
+  const {user} = useAuth();
+
   const [contents, setContents] = useState(
     props.goal ? props.goal.content : ""
   );
@@ -53,7 +56,7 @@ const CreateGoals = (props: any) => {
   };
 
   const goal = {
-    mentor: localStorage.getItem("user_id"),
+    mentor: user!.userId,
     mentee: menteeId,
     title: title,
     date: moment().format("YYYY-MM-DD"),

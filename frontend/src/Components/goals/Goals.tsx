@@ -20,8 +20,10 @@ import DoneIcon from "@mui/icons-material/Done";
 import moment from "moment";
 import TimelineDot from "@mui/lab/TimelineDot";
 import { API_BASE_URL } from "../../api/url";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Goals() {
+  const { user } = useAuth();
   const [goals, setGoals] = useState([] as any[]);
   const [goalType, setGoalType] = useState("IN PROGRESS");
   const [tabValue, setTabValue] = useState(0);
@@ -47,9 +49,7 @@ export default function Goals() {
 
   const fetchGoals = () => {
     fetch(
-      `${API_BASE_URL}/goals/goal/?mentor_id=${localStorage.getItem(
-        "user_id"
-      )}`,
+      `${API_BASE_URL}/goals/goal/?mentor_id=${user!.userId}`,
       {
         method: "GET",
         headers: {
@@ -67,7 +67,7 @@ export default function Goals() {
 
   const fetchMenteeList = () => {
     fetch(
-      `${API_BASE_URL}/users/mentors?id=${localStorage.getItem("user_id")}`,
+      `${API_BASE_URL}/users/mentors?id=${user!.userId}`,
       {
         method: "GET",
         headers: {

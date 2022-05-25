@@ -17,12 +17,14 @@ import Button from "@mui/material/Button";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { API_BASE_URL } from "../../api/url";
+import { useAuth } from "../../context/AuthContext";
 
 type Props = {
   height: string;
 };
 
 const Scheduler: React.FC<Props> = ({ height }) => {
+  const {user} = useAuth();
   const locales = {
     "en-US": enUS
   };
@@ -65,7 +67,7 @@ const Scheduler: React.FC<Props> = ({ height }) => {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/records/${localStorage.getItem("user_id")}`, {
+    fetch(`${API_BASE_URL}/records/${user!.userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"

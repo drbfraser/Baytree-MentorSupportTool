@@ -11,16 +11,16 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Typography from "@mui/material/Typography";
 import moment from "moment";
 import { API_BASE_URL } from "../api/url";
+import { useAuth } from "../context/AuthContext";
 
 export default function Notification() {
+  const {user} = useAuth();
   const [notifications, setNotifications] = useState([] as any[]);
   const [expanded, setExpanded] = React.useState("");
 
   const fetchNotifications = () => {
     fetch(
-      `${API_BASE_URL}/notifications/?mentor_id=${localStorage.getItem(
-        "user_id"
-      )}`,
+      `${API_BASE_URL}/notifications/?mentor_id=${user!.userId}`,
       {
         method: "GET",
         headers: {
