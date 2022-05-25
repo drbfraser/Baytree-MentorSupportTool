@@ -1,10 +1,11 @@
-import Container from "@mui/material/Container";
-import Divider from "@mui/material/Divider";
-import Typography from "@mui/material/Typography";
+import { useAuth } from "../context/AuthContext";
 import TitledContainer from "./shared/TitledContainer";
 
 const Profile = () => {
-  return <TitledContainer title="Profile"></TitledContainer>;
+  const {mentor} = useAuth();
+  return <TitledContainer title="Profile">
+    Name: {mentor.firstname} {mentor.surname}
+  </TitledContainer>;
 };
 
 export default Profile;

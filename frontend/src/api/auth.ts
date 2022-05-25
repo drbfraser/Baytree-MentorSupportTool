@@ -22,7 +22,7 @@ export const login = async (email: string, password: string) => {
   try {
     const apiRes = await authApi.post<LoginData>("", {email, password});
     if (apiRes.status === 200)
-      return {data: apiRes.data, error: undefined}
+      return {data: apiRes.data, error: ""}
     if (apiRes.status === 401)
       return {data: undefined, error: "Invalid email or password"}
     else throw Error;

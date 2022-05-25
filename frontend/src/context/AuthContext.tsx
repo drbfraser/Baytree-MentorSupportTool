@@ -1,13 +1,15 @@
-import { createContext, FunctionComponent, useContext } from "react";
+import { createContext, FunctionComponent, useContext, useEffect, useState } from "react";
 import { login, logout, verify } from "../api/auth";
+import { dummyMentor, getMentorProfile, Mentor } from "../api/views";
 import useLocalStorage from "../hooks/useLocalStorage";
 
-interface UserInfo {
+interface StorageInfo {
   userId: number;
-  email: string;
+  viewsPersonId?: number;
 }
 interface AuthContextType {
-  user?: UserInfo;
+  user?: StorageInfo;
+  mentor: Mentor;
   signIn: (email: string, password: string) => Promise<boolean>;
   signOut: () => Promise<boolean>;
   verifyClient: () => Promise<boolean>;
@@ -15,24 +17,33 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   signIn: async (_email: string, _password: string) => false,
+  mentor: dummyMentor,
   signOut: async () => true,
   verifyClient: async () => false
 });
 
 export const AuthProvider: FunctionComponent<{}> = (props) => {
-  const [user, setUser] = useLocalStorage<UserInfo>("user", undefined);
+  const [user, setUser] = useLocalStorage<StorageInfo>("user", undefined);
+  const [mentor, setMentor] = useState<Mentor>(dummyMentor);
+
+  useEffect(() => {
+    getMentorProfile(user?.viewsPersonId)
+    .then(({data, error}) => {
+      if (data && error === "") setMentor(data);
+      else setMentor(dummyMentor);
+    })
+  }, [user])
 
   const signIn = async (email: string, password: string) => {
-    const respond = await login(email, password);
-    setUser(
-      respond
-        ? {
-            userId: +respond.user_id,
-            email
-          }
-        : undefined
-    );
-    return !!respond;
+    const {data, error} = await login(email, password);
+    if (data && error === "") {
+      setUser({
+        userId: data.user_id,
+        viewsPersonId: data.is_superuser ? undefined : data.viewsPersonId
+      });
+      return true;
+    }
+    return false;
   };
 
   const signOut = async () => {
@@ -54,7 +65,7 @@ export const AuthProvider: FunctionComponent<{}> = (props) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, signIn, signOut, verifyClient }}
+      value={{ user, mentor, signIn, signOut, verifyClient }}
       {...props}
     />
   );
