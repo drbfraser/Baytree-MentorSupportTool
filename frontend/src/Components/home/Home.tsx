@@ -35,6 +35,7 @@ const Home = () => {
           <Grow in={checked}>
             <Grid container spacing={4}>
               <Grid item xs={12} sm={12} md={12} lg={8}>
+                {/* TODO: Replace this calendar for better layout */}
                 <Scheduler height="55vh" />
                 <Statistics />
               </Grid>
