@@ -5,7 +5,7 @@ import { getActivities } from "../api/backend/activities";
 import { getMentorRoles, saveMentorRoles } from "../api/backend/mentorRoles";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
 import DataGrid, {
-  onSaveRowsFunc,
+  onSaveDataRowsFunc,
 } from "../components/shared/datagrid/datagrid";
 
 const MentorRoles: NextPage = () => {
@@ -22,8 +22,15 @@ const MentorRoles: NextPage = () => {
     }
   };
 
-  const saveMentorRoleData: onSaveRowsFunc = async (dataRows) => {
-    return await saveMentorRoles(dataRows);
+  const saveMentorRoleData: onSaveDataRowsFunc = async (
+    createRows,
+    updateRows,
+    deleteRows
+  ) => {
+    console.log(createRows);
+    console.log(updateRows);
+    console.log(deleteRows);
+    return true;
   };
 
   const getSessionGroupOptions = async () => {
@@ -58,16 +65,16 @@ const MentorRoles: NextPage = () => {
           {
             header: "Session Group",
             dataField: "viewsSessionGroupId",
-            onLoadSelectOptions: getSessionGroupOptions,
+            onLoadValueOptions: getSessionGroupOptions,
           },
           {
             header: "Activity",
             dataField: "activity",
-            onLoadSelectOptions: getActivityOptions,
+            onLoadValueOptions: getActivityOptions,
           },
         ]}
-        onLoadData={getMentorRoleData}
-        onSaveRows={saveMentorRoleData}
+        onLoadDataRows={getMentorRoleData}
+        onSaveDataRows={saveMentorRoleData}
       ></DataGrid>
     </MentorRolesCard>
   );

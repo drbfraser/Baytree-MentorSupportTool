@@ -1,42 +1,59 @@
-import { FC, useRef, useState } from "react";
-import {
-  Table,
-  TableRow,
-  TableHead,
-  TableCell,
-  Button,
-  IconButton,
-} from "@mui/material";
+import { FC, useEffect, useRef, useState } from "react";
+import { Table, TableRow, TableCell, Button } from "@mui/material";
 import DataGridBody from "./datagridBody";
 import {
   createDataRow,
   getChangedDataRow,
   getOriginalDataRow,
   isDataRowDeleted,
+  loadColumnValueOptions,
+  loadDataRows,
   setChangedDataRow,
   setCreatedDataRow,
   setDeletedDataRow,
 } from "./datagridLogic";
 import { MdAdd } from "react-icons/md";
+import DataGridHeaderRow from "./datagridHeaderRow";
 
 const DataGrid: FC<DataGridProps> = (props) => {
   const [isLoadingDataRows, setIsLoadingDataRows] = useState(false);
   const [dataRows, setDataRows] = useState<DataRow[]>([]);
+  const [cols, setCols] = useState<DataGridColumn[]>(props.cols);
   const originalDataRowsRef = useRef<DataRow[]>([]);
   const [changedDataRows, setChangedDataRows] = useState<DataRow[]>([]);
   const [createdDataRows, setCreatedDataRows] = useState<DataRow[]>([]);
   const [deletedDataRows, setDeletedDataRows] = useState<DataRow[]>([]);
   const createRowNextIdRef = useRef(0);
+  const primaryKeyDataFieldRef = useRef(props.primaryKeyDataField ?? "id");
+
+  useEffect(
+    () => loadDataRows(props.onLoadDataRows, setDataRows),
+    [props.onLoadDataRows]
+  );
+
+  useEffect(() => loadColumnValueOptions(cols, setCols), [props.cols]);
 
   return (
     <Table>
       <DataGridHeaderRow
-        cols={props.cols}
+        cols={cols}
         onSaveButtonClick={
           props.onSaveDataRows
             ? () =>
                 (props.onSaveDataRows as onSaveDataRowsFunc)(
-                  createdDataRows,
+                  createdDataRows.map((row) => {
+                    // Remove primary key value from created rows
+                    let createdDataRowsClone = JSON.parse(
+                      JSON.stringify(createdDataRows)
+                    ) as DataRow[];
+
+                    createdDataRowsClone.forEach(
+                      (dataRow) =>
+                        delete dataRow[props.primaryKeyDataField as string]
+                    );
+
+                    return createdDataRowsClone;
+                  }),
                   changedDataRows,
                   deletedDataRows
                 )
@@ -52,14 +69,22 @@ const DataGrid: FC<DataGridProps> = (props) => {
           getOriginalDataRow(
             dataRow,
             originalDataRowsRef.current,
-            props.primaryKeyDataField
+            primaryKeyDataFieldRef.current
           )
         }
         getChangedDataRow={(dataRow) =>
-          getChangedDataRow(dataRow, changedDataRows, props.primaryKeyDataField)
+          getChangedDataRow(
+            dataRow,
+            changedDataRows,
+            primaryKeyDataFieldRef.current
+          )
         }
         isDataRowDeleted={(dataRow) =>
-          isDataRowDeleted(dataRow, deletedDataRows, props.primaryKeyDataField)
+          isDataRowDeleted(
+            dataRow,
+            deletedDataRows,
+            primaryKeyDataFieldRef.current
+          )
         }
         setChangedDataRow={(changedDataRow) =>
           setChangedDataRow(
@@ -68,14 +93,14 @@ const DataGrid: FC<DataGridProps> = (props) => {
             originalDataRowsRef,
             changedDataRows,
             setChangedDataRows,
-            props.primaryKeyDataField
+            primaryKeyDataFieldRef.current
           )
         }
         setCreatedDataRow={(createdDataRow) =>
           setCreatedDataRow(
             createdDataRow,
             createdDataRows,
-            props.primaryKeyDataField,
+            primaryKeyDataFieldRef.current,
             setCreatedDataRows
           )
         }
@@ -85,23 +110,23 @@ const DataGrid: FC<DataGridProps> = (props) => {
             dataRow,
             deletedDataRows,
             setDeletedDataRows,
-            props.primaryKeyDataField
+            primaryKeyDataFieldRef.current
           )
         }
         onLoadDataRows={props.onLoadDataRows}
         onSaveDataRows={props.onSaveDataRows}
-        cols={props.cols}
-        primaryKeyDataField={props.primaryKeyDataField}
+        cols={cols}
+        primaryKeyDataField={primaryKeyDataFieldRef.current}
       ></DataGridBody>
       <DataGridAddRow
-        numColumns={props.cols.length}
+        numColumns={cols.length}
         onAddRow={() =>
           createDataRow(
             createRowNextIdRef.current++,
             createdDataRows,
             setCreatedDataRows,
-            props.cols,
-            props.primaryKeyDataField
+            cols,
+            primaryKeyDataFieldRef.current
           )
         }
       ></DataGridAddRow>
@@ -113,7 +138,7 @@ export interface DataGridProps {
   onLoadDataRows: onLoadDataRowsFunc;
   onSaveDataRows?: onSaveDataRowsFunc;
   cols: DataGridColumn[];
-  primaryKeyDataField: string;
+  primaryKeyDataField?: string; // default primary key is "id"
 }
 
 export type onLoadDataRowsFunc = () => Promise<DataRow[]>;
@@ -138,51 +163,6 @@ export interface ValueOption {
   id: number;
   name: string;
 }
-
-interface DataGridHeaderRowProps {
-  onSaveButtonClick?: () => void;
-  cols: DataGridColumn[];
-}
-
-const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
-  return (
-    <TableHead>
-      <TableRow>
-        {props.cols.map((col) => (
-          <DataGridHeaderCell
-            key={`headerCell_${col.dataField}`}
-            header={col.header}
-          ></DataGridHeaderCell>
-        ))}
-        {props.onSaveButtonClick && (
-          <DataGridSaveButtonHeaderCell onClick={props.onSaveButtonClick} />
-        )}
-      </TableRow>
-    </TableHead>
-  );
-};
-
-interface DataGridHeaderCellProps {
-  header: string;
-}
-
-const DataGridHeaderCell: FC<DataGridHeaderCellProps> = (props) => {
-  return <TableCell>{props.header}</TableCell>;
-};
-
-interface DataGridSaveButtonHeaderCellProps {
-  onClick: () => void;
-}
-
-const DataGridSaveButtonHeaderCell: FC<DataGridSaveButtonHeaderCellProps> = (
-  props
-) => {
-  return (
-    <TableCell>
-      <Button onClick={props.onClick}></Button>
-    </TableCell>
-  );
-};
 
 interface DataGridAddRowProps {
   numColumns: number;

@@ -1,5 +1,11 @@
 import { MutableRefObject, Dispatch, SetStateAction } from "react";
-import { DataGridColumn, DataRow } from "./datagrid";
+import { toast } from "react-toastify";
+import {
+  DataGridColumn,
+  DataRow,
+  onLoadDataRowsFunc,
+  ValueOption,
+} from "./datagrid";
 
 export const getOriginalDataRow = (
   dataRow: DataRow,
@@ -143,4 +149,39 @@ export const createDataRow = (
   columns.forEach((col) => (newDataRow[col.dataField] = ""));
   newDataRow[primaryKeyDataField] = `created_${rowId}`;
   setCreatedDataRows([...createdDataRows, newDataRow]);
+};
+
+const failureLoadDataToastMessage =
+  "Failed to load data. Please ensure that you have a stable internet connection and refresh the page. Otherwise, contact an administrator.";
+
+export const loadDataRows = (
+  onLoadDataRows: onLoadDataRowsFunc,
+  setDataRows: Dispatch<SetStateAction<DataRow[]>>
+) => {
+  onLoadDataRows()
+    .then((dataRows) => setDataRows(dataRows))
+    .catch(() => toast.error(failureLoadDataToastMessage));
+};
+
+export const loadColumnValueOptions = (
+  columns: DataGridColumn[],
+  setColumns: Dispatch<SetStateAction<DataGridColumn[]>>
+) => {
+  const colsWithValueOptions = columns.filter(
+    (col) => !!col.onLoadValueOptions
+  );
+
+  const colLoadFuncs = colsWithValueOptions.map((col) =>
+    (col.onLoadValueOptions as () => Promise<ValueOption[]>)()
+  ) as Promise<ValueOption[]>[];
+
+  Promise.all(colLoadFuncs)
+    .then((colResults) => {
+      colsWithValueOptions.forEach(
+        (col, i) => (col.valueOptions = colResults[i])
+      );
+
+      setColumns(columns);
+    })
+    .catch(() => toast.error(failureLoadDataToastMessage));
 };
