@@ -1,5 +1,16 @@
-import { Dispatch, MutableRefObject, SetStateAction } from "react";
-import { DataRow } from "./datagrid";
+import { MutableRefObject, Dispatch, SetStateAction } from "react";
+import { DataRow, onSaveDataRowsFunc } from "./datagrid";
+
+export const saveDataRows = (
+  createdDataRows: DataRow[],
+  changedDataRows: DataRow[],
+  deletedDataRows: DataRow[],
+  onSaveDataRows: onSaveDataRowsFunc
+) => {
+  if (!onSaveDataRows) {
+    return;
+  }
+};
 
 export const getOriginalDataRow = (
   dataRow: DataRow,
@@ -20,6 +31,8 @@ export const getChangedDataRow = (
     (changedDataRow) =>
       changedDataRow[primaryKeyDataField] === dataRow[primaryKeyDataField]
   ) as DataRow;
+
+export const isDataRowDeleted = (dataRow: DataRow) => {};
 
 export const setChangedDataRow = (
   changedDataRow: DataRow,

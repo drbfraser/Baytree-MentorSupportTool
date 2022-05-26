@@ -1,10 +1,17 @@
-import { MenuItem, Select, TableCell, TextField } from "@mui/material";
+import {
+  MenuItem,
+  Select,
+  Skeleton,
+  TableCell,
+  TextField,
+} from "@mui/material";
 import { FC } from "react";
+import styled from "styled-components";
 import { ValueOption } from "./datagrid";
 
 interface DataGridCellProps {
   isSelectCell: boolean;
-  valueOptions: ValueOption[];
+  valueOptions?: ValueOption[];
   value: any;
   onChangedValue: (newValue: any) => void;
   isCellChanged: boolean;
@@ -14,7 +21,9 @@ interface DataGridCellProps {
 
 const DataGridCell: FC<DataGridCellProps> = (props) => {
   return (
-    <TableCell>
+    <StyledDataGridCell
+      cellBackgroundColor={props.isCellChanged ? "lightgreen" : "unset"}
+    >
       {props.isSelectCell ? (
         <Select
           key={`select_datarow_${props.primaryKeyVal}_col_${props.dataField}`}
@@ -22,11 +31,15 @@ const DataGridCell: FC<DataGridCellProps> = (props) => {
           defaultValue={props.value}
           onChange={(event) => props.onChangedValue(event.target.value)}
         >
-          {props.valueOptions.map((valueOption, k) => (
-            <MenuItem key={valueOption.id} value={valueOption.id}>
-              {valueOption.name}
-            </MenuItem>
-          ))}
+          {!props.valueOptions ? (
+            <LoadingDataGridCell></LoadingDataGridCell>
+          ) : (
+            props.valueOptions.map((valueOption, k) => (
+              <MenuItem key={valueOption.id} value={valueOption.id}>
+                {valueOption.name}
+              </MenuItem>
+            ))
+          )}
         </Select>
       ) : (
         <TextField
@@ -35,6 +48,24 @@ const DataGridCell: FC<DataGridCellProps> = (props) => {
           onBlur={(event) => props.onChangedValue(event.target.value)}
         ></TextField>
       )}
-    </TableCell>
+    </StyledDataGridCell>
   );
 };
+
+const StyledDataGridCell = styled(TableCell)<{ cellBackgroundColor: string }>`
+  background-color: ${(props) => props.cellBackgroundColor};
+`;
+
+const LoadingDataGridCell: FC = () => {
+  const NUM_SKELETON_ROWS = 3;
+
+  return (
+    <>
+      {Array.from(Array(NUM_SKELETON_ROWS).keys()).map((idx) => (
+        <Skeleton></Skeleton>
+      ))}
+    </>
+  );
+};
+
+export default DataGridCell;

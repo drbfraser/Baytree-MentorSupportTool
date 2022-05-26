@@ -8,9 +8,11 @@ const DataGridBodyDataRows: FC<DataGridBodyDataRowsProps> = (props) => {
       {props.dataRows.map((dataRow) => (
         <DataGridRow
           key={dataRow[props.primaryKeyDataField]}
+          primaryKeyDataField={props.primaryKeyDataField}
           dataRow={dataRow}
           originalDataRow={props.getOriginalDataRow(dataRow)}
           changedDataRow={props.getChangedDataRow(dataRow)}
+          isDataRowDeleted={props.isDataRowDeleted(dataRow)}
           setChangedDataRow={props.setChangedDataRow}
           setDeletedDataRow={props.setDeletedDataRow}
           cols={props.cols}
@@ -24,6 +26,7 @@ interface DataGridBodyDataRowsProps {
   primaryKeyDataField: string;
   getOriginalDataRow: (dataRow: DataRow) => DataRow;
   getChangedDataRow: (dataRow: DataRow) => DataRow;
+  isDataRowDeleted: (dataRow: DataRow) => boolean;
   setChangedDataRow: setChangedDataRowFunc;
   setDeletedDataRow: setDeletedDataRowFunc;
   cols: DataGridColumn[];
