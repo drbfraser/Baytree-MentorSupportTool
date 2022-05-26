@@ -18,27 +18,20 @@ const DataGridBody: FC<DataGridBodyProps> = (props) => {
         primaryKeyDataField={props.primaryKeyDataField}
         cols={props.cols}
         dataRows={props.dataRows}
-        getOriginalDataRow={(dataRow) => props.getOriginalDataRow(dataRow)}
-        getChangedDataRow={(dataRow) => props.getChangedDataRow(dataRow)}
+        getOriginalDataRow={props.getOriginalDataRow}
+        getChangedDataRow={props.getChangedDataRow}
         isDataRowDeleted={props.isDataRowDeleted}
-        setChangedDataRow={(changedDataRow) =>
-          props.setChangedDataRow(changedDataRow)
-        }
-        setDeletedDataRow={(isDeleted, dataRow) =>
-          props.setDeletedDataRow(isDeleted, dataRow)
-        }
+        setChangedDataRow={props.setChangedDataRow}
+        setDeletedDataRow={props.setDeletedDataRow}
       ></DataGridBodyDataRows>
       <DataGridBodyCreatedDataRows
         primaryKeyDataField={props.primaryKeyDataField}
         cols={props.cols}
         createdDataRows={props.createdDataRows}
-        getChangedDataRow={(dataRow) => props.getChangedDataRow(dataRow)}
-        setChangedDataRow={(changedDataRow) =>
-          props.setChangedDataRow(changedDataRow)
-        }
-        setDeletedDataRow={(isDeleted, dataRow) =>
-          props.setDeletedDataRow(isDeleted, dataRow)
-        }
+        getChangedDataRow={props.getChangedDataRow}
+        setChangedDataRow={props.setChangedDataRow}
+        setCreatedDataRow={props.setCreatedDataRow}
+        setDeletedDataRow={props.setDeletedDataRow}
       ></DataGridBodyCreatedDataRows>
     </>
   );
@@ -54,7 +47,8 @@ export interface DataGridBodyProps {
   getOriginalDataRow: (dataRow: DataRow) => DataRow;
   getChangedDataRow: (changedDataRow: DataRow) => DataRow;
   isDataRowDeleted: (dataRow: DataRow) => boolean;
-  setChangedDataRow: (dataRow: DataRow) => void;
+  setCreatedDataRow: (createdDataRow: DataRow) => void;
+  setChangedDataRow: (changedDataRow: DataRow) => void;
   setDeletedDataRow: (isDeleted: boolean, dataRow: DataRow) => void;
   cols: DataGridColumn[];
   primaryKeyDataField: string;

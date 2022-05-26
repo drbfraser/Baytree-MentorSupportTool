@@ -3,6 +3,7 @@ import { FC } from "react";
 import { DataRow, DataGridColumn, ValueOption } from "./datagrid";
 import {
   setChangedDataRowFunc,
+  setCreatedDataRowFunc,
   setDeletedDataRowFunc,
 } from "./datagridBodyDataRows";
 import DataGridCell from "./datagridCell";
@@ -22,7 +23,10 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
           valueOptions={col.valueOptions}
           value={props.dataRow[col.dataField]}
           onChangedValue={(newValue: any) =>
-            changeDataRowValue(newValue, props.setChangedDataRow)
+            changeDataRowValue(
+              newValue,
+              props.setCreatedDataRow ?? props.setChangedDataRow
+            )
           }
           isCellChanged={isCellChanged(
             props.changedDataRow,
@@ -41,6 +45,7 @@ interface DataGridRowProps {
   originalDataRow?: DataRow;
   changedDataRow: DataRow;
   isDataRowDeleted?: boolean;
+  setCreatedDataRow?: setCreatedDataRowFunc;
   setChangedDataRow: setChangedDataRowFunc;
   setDeletedDataRow: setDeletedDataRowFunc;
   primaryKeyDataField: string;

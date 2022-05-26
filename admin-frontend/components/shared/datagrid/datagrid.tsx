@@ -5,8 +5,8 @@ import {
   getChangedDataRow,
   getOriginalDataRow,
   isDataRowDeleted,
-  saveDataRows,
   setChangedDataRow,
+  setCreatedDataRow,
   setDeletedDataRow,
 } from "./datagridLogic";
 
@@ -25,11 +25,10 @@ const DataGrid: FC<DataGridProps> = (props) => {
         onSaveButtonClick={
           props.onSaveDataRows
             ? () =>
-                saveDataRows(
+                (props.onSaveDataRows as onSaveDataRowsFunc)(
                   createdDataRows,
                   changedDataRows,
-                  deletedDataRows,
-                  props.onSaveDataRows
+                  deletedDataRows
                 )
             : undefined
         }
@@ -49,12 +48,25 @@ const DataGrid: FC<DataGridProps> = (props) => {
         getChangedDataRow={(dataRow) =>
           getChangedDataRow(dataRow, changedDataRows, props.primaryKeyDataField)
         }
-        isDataRowDeleted={isDataRowDeleted}
+        isDataRowDeleted={(dataRow) =>
+          isDataRowDeleted(dataRow, deletedDataRows, props.primaryKeyDataField)
+        }
         setChangedDataRow={(changedDataRow) =>
           setChangedDataRow(
+            dataRows,
             changedDataRow,
             originalDataRowsRef,
-            setChangedDataRows
+            changedDataRows,
+            setChangedDataRows,
+            props.primaryKeyDataField
+          )
+        }
+        setCreatedDataRow={(createdDataRow) =>
+          setCreatedDataRow(
+            createdDataRow,
+            createdDataRows,
+            props.primaryKeyDataField,
+            setCreatedDataRows
           )
         }
         setDeletedDataRow={(isDeleted, dataRow) =>
@@ -62,7 +74,8 @@ const DataGrid: FC<DataGridProps> = (props) => {
             isDeleted,
             dataRow,
             deletedDataRows,
-            setDeletedDataRows
+            setDeletedDataRows,
+            props.primaryKeyDataField
           )
         }
         onLoadDataRows={props.onLoadDataRows}

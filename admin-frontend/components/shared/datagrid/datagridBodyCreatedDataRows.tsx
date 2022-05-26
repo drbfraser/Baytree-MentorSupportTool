@@ -2,6 +2,7 @@ import { FC } from "react";
 import { DataRow, DataGridColumn } from "./datagrid";
 import {
   setChangedDataRowFunc,
+  setCreatedDataRowFunc,
   setDeletedDataRowFunc,
 } from "./datagridBodyDataRows";
 import DataGridRow from "./datagridRow";
@@ -18,6 +19,7 @@ const DataGridBodyCreatedDataRows: FC<DataGridBodyCreatedDataRowsProps> = (
           dataRow={dataRow}
           isCreatedDataGridRow
           changedDataRow={props.getChangedDataRow(dataRow)}
+          setCreatedDataRow={props.setCreatedDataRow}
           setChangedDataRow={props.setChangedDataRow}
           setDeletedDataRow={props.setDeletedDataRow}
           cols={props.cols}
@@ -30,6 +32,7 @@ const DataGridBodyCreatedDataRows: FC<DataGridBodyCreatedDataRowsProps> = (
 interface DataGridBodyCreatedDataRowsProps {
   primaryKeyDataField: string;
   getChangedDataRow: (dataRow: DataRow) => DataRow;
+  setCreatedDataRow: setCreatedDataRowFunc;
   setChangedDataRow: setChangedDataRowFunc;
   setDeletedDataRow: setDeletedDataRowFunc;
   cols: DataGridColumn[];

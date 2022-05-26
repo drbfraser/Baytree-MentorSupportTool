@@ -33,6 +33,7 @@ interface DataGridBodyDataRowsProps {
   dataRows: DataRow[];
 }
 
+export type setCreatedDataRowFunc = (createdDataRow: DataRow) => void;
 export type setChangedDataRowFunc = (changedDataRow: DataRow) => void;
 export type setDeletedDataRowFunc = (
   isDeleted: boolean,
