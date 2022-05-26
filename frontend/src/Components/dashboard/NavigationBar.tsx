@@ -10,14 +10,10 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import {
-  FunctionComponent,
-  PropsWithChildren,
-  useState,
-  useEffect,
-  MouseEventHandler
+  FunctionComponent, MouseEventHandler, useEffect, useState
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_BASE_URL } from "../../api/url";
+import { fetchUnreadNotificationCountByUserId } from "../../api/notification";
 import Logo from "../../Assets/baytree.png";
 import { useAuth } from "../../context/AuthContext";
 import Messages from "./Messages";
@@ -46,24 +42,10 @@ const NavigationBar: FunctionComponent<{
 
   useEffect(() => {
     // Fetch the number of unread notifications
-    fetch(
-      `${API_BASE_URL}/notifications/get_unread_count/?mentor_id=${
-        user!.userId
-      }`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include"
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => setNumNotifications(data[0]))
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, [user]);
+    fetchUnreadNotificationCountByUserId(user!.userId)
+      .then(setNumNotifications)
+      .catch((error) => console.error("Error:", error));
+  }, []);
 
   const logout = async () => {
     await signOut();

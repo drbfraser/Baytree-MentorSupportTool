@@ -1,31 +1,9 @@
+import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
 import { FunctionComponent, useEffect, useState } from "react";
+import { getSessionCount, userApi } from "../../api/mentorAccount";
 import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
-import { API_BASE_URL } from "../../api/url";
-
-interface SessionsCount {
-  sessions_attended: number;
-  sessions_missed: number;
-  sessions_remaining: number;
-  sessions_total: number;
-}
-
-const getSessionCount = async (mentorId: number) => {
-  const response = await axios.get<{ status: string; data: SessionsCount }>(
-    `${API_BASE_URL}/users/statistics/mentor?id=${mentorId}`,
-    {
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true
-    }
-  );
-
-  if (response.status === 200 && response.data.status === "success") {
-    return response.data.data;
-  }
-};
 
 const Count: FunctionComponent<{
   title: string;

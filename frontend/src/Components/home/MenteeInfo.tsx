@@ -3,6 +3,7 @@ import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
+import { fetchMenteeListByMentorId } from "../../api/mentorAccount";
 import { API_BASE_URL } from "../../api/url";
 import { useAuth } from "../../context/AuthContext";
 import TitledContainer from "../shared/TitledContainer";
@@ -13,21 +14,9 @@ export default function MenteeInfo() {
   const [currentMentee, setCurrentMentee] = useState(0);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/users/mentors?id=${user!.userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    })
-      .then((response) => response.json())
-      .then((data: any) => {
-        console.log(data);
-        setMenteeInfo(data.data[0].menteeUsers);
-      })
-      .catch((error: any) => {
-        console.error("Error:", error);
-      });
+    fetchMenteeListByMentorId(user!.userId)
+      .then(setMenteeInfo)
+      .catch((error: any) => console.error("Error:", error));
   }, []);
 
   return (

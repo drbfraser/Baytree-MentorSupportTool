@@ -18,7 +18,7 @@ import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { FunctionComponent, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { API_BASE_URL } from "../../api/url";
+import { fetchResourcesURL } from "../../api/misc";
 import BaytreeLogoHorizontal from "../../Assets/baytree-logo-horizontal.png";
 
 const navigationLinkItems = [
@@ -56,17 +56,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
 
   useEffect(() => {
     // Fetch the resources URL
-    fetch(`${API_BASE_URL}/resources/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setResourcesURL(JSON.parse(data)[0].Resource);
-      });
+    fetchResourcesURL().then(setResourcesURL)
   }, []);
 
   return (

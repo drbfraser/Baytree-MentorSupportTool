@@ -3,17 +3,30 @@ import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Answer, fetchQuestions, Question, submitAnswer } from "../../api/misc";
 import { useAuth } from "../../context/AuthContext";
 import TitledContainer from "../shared/TitledContainer";
 import LoadingScreen from "./LoadingScreen";
-import {
-  blankAnswers,
-  fetchQuestions,
-  Question,
-  submitAnswer,
-  validate
-} from "./question";
 import QuestionField from "./QuestionField";
+
+// Validate answer based on the questionnaire requirement
+export const validate = (questions: Question[], answer: Answer) => {
+  return questions
+    .filter((q) => q.enabled === "1" && q.validation.includes("required"))
+    .every((q) => (answer[q.QuestionID] || "") !== "");
+};
+
+// Generate the blankAnswers based on the questionnaire
+export const blankAnswers = (questions: Question[], mentorId?: number) => {
+  let blank = questions
+    .map((q) => q.QuestionID)
+    .reduce((acc, id) => {
+      acc[id] = "";
+      return acc;
+    }, {} as Answer);
+  if (mentorId) blank["mentorId"] = `${mentorId}`;
+  return blank;
+};
 
 const Questionnaire = () => {
   const { user } = useAuth();

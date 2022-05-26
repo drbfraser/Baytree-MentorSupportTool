@@ -18,6 +18,7 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { API_BASE_URL } from "../../api/url";
 import { useAuth } from "../../context/AuthContext";
+import { fetchSessionListByMentorId } from "../../api/misc";
 
 type Props = {
   height: string;
@@ -67,16 +68,10 @@ const Scheduler: React.FC<Props> = ({ height }) => {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/records/${user!.userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    })
-      .then((response) => response.json())
+    fetchSessionListByMentorId(user!.userId)
       .then((data: string) => {
         setSessionList(
+          // TODO: Add typing for session & event
           JSON.parse(data).map((values: any, index: any) => ({
             title: values.Title + " " + (index + 1),
             start: new Date(values.StartDate),
@@ -87,9 +82,7 @@ const Scheduler: React.FC<Props> = ({ height }) => {
           }))
         );
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      .catch((error) => console.error("Error:", error));
   }, []);
 
   return (

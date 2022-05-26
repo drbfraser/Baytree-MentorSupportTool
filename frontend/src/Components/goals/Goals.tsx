@@ -21,7 +21,10 @@ import moment from "moment";
 import TimelineDot from "@mui/lab/TimelineDot";
 import { API_BASE_URL } from "../../api/url";
 import { useAuth } from "../../context/AuthContext";
+import { fetchGoalByMentorId, submitCompleteGoal } from "../../api/goals";
+import { fetchMenteeListByMentorId } from "../../api/mentorAccount";
 
+// TODO: Refactor Goal page (maybe for interation 2)
 export default function Goals() {
   const { user } = useAuth();
   const [goals, setGoals] = useState([] as any[]);
@@ -48,37 +51,20 @@ export default function Goals() {
   };
 
   const fetchGoals = () => {
-    fetch(`${API_BASE_URL}/goals/goal/?mentor_id=${user!.userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    })
-      .then((response) => response.json())
-      .then((data) => setGoals(data))
+    fetchGoalByMentorId(user!.userId)
+      .then(setGoals)
       .catch((error) => {
         console.error("Error:", error);
       });
   };
 
-  const fetchMenteeList = () => {
-    fetch(`${API_BASE_URL}/users/mentors?id=${user!.userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    })
-      .then((response) => response.json())
-      .then((data) => setMenteeList(data.data.menteeuser || []))
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
   useEffect(() => {
     fetchGoals();
-    fetchMenteeList();
+
+    // Fetch mentee list only once
+    fetchMenteeListByMentorId(user!.userId)
+      .then(setMenteeList)
+      .catch((error) => console.error("Error:", error));
   }, []);
 
   const handleSubmitCreateGoal = () => {
@@ -87,14 +73,8 @@ export default function Goals() {
   };
 
   const handleGoalComplete = (goalId: any) => {
-    fetch(`${API_BASE_URL}/goals/goal/${goalId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ status: "ACHIEVED" }),
-      credentials: "include"
-    }).then((_response) => fetchGoals());
+    submitCompleteGoal(goalId)
+      .then((_response) => fetchGoals());
   };
 
   const handleChange1 = (panel: any) => (_event: any, isExpanded: any) => {

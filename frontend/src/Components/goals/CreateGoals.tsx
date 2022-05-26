@@ -1,24 +1,24 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
-import "date-fns";
-import moment from "moment";
-
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import AddIcon from "@mui/icons-material/Add";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
-import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import { API_BASE_URL } from "../../api/url";
+import "date-fns";
+import moment from "moment";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { updateGoal } from "../../api/goals";
 import { useAuth } from "../../context/AuthContext";
+
 
 const CreateGoals = (props: any) => {
   const { user } = useAuth();
@@ -72,17 +72,7 @@ const CreateGoals = (props: any) => {
     if (contents === "") {
       setErrors(true);
     } else {
-      const method = props.goalId ? "PATCH" : "POST";
-      const goalId = props.goalId ? props.goalId : "";
-
-      fetch(`${API_BASE_URL}/goals/goal/${goalId}`, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(goal),
-        credentials: "include"
-      })
+      updateGoal(goal, props.goalId)
         .then((response) => console.log(response))
         .then(() => {
           props.onSubmit();
