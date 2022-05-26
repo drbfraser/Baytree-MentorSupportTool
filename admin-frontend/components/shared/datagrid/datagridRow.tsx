@@ -1,6 +1,7 @@
-import { TableRow } from "@mui/material";
+import { IconButton, TableCell, TableRow } from "@mui/material";
 import { FC } from "react";
-import { DataRow, DataGridColumn, ValueOption } from "./datagrid";
+import { MdDelete, MdRestoreFromTrash } from "react-icons/md";
+import { DataRow, DataGridColumn } from "./datagrid";
 import {
   setChangedDataRowFunc,
   setCreatedDataRowFunc,
@@ -25,16 +26,28 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
           onChangedValue={(newValue: any) =>
             changeDataRowValue(
               newValue,
+              col.dataField,
+              props.dataRow,
               props.setCreatedDataRow ?? props.setChangedDataRow
             )
           }
           isCellChanged={isCellChanged(
+            col.dataField,
             props.changedDataRow,
             props.originalDataRow,
             props.isCreatedDataGridRow
           )}
+          isCellDeleted={!!props.isDataRowDeleted}
         ></DataGridCell>
       ))}
+      {props.isDataGridSaveable && (
+        <DataGridDeleteCell
+          onDeleteRow={(isDeleted) =>
+            props.setDeletedDataRow(isDeleted, props.dataRow)
+          }
+          isRowDeleted={!!props.isDataRowDeleted}
+        ></DataGridDeleteCell>
+      )}
     </TableRow>
   );
 };
@@ -50,6 +63,26 @@ interface DataGridRowProps {
   setDeletedDataRow: setDeletedDataRowFunc;
   primaryKeyDataField: string;
   isCreatedDataGridRow?: boolean;
+  isDataGridSaveable?: boolean;
 }
+
+interface DataGridDeleteCellProps {
+  onDeleteRow: (isDeleted: boolean) => void;
+  isRowDeleted?: boolean;
+}
+
+const DataGridDeleteCell: FC<DataGridDeleteCellProps> = (props) => {
+  return (
+    <TableCell>
+      <IconButton onClick={() => props.onDeleteRow(!props.isRowDeleted)}>
+        {props.isRowDeleted ? (
+          <MdRestoreFromTrash></MdRestoreFromTrash>
+        ) : (
+          <MdDelete></MdDelete>
+        )}
+      </IconButton>
+    </TableCell>
+  );
+};
 
 export default DataGridRow;

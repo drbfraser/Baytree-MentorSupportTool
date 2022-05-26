@@ -1,5 +1,5 @@
 import { MutableRefObject, Dispatch, SetStateAction } from "react";
-import { DataRow } from "./datagrid";
+import { DataGridColumn, DataRow } from "./datagrid";
 
 export const getOriginalDataRow = (
   dataRow: DataRow,
@@ -130,4 +130,17 @@ export const setDeletedDataRow = (
 
     setDeletedDataRows(deletedDataRows);
   }
+};
+
+export const createDataRow = (
+  rowId: number,
+  createdDataRows: DataRow[],
+  setCreatedDataRows: Dispatch<SetStateAction<DataRow[]>>,
+  columns: DataGridColumn[],
+  primaryKeyDataField: string
+) => {
+  const newDataRow: DataRow = {};
+  columns.forEach((col) => (newDataRow[col.dataField] = ""));
+  newDataRow[primaryKeyDataField] = `created_${rowId}`;
+  setCreatedDataRows([...createdDataRows, newDataRow]);
 };

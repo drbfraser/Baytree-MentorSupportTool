@@ -1,7 +1,15 @@
 import { FC, useRef, useState } from "react";
-import { Table, TableRow, TableHead, TableCell, Button } from "@mui/material";
+import {
+  Table,
+  TableRow,
+  TableHead,
+  TableCell,
+  Button,
+  IconButton,
+} from "@mui/material";
 import DataGridBody from "./datagridBody";
 import {
+  createDataRow,
   getChangedDataRow,
   getOriginalDataRow,
   isDataRowDeleted,
@@ -9,6 +17,7 @@ import {
   setCreatedDataRow,
   setDeletedDataRow,
 } from "./datagridLogic";
+import { MdAdd } from "react-icons/md";
 
 const DataGrid: FC<DataGridProps> = (props) => {
   const [isLoadingDataRows, setIsLoadingDataRows] = useState(false);
@@ -17,6 +26,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
   const [changedDataRows, setChangedDataRows] = useState<DataRow[]>([]);
   const [createdDataRows, setCreatedDataRows] = useState<DataRow[]>([]);
   const [deletedDataRows, setDeletedDataRows] = useState<DataRow[]>([]);
+  const createRowNextIdRef = useRef(0);
 
   return (
     <Table>
@@ -83,6 +93,18 @@ const DataGrid: FC<DataGridProps> = (props) => {
         cols={props.cols}
         primaryKeyDataField={props.primaryKeyDataField}
       ></DataGridBody>
+      <DataGridAddRow
+        numColumns={props.cols.length}
+        onAddRow={() =>
+          createDataRow(
+            createRowNextIdRef.current++,
+            createdDataRows,
+            setCreatedDataRows,
+            props.cols,
+            props.primaryKeyDataField
+          )
+        }
+      ></DataGridAddRow>
     </Table>
   );
 };
@@ -159,6 +181,21 @@ const DataGridSaveButtonHeaderCell: FC<DataGridSaveButtonHeaderCellProps> = (
     <TableCell>
       <Button onClick={props.onClick}></Button>
     </TableCell>
+  );
+};
+
+interface DataGridAddRowProps {
+  numColumns: number;
+  onAddRow: () => void;
+}
+
+const DataGridAddRow: FC<DataGridAddRowProps> = (props) => {
+  return (
+    <TableRow>
+      <TableCell colSpan={props.numColumns + 1}>
+        <Button onClick={props.onAddRow} startIcon={<MdAdd />}></Button>
+      </TableCell>
+    </TableRow>
   );
 };
 

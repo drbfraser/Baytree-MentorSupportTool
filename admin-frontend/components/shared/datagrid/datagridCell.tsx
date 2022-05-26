@@ -15,6 +15,7 @@ interface DataGridCellProps {
   value: any;
   onChangedValue: (newValue: any) => void;
   isCellChanged: boolean;
+  isCellDeleted: boolean;
   primaryKeyVal: any;
   dataField: string;
 }
@@ -22,7 +23,13 @@ interface DataGridCellProps {
 const DataGridCell: FC<DataGridCellProps> = (props) => {
   return (
     <StyledDataGridCell
-      cellBackgroundColor={props.isCellChanged ? "lightgreen" : "unset"}
+      cellBackgroundColor={
+        props.isCellDeleted
+          ? "lightred"
+          : props.isCellChanged
+          ? "lightgreen"
+          : "unset"
+      }
     >
       {props.isSelectCell ? (
         <Select
