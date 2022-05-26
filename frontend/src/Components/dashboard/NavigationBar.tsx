@@ -84,7 +84,7 @@ const NavigationBar: FunctionComponent<{
 
         {/* Top-right navigation buttons */}
         <Stack direction="row">
-          <Messages />
+          {/* <Messages /> */}
           <NavigationButton action={() => navigate("/dashboard/notifications")}>
             <Badge badgeContent={numNotifications} color="error">
               <NotificationsIcon />
@@ -94,7 +94,7 @@ const NavigationBar: FunctionComponent<{
             <AccountBoxIcon />
           </NavigationButton>
           <NavigationButton action={logout}>
-            <LogoutIcon color="primary" />
+            <LogoutIcon color="secondary" />
           </NavigationButton>
           <MobileMenu />
         </Stack>

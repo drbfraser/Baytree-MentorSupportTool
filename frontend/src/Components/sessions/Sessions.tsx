@@ -66,16 +66,16 @@ const SessionForm = () => {
               <Field name="cancelled" as={Checkbox} />
             </FormControl>
             <Divider />
-            {/* Date and time */}
             {values.cancelled && (
               <Typography
-                sx={{ fontWeight: "bold", mt: 3, mb: 1 }}
-                color="text.secondary"
+              sx={{ fontWeight: "bold", mt: 3, mb: 1 }}
+              color="text.secondary"
               >
                 If you or the mentee did not attend the session, please enter
                 when the session was suppose to happen!
               </Typography>
             )}
+            {/* Date and time */}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid container spacing={1} sx={{ py: 2 }}>
                 <TimeInputContainer label="Date">

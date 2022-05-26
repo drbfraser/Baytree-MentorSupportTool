@@ -11,7 +11,14 @@ import {
 } from "@mui/material";
 import { useField } from "formik";
 import { FunctionComponent } from "react";
-import { Question } from "./question";
+
+interface Question {
+  enabled: string;
+  Question: string;
+  QuestionID: string;
+  inputType: "text" | "number";
+  validation: string;
+}
 
 const choices = [
   "Strongly Disagree",
@@ -65,6 +72,7 @@ const QuestionField: FunctionComponent<{
 
   return (
     <FormControl fullWidth required={required}>
+      {/* Question labels */}
       <Typography
         sx={{
           mt: 3,
@@ -74,6 +82,8 @@ const QuestionField: FunctionComponent<{
       >
         {`${numbering}. ${question.Question} ${required ? "*" : ""}`}
       </Typography>
+
+      {/* Answer input */}
       {question.inputType === "number" ? (
         <ChoiceQuestion name={name} />
       ) : (

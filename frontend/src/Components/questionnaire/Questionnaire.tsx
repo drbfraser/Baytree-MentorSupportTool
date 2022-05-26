@@ -9,15 +9,15 @@ import TitledContainer from "../shared/TitledContainer";
 import LoadingScreen from "./LoadingScreen";
 import QuestionField from "./QuestionField";
 
-// Validate answer based on the questionnaire requirement
-export const validate = (questions: Question[], answer: Answer) => {
+// Validate answer based on the questionnaire requirements
+const validate = (questions: Question[], answer: Answer) => {
   return questions
     .filter((q) => q.enabled === "1" && q.validation.includes("required"))
     .every((q) => (answer[q.QuestionID] || "") !== "");
 };
 
-// Generate the blankAnswers based on the questionnaire
-export const blankAnswers = (questions: Question[], mentorId?: number) => {
+// Generate the blankAnswers based on the questionnaire format
+const blankAnswers = (questions: Question[], mentorId?: number) => {
   let blank = questions
     .map((q) => q.QuestionID)
     .reduce((acc, id) => {
@@ -37,7 +37,7 @@ const Questionnaire = () => {
     fetchQuestions()
       .then(setQuestions)
       .then(() => setLoading(false))
-      .catch((error) => console.log("Error: ", error));
+      .catch((error) => console.error("Error: ", error));
   }, []);
 
   return (
@@ -60,6 +60,7 @@ const Questionnaire = () => {
         >
           {({ values, isSubmitting }) => (
             <Form>
+              {/* Questions */}
               {questions.map((question, index) => (
                 <QuestionField
                   question={question}
@@ -67,6 +68,8 @@ const Questionnaire = () => {
                   key={question.QuestionID}
                 />
               ))}
+
+              {/* SAubmit button */}
               <Button
                 disabled={isSubmitting || !validate(questions, values)}
                 variant="contained"

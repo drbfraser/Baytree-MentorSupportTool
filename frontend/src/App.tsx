@@ -11,19 +11,23 @@ import Questionnaire from "./Components/questionnaire/Questionnaire";
 import Records from "./Components/Records";
 import ResetPassword from "./Components/ResetPassword";
 import Sessions from "./Components/sessions/Sessions";
-import AuthRoute from "./Utils/PrivateRoute";
+import PrivateRoute from "./Utils/PrivateRoute";
 import PublicRoute from "./Utils/PublicRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* TODO: Split /resetPassword into 2 route
+          - /resetPassword/ -> Enter the email
+          - /resetPassword/{id} -> Reset Password
+        */}
         <Route path="/resetPassword" element={<ResetPassword />} />
         <Route path="/createAccount" element={<CreateAccount />} />
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<Login />} />
         </Route>
-        <Route element={<AuthRoute />}>
+        <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />}>
             <Route path="home" element={<Home />} />
             <Route path="sessions" element={<Sessions />} />
@@ -35,6 +39,9 @@ function App() {
           </Route>
           <Route path="/" element={<Navigate to="/dashboard/home" replace />} />
         </Route>
+        
+        {/* If the path is not found, redirect to the root */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
