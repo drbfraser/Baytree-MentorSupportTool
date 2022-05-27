@@ -67,6 +67,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
             );
           }
         }}
+        isDataGridSaveable={!!props.onSaveDataRows}
         enableSaveButton={!isLoadingDataRows && !isLoadingColValueOptions}
       ></DataGridHeaderRow>
       <DataGridBody
@@ -135,19 +136,21 @@ const DataGrid: FC<DataGridProps> = (props) => {
         cols={cols}
         primaryKeyDataField={primaryKeyDataFieldRef.current}
       ></DataGridBody>
-      <DataGridAddRow
-        numColumns={cols.length}
-        onAddRow={() =>
-          createDataRow(
-            createRowNextIdRef.current++,
-            createdDataRows,
-            setCreatedDataRows,
-            cols,
-            primaryKeyDataFieldRef.current
-          )
-        }
-        enableAddButton={!isLoadingDataRows && !isLoadingColValueOptions}
-      ></DataGridAddRow>
+      {props.onSaveDataRows && (
+        <DataGridAddRow
+          numColumns={cols.length}
+          onAddRow={() =>
+            createDataRow(
+              createRowNextIdRef.current++,
+              createdDataRows,
+              setCreatedDataRows,
+              cols,
+              primaryKeyDataFieldRef.current
+            )
+          }
+          enableAddButton={!isLoadingDataRows && !isLoadingColValueOptions}
+        ></DataGridAddRow>
+      )}
     </Table>
   );
 };

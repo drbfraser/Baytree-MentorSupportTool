@@ -2,7 +2,7 @@ import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import styled from "styled-components";
 import { getActivities } from "../api/backend/activities";
-import { getMentorRoles, saveMentorRoles } from "../api/backend/mentorRoles";
+import { getMentorRoles } from "../api/backend/mentorRoles";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
 import DataGrid, {
   onSaveDataRowsFunc,
@@ -65,16 +65,13 @@ const MentorRoles: NextPage = () => {
           {
             header: "Session Group",
             dataField: "viewsSessionGroupId",
-            onLoadValueOptions: getSessionGroupOptions,
           },
           {
             header: "Activity",
             dataField: "activity",
-            onLoadValueOptions: getActivityOptions,
           },
         ]}
         onLoadDataRows={getMentorRoleData}
-        onSaveDataRows={saveMentorRoleData}
       ></DataGrid>
     </MentorRolesCard>
   );

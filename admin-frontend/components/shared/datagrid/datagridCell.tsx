@@ -4,21 +4,11 @@ import {
   Skeleton,
   TableCell,
   TextField,
+  Typography,
 } from "@mui/material";
 import { FC, useRef } from "react";
 import styled from "styled-components";
 import { ValueOption } from "./datagrid";
-
-interface DataGridCellProps {
-  isSelectCell: boolean;
-  valueOptions?: ValueOption[];
-  value: any;
-  onChangedValue: (newValue: any) => void;
-  isCellChanged: boolean;
-  isCellDeleted: boolean;
-  primaryKeyVal: any;
-  dataField: string;
-}
 
 const DataGridCell: FC<DataGridCellProps> = (props) => {
   const selectIdRef = useRef(0);
@@ -52,16 +42,30 @@ const DataGridCell: FC<DataGridCellProps> = (props) => {
             ))}
           </Select>
         )
-      ) : (
+      ) : props.isDataGridSaveable ? (
         <TextField
           fullWidth
           defaultValue={props.value}
           onBlur={(event) => props.onChangedValue(event.target.value)}
         ></TextField>
+      ) : (
+        <Typography>{props.value}</Typography>
       )}
     </StyledDataGridCell>
   );
 };
+
+interface DataGridCellProps {
+  isSelectCell: boolean;
+  valueOptions?: ValueOption[];
+  value: any;
+  onChangedValue: (newValue: any) => void;
+  isCellChanged: boolean;
+  isCellDeleted: boolean;
+  primaryKeyVal: any;
+  dataField: string;
+  isDataGridSaveable: boolean;
+}
 
 const StyledDataGridCell = styled(TableCell)<{ cellBackgroundColor: string }>`
   background-color: ${(props) => props.cellBackgroundColor};

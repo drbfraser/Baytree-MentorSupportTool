@@ -8,6 +8,7 @@ interface DataGridHeaderRowProps {
   onSaveButtonClick?: () => void;
   cols: DataGridColumn[];
   enableSaveButton: boolean;
+  isDataGridSaveable: boolean;
 }
 
 const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
@@ -20,10 +21,10 @@ const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
             header={col.header}
           ></DataGridHeaderCell>
         ))}
-        {props.onSaveButtonClick && (
+        {props.isDataGridSaveable && (
           <DataGridSaveButtonHeaderCell
             enableSaveButton={props.enableSaveButton}
-            onClick={props.onSaveButtonClick}
+            onClick={props.onSaveButtonClick ?? (() => {})}
           />
         )}
       </TableRow>

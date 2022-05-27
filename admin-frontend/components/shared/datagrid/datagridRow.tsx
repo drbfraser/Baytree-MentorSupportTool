@@ -19,6 +19,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
           key={`pk_${props.dataRow[props.primaryKeyDataField]}_df_${
             col.dataField
           }`}
+          isDataGridSaveable={props.isDataGridSaveable}
           dataField={col.dataField}
           primaryKeyVal={props.dataRow[props.primaryKeyDataField]}
           isSelectCell={col.onLoadValueOptions !== undefined}
@@ -68,7 +69,7 @@ interface DataGridRowProps {
   setDeletedDataRow: setDeletedDataRowFunc;
   primaryKeyDataField: string;
   isCreatedDataGridRow?: boolean;
-  isDataGridSaveable?: boolean;
+  isDataGridSaveable: boolean;
 }
 
 interface DataGridDeleteCellProps {
@@ -86,7 +87,7 @@ const DataGridDeleteCell: FC<DataGridDeleteCellProps> = (props) => {
           onClick={() => props.onDeleteRow(!props.isRowDeleted)}
         >
           {props.isRowDeleted ? (
-            <MdRestoreFromTrash></MdRestoreFromTrash>
+            <MdRestoreFromTrash size="24"></MdRestoreFromTrash>
           ) : (
             <MdDelete size="24"></MdDelete>
           )}

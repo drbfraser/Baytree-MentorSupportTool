@@ -6,12 +6,12 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import AddMentorModal from "../components/pages/mentors/addMentorModal";
 import Button from "../components/shared/button";
-import DataGrid from "../components/shared/datagrid/datagrid";
 import Modal from "../components/shared/Modal";
 import { HELP_MESSAGE } from "../constants/constants";
 import { getMentorUsers } from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
 import OverlaySpinner from "../components/shared/overlaySpinner";
+import ReadOnlyDataGrid from "../components/shared/readOnlyDataGrid";
 
 const Mentors: NextPage = () => {
   const [showAddMentorModal, setShowAddMentorModal] = useState(false);
@@ -76,7 +76,7 @@ const Mentors: NextPage = () => {
             Add Mentor
           </Button>
         </Header>
-        <DataGrid
+        <ReadOnlyDataGrid
           key={`${dataGridKey}`}
           data={pageData}
           cols={[
@@ -110,7 +110,7 @@ const Mentors: NextPage = () => {
               },
             },
           ]}
-        ></DataGrid>
+        ></ReadOnlyDataGrid>
       </Paper>
       <Modal
         isOpen={showAddMentorModal}
