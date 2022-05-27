@@ -4,6 +4,7 @@ import DataGridBody from "./datagridBody";
 import {
   createDataRow,
   getChangedDataRow,
+  getOffsetFromPage,
   getOriginalDataRow,
   isDataRowDeleted,
   loadColumnValueOptions,
@@ -17,6 +18,8 @@ import {
 import { MdAdd } from "react-icons/md";
 import DataGridHeaderRow from "./datagridHeaderRow";
 import styled from "styled-components";
+import Pager from "../pager";
+import { DrfPageResponse } from "../../../api/backend/base";
 
 const DataGrid: FC<DataGridProps> = (props) => {
   const [isLoadingDataRows, setIsLoadingDataRows] = useState(false);
@@ -24,6 +27,10 @@ const DataGrid: FC<DataGridProps> = (props) => {
     useState(false);
   const [isSavingDataRows, setIsSavingDataRows] = useState(false);
   const [dataRows, setDataRows] = useState<DataRow[]>([]);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [maxPageNumber, setMaxPageNumber] = useState(0);
+
   const [cols, setCols] = useState<DataGridColumn[]>(props.cols);
   const originalDataRowsRef = useRef<DataRow[]>([]);
   const [changedDataRows, setChangedDataRows] = useState<DataRow[]>([]);
@@ -36,7 +43,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [currentPage]);
 
   useEffect(
     () => loadColumnValueOptions(cols, setCols, setIsLoadingColValueOptions),
@@ -44,125 +51,159 @@ const DataGrid: FC<DataGridProps> = (props) => {
   );
 
   const getData = async () => {
-    await loadDataRows(props.onLoadDataRows, setDataRows, setIsLoadingDataRows);
+    // Is paginated
+    if (props.pageSize) {
+      await loadDataRows(
+        props.onLoadDataRows,
+        setDataRows,
+        setIsLoadingDataRows,
+        {
+          pagination: {
+            pageSize: props.pageSize,
+            currentPageNum: currentPage,
+            setCurrentPageNum: setCurrentPage,
+            setMaxPageNum: setMaxPageNumber,
+          },
+        }
+      );
+    } else {
+      await loadDataRows(
+        props.onLoadDataRows,
+        setDataRows,
+        setIsLoadingDataRows
+      );
+    }
   };
 
   return (
-    <Table>
-      <DataGridHeaderRow
-        cols={cols}
-        onSaveButtonClick={() => {
-          if (props.onSaveDataRows) {
-            saveDataRows(
-              props.onSaveDataRows,
-              createdDataRows,
-              changedDataRows,
-              deletedDataRows,
-              primaryKeyDataFieldRef.current,
-              getData,
-              setCreatedDataRows,
-              setChangedDataRows,
-              setDeletedDataRows,
-              setIsSavingDataRows,
-              originalDataRowsRef,
-              TOAST_ERROR_MESSAGE
-            );
+    <>
+      <Table>
+        <DataGridHeaderRow
+          cols={cols}
+          onSaveButtonClick={() => {
+            if (props.onSaveDataRows) {
+              saveDataRows(
+                props.onSaveDataRows,
+                createdDataRows,
+                changedDataRows,
+                deletedDataRows,
+                primaryKeyDataFieldRef.current,
+                getData,
+                setCreatedDataRows,
+                setChangedDataRows,
+                setDeletedDataRows,
+                setIsSavingDataRows,
+                originalDataRowsRef,
+                TOAST_ERROR_MESSAGE
+              );
+            }
+          }}
+          isDataGridSaveable={!!props.onSaveDataRows}
+          enableSaveButton={
+            (changedDataRows.length > 0 ||
+              createdDataRows.length > 0 ||
+              deletedDataRows.length > 0) &&
+            !isLoadingDataRows &&
+            !isLoadingColValueOptions &&
+            !isSavingDataRows
           }
-        }}
-        isDataGridSaveable={!!props.onSaveDataRows}
-        enableSaveButton={
-          (changedDataRows.length > 0 ||
-            createdDataRows.length > 0 ||
-            deletedDataRows.length > 0) &&
-          !isLoadingDataRows &&
-          !isLoadingColValueOptions &&
-          !isSavingDataRows
-        }
-      ></DataGridHeaderRow>
-      <DataGridBody
-        isLoadingDataRows={isLoadingDataRows || isSavingDataRows}
-        dataRows={dataRows}
-        createdDataRows={createdDataRows}
-        deletedDataRows={deletedDataRows}
-        removeCreatedDataRow={(createdDataRow) =>
-          removeCreatedDataRow(
-            createdDataRow,
-            createdDataRows,
-            primaryKeyDataFieldRef.current,
-            setCreatedDataRows
-          )
-        }
-        getOriginalDataRow={(dataRow) =>
-          getOriginalDataRow(
-            dataRow,
-            originalDataRowsRef.current,
-            primaryKeyDataFieldRef.current
-          )
-        }
-        getChangedDataRow={(dataRow) =>
-          getChangedDataRow(
-            dataRow,
-            changedDataRows,
-            primaryKeyDataFieldRef.current
-          )
-        }
-        isDataRowDeleted={(dataRow) =>
-          isDataRowDeleted(
-            dataRow,
-            deletedDataRows,
-            primaryKeyDataFieldRef.current
-          )
-        }
-        setChangedDataRow={(changedDataRow) =>
-          setChangedDataRow(
-            dataRows,
-            changedDataRow,
-            originalDataRowsRef,
-            changedDataRows,
-            setChangedDataRows,
-            primaryKeyDataFieldRef.current
-          )
-        }
-        setCreatedDataRow={(createdDataRow) =>
-          setCreatedDataRow(
-            createdDataRow,
-            createdDataRows,
-            primaryKeyDataFieldRef.current,
-            setCreatedDataRows
-          )
-        }
-        setDeletedDataRow={(isDeleted, dataRow) =>
-          setDeletedDataRow(
-            isDeleted,
-            dataRow,
-            deletedDataRows,
-            setDeletedDataRows,
-            primaryKeyDataFieldRef.current
-          )
-        }
-        onLoadDataRows={props.onLoadDataRows}
-        onSaveDataRows={props.onSaveDataRows}
-        cols={cols}
-        primaryKeyDataField={primaryKeyDataFieldRef.current}
-      ></DataGridBody>
-      {props.onSaveDataRows && !props.disableDataRowCreation && (
-        <DataGridAddRow
-          numColumns={cols.length}
-          onAddRow={() =>
-            createDataRow(
-              createRowNextIdRef.current++,
+        ></DataGridHeaderRow>
+        <DataGridBody
+          isLoadingDataRows={isLoadingDataRows || isSavingDataRows}
+          dataRows={dataRows}
+          createdDataRows={createdDataRows}
+          deletedDataRows={deletedDataRows}
+          removeCreatedDataRow={(createdDataRow) =>
+            removeCreatedDataRow(
+              createdDataRow,
               createdDataRows,
-              setCreatedDataRows,
-              cols,
+              primaryKeyDataFieldRef.current,
+              setCreatedDataRows
+            )
+          }
+          getOriginalDataRow={(dataRow) =>
+            getOriginalDataRow(
+              dataRow,
+              originalDataRowsRef.current,
               primaryKeyDataFieldRef.current
             )
           }
-          enableAddButton={
-            !isLoadingDataRows && !isLoadingColValueOptions && !isSavingDataRows
+          getChangedDataRow={(dataRow) =>
+            getChangedDataRow(
+              dataRow,
+              changedDataRows,
+              primaryKeyDataFieldRef.current
+            )
           }
-        ></DataGridAddRow>
+          isDataRowDeleted={(dataRow) =>
+            isDataRowDeleted(
+              dataRow,
+              deletedDataRows,
+              primaryKeyDataFieldRef.current
+            )
+          }
+          setChangedDataRow={(changedDataRow) =>
+            setChangedDataRow(
+              dataRows,
+              changedDataRow,
+              originalDataRowsRef,
+              changedDataRows,
+              setChangedDataRows,
+              primaryKeyDataFieldRef.current
+            )
+          }
+          setCreatedDataRow={(createdDataRow) =>
+            setCreatedDataRow(
+              createdDataRow,
+              createdDataRows,
+              primaryKeyDataFieldRef.current,
+              setCreatedDataRows
+            )
+          }
+          setDeletedDataRow={(isDeleted, dataRow) =>
+            setDeletedDataRow(
+              isDeleted,
+              dataRow,
+              deletedDataRows,
+              setDeletedDataRows,
+              primaryKeyDataFieldRef.current
+            )
+          }
+          onLoadDataRows={props.onLoadDataRows}
+          onSaveDataRows={props.onSaveDataRows}
+          cols={cols}
+          primaryKeyDataField={primaryKeyDataFieldRef.current}
+        ></DataGridBody>
+        {props.onSaveDataRows && !props.disableDataRowCreation && (
+          <DataGridAddRow
+            numColumns={cols.length}
+            onAddRow={() =>
+              createDataRow(
+                createRowNextIdRef.current++,
+                createdDataRows,
+                setCreatedDataRows,
+                cols,
+                primaryKeyDataFieldRef.current
+              )
+            }
+            enableAddButton={
+              !isLoadingDataRows &&
+              !isLoadingColValueOptions &&
+              !isSavingDataRows
+            }
+          ></DataGridAddRow>
+        )}
+      </Table>
+      {props.pageSize && (
+        <Pager
+          currentPageNumber={currentPage}
+          maxPageNumber={maxPageNumber}
+          onGotoPagePressed={(pageNumber) => setCurrentPage(pageNumber)}
+          onNextPagePressed={(pageNumber) => setCurrentPage(pageNumber)}
+          onPreviousPagePressed={(pageNumber) => setCurrentPage(pageNumber)}
+        ></Pager>
       )}
-    </Table>
+    </>
   );
 };
 
@@ -172,16 +213,22 @@ export interface DataGridProps {
   disableDataRowCreation?: boolean;
   cols: DataGridColumn[];
   primaryKeyDataField?: string; // default primary key is "id"
+  pageSize?: number;
 }
 
-export type onLoadDataRowsFunc = () => Promise<DataRow[]>;
+export type onLoadDataRowsFunc = (
+  limit?: number,
+  offset?: number
+) => Promise<DataRow[] | DrfPageResponse<DataRow>>;
 
 export type DataRow = Record<string, any>;
 
 export type onSaveDataRowsFunc = (
-  createRows: DataRow[],
-  updateRows: DataRow[],
-  deleteRows: DataRow[]
+  // rowChanges includes updated, created, and deleted rows.
+  // updated have an id and created don't. deleted rows have a field
+  // 'isDeleted' which is set to true. This works automatically with
+  // a POST request containing rowChanges to the BatchUpdateViewSet.
+  rowChanges: DataRow[]
 ) => Promise<boolean>;
 
 export interface DataGridColumn {

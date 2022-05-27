@@ -1,6 +1,6 @@
 import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdAdd } from "react-icons/md";
 import styled from "styled-components";
 import AddMentorModal from "../components/pages/mentors/addMentorModal";
@@ -8,7 +8,6 @@ import Button from "../components/shared/button";
 import Modal from "../components/shared/Modal";
 import { getMentorUsers } from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
-import OverlaySpinner from "../components/shared/overlaySpinner";
 import DataGrid, {
   onLoadDataRowsFunc,
   onSaveDataRowsFunc,

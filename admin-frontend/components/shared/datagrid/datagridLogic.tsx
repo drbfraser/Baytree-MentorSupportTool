@@ -1,5 +1,6 @@
 import { MutableRefObject, Dispatch, SetStateAction } from "react";
 import { toast } from "react-toastify";
+import { DrfPageResponse } from "../../../api/backend/base";
 import {
   DataGridColumn,
   DataRow,
@@ -152,18 +153,49 @@ const failureLoadDataToastMessage =
 export const loadDataRows = async (
   onLoadDataRows: onLoadDataRowsFunc,
   setDataRows: Dispatch<SetStateAction<DataRow[]>>,
-  setIsLoadingDataRows: Dispatch<SetStateAction<boolean>>
+  setIsLoadingDataRows: Dispatch<SetStateAction<boolean>>,
+  options?: {
+    pagination?: {
+      pageSize: number;
+      currentPageNum: number;
+      setCurrentPageNum: Dispatch<SetStateAction<number>>;
+      setMaxPageNum: Dispatch<SetStateAction<number>>;
+    };
+  }
 ) => {
   try {
     setIsLoadingDataRows(true);
-    const dataRows = await onLoadDataRows();
+    if (options && options.pagination) {
+      const { pageSize, currentPageNum, setCurrentPageNum, setMaxPageNum } =
+        options.pagination;
+
+      const drfPageResponse = (await onLoadDataRows(
+        pageSize,
+        getOffsetFromPage(pageSize, currentPageNum)
+      )) as DrfPageResponse<DataRow>;
+
+      setMaxPageNum(calcMaxPageNum(drfPageResponse.count, pageSize));
+
+      console.log(drfPageResponse);
+      setDataRows(drfPageResponse.results);
+
+      // Initial load, set page num to 1 if non-empty table
+      if (currentPageNum === 0 && drfPageResponse.count > 0) {
+        setCurrentPageNum(1);
+      }
+    } else {
+      const dataRows = await onLoadDataRows();
+      setDataRows(dataRows as DataRow[]);
+    }
     setIsLoadingDataRows(false);
-    setDataRows(dataRows);
   } catch {
     setIsLoadingDataRows(false);
     toast.error(failureLoadDataToastMessage);
   }
 };
+
+const calcMaxPageNum = (count: number, pageSize: number) =>
+  Math.ceil(count / pageSize);
 
 export const loadColumnValueOptions = (
   columns: DataGridColumn[],
@@ -228,8 +260,8 @@ export const saveDataRows = async (
       )
     );
 
-    const success = await (onSaveDataRows as onSaveDataRowsFunc)(
-      createdDataRows.map((row) => {
+    const success = await (onSaveDataRows as onSaveDataRowsFunc)([
+      ...createdDataRows.map((row) => {
         // Remove primary key value from created rows
         let createdDataRowClone = JSON.parse(JSON.stringify(row)) as DataRow;
 
@@ -237,9 +269,12 @@ export const saveDataRows = async (
 
         return createdDataRowClone;
       }),
-      changedDataRows,
-      deletedDataRows
-    );
+      ...changedDataRows,
+      ...deletedDataRows.map((deletedRow) => ({
+        ...deletedRow,
+        isDeleted: true,
+      })),
+    ]);
     if (success) {
       toast.success("Successfully saved data!");
       await loadData();
@@ -269,4 +304,11 @@ export const removeCreatedDataRow = (
   );
 
   setCreatedDataRows(createdDataRows);
+};
+
+export const getOffsetFromPage = (
+  pageSize: number,
+  currentPageNumber: number
+) => {
+  return pageSize * (currentPageNumber - 1);
 };

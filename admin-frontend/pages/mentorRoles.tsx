@@ -2,36 +2,45 @@ import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import styled from "styled-components";
 import { getActivities } from "../api/backend/activities";
-import { getMentorRoles, saveMentorRoles } from "../api/backend/mentorRoles";
+import { DrfPageResponse } from "../api/backend/base";
+import {
+  getMentorRoles,
+  MentorRole,
+  saveMentorRoles,
+} from "../api/backend/mentorRoles";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
 import DataGrid, {
+  DataRow,
+  onLoadDataRowsFunc,
   onSaveDataRowsFunc,
 } from "../components/shared/datagrid/datagrid";
 
 const MentorRoles: NextPage = () => {
-  const getMentorRoleData = async () => {
-    const mentorRoles = await getMentorRoles();
+  const MENTOR_ROLE_PAGE_SIZE = 4;
 
-    if (mentorRoles) {
-      return mentorRoles.map((mentorRole) => ({
-        ...mentorRole,
-        viewsSessionGroupId: mentorRole.viewsSessionGroupId,
-      }));
+  const getMentorRoleData: onLoadDataRowsFunc = async (limit, offset) => {
+    const mentorRolesPageRes = (await getMentorRoles(
+      limit,
+      offset
+    )) as DrfPageResponse<MentorRole>;
+
+    if (mentorRolesPageRes) {
+      mentorRolesPageRes.results = mentorRolesPageRes.results.map(
+        (mentorRole) => ({
+          ...mentorRole,
+          viewsSessionGroupId: mentorRole.viewsSessionGroupId,
+        })
+      );
+      return mentorRolesPageRes;
     } else {
       throw "Failed to retrieve mentor role data.";
     }
   };
 
   const saveMentorRoleData: onSaveDataRowsFunc = async (
-    createRows,
-    updateRows,
-    deleteRows
+    dataRowChanges: DataRow[]
   ) => {
-    const result = await saveMentorRoles([
-      ...createRows,
-      ...updateRows,
-      ...deleteRows.map((row) => ({ ...row, isDeleted: true })),
-    ]);
+    const result = await saveMentorRoles(dataRowChanges);
     return !!result;
   };
 
@@ -77,6 +86,7 @@ const MentorRoles: NextPage = () => {
         ]}
         onLoadDataRows={getMentorRoleData}
         onSaveDataRows={saveMentorRoleData}
+        pageSize={MENTOR_ROLE_PAGE_SIZE}
       ></DataGrid>
     </MentorRolesCard>
   );

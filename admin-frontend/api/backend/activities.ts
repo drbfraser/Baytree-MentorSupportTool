@@ -10,5 +10,5 @@ export interface Activity {
 export const activitiesBackendEndpoint = `sessions/activities/`;
 
 export const getActivities = async () => {
-  return await backendGet<Activity>(activitiesBackendEndpoint);
+  return await backendGet<Activity[]>(activitiesBackendEndpoint);
 };

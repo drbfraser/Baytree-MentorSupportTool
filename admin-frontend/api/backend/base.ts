@@ -315,42 +315,75 @@ export const generateBackendCrudFuncs = <
 const backendFetch = async (
   relativeEndpointUrl: string,
   method: "GET" | "POST" | "PUT" | "DELETE",
-  body?: any
+  body?: any,
+  queryParams?: Record<string, any>
 ) => {
-  let response = await fetch(`${API_BASE_URL}/${relativeEndpointUrl}`, {
-    method: method,
-    body: JSON.stringify(body),
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-  });
+  const queryParamString = buildQueryParamString(queryParams);
+
+  let response = await fetch(
+    `${API_BASE_URL}/${relativeEndpointUrl}${queryParamString}`,
+    {
+      method: method,
+      body: JSON.stringify(body),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }
+  );
 
   return response;
 };
 
+const buildQueryParamString = (queryParams?: Record<string, any>) => {
+  if (!queryParams || Object.keys(queryParams).length === 0) {
+    return "";
+  }
+
+  let queryParamStrings = [];
+  if (queryParams) {
+    for (const filterField in queryParams) {
+      queryParamStrings.push(`${filterField}=${queryParams[filterField]}`);
+    }
+  }
+
+  const queryParamString = "?" + queryParamStrings.join("&");
+  return queryParamString;
+};
+
 export const backendGet = async <ResponseObject>(
-  relativeEndpointUrl: string
+  relativeEndpointUrl: string,
+  queryParams?: Record<string, any>
 ) => {
-  let response = await backendFetch(relativeEndpointUrl, "GET");
+  let response = await backendFetch(
+    relativeEndpointUrl,
+    "GET",
+    undefined,
+    queryParams
+  );
 
   if (response.ok) {
     try {
-      const objects: ResponseObject[] = await response.json();
-      return objects;
+      const object: ResponseObject = await response.json();
+      return object;
     } catch {
       return null;
     }
   } else if (response.status === 401) {
     const refreshRes = await refreshAccessToken();
     if (refreshRes) {
-      response = await backendFetch(relativeEndpointUrl, "GET");
+      response = await backendFetch(
+        relativeEndpointUrl,
+        "GET",
+        undefined,
+        queryParams
+      );
 
       if (response.ok) {
         try {
-          const objects: ResponseObject[] = await response.json();
-          return objects;
+          const object: ResponseObject = await response.json();
+          return object;
         } catch {
           return null;
         }
@@ -392,4 +425,20 @@ export const backendPost = async (relativeEndpointUrl: string, body: any) => {
   } else {
     return null;
   }
+};
+
+export type DrfPageResponse<ResultObject> = {
+  count: number; // total record/object number in db table/model
+  next: string | null; // ex. "http://localhost:8000/api/users/mentor-roles/?limit=1&offset=1"
+  previous: string | null;
+  results: ResultObject[] /* ex.
+  [
+    {
+        "id": 2,
+        "name": "Into School Mentoring",
+        "viewsSessionGroupId": 5,
+        "activity": 2
+    },
+    ...
+  ]*/;
 };
