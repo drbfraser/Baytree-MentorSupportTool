@@ -1,15 +1,31 @@
 import { DataRow } from "./datagrid";
-import { setChangedDataRowFunc } from "./datagridBodyDataRows";
+import {
+  setChangedDataRowFunc,
+  setCreatedDataRowFunc,
+} from "./datagridBodyDataRows";
 
 export const changeDataRowValue = (
   newValue: any,
   dataField: string,
-  dataRow: DataRow,
-  setChangedDataRow: setChangedDataRowFunc
+  dataRow?: DataRow,
+  setCreatedDataRow?: setCreatedDataRowFunc,
+  setChangedDataRow?: setChangedDataRowFunc,
+  changedDataRow?: DataRow,
+  createdDataRow?: DataRow
 ) => {
-  dataRow = JSON.parse(JSON.stringify(dataRow));
-  dataRow[dataField] = newValue;
-  setChangedDataRow(dataRow);
+  if (createdDataRow) {
+    createdDataRow = JSON.parse(JSON.stringify(createdDataRow));
+    (createdDataRow as DataRow)[dataField] = newValue;
+    (setCreatedDataRow as setCreatedDataRowFunc)(createdDataRow as DataRow);
+  } else if (changedDataRow) {
+    changedDataRow = JSON.parse(JSON.stringify(changedDataRow));
+    (changedDataRow as DataRow)[dataField] = newValue;
+    (setChangedDataRow as setChangedDataRowFunc)(changedDataRow as DataRow);
+  } else {
+    dataRow = JSON.parse(JSON.stringify(dataRow));
+    (dataRow as DataRow)[dataField] = newValue;
+    (setChangedDataRow as setChangedDataRowFunc)(dataRow as DataRow);
+  }
 };
 
 export const isCellChanged = (

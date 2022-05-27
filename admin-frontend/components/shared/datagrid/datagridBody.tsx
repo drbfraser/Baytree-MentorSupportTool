@@ -11,7 +11,9 @@ import DataGridLoadingBody from "./datagridLoadingBody";
 
 const DataGridBody: FC<DataGridBodyProps> = (props) => {
   return props.isLoadingDataRows ? (
-    <DataGridLoadingBody numCols={props.cols.length}></DataGridLoadingBody>
+    <DataGridLoadingBody
+      numCols={props.onSaveDataRows ? props.cols.length + 1 : props.cols.length}
+    ></DataGridLoadingBody>
   ) : (
     <>
       <DataGridBodyDataRows

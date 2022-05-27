@@ -42,17 +42,38 @@ class MentorRoleViewSet(viewsets.ModelViewSet):
     serializer_class = MentorRoleSerializer
     permission_classes = [IsAuthenticated & AdminPermissions]
 
-    update_data_pk_field = "id"
-
     # Method for batch updating/creating arrays of objects
     def create(self, request, *args, **kwargs):
-        serializer = MentorRoleSerializer(
-            data=request.data, many=isinstance(request.data, list), partial=True
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if isinstance(request.data, list):
+            for data_row in request.data:
+                if "isDeleted" in data_row:
+                    if "id" not in data_row:
+                        Response(
+                            "No id was found for deleted row.",
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+
+                    mentorRole = MentorRole.objects.filter(pk=data_row["id"])
+
+                    if not mentorRole.exists():
+                        return Response(
+                            "MentorRole id " + data_row.id + " was not found.",
+                            status=status.HTTP_404_NOT_FOUND,
+                        )
+
+                    mentorRole.delete()
+                else:
+                    serializer = MentorRoleSerializer(data=data_row, partial=True)
+                    if serializer.is_valid():
+                        serializer.save()
+                    else:
+                        return Response(
+                            serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+            return Response("Successfully batch updated.", status=status.HTTP_200_OK)
+        else:
+            return super(MentorRole, self).create(request, *args, **kwargs)
 
 
 def createUsers(users: dict):

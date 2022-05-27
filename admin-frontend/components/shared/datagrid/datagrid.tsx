@@ -22,6 +22,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
   const [isLoadingDataRows, setIsLoadingDataRows] = useState(false);
   const [isLoadingColValueOptions, setIsLoadingColValueOptions] =
     useState(false);
+  const [isSavingDataRows, setIsSavingDataRows] = useState(false);
   const [dataRows, setDataRows] = useState<DataRow[]>([]);
   const [cols, setCols] = useState<DataGridColumn[]>(props.cols);
   const originalDataRowsRef = useRef<DataRow[]>([]);
@@ -62,6 +63,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
               setCreatedDataRows,
               setChangedDataRows,
               setDeletedDataRows,
+              setIsSavingDataRows,
               originalDataRowsRef,
               TOAST_ERROR_MESSAGE
             );
@@ -73,11 +75,12 @@ const DataGrid: FC<DataGridProps> = (props) => {
             createdDataRows.length > 0 ||
             deletedDataRows.length > 0) &&
           !isLoadingDataRows &&
-          !isLoadingColValueOptions
+          !isLoadingColValueOptions &&
+          !isSavingDataRows
         }
       ></DataGridHeaderRow>
       <DataGridBody
-        isLoadingDataRows={isLoadingDataRows}
+        isLoadingDataRows={isLoadingDataRows || isSavingDataRows}
         dataRows={dataRows}
         createdDataRows={createdDataRows}
         deletedDataRows={deletedDataRows}
@@ -154,7 +157,9 @@ const DataGrid: FC<DataGridProps> = (props) => {
               primaryKeyDataFieldRef.current
             )
           }
-          enableAddButton={!isLoadingDataRows && !isLoadingColValueOptions}
+          enableAddButton={
+            !isLoadingDataRows && !isLoadingColValueOptions && !isSavingDataRows
+          }
         ></DataGridAddRow>
       )}
     </Table>

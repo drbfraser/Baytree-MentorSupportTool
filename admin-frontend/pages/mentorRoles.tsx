@@ -2,7 +2,7 @@ import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import styled from "styled-components";
 import { getActivities } from "../api/backend/activities";
-import { getMentorRoles } from "../api/backend/mentorRoles";
+import { getMentorRoles, saveMentorRoles } from "../api/backend/mentorRoles";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
 import DataGrid, {
   onSaveDataRowsFunc,
@@ -27,10 +27,12 @@ const MentorRoles: NextPage = () => {
     updateRows,
     deleteRows
   ) => {
-    console.log(createRows);
-    console.log(updateRows);
-    console.log(deleteRows);
-    return true;
+    const result = await saveMentorRoles([
+      ...createRows,
+      ...updateRows,
+      ...deleteRows.map((row) => ({ ...row, isDeleted: true })),
+    ]);
+    return !!result;
   };
 
   const getSessionGroupOptions = async () => {

@@ -18,6 +18,7 @@ const DataGridBodyCreatedDataRows: FC<DataGridBodyCreatedDataRowsProps> = (
           primaryKeyDataField={props.primaryKeyDataField}
           dataRow={dataRow}
           isCreatedDataGridRow
+          createdDataRow={dataRow}
           setCreatedDataRow={props.setCreatedDataRow}
           setChangedDataRow={props.setChangedDataRow}
           setDeletedDataRow={(isDeleted, dataRow) =>

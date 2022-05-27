@@ -199,14 +199,17 @@ export const saveDataRows = async (
   changedDataRows: DataRow[],
   deletedDataRows: DataRow[],
   primaryKeyDataField: string,
-  loadData: () => void,
+  loadData: () => Promise<void>,
   setCreatedDataRows: Dispatch<SetStateAction<DataRow[]>>,
   setChangedDataRows: Dispatch<SetStateAction<DataRow[]>>,
   setDeletedDataRows: Dispatch<SetStateAction<DataRow[]>>,
+  setIsSavingDataRows: Dispatch<SetStateAction<boolean>>,
   originalDataRowsRef: MutableRefObject<DataRow[]>,
   errorMessage: string
 ) => {
   try {
+    setIsSavingDataRows(true);
+
     changedDataRows = JSON.parse(JSON.stringify(changedDataRows));
 
     let originalDataRows = JSON.parse(
@@ -238,16 +241,19 @@ export const saveDataRows = async (
       deletedDataRows
     );
     if (success) {
-      loadData();
+      toast.success("Successfully saved data!");
+      await loadData();
+      setIsSavingDataRows(false);
       setCreatedDataRows([]);
       setChangedDataRows([]);
       setDeletedDataRows([]);
       originalDataRowsRef.current = [];
-      toast.success("Successfully saved data!");
     } else {
+      setIsSavingDataRows(false);
       toast.error(errorMessage);
     }
   } catch {
+    setIsSavingDataRows(false);
     toast.error(errorMessage);
   }
 };
