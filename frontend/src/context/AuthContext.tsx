@@ -9,7 +9,6 @@ interface StorageInfo {
 }
 interface AuthContextType {
   user?: StorageInfo;
-  mentor: Mentor;
   signIn: (email: string, password: string) => Promise<boolean>;
   signOut: () => Promise<boolean>;
   verifyClient: () => Promise<boolean>;
@@ -17,7 +16,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   signIn: async (_email: string, _password: string) => false,
-  mentor: dummyMentor,
   signOut: async () => true,
   verifyClient: async () => false
 });
@@ -25,14 +23,6 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider: FunctionComponent<{}> = (props) => {
   const [user, setUser] = useLocalStorage<StorageInfo>("user", undefined);
   const [mentor, setMentor] = useState<Mentor>(dummyMentor);
-
-  useEffect(() => {
-    getMentorProfile(user?.viewsPersonId)
-    .then(({data, error}) => {
-      if (data && error === "") setMentor(data);
-      else setMentor(dummyMentor);
-    })
-  }, [user])
 
   const signIn = async (email: string, password: string) => {
     const {data, error} = await login(email, password);
@@ -65,7 +55,7 @@ export const AuthProvider: FunctionComponent<{}> = (props) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, mentor, signIn, signOut, verifyClient }}
+      value={{ user, signIn, signOut, verifyClient }}
       {...props}
     />
   );

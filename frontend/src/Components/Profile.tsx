@@ -1,11 +1,12 @@
-import { useAuth } from "../context/AuthContext";
+import useMentorProfile from "../hooks/useProfile";
+import Loading from "./shared/Loading";
 import TitledContainer from "./shared/TitledContainer";
 
 const Profile = () => {
-  const {mentor} = useAuth();
-  return <TitledContainer title="Profile">
+  const { loadingProfile, mentor } = useMentorProfile();
+  return !loadingProfile ? <TitledContainer title="Profile">
     Name: {mentor.firstname} {mentor.surname}
-  </TitledContainer>;
+  </TitledContainer> : <Loading />;
 };
 
 export default Profile;
