@@ -23,7 +23,7 @@ const DataGridCell: FC<DataGridCellProps> = (props) => {
           : "unset"
       }
     >
-      {props.isSelectCell ? (
+      {props.isSelectCell && props.isColumnEditable ? (
         !props.valueOptions ? (
           <LoadingDataGridCell></LoadingDataGridCell>
         ) : (
@@ -42,7 +42,7 @@ const DataGridCell: FC<DataGridCellProps> = (props) => {
             ))}
           </Select>
         )
-      ) : props.isDataGridSaveable ? (
+      ) : props.isDataGridSaveable && props.isColumnEditable ? (
         <TextField
           fullWidth
           defaultValue={props.value}
@@ -65,6 +65,7 @@ interface DataGridCellProps {
   primaryKeyVal: any;
   dataField: string;
   isDataGridSaveable: boolean;
+  isColumnEditable: boolean;
 }
 
 const StyledDataGridCell = styled(TableCell)<{ cellBackgroundColor: string }>`

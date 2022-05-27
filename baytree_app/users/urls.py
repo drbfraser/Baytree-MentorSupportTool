@@ -30,7 +30,6 @@ router = routers.DefaultRouter()
 router.register(r"mentor-roles", MentorRoleViewSet)
 
 urlpatterns = [
-    path("", include(router.urls)),
     path(
         "mentees",
         GenerateCrudEndpointsForModel.as_view(
@@ -56,6 +55,7 @@ urlpatterns = [
             post_override_func=postUser,
         ),
     ),
+    path("", include(router.urls)),
     path(
         "admins",
         GenerateCrudEndpointsForModel.as_view(

@@ -18,7 +18,7 @@ const MentorRoles: NextPage = () => {
         viewsSessionGroupId: mentorRole.viewsSessionGroupId,
       }));
     } else {
-      throw "Failed to retrieve activities option data.";
+      throw "Failed to retrieve mentor role data.";
     }
   };
 
@@ -65,13 +65,16 @@ const MentorRoles: NextPage = () => {
           {
             header: "Session Group",
             dataField: "viewsSessionGroupId",
+            onLoadValueOptions: getSessionGroupOptions,
           },
           {
             header: "Activity",
             dataField: "activity",
+            onLoadValueOptions: getActivityOptions,
           },
         ]}
         onLoadDataRows={getMentorRoleData}
+        onSaveDataRows={saveMentorRoleData}
       ></DataGrid>
     </MentorRolesCard>
   );

@@ -44,6 +44,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
             props.isCreatedDataGridRow
           )}
           isCellDeleted={!!props.isDataRowDeleted}
+          isColumnEditable={!col.disableEditing}
         ></DataGridCell>
       ))}
       {props.isDataGridSaveable && (

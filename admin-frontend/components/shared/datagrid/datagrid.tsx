@@ -68,7 +68,13 @@ const DataGrid: FC<DataGridProps> = (props) => {
           }
         }}
         isDataGridSaveable={!!props.onSaveDataRows}
-        enableSaveButton={!isLoadingDataRows && !isLoadingColValueOptions}
+        enableSaveButton={
+          (changedDataRows.length > 0 ||
+            createdDataRows.length > 0 ||
+            deletedDataRows.length > 0) &&
+          !isLoadingDataRows &&
+          !isLoadingColValueOptions
+        }
       ></DataGridHeaderRow>
       <DataGridBody
         isLoadingDataRows={isLoadingDataRows}
@@ -136,7 +142,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
         cols={cols}
         primaryKeyDataField={primaryKeyDataFieldRef.current}
       ></DataGridBody>
-      {props.onSaveDataRows && (
+      {props.onSaveDataRows && !props.disableDataRowCreation && (
         <DataGridAddRow
           numColumns={cols.length}
           onAddRow={() =>
@@ -158,6 +164,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
 export interface DataGridProps {
   onLoadDataRows: onLoadDataRowsFunc;
   onSaveDataRows?: onSaveDataRowsFunc;
+  disableDataRowCreation?: boolean;
   cols: DataGridColumn[];
   primaryKeyDataField?: string; // default primary key is "id"
 }
@@ -178,6 +185,7 @@ export interface DataGridColumn {
 
   valueOptions?: ValueOption[];
   onLoadValueOptions?: () => Promise<ValueOption[]>;
+  disableEditing?: boolean;
 }
 
 export interface ValueOption {
