@@ -23,6 +23,7 @@ const DataGridBody: FC<DataGridBodyProps> = (props) => {
         isDataRowDeleted={props.isDataRowDeleted}
         setChangedDataRow={props.setChangedDataRow}
         setDeletedDataRow={props.setDeletedDataRow}
+        isDataGridSaveable={!!props.onSaveDataRows}
       ></DataGridBodyDataRows>
       <DataGridBodyCreatedDataRows
         primaryKeyDataField={props.primaryKeyDataField}
@@ -45,7 +46,7 @@ export interface DataGridBodyProps {
   onLoadDataRows: onLoadDataRowsFunc;
   onSaveDataRows?: onSaveDataRowsFunc;
   getOriginalDataRow: (dataRow: DataRow) => DataRow;
-  getChangedDataRow: (changedDataRow: DataRow) => DataRow;
+  getChangedDataRow: (changedDataRow: DataRow) => DataRow | undefined;
   isDataRowDeleted: (dataRow: DataRow) => boolean;
   setCreatedDataRow: (createdDataRow: DataRow) => void;
   setChangedDataRow: (changedDataRow: DataRow) => void;

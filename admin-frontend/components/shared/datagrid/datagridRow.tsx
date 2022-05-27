@@ -22,7 +22,11 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
           primaryKeyVal={props.dataRow[props.primaryKeyDataField]}
           isSelectCell={col.onLoadValueOptions !== undefined}
           valueOptions={col.valueOptions}
-          value={props.dataRow[col.dataField]}
+          value={
+            props.changedDataRow
+              ? props.changedDataRow[col.dataField]
+              : props.dataRow[col.dataField]
+          }
           onChangedValue={(newValue: any) =>
             changeDataRowValue(
               newValue,
@@ -56,7 +60,7 @@ interface DataGridRowProps {
   dataRow: DataRow;
   cols: DataGridColumn[];
   originalDataRow?: DataRow;
-  changedDataRow: DataRow;
+  changedDataRow?: DataRow;
   isDataRowDeleted?: boolean;
   setCreatedDataRow?: setCreatedDataRowFunc;
   setChangedDataRow: setChangedDataRowFunc;

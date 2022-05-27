@@ -26,10 +26,13 @@ const DataGrid: FC<DataGridProps> = (props) => {
   const createRowNextIdRef = useRef(0);
   const primaryKeyDataFieldRef = useRef(props.primaryKeyDataField ?? "id");
 
-  useEffect(
-    () => loadDataRows(props.onLoadDataRows, setDataRows),
-    [props.onLoadDataRows]
-  );
+  useEffect(() => {
+    const getData = async () => {
+      await loadDataRows(props.onLoadDataRows, setDataRows);
+    };
+
+    getData();
+  }, [props.onLoadDataRows]);
 
   useEffect(() => loadColumnValueOptions(cols, setCols), [props.cols]);
 

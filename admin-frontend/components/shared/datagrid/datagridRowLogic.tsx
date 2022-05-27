@@ -7,6 +7,7 @@ export const changeDataRowValue = (
   dataRow: DataRow,
   setChangedDataRow: setChangedDataRowFunc
 ) => {
+  dataRow = JSON.parse(JSON.stringify(dataRow));
   dataRow[dataField] = newValue;
   setChangedDataRow(dataRow);
 };
@@ -20,7 +21,7 @@ export const isCellChanged = (
   if (isCreatedDataRow) {
     return true;
   } else if (originalDataRow && changedDataRow) {
-    return originalDataRow[dataField] === changedDataRow[dataField];
+    return originalDataRow[dataField] !== changedDataRow[dataField];
   } else {
     return false;
   }

@@ -25,7 +25,7 @@ export const getChangedDataRow = (
   changedDataRows.find(
     (changedDataRow) =>
       changedDataRow[primaryKeyDataField] === dataRow[primaryKeyDataField]
-  ) as DataRow;
+  );
 
 export const isDataRowDeleted = (
   dataRow: DataRow,
@@ -70,15 +70,12 @@ export const setChangedDataRow = (
 
       setChangedDataRows(changedDataRows);
     } else {
-      // changedDataRow may be the same object as existingChangedRow
-      const changedDataRowClone = JSON.parse(JSON.stringify(changedDataRow));
-
       changedDataRows = changedDataRows.filter(
         (row) =>
           row[primaryKeyDataField] !== changedDataRow[primaryKeyDataField]
       );
 
-      setChangedDataRows([...changedDataRows, changedDataRowClone]);
+      setChangedDataRows([...changedDataRows, changedDataRow]);
     }
   } else {
     originalDataRowsRef.current = [...originalDataRowsRef.current, dataRow];
@@ -107,14 +104,11 @@ export const setCreatedDataRow = (
   );
 
   if (existingRow) {
-    // createdDataRow may be the same object as existingRow
-    const createdDataRowClone = JSON.parse(JSON.stringify(createdDataRow));
-
     createdDataRows = createdDataRows.filter(
       (row) => row[primaryKeyDataField] !== existingRow[primaryKeyDataField]
     );
 
-    setCreatedDataRow([...createdDataRows, createdDataRowClone]);
+    setCreatedDataRow([...createdDataRows, createdDataRow]);
   } else {
     setCreatedDataRow([...createdDataRows, createdDataRow]);
   }
@@ -154,22 +148,23 @@ export const createDataRow = (
 const failureLoadDataToastMessage =
   "Failed to load data. Please ensure that you have a stable internet connection and refresh the page. Otherwise, contact an administrator.";
 
-export const loadDataRows = (
+export const loadDataRows = async (
   onLoadDataRows: onLoadDataRowsFunc,
   setDataRows: Dispatch<SetStateAction<DataRow[]>>
 ) => {
-  onLoadDataRows()
-    .then((dataRows) => setDataRows(dataRows))
-    .catch(() => toast.error(failureLoadDataToastMessage));
+  try {
+    const dataRows = await onLoadDataRows();
+    setDataRows(dataRows);
+  } catch {
+    toast.error(failureLoadDataToastMessage);
+  }
 };
 
 export const loadColumnValueOptions = (
   columns: DataGridColumn[],
   setColumns: Dispatch<SetStateAction<DataGridColumn[]>>
 ) => {
-  const colsWithValueOptions = columns.filter(
-    (col) => !!col.onLoadValueOptions
-  );
+  const colsWithValueOptions = columns.filter((col) => col.onLoadValueOptions);
 
   const colLoadFuncs = colsWithValueOptions.map((col) =>
     (col.onLoadValueOptions as () => Promise<ValueOption[]>)()
@@ -181,7 +176,7 @@ export const loadColumnValueOptions = (
         (col, i) => (col.valueOptions = colResults[i])
       );
 
-      setColumns(columns);
+      setColumns([...columns]);
     })
     .catch(() => toast.error(failureLoadDataToastMessage));
 };

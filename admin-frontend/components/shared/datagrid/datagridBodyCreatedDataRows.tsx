@@ -18,11 +18,11 @@ const DataGridBodyCreatedDataRows: FC<DataGridBodyCreatedDataRowsProps> = (
           primaryKeyDataField={props.primaryKeyDataField}
           dataRow={dataRow}
           isCreatedDataGridRow
-          changedDataRow={props.getChangedDataRow(dataRow)}
           setCreatedDataRow={props.setCreatedDataRow}
           setChangedDataRow={props.setChangedDataRow}
           setDeletedDataRow={props.setDeletedDataRow}
           cols={props.cols}
+          isDataGridSaveable={true}
         ></DataGridRow>
       ))}
     </>
@@ -31,7 +31,7 @@ const DataGridBodyCreatedDataRows: FC<DataGridBodyCreatedDataRowsProps> = (
 
 interface DataGridBodyCreatedDataRowsProps {
   primaryKeyDataField: string;
-  getChangedDataRow: (dataRow: DataRow) => DataRow;
+  getChangedDataRow: (dataRow: DataRow) => DataRow | undefined;
   setCreatedDataRow: setCreatedDataRowFunc;
   setChangedDataRow: setChangedDataRowFunc;
   setDeletedDataRow: setDeletedDataRowFunc;

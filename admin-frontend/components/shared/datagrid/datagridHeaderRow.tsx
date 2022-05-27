@@ -1,5 +1,6 @@
 import { TableHead, TableRow, TableCell, Button } from "@mui/material";
 import { FC } from "react";
+import { MdSave } from "react-icons/md";
 import { DataGridColumn } from "./datagrid";
 
 interface DataGridHeaderRowProps {
@@ -42,7 +43,9 @@ const DataGridSaveButtonHeaderCell: FC<DataGridSaveButtonHeaderCellProps> = (
 ) => {
   return (
     <TableCell>
-      <Button onClick={props.onClick}></Button>
+      <Button onClick={props.onClick}>
+        <MdSave></MdSave>
+      </Button>
     </TableCell>
   );
 };
