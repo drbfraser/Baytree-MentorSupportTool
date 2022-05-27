@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Answer, fetchQuestions, Question, submitAnswer } from "../../api/misc";
 import { useAuth } from "../../context/AuthContext";
+import Loading from "../shared/Loading";
 import TitledContainer from "../shared/TitledContainer";
-import LoadingScreen from "./LoadingScreen";
 import QuestionField from "./QuestionField";
 
 // Validate answer based on the questionnaire requirements
@@ -44,7 +44,7 @@ const Questionnaire = () => {
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
       {loading ? (
-        <LoadingScreen />
+        <Loading />
       ) : (
         <Formik
           initialValues={blankAnswers(questions, user!.userId)}

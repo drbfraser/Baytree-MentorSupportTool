@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import Loading from "../Components/shared/Loading";
 import { useAuth } from "../context/AuthContext";
 
 // User must log out before accessing PublicRoutes
@@ -14,7 +15,7 @@ const PublicRoute = () => {
   }, [verifyClient]);
 
   return loading ? (
-    <div>Loading...</div>
+    <Loading />
   ) : user ? (
     <Navigate to="dashboard/home" replace />
   ) : (

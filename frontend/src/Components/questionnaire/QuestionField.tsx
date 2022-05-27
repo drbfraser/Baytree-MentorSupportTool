@@ -11,14 +11,7 @@ import {
 } from "@mui/material";
 import { useField } from "formik";
 import { FunctionComponent } from "react";
-
-interface Question {
-  enabled: string;
-  Question: string;
-  QuestionID: string;
-  inputType: "text" | "number";
-  validation: string;
-}
+import { Question } from "../../api/misc";
 
 const choices = [
   "Strongly Disagree",
