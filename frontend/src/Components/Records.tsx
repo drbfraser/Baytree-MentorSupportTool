@@ -6,9 +6,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { DataGrid, GridCellParams, GridColDef } from "@mui/x-data-grid";
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { API_BASE_URL } from "../api/url";
+import { fetchSessionListByMentorId, Session } from "../api/misc";
 import { useAuth } from "../context/AuthContext";
 
 export default function Records() {
@@ -27,12 +26,9 @@ export default function Records() {
   };
 
   useEffect(() => {
-    axios.get<Session[]>(`${API_BASE_URL}/records/${user!.userId}`, {
-      headers: {
-        "Content-Type": "application/json"
-      },
-      withCredentials: true
-    }).then(response => setStaffRecord(response.data))
+    fetchSessionListByMentorId(user!.userId)
+      .then(setStaffRecord)
+      .then(() => setIsLoading(false))
   }, []);
 
   const columns: GridColDef[] = [
@@ -44,8 +40,8 @@ export default function Records() {
   ];
 
   return (
-    <Box sx={{minHeight: "100%"}}>
-      <Typography variant="h4" component="h2" sx={{mb: 2}}>Records</Typography>
+    <Box sx={{ minHeight: "100%" }}>
+      <Typography variant="h4" component="h2" sx={{ mb: 2 }}>Records</Typography>
       <div style={{ width: "100%" }}>
         <DataGrid
           autoHeight

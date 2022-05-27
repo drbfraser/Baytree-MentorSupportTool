@@ -1,6 +1,14 @@
 import axios from "axios";
 import { API_BASE_URL } from "./url";
 
+
+const baseApi = axios.create({
+  baseURL: API_BASE_URL,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true
+});
+
+// Questionnaire
 export interface Question {
   enabled: string;
   Question: string;
@@ -8,12 +16,6 @@ export interface Question {
   inputType: "text" | "number";
   validation: string;
 }
-
-const baseApi = axios.create({
-  baseURL: API_BASE_URL,
-  headers: { "Content-Type": "application/json" },
-  withCredentials: true
-});
 
 export type Answer = {
   [key: string]: string | undefined;
@@ -35,11 +37,24 @@ export const fetchQuestions = () => {
     .then((questions) => questions.filter((q) => q.enabled === "1"));
 };
 
+// Resources
 export const fetchResourcesURL = async () => {
   const { data } = await baseApi.get("resources/");
   return JSON.parse(data)[0].Resource as string;
 };
 
+// Sessions
+// TODO: Update the session based on the schema frontend
+export interface Session {
+  SessionID: number;
+  Title: string;
+  StartDate: string;
+  Duration: string;
+  Status: string;
+  Snippet: string;
+  Note: string
+}
+
 export const fetchSessionListByMentorId = async (id: number) => {
-  return baseApi.get(`records/${id}`).then((res) => res.data);
+  return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data);
 }

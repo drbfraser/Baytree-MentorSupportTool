@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { FunctionComponent, useEffect, useState } from "react";
-import { getSessionCount, userApi } from "../../api/mentorAccount";
+import { getSessionCount, SessionsCount } from "../../api/mentorAccount";
 import { useAuth } from "../../context/AuthContext";
 
 const Count: FunctionComponent<{
