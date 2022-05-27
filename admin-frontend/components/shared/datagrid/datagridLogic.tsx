@@ -4,6 +4,7 @@ import {
   DataGridColumn,
   DataRow,
   onLoadDataRowsFunc,
+  onSaveDataRowsFunc,
   ValueOption,
 } from "./datagrid";
 
@@ -150,20 +151,27 @@ const failureLoadDataToastMessage =
 
 export const loadDataRows = async (
   onLoadDataRows: onLoadDataRowsFunc,
-  setDataRows: Dispatch<SetStateAction<DataRow[]>>
+  setDataRows: Dispatch<SetStateAction<DataRow[]>>,
+  setIsLoadingDataRows: Dispatch<SetStateAction<boolean>>
 ) => {
   try {
+    setIsLoadingDataRows(true);
     const dataRows = await onLoadDataRows();
+    setIsLoadingDataRows(false);
     setDataRows(dataRows);
   } catch {
+    setIsLoadingDataRows(false);
     toast.error(failureLoadDataToastMessage);
   }
 };
 
 export const loadColumnValueOptions = (
   columns: DataGridColumn[],
-  setColumns: Dispatch<SetStateAction<DataGridColumn[]>>
+  setColumns: Dispatch<SetStateAction<DataGridColumn[]>>,
+  setIsLoadingColValueOptions: Dispatch<SetStateAction<boolean>>
 ) => {
+  setIsLoadingColValueOptions(true);
+
   const colsWithValueOptions = columns.filter((col) => col.onLoadValueOptions);
 
   const colLoadFuncs = colsWithValueOptions.map((col) =>
@@ -176,7 +184,83 @@ export const loadColumnValueOptions = (
         (col, i) => (col.valueOptions = colResults[i])
       );
 
+      setIsLoadingColValueOptions(false);
       setColumns([...columns]);
     })
-    .catch(() => toast.error(failureLoadDataToastMessage));
+    .catch(() => {
+      setIsLoadingColValueOptions(false);
+      toast.error(failureLoadDataToastMessage);
+    });
+};
+
+export const saveDataRows = async (
+  onSaveDataRows: onSaveDataRowsFunc,
+  createdDataRows: DataRow[],
+  changedDataRows: DataRow[],
+  deletedDataRows: DataRow[],
+  primaryKeyDataField: string,
+  loadData: () => void,
+  setCreatedDataRows: Dispatch<SetStateAction<DataRow[]>>,
+  setChangedDataRows: Dispatch<SetStateAction<DataRow[]>>,
+  setDeletedDataRows: Dispatch<SetStateAction<DataRow[]>>,
+  originalDataRowsRef: MutableRefObject<DataRow[]>,
+  errorMessage: string
+) => {
+  try {
+    changedDataRows = JSON.parse(JSON.stringify(changedDataRows));
+
+    let originalDataRows = JSON.parse(
+      JSON.stringify(originalDataRowsRef.current)
+    ) as DataRow[];
+
+    changedDataRows = changedDataRows.filter((chgRow) =>
+      deletedDataRows.every(
+        (delRow) => delRow[primaryKeyDataField] !== chgRow[primaryKeyDataField]
+      )
+    );
+
+    originalDataRows = originalDataRows.filter((origRow) =>
+      deletedDataRows.some(
+        (delRow) => delRow[primaryKeyDataField] !== origRow[primaryKeyDataField]
+      )
+    );
+
+    const success = await (onSaveDataRows as onSaveDataRowsFunc)(
+      createdDataRows.map((row) => {
+        // Remove primary key value from created rows
+        let createdDataRowClone = JSON.parse(JSON.stringify(row)) as DataRow;
+
+        delete createdDataRowClone[primaryKeyDataField as string];
+
+        return createdDataRowClone;
+      }),
+      changedDataRows,
+      deletedDataRows
+    );
+    if (success) {
+      loadData();
+      setCreatedDataRows([]);
+      setChangedDataRows([]);
+      setDeletedDataRows([]);
+      originalDataRowsRef.current = [];
+      toast.success("Successfully saved data!");
+    } else {
+      toast.error(errorMessage);
+    }
+  } catch {
+    toast.error(errorMessage);
+  }
+};
+
+export const removeCreatedDataRow = (
+  createdDataRow: DataRow,
+  createdDataRows: DataRow[],
+  primaryKeyDataField: string,
+  setCreatedDataRows: Dispatch<SetStateAction<DataRow[]>>
+) => {
+  createdDataRows = createdDataRows.filter(
+    (row) => row[primaryKeyDataField] !== createdDataRow[primaryKeyDataField]
+  );
+
+  setCreatedDataRows(createdDataRows);
 };

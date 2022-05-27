@@ -1,6 +1,7 @@
-import { IconButton, TableCell, TableRow } from "@mui/material";
+import { Button, TableCell, TableRow } from "@mui/material";
 import { FC } from "react";
 import { MdDelete, MdRestoreFromTrash } from "react-icons/md";
+import styled from "styled-components";
 import { DataRow, DataGridColumn } from "./datagrid";
 import {
   setChangedDataRowFunc,
@@ -78,15 +79,26 @@ interface DataGridDeleteCellProps {
 const DataGridDeleteCell: FC<DataGridDeleteCellProps> = (props) => {
   return (
     <TableCell>
-      <IconButton onClick={() => props.onDeleteRow(!props.isRowDeleted)}>
-        {props.isRowDeleted ? (
-          <MdRestoreFromTrash></MdRestoreFromTrash>
-        ) : (
-          <MdDelete></MdDelete>
-        )}
-      </IconButton>
+      <DeleteButtonContainer>
+        <Button
+          color="error"
+          variant="contained"
+          onClick={() => props.onDeleteRow(!props.isRowDeleted)}
+        >
+          {props.isRowDeleted ? (
+            <MdRestoreFromTrash></MdRestoreFromTrash>
+          ) : (
+            <MdDelete size="24"></MdDelete>
+          )}
+        </Button>
+      </DeleteButtonContainer>
     </TableCell>
   );
 };
+
+const DeleteButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 
 export default DataGridRow;

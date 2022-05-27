@@ -5,7 +5,7 @@ import {
   TableCell,
   TextField,
 } from "@mui/material";
-import { FC } from "react";
+import { FC, useRef } from "react";
 import styled from "styled-components";
 import { ValueOption } from "./datagrid";
 
@@ -21,33 +21,37 @@ interface DataGridCellProps {
 }
 
 const DataGridCell: FC<DataGridCellProps> = (props) => {
+  const selectIdRef = useRef(0);
+
   return (
     <StyledDataGridCell
       cellBackgroundColor={
         props.isCellDeleted
-          ? "lightred"
+          ? "lightpink"
           : props.isCellChanged
           ? "lightgreen"
           : "unset"
       }
     >
       {props.isSelectCell ? (
-        <Select
-          key={`select_datarow_${props.primaryKeyVal}_col_${props.dataField}`}
-          fullWidth
-          defaultValue={props.value}
-          onChange={(event) => props.onChangedValue(event.target.value)}
-        >
-          {!props.valueOptions ? (
-            <LoadingDataGridCell></LoadingDataGridCell>
-          ) : (
-            props.valueOptions.map((valueOption, k) => (
+        !props.valueOptions ? (
+          <LoadingDataGridCell></LoadingDataGridCell>
+        ) : (
+          <Select
+            key={`select_datarow_${props.primaryKeyVal}_col_${
+              props.dataField
+            }_selectRef${selectIdRef.current++}`}
+            fullWidth
+            defaultValue={props.value}
+            onChange={(event) => props.onChangedValue(event.target.value)}
+          >
+            {props.valueOptions.map((valueOption, k) => (
               <MenuItem key={valueOption.id} value={valueOption.id}>
                 {valueOption.name}
               </MenuItem>
-            ))
-          )}
-        </Select>
+            ))}
+          </Select>
+        )
       ) : (
         <TextField
           fullWidth

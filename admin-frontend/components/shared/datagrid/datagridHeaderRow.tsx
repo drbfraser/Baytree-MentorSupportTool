@@ -1,11 +1,13 @@
 import { TableHead, TableRow, TableCell, Button } from "@mui/material";
 import { FC } from "react";
 import { MdSave } from "react-icons/md";
+import styled from "styled-components";
 import { DataGridColumn } from "./datagrid";
 
 interface DataGridHeaderRowProps {
   onSaveButtonClick?: () => void;
   cols: DataGridColumn[];
+  enableSaveButton: boolean;
 }
 
 const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
@@ -19,7 +21,10 @@ const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
           ></DataGridHeaderCell>
         ))}
         {props.onSaveButtonClick && (
-          <DataGridSaveButtonHeaderCell onClick={props.onSaveButtonClick} />
+          <DataGridSaveButtonHeaderCell
+            enableSaveButton={props.enableSaveButton}
+            onClick={props.onSaveButtonClick}
+          />
         )}
       </TableRow>
     </TableHead>
@@ -36,6 +41,7 @@ const DataGridHeaderCell: FC<DataGridHeaderCellProps> = (props) => {
 
 interface DataGridSaveButtonHeaderCellProps {
   onClick: () => void;
+  enableSaveButton: boolean;
 }
 
 const DataGridSaveButtonHeaderCell: FC<DataGridSaveButtonHeaderCellProps> = (
@@ -43,11 +49,23 @@ const DataGridSaveButtonHeaderCell: FC<DataGridSaveButtonHeaderCellProps> = (
 ) => {
   return (
     <TableCell>
-      <Button onClick={props.onClick}>
-        <MdSave></MdSave>
-      </Button>
+      <AddButtonContainer>
+        <Button
+          color="success"
+          variant="contained"
+          disabled={!props.enableSaveButton}
+          onClick={props.onClick}
+        >
+          <MdSave size="24"></MdSave>
+        </Button>
+      </AddButtonContainer>
     </TableCell>
   );
 };
+
+const AddButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 
 export default DataGridHeaderRow;

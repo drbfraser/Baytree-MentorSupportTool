@@ -33,6 +33,7 @@ const DataGridBody: FC<DataGridBodyProps> = (props) => {
         setChangedDataRow={props.setChangedDataRow}
         setCreatedDataRow={props.setCreatedDataRow}
         setDeletedDataRow={props.setDeletedDataRow}
+        removeCreatedDataRow={props.removeCreatedDataRow}
       ></DataGridBodyCreatedDataRows>
     </>
   );
@@ -51,6 +52,7 @@ export interface DataGridBodyProps {
   setCreatedDataRow: (createdDataRow: DataRow) => void;
   setChangedDataRow: (changedDataRow: DataRow) => void;
   setDeletedDataRow: (isDeleted: boolean, dataRow: DataRow) => void;
+  removeCreatedDataRow: (createdRow: DataRow) => void;
   cols: DataGridColumn[];
   primaryKeyDataField: string;
 }

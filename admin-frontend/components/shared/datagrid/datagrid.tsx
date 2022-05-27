@@ -8,15 +8,20 @@ import {
   isDataRowDeleted,
   loadColumnValueOptions,
   loadDataRows,
+  removeCreatedDataRow,
+  saveDataRows,
   setChangedDataRow,
   setCreatedDataRow,
   setDeletedDataRow,
 } from "./datagridLogic";
 import { MdAdd } from "react-icons/md";
 import DataGridHeaderRow from "./datagridHeaderRow";
+import styled from "styled-components";
 
 const DataGrid: FC<DataGridProps> = (props) => {
   const [isLoadingDataRows, setIsLoadingDataRows] = useState(false);
+  const [isLoadingColValueOptions, setIsLoadingColValueOptions] =
+    useState(false);
   const [dataRows, setDataRows] = useState<DataRow[]>([]);
   const [cols, setCols] = useState<DataGridColumn[]>(props.cols);
   const originalDataRowsRef = useRef<DataRow[]>([]);
@@ -25,49 +30,58 @@ const DataGrid: FC<DataGridProps> = (props) => {
   const [deletedDataRows, setDeletedDataRows] = useState<DataRow[]>([]);
   const createRowNextIdRef = useRef(0);
   const primaryKeyDataFieldRef = useRef(props.primaryKeyDataField ?? "id");
+  const TOAST_ERROR_MESSAGE =
+    "Failed to save data. Please ensure that you have a stable internet connection and refresh the page. Otherwise, contact your administrator.";
 
   useEffect(() => {
-    const getData = async () => {
-      await loadDataRows(props.onLoadDataRows, setDataRows);
-    };
-
     getData();
-  }, [props.onLoadDataRows]);
+  }, []);
 
-  useEffect(() => loadColumnValueOptions(cols, setCols), [props.cols]);
+  useEffect(
+    () => loadColumnValueOptions(cols, setCols, setIsLoadingColValueOptions),
+    [props.cols]
+  );
+
+  const getData = async () => {
+    await loadDataRows(props.onLoadDataRows, setDataRows, setIsLoadingDataRows);
+  };
 
   return (
     <Table>
       <DataGridHeaderRow
         cols={cols}
-        onSaveButtonClick={
-          props.onSaveDataRows
-            ? () =>
-                (props.onSaveDataRows as onSaveDataRowsFunc)(
-                  createdDataRows.map((row) => {
-                    // Remove primary key value from created rows
-                    let createdDataRowsClone = JSON.parse(
-                      JSON.stringify(createdDataRows)
-                    ) as DataRow[];
-
-                    createdDataRowsClone.forEach(
-                      (dataRow) =>
-                        delete dataRow[props.primaryKeyDataField as string]
-                    );
-
-                    return createdDataRowsClone;
-                  }),
-                  changedDataRows,
-                  deletedDataRows
-                )
-            : undefined
-        }
+        onSaveButtonClick={() => {
+          if (props.onSaveDataRows) {
+            saveDataRows(
+              props.onSaveDataRows,
+              createdDataRows,
+              changedDataRows,
+              deletedDataRows,
+              primaryKeyDataFieldRef.current,
+              getData,
+              setCreatedDataRows,
+              setChangedDataRows,
+              setDeletedDataRows,
+              originalDataRowsRef,
+              TOAST_ERROR_MESSAGE
+            );
+          }
+        }}
+        enableSaveButton={!isLoadingDataRows && !isLoadingColValueOptions}
       ></DataGridHeaderRow>
       <DataGridBody
         isLoadingDataRows={isLoadingDataRows}
         dataRows={dataRows}
         createdDataRows={createdDataRows}
         deletedDataRows={deletedDataRows}
+        removeCreatedDataRow={(createdDataRow) =>
+          removeCreatedDataRow(
+            createdDataRow,
+            createdDataRows,
+            primaryKeyDataFieldRef.current,
+            setCreatedDataRows
+          )
+        }
         getOriginalDataRow={(dataRow) =>
           getOriginalDataRow(
             dataRow,
@@ -132,6 +146,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
             primaryKeyDataFieldRef.current
           )
         }
+        enableAddButton={!isLoadingDataRows && !isLoadingColValueOptions}
       ></DataGridAddRow>
     </Table>
   );
@@ -170,16 +185,31 @@ export interface ValueOption {
 interface DataGridAddRowProps {
   numColumns: number;
   onAddRow: () => void;
+  enableAddButton: boolean;
 }
 
 const DataGridAddRow: FC<DataGridAddRowProps> = (props) => {
   return (
     <TableRow>
       <TableCell colSpan={props.numColumns + 1}>
-        <Button onClick={props.onAddRow} startIcon={<MdAdd />}></Button>
+        <AddButtonContainer>
+          <Button
+            color="success"
+            variant="contained"
+            disabled={!props.enableAddButton}
+            onClick={props.onAddRow}
+          >
+            <MdAdd size="24" />
+          </Button>
+        </AddButtonContainer>
       </TableCell>
     </TableRow>
   );
 };
+
+const AddButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 
 export default DataGrid;
