@@ -66,7 +66,7 @@ const DataGridSaveButtonHeaderCell: FC<DataGridSaveButtonHeaderCellProps> = (
 
 const AddButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: end;
 `;
 
 export default DataGridHeaderRow;

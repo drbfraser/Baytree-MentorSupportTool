@@ -115,7 +115,7 @@ const DataGridDeleteCell: FC<DataGridDeleteCellProps> = (props) => {
 
 const DeleteButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: end;
 `;
 
 export default DataGridRow;

@@ -22,6 +22,10 @@ export const changeDataRowValue = (
     (changedDataRow as DataRow)[dataField] = newValue;
     (setChangedDataRow as setChangedDataRowFunc)(changedDataRow as DataRow);
   } else {
+    if ((dataRow as DataRow)[dataField] === newValue) {
+      return;
+    }
+
     dataRow = JSON.parse(JSON.stringify(dataRow));
     (dataRow as DataRow)[dataField] = newValue;
     (setChangedDataRow as setChangedDataRowFunc)(dataRow as DataRow);
