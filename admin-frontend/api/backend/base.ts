@@ -426,19 +426,3 @@ export const backendPost = async (relativeEndpointUrl: string, body: any) => {
     return null;
   }
 };
-
-export type DrfPageResponse<ResultObject> = {
-  count: number; // total record/object number in db table/model
-  next: string | null; // ex. "http://localhost:8000/api/users/mentor-roles/?limit=1&offset=1"
-  previous: string | null;
-  results: ResultObject[] /* ex.
-  [
-    {
-        "id": 2,
-        "name": "Into School Mentoring",
-        "viewsSessionGroupId": 5,
-        "activity": 2
-    },
-    ...
-  ]*/;
-};

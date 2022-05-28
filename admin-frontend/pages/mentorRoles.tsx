@@ -2,7 +2,6 @@ import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import styled from "styled-components";
 import { getActivities } from "../api/backend/activities";
-import { DrfPageResponse } from "../api/backend/base";
 import {
   getMentorRoles,
   MentorRole,
@@ -13,16 +12,24 @@ import DataGrid, {
   DataRow,
   onLoadDataRowsFunc,
   onSaveDataRowsFunc,
+  PagedDataRows,
 } from "../components/shared/datagrid/datagrid";
 
 const MentorRoles: NextPage = () => {
-  const MENTOR_ROLE_PAGE_SIZE = 4;
+  const MENTOR_ROLE_PAGE_SIZE = 2;
 
-  const getMentorRoleData: onLoadDataRowsFunc = async (limit, offset) => {
+  const getMentorRoleData: onLoadDataRowsFunc = async (
+    searchText,
+    dataFieldsToSearch,
+    limit,
+    offset
+  ) => {
     const mentorRolesPageRes = (await getMentorRoles(
+      searchText,
+      dataFieldsToSearch,
       limit,
       offset
-    )) as DrfPageResponse<MentorRole>;
+    )) as PagedDataRows<MentorRole>;
 
     if (mentorRolesPageRes) {
       mentorRolesPageRes.results = mentorRolesPageRes.results.map(
@@ -72,7 +79,7 @@ const MentorRoles: NextPage = () => {
       <MentorRolesTitle variant="h5">Mentor Roles</MentorRolesTitle>
       <DataGrid
         cols={[
-          { header: "Mentor Role", dataField: "name" },
+          { header: "Mentor Role", dataField: "name", enableSearching: true },
           {
             header: "Session Group",
             dataField: "viewsSessionGroupId",

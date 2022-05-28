@@ -4,8 +4,8 @@ import DataGridBody from "./datagridBody";
 import {
   createDataRow,
   getChangedDataRow,
-  getOffsetFromPage,
   getOriginalDataRow,
+  isAnyColumnSearchable,
   isDataRowDeleted,
   loadColumnValueOptions,
   loadDataRows,
@@ -19,7 +19,7 @@ import { MdAdd } from "react-icons/md";
 import DataGridHeaderRow from "./datagridHeaderRow";
 import styled from "styled-components";
 import Pager from "../pager";
-import { DrfPageResponse } from "../../../api/backend/base";
+import DataGridSearchBar from "./datagridSearchBar";
 
 const DataGrid: FC<DataGridProps> = (props) => {
   const [isLoadingDataRows, setIsLoadingDataRows] = useState(false);
@@ -30,6 +30,9 @@ const DataGrid: FC<DataGridProps> = (props) => {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [maxPageNumber, setMaxPageNumber] = useState(0);
+
+  const isSearchingRef = useRef(false);
+  const [searchText, setSearchText] = useState("");
 
   const [cols, setCols] = useState<DataGridColumn[]>(props.cols);
   const originalDataRowsRef = useRef<DataRow[]>([]);
@@ -43,7 +46,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
 
   useEffect(() => {
     getData();
-  }, [currentPage]);
+  }, [currentPage, searchText]);
 
   useEffect(
     () => loadColumnValueOptions(cols, setCols, setIsLoadingColValueOptions),
@@ -57,6 +60,9 @@ const DataGrid: FC<DataGridProps> = (props) => {
         props.onLoadDataRows,
         setDataRows,
         setIsLoadingDataRows,
+        searchText,
+        isSearchingRef,
+        cols,
         {
           pagination: {
             pageSize: props.pageSize,
@@ -70,13 +76,24 @@ const DataGrid: FC<DataGridProps> = (props) => {
       await loadDataRows(
         props.onLoadDataRows,
         setDataRows,
-        setIsLoadingDataRows
+        setIsLoadingDataRows,
+        searchText,
+        isSearchingRef,
+        cols
       );
     }
   };
 
   return (
     <>
+      {isAnyColumnSearchable(cols) && (
+        <DataGridSearchBar
+          searchText={searchText}
+          setSearchText={setSearchText}
+          isSearchingRef={isSearchingRef}
+          cols={cols}
+        ></DataGridSearchBar>
+      )}
       <Table>
         <DataGridHeaderRow
           cols={cols}
@@ -217,11 +234,27 @@ export interface DataGridProps {
 }
 
 export type onLoadDataRowsFunc = (
+  searchText: string,
+  dataFieldsToSearch: string[],
   limit?: number,
   offset?: number
-) => Promise<DataRow[] | DrfPageResponse<DataRow>>;
+) => Promise<DataRow[] | PagedDataRows<DataRow>>;
 
 export type DataRow = Record<string, any>;
+
+export type PagedDataRows<DataRowType> = {
+  count: number; // total record/object number in db table/model
+  results: DataRowType[] /* ex.
+  [
+    {
+        "id": 2,
+        "name": "Into School Mentoring",
+        "viewsSessionGroupId": 5,
+        "activity": 2
+    },
+    ...
+  ]*/;
+};
 
 export type onSaveDataRowsFunc = (
   // rowChanges includes updated, created, and deleted rows.
@@ -238,6 +271,7 @@ export interface DataGridColumn {
   valueOptions?: ValueOption[];
   onLoadValueOptions?: () => Promise<ValueOption[]>;
   disableEditing?: boolean;
+  enableSearching?: boolean;
 }
 
 export interface ValueOption {

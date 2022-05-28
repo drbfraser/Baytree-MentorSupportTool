@@ -1,9 +1,9 @@
 import { MutableRefObject, Dispatch, SetStateAction } from "react";
 import { toast } from "react-toastify";
-import { DrfPageResponse } from "../../../api/backend/base";
 import {
   DataGridColumn,
   DataRow,
+  PagedDataRows,
   onLoadDataRowsFunc,
   onSaveDataRowsFunc,
   ValueOption,
@@ -154,6 +154,9 @@ export const loadDataRows = async (
   onLoadDataRows: onLoadDataRowsFunc,
   setDataRows: Dispatch<SetStateAction<DataRow[]>>,
   setIsLoadingDataRows: Dispatch<SetStateAction<boolean>>,
+  searchText: string,
+  isSearchingRef: MutableRefObject<boolean>,
+  cols: DataGridColumn[],
   options?: {
     pagination?: {
       pageSize: number;
@@ -165,28 +168,36 @@ export const loadDataRows = async (
 ) => {
   try {
     setIsLoadingDataRows(true);
+
+    const dataFieldsToSearch = getDataFieldsToSearch(cols);
+
     if (options && options.pagination) {
       const { pageSize, currentPageNum, setCurrentPageNum, setMaxPageNum } =
         options.pagination;
 
-      const drfPageResponse = (await onLoadDataRows(
+      const pageResponse = (await onLoadDataRows(
+        searchText,
+        dataFieldsToSearch,
         pageSize,
         getOffsetFromPage(pageSize, currentPageNum)
-      )) as DrfPageResponse<DataRow>;
+      )) as PagedDataRows<DataRow>;
 
-      setMaxPageNum(calcMaxPageNum(drfPageResponse.count, pageSize));
+      setMaxPageNum(calcMaxPageNum(pageResponse.count, pageSize));
 
-      console.log(drfPageResponse);
-      setDataRows(drfPageResponse.results);
+      setDataRows(pageResponse.results);
 
-      // Initial load, set page num to 1 if non-empty table
-      if (currentPageNum === 0 && drfPageResponse.count > 0) {
+      if (pageResponse.count === 0) {
+        setCurrentPageNum(0);
+      } else if (currentPageNum === 0 || isSearchingRef.current) {
+        // if initial load or just searched
+        isSearchingRef.current = false;
         setCurrentPageNum(1);
       }
     } else {
-      const dataRows = await onLoadDataRows();
+      const dataRows = await onLoadDataRows(searchText, dataFieldsToSearch);
       setDataRows(dataRows as DataRow[]);
     }
+
     setIsLoadingDataRows(false);
   } catch {
     setIsLoadingDataRows(false);
@@ -223,6 +234,10 @@ export const loadColumnValueOptions = (
       setIsLoadingColValueOptions(false);
       toast.error(failureLoadDataToastMessage);
     });
+};
+
+const getDataFieldsToSearch = (cols: DataGridColumn[]) => {
+  return cols.filter((col) => col.enableSearching).map((col) => col.dataField);
 };
 
 export const saveDataRows = async (
@@ -311,4 +326,8 @@ export const getOffsetFromPage = (
   currentPageNumber: number
 ) => {
   return pageSize * (currentPageNumber - 1);
+};
+
+export const isAnyColumnSearchable = (cols: DataGridColumn[]) => {
+  return cols.some((col) => col.enableSearching);
 };

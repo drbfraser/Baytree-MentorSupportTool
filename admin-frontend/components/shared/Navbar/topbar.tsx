@@ -119,7 +119,6 @@ const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
         <Modal
           isOpen={isModalOpen}
           onOutsideClick={() => {
-            console.log("hey3");
             setIsModalOpen(false);
           }}
           modalComponent={props.modalComponent}

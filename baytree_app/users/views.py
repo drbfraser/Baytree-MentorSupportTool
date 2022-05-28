@@ -1,9 +1,11 @@
 import re
+import django_filters.rest_framework
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, viewsets
+
 from .serializers import MentorRoleSerializer
 from baytree_app.views import create_object
 from baytree_app.settings import EMAIL_USER
@@ -41,6 +43,7 @@ class MentorRoleViewSet(viewsets.ModelViewSet):
     queryset = MentorRole.objects.all().order_by("name")
     serializer_class = MentorRoleSerializer
     permission_classes = [IsAuthenticated & AdminPermissions]
+    filterset_fields = {"name": ["icontains", "exact"]}
 
     # Method for batch updating/creating arrays of objects
     def create(self, request, *args, **kwargs):
