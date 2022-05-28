@@ -3,7 +3,7 @@ import { Form, Formik } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { submitAnswer } from "../../api/misc";
-import useQuestionnaire, { isAutoFilled } from "../../hooks/useQuestionnaire";
+import useQuestionnaire, { isAutoFilled, isRequired } from "../../hooks/useQuestionnaire";
 import Loading from "../shared/Loading";
 import TitledContainer from "../shared/TitledContainer";
 import { ChoiceQuestion, TextQuestion } from "./QuestionField";
@@ -28,12 +28,12 @@ const Questionnaire = () => {
             setSubmitting(false);
           }}
         >
-          {({ values, handleChange, handleBlur, isSubmitting }) => (
+          {({ values, isSubmitting }) => (
             <Form>
               {/* Questions */}
               {questions.map((question, index) => {
-                const required = question.validation.includes("required");
-                const autoFill = question.category.includes("mentor_name");
+                const required = isRequired(question);
+                const autoFill = isAutoFilled(question);
                 return (
                   <FormControl
                     key={question.QuestionID}

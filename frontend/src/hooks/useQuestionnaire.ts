@@ -2,8 +2,15 @@ import { useEffect, useState } from "react";
 import { Answer, fetchQuestions, Question } from "../api/misc";
 import useMentorProfile from "./useProfile";
 
+export const MENTOR_NAME_TAG = "mentor_name";
+export const MENTEE_NAME_TAG = "mentee_name";
+
 export const isAutoFilled = (question: Question) => {
-  return question.category.includes("mentor_name");
+  return question.category.includes(MENTOR_NAME_TAG);
+}
+
+export const isRequired = (question: Question) => {
+  return question.validation.includes("required");
 }
 
 const useQuestionnaire = () => {
@@ -22,11 +29,12 @@ const useQuestionnaire = () => {
     return () => setLoading(false);
   }, []);
 
-  // Generate the initital answers
+  // Generate the initital answers based on the questionn types
+  // and the user profile
   useEffect(() => {
     let answer: Answer = {};
     for (const question of questions) {
-      if (question.category.includes("mentor_name"))
+      if (question.category.includes(MENTOR_NAME_TAG))
         answer[question.QuestionID] = mentor.viewsPersonId > 0 ? `${mentor.firstname} ${mentor.surname}` : "";
       else answer[question.QuestionID] = "";
     }
@@ -34,9 +42,10 @@ const useQuestionnaire = () => {
     setInitialAnswer(answer);
   }, [mentor, questions])
 
+  // Validate the answer based on the question requirement
   const validateAnswer = (answer: Answer) => {
     return questions
-    .filter((q) => q.enabled === "1" && q.validation.includes("required"))
+    .filter(isRequired)
     .every((q) => (answer[q.QuestionID] || "") !== "");
   }
 
