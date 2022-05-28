@@ -1,6 +1,5 @@
 import { createContext, FunctionComponent, useContext, useEffect, useState } from "react";
 import { login, logout, verify } from "../api/auth";
-import { dummyMentor, getMentorProfile, Mentor } from "../api/views";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 interface StorageInfo {
@@ -22,7 +21,6 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider: FunctionComponent<{}> = (props) => {
   const [user, setUser] = useLocalStorage<StorageInfo>("user", undefined);
-  const [mentor, setMentor] = useState<Mentor>(dummyMentor);
 
   const signIn = async (email: string, password: string) => {
     const {data, error} = await login(email, password);
