@@ -21,7 +21,7 @@ const useMentorProfile = () => {
     }
   }, [user]);
 
-  return { loadingProfile, mentor };
+  return { loadingProfile, mentor, userId: user?.userId };
 };
 
 export default useMentorProfile;

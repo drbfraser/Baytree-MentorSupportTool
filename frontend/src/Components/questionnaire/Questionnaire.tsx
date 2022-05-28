@@ -1,45 +1,15 @@
-import { Button } from "@mui/material";
+import { Button, FormControl, Typography } from "@mui/material";
 import { Form, Formik } from "formik";
-import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Answer, fetchQuestions, Question, submitAnswer } from "../../api/misc";
-import { useAuth } from "../../context/AuthContext";
+import { submitAnswer } from "../../api/misc";
+import useQuestionnaire, { isAutoFilled } from "../../hooks/useQuestionnaire";
 import Loading from "../shared/Loading";
 import TitledContainer from "../shared/TitledContainer";
-import QuestionField from "./QuestionField";
-
-// Validate answer based on the questionnaire requirements
-const validate = (questions: Question[], answer: Answer) => {
-  return questions
-    .filter((q) => q.enabled === "1" && q.validation.includes("required"))
-    .every((q) => (answer[q.QuestionID] || "") !== "");
-};
-
-// Generate the blankAnswers based on the questionnaire format
-const blankAnswers = (questions: Question[], mentorId?: number) => {
-  let blank = questions
-    .map((q) => q.QuestionID)
-    .reduce((acc, id) => {
-      acc[id] = "";
-      return acc;
-    }, {} as Answer);
-  if (mentorId) blank["mentorId"] = `${mentorId}`;
-  return blank;
-};
+import { ChoiceQuestion, TextQuestion } from "./QuestionField";
 
 const Questionnaire = () => {
-  const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [questions, setQuestions] = useState([] as Question[]);
-
-  useEffect(() => {
-    fetchQuestions()
-      .then(setQuestions)
-      .then(() => setLoading(false))
-      .catch((error) => console.error("Error: ", error));
-  }, []);
-
+  const { loading, questions, initialAnswer, validateAnswer } = useQuestionnaire();
   return (
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
@@ -47,31 +17,47 @@ const Questionnaire = () => {
         <Loading />
       ) : (
         <Formik
-          initialValues={blankAnswers(questions, user!.userId)}
+          initialValues={initialAnswer}
           onSubmit={async (answer, { resetForm, setSubmitting }) => {
             setSubmitting(true);
             const { respond, error } = await submitAnswer(answer);
             if (!error && respond?.status === 200) {
               toast.success("Submitted successfullly, thank you");
-              resetForm(blankAnswers(questions, user!.userId));
+              resetForm();
             } else toast.error("Failed to submit, please try again");
             setSubmitting(false);
           }}
         >
-          {({ values, isSubmitting }) => (
+          {({ values, handleChange, handleBlur, isSubmitting }) => (
             <Form>
               {/* Questions */}
-              {questions.map((question, index) => (
-                <QuestionField
-                  question={question}
-                  numbering={index + 1}
-                  key={question.QuestionID}
-                />
-              ))}
+              {questions.map((question, index) => {
+                const required = question.validation.includes("required");
+                const autoFill = question.category.includes("mentor_name");
+                return (
+                  <FormControl
+                    key={question.QuestionID}
+                    fullWidth required={required}>
+                    {/* Question labels */}
+                    <Typography
+                      sx={{ mt: 3, fontWeight: "bold" }}
+                      color="text.secondary"
+                    >
+                      {`${index + 1}. ${question.Question} ${required ? "*" : ""}`}
+                    </Typography>
+                    {/* Question input */}
+                    {question.inputType === "number" ? (
+                      <ChoiceQuestion name={question.QuestionID} autoFill={autoFill} />
+                    ) : (
+                      <TextQuestion name={question.QuestionID} autoFill={autoFill} />
+                    )}
+                  </FormControl>
+                )
+              })}
 
-              {/* SAubmit button */}
+              {/* Submit button */}
               <Button
-                disabled={isSubmitting || !validate(questions, values)}
+                disabled={isSubmitting || !validateAnswer(values)}
                 variant="contained"
                 type="submit"
                 sx={{ mt: 3 }}
