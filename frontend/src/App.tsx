@@ -40,6 +40,10 @@ function App() {
               path="/"
               element={<Navigate to="/dashboard/home" replace />}
             />
+            <Route
+              path="/login"
+              element={<Navigate to="/dashboard/home" replace />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>
