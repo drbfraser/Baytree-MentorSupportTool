@@ -38,7 +38,7 @@ const Login = () => {
       setEmail("");
       setPassword("");
     } else {
-      if (!loginResponse.last_login){
+      if (!loginResponse.data_privacy_consent){
         setShowModal(true);
         setLoginResponse(loginResponse);
       } else {
