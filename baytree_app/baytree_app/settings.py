@@ -67,7 +67,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_filters',
     'views_api',
-    'records'
+    'records',
+    'holidays'
 ]
 
 
