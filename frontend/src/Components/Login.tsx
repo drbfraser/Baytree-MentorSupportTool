@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../api/auth";
 import Logo from "../Assets/baytree-logo.png";
 import Photo from "../Assets/baytree-photo.jpg";
 import { useAuth } from "../context/AuthContext";
@@ -17,31 +18,32 @@ import Modal from "./shared/Modal";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const {setUserId, signOut} = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [loginResponse, setLoginResponse] = useState<any>();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const hasLoggedIn = false; //TODO: Change this to work with view
-    if (hasLoggedIn){
-      handleLogin();
-    } else {
-      setShowModal(true);
-    }
+    handleLogin();
   };
 
   const handleLogin = async () => {
-    const isLoggedIn = await signIn(email, password);
-    if (!isLoggedIn) {
+    const loginResponse = await login(email, password);
+
+    if (!loginResponse) {
       setErrors(true);
       setEmail("");
       setPassword("");
     } else {
-      navigate("/dashboard/home", { replace: true });
+      if (!loginResponse.last_login){
+        setShowModal(true);
+        setLoginResponse(loginResponse);
+      } else {
+        setUserId(loginResponse.user_id)
+      }
     }
   }
 
@@ -134,9 +136,14 @@ const Login = () => {
         }}
         modalComponent={
           <LoginModal
-            onLoginClick={handleLogin}
+            onLoginClick={() => {
+              setUserId(loginResponse.user_id);
+            }}
             onOutsideClick={() => {
               setShowModal(false);
+            }}
+            onLogOut={() => {
+              signOut();
             }}
           />
         }
