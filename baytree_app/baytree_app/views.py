@@ -143,6 +143,11 @@ class CookieTokenVerifyView(TokenVerifyView):
 
         is_superuser = user.is_superuser
 
+        data_privacy_consent = user.data_privacy_consent
+        if data_privacy_consent is None:
+            user.data_privacy_consent = make_aware(datetime.now())
+            user.save()
+
         return Response(
             {"is_admin": is_admin, "is_superuser": is_superuser},
             status=status.HTTP_200_OK,
