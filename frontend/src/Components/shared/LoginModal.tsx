@@ -4,6 +4,7 @@ import useMobileLayout from "../../hooks/useMobileLayout";
 interface AddLoginModalProps {
   onOutsideClick: () => void;
   onLoginClick: () => void;
+  onLogOut: () => void;
 }
 
 const LoginModal: React.FC<AddLoginModalProps> = (props) => {
@@ -48,6 +49,7 @@ const LoginModal: React.FC<AddLoginModalProps> = (props) => {
           onClick={() => {
             console.log("cancelling the log in")
             props.onOutsideClick();
+            props.onLogOut();
           }}
         >
           Cancel
