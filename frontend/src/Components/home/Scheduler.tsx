@@ -1,28 +1,39 @@
-import { useState, useEffect } from "react";
-
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
-import Card from "@mui/material/Card";
-import Holidays from "../Utils/Holidays";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
+import parse from "date-fns/parse";
+import startOfWeek from "date-fns/startOfWeek";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { API_BASE_URL } from "../api/url";
+import { fetchSessionListByMentorId } from "../../api/misc";
+import { useAuth } from "../../context/AuthContext";
+import Holidays from "../../Utils/Holidays";
+
 
 type Props = {
   height: string;
 };
 
+type Event = {
+  title: string;
+  start: Date;
+  end: Date;
+  allDay: boolean;
+  note: string;
+  status: string;
+}
+
 const Scheduler: React.FC<Props> = ({ height }) => {
+  const { user } = useAuth();
   const locales = {
     "en-US": enUS
   };
@@ -65,29 +76,17 @@ const Scheduler: React.FC<Props> = ({ height }) => {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/records/${localStorage.getItem("user_id")}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    })
-      .then((response) => response.json())
-      .then((data: string) => {
-        setSessionList(
-          JSON.parse(data).map((values: any, index: any) => ({
-            title: values.Title + " " + (index + 1),
-            start: new Date(values.StartDate),
-            end: DurationToEndDate(new Date(values.StartDate), values.Duration),
-            allDay: false,
-            note: values.Note,
-            status: values.Status
-          }))
-        );
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    fetchSessionListByMentorId(user!.userId)
+      .then(sessions => sessions.map<Event>((session, index) => ({
+        title: `${session.Title} ${index + 1}`,
+        start: new Date(session.StartDate),
+        end: DurationToEndDate(new Date(session.StartDate), session.Duration),
+        allDay: false,
+        note: session.Note,
+        status: session.Status
+      })))
+      .then(setSessionList)
+      .catch((error) => console.error("Error:", error));
   }, []);
 
   return (

@@ -99,10 +99,9 @@ const Login = () => {
                   value="Login"
                   fullWidth
                   variant="contained"
-                  color="success"
+                  color="primary"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  {" "}
                   Sign In
                 </Button>
 

@@ -1,15 +1,18 @@
-import { useState, useEffect } from "react";
-import { DataGrid, GridColDef, GridCellParams } from "@mui/x-data-grid";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
+import { Box, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
-import { API_BASE_URL } from "../api/url";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { DataGrid, GridCellParams, GridColDef } from "@mui/x-data-grid";
+import { useEffect, useState } from "react";
+import { fetchSessionListByMentorId, Session } from "../api/misc";
+import { useAuth } from "../context/AuthContext";
 
 export default function Records() {
-  const [staffRecord, setStaffRecord] = useState([] as any[]);
+  const { user } = useAuth();
+  const [staffRecord, setStaffRecord] = useState([] as Session[]);
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState("");
@@ -23,19 +26,9 @@ export default function Records() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    fetch(`${API_BASE_URL}/records/${localStorage.getItem("user_id")}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setStaffRecord(JSON.parse(data));
-        setIsLoading(false);
-      });
+    fetchSessionListByMentorId(user!.userId)
+      .then(setStaffRecord)
+      .then(() => setIsLoading(false))
   }, []);
 
   const columns: GridColDef[] = [
@@ -47,15 +40,15 @@ export default function Records() {
   ];
 
   return (
-    <div>
-      <h2>Records</h2>
-      <div style={{ height: 700, width: "100%" }}>
+    <Box sx={{ minHeight: "100%" }}>
+      <Typography variant="h4" component="h2" sx={{ mb: 2 }}>Records</Typography>
+      <div style={{ width: "100%" }}>
         <DataGrid
+          autoHeight
           getRowId={(row) => row.SessionID}
           rows={staffRecord}
           columns={columns}
           pageSize={15}
-          rowsPerPageOptions={[15, 25, 50, 100]}
           loading={isLoading}
           onCellClick={(params: GridCellParams) => {
             setNote(params.row.Note);
@@ -72,6 +65,6 @@ export default function Records() {
           <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 }

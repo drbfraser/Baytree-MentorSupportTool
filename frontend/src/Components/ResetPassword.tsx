@@ -1,6 +1,6 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { resetPassword, sendPasswordResetEmail } from "../api/mentorAccount";
 import BaytreeLogo from "../Assets/baytree-logo.png";
@@ -199,7 +199,6 @@ const ResetPassword = (props: any) => {
           />
         </Photo>
       </CardLayout>
-      <ToastContainer></ToastContainer>
       <OverlaySpinner active={isPageLoading}></OverlaySpinner>
     </PageLayout>
   );

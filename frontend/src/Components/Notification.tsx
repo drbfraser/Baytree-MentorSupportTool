@@ -1,54 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Grow from "@mui/material/Grow";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Grow from "@mui/material/Grow";
 import Typography from "@mui/material/Typography";
 import moment from "moment";
-import { API_BASE_URL } from "../api/url";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { fetchNotificationsByUserId, readNotification } from "../api/notification";
+import { useAuth } from "../context/AuthContext";
+
 
 export default function Notification() {
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState([] as any[]);
-  const [expanded, setExpanded] = React.useState("");
+  const [expanded, setExpanded] = useState("");
 
-  const fetchNotifications = () => {
-    fetch(
-      `${API_BASE_URL}/notifications/?mentor_id=${localStorage.getItem(
-        "user_id"
-      )}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include"
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => setNotifications(data))
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+  // Toggle when a notification is read
+  const [readToggle, setReadToggle] = useState(false);
+
+  // Refetch the data when a read toggle change
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    fetchNotificationsByUserId(user!.userId)
+      .then(setNotifications)
+      .catch((error) => console.error("Error:", error));
+  }, [readToggle]);
 
   const handleNotificationComplete = (notificationId: any) => {
     if (!notifications.find((n) => n.id === notificationId).is_read) {
-      fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ is_read: true }),
-        credentials: "include"
-      }).then((_response) => fetchNotifications());
+      readNotification(+notificationId)
+        .then(() => setReadToggle((toggle) => !toggle));
     }
   };
 
