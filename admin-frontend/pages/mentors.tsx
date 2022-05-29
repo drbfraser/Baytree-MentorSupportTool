@@ -9,34 +9,35 @@ import Modal from "../components/shared/Modal";
 import { getMentorUsers } from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
 import DataGrid, {
-  onLoadDataRowsFunc,
+  onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
 } from "../components/shared/datagrid/datagrid";
 
 const Mentors: NextPage = () => {
   const [showAddMentorModal, setShowAddMentorModal] = useState(false);
-  const [pageNum, setPageNum] = useState(1);
   const [dataGridKey, setDataGridKey] = useState<number>(1);
-  const PAGE_LIMIT = 10;
+  const PAGE_LIMIT = 5;
 
-  const loadMentorUserDataRows: onLoadDataRowsFunc = async () => {
-    const mentorsData = await getMentorUsers();
+  const loadMentorUserDataRows: onLoadPagedDataRowsFunc = async ({
+    limit,
+    offset,
+  }) => {
+    const mentorsData = await getMentorUsers(limit, offset);
     if (mentorsData && mentorsData.data !== null) {
-      return mentorsData.data.map((mentor) => ({
-        id: mentor.user.id,
-        email: mentor.user.email,
-      }));
+      return {
+        count: mentorsData.total,
+        results: mentorsData.data.map((mentor) => ({
+          id: mentor.user.id,
+          email: mentor.user.email,
+        })),
+      };
     } else {
       throw "Failed to get mentor user data";
     }
   };
 
-  const saveMentorUserDataRows: onSaveDataRowsFunc = async (
-    createRows,
-    updateRows,
-    deleteRows
-  ) => {
-    const res = await deleteUsers(deleteRows.map((row) => row.id));
+  const saveMentorUserDataRows: onSaveDataRowsFunc = async (rowChanges) => {
+    const res = await deleteUsers(rowChanges.map((row) => row.id));
 
     if (res) {
       return res.status === 200;
@@ -78,6 +79,7 @@ const Mentors: NextPage = () => {
               disableEditing: true,
             },
           ]}
+          pageSize={PAGE_LIMIT}
           disableDataRowCreation
         ></DataGrid>
       </Paper>

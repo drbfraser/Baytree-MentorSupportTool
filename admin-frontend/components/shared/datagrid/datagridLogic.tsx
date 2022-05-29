@@ -7,6 +7,7 @@ import {
   onLoadDataRowsFunc,
   onSaveDataRowsFunc,
   ValueOption,
+  onLoadPagedDataRowsFunc,
 } from "./datagrid";
 
 export const getOriginalDataRow = (
@@ -151,7 +152,7 @@ const failureLoadDataToastMessage =
   "Failed to load data. Please ensure that you have a stable internet connection and refresh the page. Otherwise, contact an administrator.";
 
 export const loadDataRows = async (
-  onLoadDataRows: onLoadDataRowsFunc,
+  onLoadDataRows: onLoadDataRowsFunc | onLoadPagedDataRowsFunc,
   setDataRows: Dispatch<SetStateAction<DataRow[]>>,
   setIsLoadingDataRows: Dispatch<SetStateAction<boolean>>,
   searchText: string,
@@ -175,12 +176,12 @@ export const loadDataRows = async (
       const { pageSize, currentPageNum, setCurrentPageNum, setMaxPageNum } =
         options.pagination;
 
-      const pageResponse = (await onLoadDataRows(
+      const pageResponse = (await onLoadDataRows({
         searchText,
         dataFieldsToSearch,
-        pageSize,
-        getOffsetFromPage(pageSize, currentPageNum)
-      )) as PagedDataRows<DataRow>;
+        limit: pageSize,
+        offset: getOffsetFromPage(pageSize, currentPageNum),
+      })) as PagedDataRows<DataRow>;
 
       setMaxPageNum(calcMaxPageNum(pageResponse.count, pageSize));
 
@@ -194,7 +195,7 @@ export const loadDataRows = async (
         setCurrentPageNum(1);
       }
     } else {
-      const dataRows = await onLoadDataRows(searchText, dataFieldsToSearch);
+      const dataRows = await onLoadDataRows({ searchText, dataFieldsToSearch });
       setDataRows(dataRows as DataRow[]);
     }
 
@@ -325,7 +326,7 @@ export const getOffsetFromPage = (
   pageSize: number,
   currentPageNumber: number
 ) => {
-  return pageSize * (currentPageNumber - 1);
+  return pageSize * Math.max(currentPageNumber - 1, 0);
 };
 
 export const isAnyColumnSearchable = (cols: DataGridColumn[]) => {

@@ -10,7 +10,7 @@ import {
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
 import DataGrid, {
   DataRow,
-  onLoadDataRowsFunc,
+  onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
   PagedDataRows,
 } from "../components/shared/datagrid/datagrid";
@@ -18,12 +18,12 @@ import DataGrid, {
 const MentorRoles: NextPage = () => {
   const MENTOR_ROLE_PAGE_SIZE = 2;
 
-  const getMentorRoleData: onLoadDataRowsFunc = async (
+  const getMentorRoleData: onLoadPagedDataRowsFunc = async ({
     searchText,
     dataFieldsToSearch,
     limit,
-    offset
-  ) => {
+    offset,
+  }) => {
     const mentorRolesPageRes = (await getMentorRoles(
       searchText,
       dataFieldsToSearch,

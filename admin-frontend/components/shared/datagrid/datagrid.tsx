@@ -228,7 +228,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
 };
 
 export interface DataGridProps {
-  onLoadDataRows: onLoadDataRowsFunc;
+  onLoadDataRows: onLoadDataRowsFunc | onLoadPagedDataRowsFunc;
   onSaveDataRows?: onSaveDataRowsFunc;
   disableDataRowCreation?: boolean;
   cols: DataGridColumn[];
@@ -238,12 +238,17 @@ export interface DataGridProps {
   isDataGridDeleteable?: boolean;
 }
 
-export type onLoadDataRowsFunc = (
-  searchText: string,
-  dataFieldsToSearch: string[],
-  limit?: number,
-  offset?: number
-) => Promise<DataRow[] | PagedDataRows<DataRow>>;
+export type onLoadDataRowsFunc = (loadOptions: {
+  searchText: string;
+  dataFieldsToSearch: string[];
+}) => Promise<DataRow[]>;
+
+export type onLoadPagedDataRowsFunc = (loadOptions: {
+  searchText: string;
+  dataFieldsToSearch: string[];
+  limit?: number;
+  offset?: number;
+}) => Promise<PagedDataRows<DataRow>>;
 
 export type DataRow = Record<string, any>;
 

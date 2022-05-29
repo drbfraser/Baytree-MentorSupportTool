@@ -4,6 +4,7 @@ import {
   DataRow,
   DataRowAction,
   onLoadDataRowsFunc,
+  onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
 } from "./datagrid";
 import DataGridBodyCreatedDataRows from "./datagridBodyCreatedDataRows";
@@ -49,7 +50,7 @@ export interface DataGridBodyProps {
   dataRows: DataRow[];
   createdDataRows: DataRow[];
   deletedDataRows: DataRow[];
-  onLoadDataRows: onLoadDataRowsFunc;
+  onLoadDataRows: onLoadDataRowsFunc | onLoadPagedDataRowsFunc;
   onSaveDataRows?: onSaveDataRowsFunc;
   getOriginalDataRow: (dataRow: DataRow) => DataRow;
   getChangedDataRow: (changedDataRow: DataRow) => DataRow | undefined;
