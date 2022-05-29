@@ -37,22 +37,22 @@ const LoginModal: React.FC<AddLoginModalProps> = (props) => {
       >
         <Button
           variant="contained"
-          color="error"
+          color="success"
           onClick={props.onLoginClick}
           style={{ marginBottom: onMobileDevice ? "1rem" : "0" }}
         >
-          Log in
+          Agree
         </Button>
         <Button
           variant="contained"
-          color="success"
+          color="error"
           onClick={() => {
             console.log("cancelling the log in")
             props.onOutsideClick();
             props.onLogOut();
           }}
         >
-          Cancel
+          Disagree
         </Button>
       </div>
     </div>
