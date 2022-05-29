@@ -2,20 +2,25 @@ import { Button, TableCell, TableRow } from "@mui/material";
 import { FC } from "react";
 import { MdDelete, MdRestoreFromTrash } from "react-icons/md";
 import styled from "styled-components";
-import { DataRow, DataGridColumn } from "./datagrid";
+import { DataRow, DataGridColumn, DataRowAction } from "./datagrid";
 import {
   setChangedDataRowFunc,
   setCreatedDataRowFunc,
   setDeletedDataRowFunc,
 } from "./datagridBodyDataRows";
-import DataGridCell from "./datagridCell";
-import { changeDataRowValue, isCellChanged } from "./datagridRowLogic";
+import DataRowCell from "./datagridCell";
+import DataRowActionsCell from "./datagridRowActionsCell";
+import {
+  changeDataRowValue,
+  getDataRowActions,
+  isCellChanged,
+} from "./datagridRowLogic";
 
 const DataGridRow: FC<DataGridRowProps> = (props) => {
   return (
     <TableRow>
       {props.cols.map((col) => (
-        <DataGridCell
+        <DataRowCell
           key={`pk_${
             (props.dataRow ?? (props.createdDataRow as DataRow))[
               props.primaryKeyDataField
@@ -56,10 +61,12 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
           )}
           isCellDeleted={!!props.isDataRowDeleted}
           isColumnEditable={!col.disableEditing}
-        ></DataGridCell>
+        ></DataRowCell>
       ))}
-      {props.isDataGridSaveable && (
-        <DataGridDeleteCell
+      {props.isDataGridSaveable &&
+      !props.dataRowActions &&
+      props.isDataGridDeleteable ? (
+        <DataRowDeleteCell
           onDeleteRow={(isDeleted) =>
             props.setDeletedDataRow(
               isDeleted,
@@ -67,7 +74,20 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
             )
           }
           isRowDeleted={!!props.isDataRowDeleted}
-        ></DataGridDeleteCell>
+        ></DataRowDeleteCell>
+      ) : props.dataRowActions && props.dataRow && !props.createdDataRow ? (
+        <DataRowActionsCell
+          dataRow={props.dataRow}
+          actions={getDataRowActions(
+            props.dataRowActions,
+            !!props.isDataGridDeleteable,
+            props.setDeletedDataRow,
+            !!props.isDataRowDeleted,
+            props.createdDataRow
+          )}
+        ></DataRowActionsCell>
+      ) : (
+        <TableCell />
       )}
     </TableRow>
   );
@@ -86,14 +106,16 @@ interface DataGridRowProps {
   primaryKeyDataField: string;
   isCreatedDataGridRow?: boolean;
   isDataGridSaveable: boolean;
+  dataRowActions?: DataRowAction[];
+  isDataGridDeleteable?: boolean;
 }
 
-interface DataGridDeleteCellProps {
+interface DataRowDeleteCellProps {
   onDeleteRow: (isDeleted: boolean) => void;
   isRowDeleted?: boolean;
 }
 
-const DataGridDeleteCell: FC<DataGridDeleteCellProps> = (props) => {
+const DataRowDeleteCell: FC<DataRowDeleteCellProps> = (props) => {
   return (
     <TableCell>
       <DeleteButtonContainer>

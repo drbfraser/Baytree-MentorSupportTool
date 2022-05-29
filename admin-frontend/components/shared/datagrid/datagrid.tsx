@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, ReactElement, useEffect, useRef, useState } from "react";
 import { Table, TableRow, TableCell, Button } from "@mui/material";
 import DataGridBody from "./datagridBody";
 import {
@@ -20,6 +20,7 @@ import DataGridHeaderRow from "./datagridHeaderRow";
 import styled from "styled-components";
 import Pager from "../pager";
 import DataGridSearchBar from "./datagridSearchBar";
+import { IconType } from "react-icons";
 
 const DataGrid: FC<DataGridProps> = (props) => {
   const [isLoadingDataRows, setIsLoadingDataRows] = useState(false);
@@ -190,6 +191,8 @@ const DataGrid: FC<DataGridProps> = (props) => {
           onSaveDataRows={props.onSaveDataRows}
           cols={cols}
           primaryKeyDataField={primaryKeyDataFieldRef.current}
+          dataRowActions={props.dataRowActions}
+          isDataGridDeleteable={props.isDataGridDeleteable ?? true}
         ></DataGridBody>
         {props.onSaveDataRows && !props.disableDataRowCreation && (
           <DataGridAddRow
@@ -231,6 +234,8 @@ export interface DataGridProps {
   cols: DataGridColumn[];
   primaryKeyDataField?: string; // default primary key is "id"
   pageSize?: number;
+  dataRowActions?: DataRowAction[];
+  isDataGridDeleteable?: boolean;
 }
 
 export type onLoadDataRowsFunc = (
@@ -277,6 +282,12 @@ export interface DataGridColumn {
 export interface ValueOption {
   id: number;
   name: string;
+}
+
+export interface DataRowAction {
+  icon: ReactElement;
+  name: string;
+  actionFunction: (dataRow: DataRow) => void;
 }
 
 interface DataGridAddRowProps {

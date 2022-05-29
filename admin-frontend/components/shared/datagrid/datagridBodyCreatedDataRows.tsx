@@ -26,6 +26,7 @@ const DataGridBodyCreatedDataRows: FC<DataGridBodyCreatedDataRowsProps> = (
           }
           cols={props.cols}
           isDataGridSaveable={true}
+          isDataGridDeleteable={true}
         ></DataGridRow>
       ))}
     </>

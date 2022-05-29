@@ -10,7 +10,7 @@ import { FC, useRef } from "react";
 import styled from "styled-components";
 import { ValueOption } from "./datagrid";
 
-const DataGridCell: FC<DataGridCellProps> = (props) => {
+const DataRowCell: FC<DataRowCellProps> = (props) => {
   const selectIdRef = useRef(0);
 
   return (
@@ -55,7 +55,7 @@ const DataGridCell: FC<DataGridCellProps> = (props) => {
   );
 };
 
-interface DataGridCellProps {
+interface DataRowCellProps {
   isSelectCell: boolean;
   valueOptions?: ValueOption[];
   value: any;
@@ -84,4 +84,4 @@ const LoadingDataGridCell: FC = () => {
   );
 };
 
-export default DataGridCell;
+export default DataRowCell;

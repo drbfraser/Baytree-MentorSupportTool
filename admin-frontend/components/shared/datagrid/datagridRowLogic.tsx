@@ -1,7 +1,9 @@
-import { DataRow } from "./datagrid";
+import { MdDelete, MdRestoreFromTrash } from "react-icons/md";
+import { DataRow, DataRowAction } from "./datagrid";
 import {
   setChangedDataRowFunc,
   setCreatedDataRowFunc,
+  setDeletedDataRowFunc,
 } from "./datagridBodyDataRows";
 
 export const changeDataRowValue = (
@@ -46,3 +48,29 @@ export const isCellChanged = (
     return false;
   }
 };
+
+export const getDataRowActions = (
+  dataRowActions: DataRowAction[],
+  isDataGridDeleteable: boolean,
+  setDeletedDataRow: setDeletedDataRowFunc,
+  isDeleted: boolean,
+  createdDataRow?: DataRow
+): DataRowAction[] =>
+  isDataGridDeleteable
+    ? [
+        ...dataRowActions,
+        {
+          actionFunction: (dataRow) =>
+            setDeletedDataRow(
+              !isDeleted,
+              dataRow ?? (createdDataRow as DataRow)
+            ),
+          icon: isDeleted ? (
+            <MdRestoreFromTrash color="green"></MdRestoreFromTrash>
+          ) : (
+            <MdDelete color="red"></MdDelete>
+          ),
+          name: isDeleted ? "Restore" : "Delete",
+        },
+      ]
+    : dataRowActions;

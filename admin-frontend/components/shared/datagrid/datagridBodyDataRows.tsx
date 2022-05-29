@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { DataRow, DataGridColumn } from "./datagrid";
+import { DataRow, DataGridColumn, DataRowAction } from "./datagrid";
 import DataGridRow from "./datagridRow";
 
 const DataGridBodyDataRows: FC<DataGridBodyDataRowsProps> = (props) => {
@@ -17,6 +17,8 @@ const DataGridBodyDataRows: FC<DataGridBodyDataRowsProps> = (props) => {
           setDeletedDataRow={props.setDeletedDataRow}
           cols={props.cols}
           isDataGridSaveable={props.isDataGridSaveable}
+          dataRowActions={props.dataRowActions}
+          isDataGridDeleteable={props.isDataGridDeleteable}
         ></DataGridRow>
       ))}
     </>
@@ -33,6 +35,8 @@ interface DataGridBodyDataRowsProps {
   cols: DataGridColumn[];
   dataRows: DataRow[];
   isDataGridSaveable: boolean;
+  dataRowActions?: DataRowAction[];
+  isDataGridDeleteable?: boolean;
 }
 
 export type setCreatedDataRowFunc = (createdDataRow: DataRow) => void;

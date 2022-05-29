@@ -94,6 +94,7 @@ const MentorRoles: NextPage = () => {
         onLoadDataRows={getMentorRoleData}
         onSaveDataRows={saveMentorRoleData}
         pageSize={MENTOR_ROLE_PAGE_SIZE}
+        isDataGridDeleteable={true}
       ></DataGrid>
     </MentorRolesCard>
   );
