@@ -203,6 +203,9 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         user.last_login = make_aware(datetime.now())
         user.save()
 
+        data_privacy_consent = user.data_privacy_consent
+        response.data['data_privacy_consent'] = data_privacy_consent
+
         return super().finalize_response(request, response, *args, **kwargs)
 
 
