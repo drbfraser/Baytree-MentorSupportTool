@@ -39,6 +39,7 @@ class MentorUser(models.Model):
     status = models.CharField(max_length=30, default='Active', choices=STATUS)
     viewsPersonId = models.CharField(max_length=30, default=None)
     menteeUsers = models.ManyToManyField("MenteeUser", through=Mentoring)
+    dataPrivacyConsent = models.DateField(default=None)
 
     def __str__(self):
         return self.user.last_name + ', ' + self.user.first_name
