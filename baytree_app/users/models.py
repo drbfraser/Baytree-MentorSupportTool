@@ -10,6 +10,7 @@ from django.utils.timezone import make_aware
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
+    data_privacy_consent = models.DateTimeField(null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -39,7 +40,6 @@ class MentorUser(models.Model):
     status = models.CharField(max_length=30, default='Active', choices=STATUS)
     viewsPersonId = models.CharField(max_length=30, default=None)
     menteeUsers = models.ManyToManyField("MenteeUser", through=Mentoring)
-    dataPrivacyConsent = models.DateField(default=None)
 
     def __str__(self):
         return self.user.last_name + ', ' + self.user.first_name
