@@ -32,6 +32,10 @@ const Modal: React.FC<ModalProps> = (props) => {
         (document.getElementsByClassName("Toastify").length == 0 ||
           !document
             .getElementsByClassName("Toastify")[0]
+            .contains(event.target as Node)) &&
+        (document.getElementsByClassName("MuiPopover-root").length == 0 ||
+          !document
+            .getElementsByClassName("MuiPopover-root")[0]
             .contains(event.target as Node))
       ) {
         props.onOutsideClick();

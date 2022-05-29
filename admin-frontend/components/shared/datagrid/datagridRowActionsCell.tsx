@@ -20,39 +20,52 @@ const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
   return (
     <TableCell>
       <ActionButtonContainer>
-        <Button
-          color="success"
-          ref={actionButtonRef}
-          variant="contained"
-          onClick={() => setIsActionsPopoverOpened(true)}
-        >
-          <MdMoreVert size="24"></MdMoreVert>
-        </Button>
-        <Popover
-          open={isActionsPopoverOpened}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          onClose={() => setIsActionsPopoverOpened(false)}
-          anchorEl={actionButtonRef.current}
-        >
-          <List>
-            {props.actions.map((action) => (
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => {
-                    setIsActionsPopoverOpened(false);
-                    action.actionFunction(props.dataRow);
-                  }}
-                >
-                  <ListItemIcon>{action.icon}</ListItemIcon>
-                  <ListItemText primary={action.name} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Popover>
+        {props.actions.length === 1 ? (
+          <Button
+            color="success"
+            ref={actionButtonRef}
+            variant="contained"
+            onClick={() => props.actions[0].actionFunction(props.dataRow)}
+          >
+            {props.actions[0].icon}
+          </Button>
+        ) : (
+          <Button
+            color="success"
+            ref={actionButtonRef}
+            variant="contained"
+            onClick={() => setIsActionsPopoverOpened(true)}
+          >
+            <MdMoreVert size="24"></MdMoreVert>
+          </Button>
+        )}
+        {props.actions.length > 1 && (
+          <Popover
+            open={isActionsPopoverOpened}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            onClose={() => setIsActionsPopoverOpened(false)}
+            anchorEl={actionButtonRef.current}
+          >
+            <List>
+              {props.actions.map((action) => (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      setIsActionsPopoverOpened(false);
+                      action.actionFunction(props.dataRow);
+                    }}
+                  >
+                    <ListItemIcon>{action.icon}</ListItemIcon>
+                    <ListItemText primary={action.name} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Popover>
+        )}
       </ActionButtonContainer>
     </TableCell>
   );
