@@ -4,6 +4,7 @@ import useLocalStorage from "../hooks/useLocalStorage";
 
 interface AuthContextType {
   userId?: number;
+  setUserId?: any;
   signIn: (email: string, password: string) => Promise<boolean>;
   signOut: () => Promise<boolean>;
   verifyClient: () => Promise<boolean>;
@@ -40,7 +41,7 @@ export const AuthProvider: FunctionComponent<{}> = (props) => {
 
   return (
     <AuthContext.Provider
-      value={{ userId, signIn, signOut, verifyClient }}
+      value={{ userId, setUserId, signIn, signOut, verifyClient }}
       {...props}
     />
   );
