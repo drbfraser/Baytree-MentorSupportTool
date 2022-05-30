@@ -64,6 +64,13 @@ def get_participants(id: str = None, limit: int = 5, offset: int = 0):
                       for participant in parsed["contacts"]["participants"]["participant"]]
         return {"total": parsed["contacts"]["participants"]["@count"], "data": participants}
 
+def get_participant_by_id(id):
+    url = f"{participants_base_url}{id}.json"
+    response = requests.get(url, auth=(views_username, views_password))
+    json = response.json()
+    data = { newKey: json[oldKey] for (oldKey, newKey) in zip(participantFields, participantTranslateFields)}
+    return Response(data, status=status.HTTP_200_OK)
+
 
 @api_view(('GET',))
 @permission_classes((AdminPermissions, ))

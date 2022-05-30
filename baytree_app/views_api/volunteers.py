@@ -1,3 +1,6 @@
+from django.http import HttpResponse
+from .participants import get_participant_by_id
+from users.models import MentorUser
 from .permissions import MentorsViewsApiPermissions
 from users.permissions import AdminPermissions
 from .constants import views_base_url, views_username, views_password
@@ -156,3 +159,23 @@ def get_volunteers_endpoint(request):
         )
 
     return Response(response, status=status.HTTP_200_OK)
+
+# GET api/views-api/volunteer/participants/
+@api_view(("GET",))
+def get_participant_by_volunteer(request): 
+    # Get mentee views id
+    mentors = MentorUser.objects.filter(user_id=request.user.id)
+    
+    if not mentors:
+        return Response([], status=status.HTTP_404_NOT_FOUND)
+
+    mentorViewsId = mentors.first().viewsPersonId
+
+    # Get the mentee id from association field
+    url = f"{views_base_url}contacts/staff/{mentorViewsId}/associations?q=Mentee"
+    response = requests.get(url, auth=(views_username, views_password))
+    data = xmltodict.parse(response.text)
+    menteeId = data["staff"]["associations"]["association"]["MasterID"]
+
+    # Get the mentee profile from mentee id
+    return get_participant_by_id(menteeId)
