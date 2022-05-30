@@ -3,8 +3,16 @@ import { FC } from "react";
 import { MdSave } from "react-icons/md";
 import styled from "styled-components";
 import useMobileLayout from "../../../hooks/useMobileLayout";
-import { DataGridColumn } from "./datagrid";
 import { someExpandableColumnExists } from "./datagridRowLogic";
+import { DataGridColumn } from "./datagridTypes";
+
+interface DataGridHeaderRowProps {
+  onSaveButtonClick?: () => void;
+  cols: DataGridColumn[];
+  enableSaveButton: boolean;
+  isDataGridSaveable: boolean;
+  hasDataRowActions: boolean;
+}
 
 const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
   const isOnMobileDevice = useMobileLayout();
@@ -55,14 +63,6 @@ const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
     </TableHead>
   );
 };
-
-interface DataGridHeaderRowProps {
-  onSaveButtonClick?: () => void;
-  cols: DataGridColumn[];
-  enableSaveButton: boolean;
-  isDataGridSaveable: boolean;
-  hasDataRowActions: boolean;
-}
 
 interface DataGridSaveButtonHeaderCellProps {
   onClick: () => void;

@@ -1,10 +1,12 @@
 import { MdDelete, MdRestoreFromTrash } from "react-icons/md";
-import { DataGridColumn, DataRow, DataRowAction } from "./datagrid";
 import {
+  DataRow,
+  DataRowAction,
+  DataGridColumn,
   setChangedDataRowFunc,
   setCreatedDataRowFunc,
   setDeletedDataRowFunc,
-} from "./datagridBodyDataRows";
+} from "./datagridTypes";
 
 export const changeDataRowValue = (
   newValue: any,

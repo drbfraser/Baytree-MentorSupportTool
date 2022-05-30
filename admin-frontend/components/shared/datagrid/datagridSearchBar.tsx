@@ -1,10 +1,17 @@
 import { TextField } from "@mui/material";
 import { Dispatch, FC, MutableRefObject, SetStateAction, useRef } from "react";
-import { DataGridColumn } from "./datagrid";
 import {
   getSearchBarLabel,
   onSearchTextChanged,
 } from "./datagridSearchBarLogic";
+import { DataGridColumn } from "./datagridTypes";
+
+interface DataGridSearchBarProps {
+  searchText: string;
+  setSearchText: Dispatch<SetStateAction<string>>;
+  isSearchingRef: MutableRefObject<number>;
+  cols: DataGridColumn[];
+}
 
 const DataGridSearchBar: FC<DataGridSearchBarProps> = (props) => {
   const curTimeoutIdRef = useRef<number | null>(null);
@@ -27,12 +34,5 @@ const DataGridSearchBar: FC<DataGridSearchBarProps> = (props) => {
     ></TextField>
   );
 };
-
-interface DataGridSearchBarProps {
-  searchText: string;
-  setSearchText: Dispatch<SetStateAction<string>>;
-  isSearchingRef: MutableRefObject<number>;
-  cols: DataGridColumn[];
-}
 
 export default DataGridSearchBar;

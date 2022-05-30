@@ -1,6 +1,11 @@
 import { Skeleton, TableCell, TableRow } from "@mui/material";
 import { FC } from "react";
 
+interface DataGridLoadingBodyProps {
+  numCols: number;
+  numLoadingRows?: number;
+}
+
 const DataGridLoadingBody: FC<DataGridLoadingBodyProps> = (props) => {
   const DEFAULT_LOADING_ROWS = 5;
 
@@ -18,10 +23,5 @@ const DataGridLoadingBody: FC<DataGridLoadingBodyProps> = (props) => {
     </>
   );
 };
-
-interface DataGridLoadingBodyProps {
-  numCols: number;
-  numLoadingRows?: number;
-}
 
 export default DataGridLoadingBody;

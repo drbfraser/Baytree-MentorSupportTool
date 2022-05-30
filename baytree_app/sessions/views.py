@@ -12,21 +12,6 @@ import requests
 from users.models import MentorUser
 
 
-from .models import Activity
-from rest_framework import viewsets
-from .serializers import ActivitySerializer
-
-# Code adapted from https://www.django-rest-framework.org/tutorial/quickstart/
-class ActivityViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows activities to be viewed or edited.
-    """
-
-    queryset = Activity.objects.all().order_by("name")
-    serializer_class = ActivitySerializer
-    permission_classes = [IsAuthenticated & AdminPermissions]
-
-
 # Based on https://medium.com/beyond-light-creations/build-a-rest-api-with-django-rest-framework-and-mysql-ddff0c1126ae#04e7
 
 

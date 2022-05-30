@@ -3,8 +3,6 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
-
-from sessions.models import Activity
 from .managers import CustomUserManager
 from django.utils.timezone import make_aware
 
@@ -30,9 +28,7 @@ class Mentoring(models.Model):
 class MentorRole(models.Model):
     name = models.CharField(max_length=50, null=False)
     viewsSessionGroupId = models.IntegerField(null=True)
-    activity = models.ForeignKey(
-        Activity, on_delete=models.SET_NULL, default=None, null=True
-    )
+    activity = models.CharField(max_length=150, null=False, default="")
 
     def __str__(self):
         return self.name

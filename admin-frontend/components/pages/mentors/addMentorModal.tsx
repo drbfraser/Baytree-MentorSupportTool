@@ -2,14 +2,13 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { getVolunteersFromViews } from "../../../api/backend/views/volunteers";
 import { HELP_MESSAGE } from "../../../constants/constants";
-import DataGrid, {
-  onLoadPagedDataRowsFunc,
-} from "../../shared/datagrid/datagrid";
+import DataGrid from "../../shared/datagrid/datagrid";
 import { ModalComponent } from "../../shared/Modal";
 import OverlaySpinner from "../../shared/overlaySpinner";
 import { sendMentorAccountCreationEmail } from "../../../api/backend/mentorUsers";
 import { MdCheck } from "react-icons/md";
 import styled from "styled-components";
+import { onLoadPagedDataRowsFunc } from "../../shared/datagrid/datagridTypes";
 
 const AddMentorModal: ModalComponent = (props) => {
   const [isSendingMentorEmail, setIsSendingMentorEmail] = useState(false);
@@ -50,6 +49,7 @@ const AddMentorModal: ModalComponent = (props) => {
               header: "Email",
               dataField: "email",
               enableSearching: true,
+              keepColumnOnMobile: true,
             },
             { header: "First Name", dataField: "firstname" },
             { header: "Last Name", dataField: "surname" },

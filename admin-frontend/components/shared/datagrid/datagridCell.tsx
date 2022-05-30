@@ -8,7 +8,21 @@ import {
 } from "@mui/material";
 import { FC, useRef } from "react";
 import styled from "styled-components";
-import { ValueOption } from "./datagrid";
+import { ValueOption } from "./datagridTypes";
+
+interface DataRowCellProps {
+  isSelectCell: boolean;
+  valueOptions?: ValueOption[];
+  value: any;
+  onChangedValue: (newValue: any) => void;
+  isCellChanged: boolean;
+  isCellDeleted: boolean;
+  primaryKeyVal: any;
+  dataField: string;
+  isDataGridSaveable: boolean;
+  isColumnEditable: boolean;
+  color?: string;
+}
 
 const DataRowCell: FC<DataRowCellProps> = (props) => {
   const selectIdRef = useRef(0);
@@ -58,20 +72,6 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
     </StyledDataGridCell>
   );
 };
-
-interface DataRowCellProps {
-  isSelectCell: boolean;
-  valueOptions?: ValueOption[];
-  value: any;
-  onChangedValue: (newValue: any) => void;
-  isCellChanged: boolean;
-  isCellDeleted: boolean;
-  primaryKeyVal: any;
-  dataField: string;
-  isDataGridSaveable: boolean;
-  isColumnEditable: boolean;
-  color?: string;
-}
 
 const StyledDataGridCell = styled(TableCell)<{ cellBackgroundColor: string }>`
   background-color: ${(props) => props.cellBackgroundColor};

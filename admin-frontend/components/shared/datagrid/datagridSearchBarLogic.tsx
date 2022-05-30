@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, MutableRefObject, SetStateAction } from "react";
-import { DataGridColumn } from "./datagrid";
+import { DataGridColumn } from "./datagridTypes";
 
 export const onSearchTextChanged = (
   event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,

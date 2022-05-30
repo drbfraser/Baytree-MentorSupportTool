@@ -7,18 +7,37 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mentor_sessions', '0008_initial_data'),
-        ('users', '0021_resetpasswordlink'),
+        ("mentor_sessions", "0007_alter_activity_name"),
+        ("users", "0021_resetpasswordlink"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MentorRole',
+            name="MentorRole",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('viewsSessionGroupId', models.CharField(default=None, max_length=30, null=True)),
-                ('activity', models.OneToOneField(default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, to='mentor_sessions.activity')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
+                (
+                    "viewsSessionGroupId",
+                    models.CharField(default=None, max_length=30, null=True),
+                ),
+                (
+                    "activity",
+                    models.OneToOneField(
+                        default=None,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="mentor_sessions.activity",
+                    ),
+                ),
             ],
         ),
     ]

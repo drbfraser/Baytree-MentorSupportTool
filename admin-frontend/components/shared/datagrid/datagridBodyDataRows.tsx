@@ -1,6 +1,26 @@
 import { FC } from "react";
-import { DataRow, DataGridColumn, DataRowAction } from "./datagrid";
 import DataGridRow from "./datagridRow";
+import {
+  DataRow,
+  DataGridColumn,
+  DataRowAction,
+  setChangedDataRowFunc,
+  setDeletedDataRowFunc,
+} from "./datagridTypes";
+
+interface DataGridBodyDataRowsProps {
+  primaryKeyDataField: string;
+  getOriginalDataRow: (dataRow: DataRow) => DataRow | undefined;
+  getChangedDataRow: (dataRow: DataRow) => DataRow | undefined;
+  isDataRowDeleted: (dataRow: DataRow) => boolean;
+  setChangedDataRow: setChangedDataRowFunc;
+  setDeletedDataRow: setDeletedDataRowFunc;
+  cols: DataGridColumn[];
+  dataRows: DataRow[];
+  isDataGridSaveable: boolean;
+  dataRowActions?: DataRowAction[];
+  isDataGridDeleteable?: boolean;
+}
 
 const DataGridBodyDataRows: FC<DataGridBodyDataRowsProps> = (props) => {
   return (
@@ -24,26 +44,5 @@ const DataGridBodyDataRows: FC<DataGridBodyDataRowsProps> = (props) => {
     </>
   );
 };
-
-interface DataGridBodyDataRowsProps {
-  primaryKeyDataField: string;
-  getOriginalDataRow: (dataRow: DataRow) => DataRow | undefined;
-  getChangedDataRow: (dataRow: DataRow) => DataRow | undefined;
-  isDataRowDeleted: (dataRow: DataRow) => boolean;
-  setChangedDataRow: setChangedDataRowFunc;
-  setDeletedDataRow: setDeletedDataRowFunc;
-  cols: DataGridColumn[];
-  dataRows: DataRow[];
-  isDataGridSaveable: boolean;
-  dataRowActions?: DataRowAction[];
-  isDataGridDeleteable?: boolean;
-}
-
-export type setCreatedDataRowFunc = (createdDataRow: DataRow) => void;
-export type setChangedDataRowFunc = (changedDataRow: DataRow) => void;
-export type setDeletedDataRowFunc = (
-  isDeleted: boolean,
-  dataRow: DataRow
-) => void;
 
 export default DataGridBodyDataRows;

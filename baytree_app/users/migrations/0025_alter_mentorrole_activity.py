@@ -7,14 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mentor_sessions', '0008_initial_data'),
-        ('users', '0024_alter_mentorrole_viewssessiongroupid'),
+        ("mentor_sessions", "0007_alter_activity_name"),
+        ("users", "0024_alter_mentorrole_viewssessiongroupid"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='mentorrole',
-            name='activity',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, to='mentor_sessions.activity'),
+            model_name="mentorrole",
+            name="activity",
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="mentor_sessions.activity",
+            ),
         ),
     ]

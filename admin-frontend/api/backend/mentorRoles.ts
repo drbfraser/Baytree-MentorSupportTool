@@ -1,4 +1,4 @@
-import { PagedDataRows } from "../../components/shared/datagrid/datagrid";
+import { PagedDataRows } from "../../components/shared/datagrid/datagridTypes";
 import { backendGet, backendPost } from "./base";
 
 export interface MentorRole {

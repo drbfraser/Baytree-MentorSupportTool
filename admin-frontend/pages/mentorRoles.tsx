@@ -1,19 +1,19 @@
 import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import styled from "styled-components";
-import { getActivities } from "../api/backend/activities";
 import {
   getMentorRoles,
   MentorRole,
   saveMentorRoles,
 } from "../api/backend/mentorRoles";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
-import DataGrid, {
-  DataRow,
+import DataGrid from "../components/shared/datagrid/datagrid";
+import {
   onLoadPagedDataRowsFunc,
-  onSaveDataRowsFunc,
   PagedDataRows,
-} from "../components/shared/datagrid/datagrid";
+  onSaveDataRowsFunc,
+  DataRow,
+} from "../components/shared/datagrid/datagridTypes";
 
 const MentorRoles: NextPage = () => {
   const MENTOR_ROLE_PAGE_SIZE = 2;
@@ -64,16 +64,6 @@ const MentorRoles: NextPage = () => {
     }
   };
 
-  const getActivityOptions = async () => {
-    const activities = await getActivities();
-
-    if (activities) {
-      return activities;
-    } else {
-      throw "Failed to retrieve activities option data.";
-    }
-  };
-
   return (
     <MentorRolesCard>
       <MentorRolesTitle variant="h5">Mentor Roles</MentorRolesTitle>
@@ -93,7 +83,6 @@ const MentorRoles: NextPage = () => {
           {
             header: "Activity",
             dataField: "activity",
-            onLoadValueOptions: getActivityOptions,
           },
         ]}
         onLoadDataRows={getMentorRoleData}

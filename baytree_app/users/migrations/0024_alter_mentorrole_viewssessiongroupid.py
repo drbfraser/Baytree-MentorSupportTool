@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0023_add_initial_data'),
+        ("users", "0022_mentorrole"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='mentorrole',
-            name='viewsSessionGroupId',
+            model_name="mentorrole",
+            name="viewsSessionGroupId",
             field=models.IntegerField(null=True),
         ),
     ]

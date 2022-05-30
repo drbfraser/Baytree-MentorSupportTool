@@ -1,26 +1,9 @@
-import {
-  Button,
-  TableCell,
-  TableRow,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { Dispatch, FC, SetStateAction, useState } from "react";
-import {
-  MdDelete,
-  MdExpandLess,
-  MdExpandMore,
-  MdRestoreFromTrash,
-} from "react-icons/md";
-import styled from "styled-components";
+import { TableCell, TableRow, Typography } from "@mui/material";
+import { FC, useState } from "react";
 import useMobileLayout from "../../../hooks/useMobileLayout";
-import { DataRow, DataGridColumn, DataRowAction } from "./datagrid";
-import {
-  setChangedDataRowFunc,
-  setCreatedDataRowFunc,
-  setDeletedDataRowFunc,
-} from "./datagridBodyDataRows";
 import DataRowCell from "./datagridCell";
+import DataRowDeleteCell from "./datagridDeleteCell";
+import ExpandButtonCell from "./datagridExpandButton";
 import DataRowActionsCell from "./datagridRowActionsCell";
 import {
   changeDataRowValue,
@@ -29,6 +12,31 @@ import {
   shouldKeepColumnOnMobile,
   someExpandableColumnExists,
 } from "./datagridRowLogic";
+import {
+  DataRow,
+  DataGridColumn,
+  DataRowAction,
+  setChangedDataRowFunc,
+  setCreatedDataRowFunc,
+  setDeletedDataRowFunc,
+} from "./datagridTypes";
+
+interface DataGridRowProps {
+  dataRow?: DataRow;
+  cols: DataGridColumn[];
+  originalDataRow?: DataRow;
+  changedDataRow?: DataRow;
+  createdDataRow?: DataRow;
+  isDataRowDeleted?: boolean;
+  setCreatedDataRow?: setCreatedDataRowFunc;
+  setChangedDataRow?: setChangedDataRowFunc;
+  setDeletedDataRow: setDeletedDataRowFunc;
+  primaryKeyDataField: string;
+  isCreatedDataGridRow?: boolean;
+  isDataGridSaveable: boolean;
+  dataRowActions?: DataRowAction[];
+  isDataGridDeleteable?: boolean;
+}
 
 const DataGridRow: FC<DataGridRowProps> = (props) => {
   const [isRowExpanded, setIsRowExpanded] = useState(false);
@@ -234,55 +242,6 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
   );
 };
 
-interface DataGridRowProps {
-  dataRow?: DataRow;
-  cols: DataGridColumn[];
-  originalDataRow?: DataRow;
-  changedDataRow?: DataRow;
-  createdDataRow?: DataRow;
-  isDataRowDeleted?: boolean;
-  setCreatedDataRow?: setCreatedDataRowFunc;
-  setChangedDataRow?: setChangedDataRowFunc;
-  setDeletedDataRow: setDeletedDataRowFunc;
-  primaryKeyDataField: string;
-  isCreatedDataGridRow?: boolean;
-  isDataGridSaveable: boolean;
-  dataRowActions?: DataRowAction[];
-  isDataGridDeleteable?: boolean;
-}
-
-interface DataRowDeleteCellProps {
-  onDeleteRow: (isDeleted: boolean) => void;
-  isRowDeleted?: boolean;
-}
-
-const DataRowDeleteCell: FC<DataRowDeleteCellProps> = (props) => {
-  return (
-    <TableCell>
-      <DeleteButtonContainer>
-        <Tooltip title="Delete Item">
-          <Button
-            color="error"
-            variant="contained"
-            onClick={() => props.onDeleteRow(!props.isRowDeleted)}
-          >
-            {props.isRowDeleted ? (
-              <MdRestoreFromTrash size="24"></MdRestoreFromTrash>
-            ) : (
-              <MdDelete size="24"></MdDelete>
-            )}
-          </Button>
-        </Tooltip>
-      </DeleteButtonContainer>
-    </TableCell>
-  );
-};
-
-const DeleteButtonContainer = styled.div`
-  display: flex;
-  justify-content: end;
-`;
-
 const ColHeader: FC<ColHeaderProps> = (props) => {
   return (
     <div style={{ marginTop: "0.5rem" }}>
@@ -294,39 +253,5 @@ const ColHeader: FC<ColHeaderProps> = (props) => {
 interface ColHeaderProps {
   header: string;
 }
-
-const ExpandButtonCell: FC<ExpandButtonCellProps> = (props) => {
-  return (
-    <TableCell sx={{ backgroundColor: props.backgroundColor }}>
-      <ExpandButtonContainer color={props.backgroundColor}>
-        <Tooltip title={props.isRowExpanded ? "Less Info" : "More Info"}>
-          <Button
-            color="inherit"
-            variant="contained"
-            onClick={() => props.setIsRowExpanded(!props.isRowExpanded)}
-          >
-            {props.isRowExpanded ? (
-              <MdExpandLess size="24"></MdExpandLess>
-            ) : (
-              <MdExpandMore size="24"></MdExpandMore>
-            )}
-          </Button>
-        </Tooltip>
-      </ExpandButtonContainer>
-    </TableCell>
-  );
-};
-
-interface ExpandButtonCellProps {
-  backgroundColor: string;
-  setIsRowExpanded: Dispatch<SetStateAction<boolean>>;
-  isRowExpanded: boolean;
-}
-
-const ExpandButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
 export default DataGridRow;

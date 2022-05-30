@@ -12,7 +12,12 @@ import {
 import { FC, useRef, useState } from "react";
 import { MdMoreVert } from "react-icons/md";
 import styled from "styled-components";
-import { DataRow, DataRowAction } from "./datagrid";
+import { DataRow, DataRowAction } from "./datagridTypes";
+
+interface DataRowActionsCellProps {
+  actions: DataRowAction[];
+  dataRow: DataRow;
+}
 
 const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
   const [isActionsPopoverOpened, setIsActionsPopoverOpened] = useState(false);
@@ -75,11 +80,6 @@ const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
     </TableCell>
   );
 };
-
-interface DataRowActionsCellProps {
-  actions: DataRowAction[];
-  dataRow: DataRow;
-}
 
 const ActionButtonContainer = styled.div`
   display: flex;

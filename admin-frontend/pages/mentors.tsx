@@ -8,10 +8,11 @@ import Button from "../components/shared/button";
 import Modal from "../components/shared/Modal";
 import { getMentorUsers } from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
-import DataGrid, {
+import DataGrid from "../components/shared/datagrid/datagrid";
+import {
   onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
-} from "../components/shared/datagrid/datagrid";
+} from "../components/shared/datagrid/datagridTypes";
 
 const Mentors: NextPage = () => {
   const [showAddMentorModal, setShowAddMentorModal] = useState(false);
