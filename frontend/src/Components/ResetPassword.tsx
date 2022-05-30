@@ -1,11 +1,11 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import styled from "styled-components";
-import { MOBILE_BREAKPOINT } from "../constants/constants";
+import { resetPassword, sendPasswordResetEmail } from "../api/mentorAccount";
 import BaytreeLogo from "../Assets/baytree-logo.png";
 import BaytreePhoto from "../Assets/baytree-photo.jpg";
-import { resetPassword, sendPasswordResetEmail } from "../api/mentorAccount";
-import { ToastContainer, toast } from "react-toastify";
+import { MOBILE_BREAKPOINT } from "../constants/constants";
 import { checkPassword } from "../Utils/password";
 import OverlaySpinner from "./shared/overlaySpinner";
 
@@ -85,7 +85,7 @@ const ResetPassword = (props: any) => {
             src={BaytreeLogo}
             style={{
               height: "auto",
-              width: "11rem",
+              width: "11rem"
             }}
             alt="Logo"
           />
@@ -140,9 +140,9 @@ const ResetPassword = (props: any) => {
 
               {passwordInvalid && (
                 <Typography variant="body1" color="red">
-                  Error: password should be at least 8 characters, no more than 30 characters, and contain at
-                  least one number, symbol, lowercase letter, and uppercase
-                  letter
+                  Error: password should be at least 8 characters, no more than
+                  30 characters, and contain at least one number, symbol,
+                  lowercase letter, and uppercase letter
                 </Typography>
               )}
               {passwordsDontMatch && (
@@ -194,12 +194,11 @@ const ResetPassword = (props: any) => {
               maxHeight: "95vh",
               height: "auto",
               width: "100%",
-              boxShadow: "0 0 0.3rem grey",
+              boxShadow: "0 0 0.3rem grey"
             }}
           />
         </Photo>
       </CardLayout>
-      <ToastContainer></ToastContainer>
       <OverlaySpinner active={isPageLoading}></OverlaySpinner>
     </PageLayout>
   );

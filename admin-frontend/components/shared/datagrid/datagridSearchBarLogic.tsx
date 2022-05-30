@@ -5,7 +5,7 @@ export const onSearchTextChanged = (
   event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   curTimeoutIdRef: MutableRefObject<number | null>,
   setSearchText: Dispatch<SetStateAction<string>>,
-  isSearchingRef: MutableRefObject<boolean>,
+  isSearchingRef: MutableRefObject<number>,
   debounceTimeMilliseconds: number
 ) => {
   if (curTimeoutIdRef.current) {
@@ -14,7 +14,7 @@ export const onSearchTextChanged = (
 
   const changedSearchText = event.target.value;
   curTimeoutIdRef.current = setTimeout(() => {
-    isSearchingRef.current = true;
+    isSearchingRef.current = 1;
     setSearchText(changedSearchText);
   }, debounceTimeMilliseconds) as any;
 };

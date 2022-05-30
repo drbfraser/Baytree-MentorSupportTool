@@ -4,10 +4,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from users.permissions import AdminPermissions, userIsAdmin, userIsSuperUser
 from users.models import MentorUser
+from sessions.serializers import SessionSerializer
+from sessions.models import MentorSession
 from .permissions import *
 from .constants import views_username, views_password, views_base_url
 import requests
-import re
+from users.models import MentorUser
 
 
 from .models import Activity
@@ -23,6 +25,99 @@ class ActivityViewSet(viewsets.ModelViewSet):
     queryset = Activity.objects.all().order_by("name")
     serializer_class = ActivitySerializer
     permission_classes = [IsAuthenticated & AdminPermissions]
+
+
+# Based on https://medium.com/beyond-light-creations/build-a-rest-api-with-django-rest-framework-and-mysql-ddff0c1126ae#04e7
+
+
+class SessionView(APIView):
+    permission_classes = [(IsAuthenticated & (IsUserAMentor | AdminPermissions))]
+
+    def get(self, request, id=None):
+        if id:
+            try:
+                queryset = MentorSession.objects.get(id=id)
+
+                # Only the mentor the session belongs to can access the session or an admin
+                if (
+                    queryset.mentor_id != request.user.id
+                    and not userIsAdmin(request.user)
+                    and not userIsSuperUser(request.user)
+                ):
+                    return Response(
+                        {"errors": "You are not permitted to access this resource."},
+                        status=status.HTTP_401_UNAUTHORIZED,
+                    )
+
+            except MentorSession.DoesNotExist:
+                return Response({"errors": "This session does not exist."}, status=400)
+            read_serializer = SessionSerializer(queryset)
+        else:
+            # Only admins can access all session information of all mentors at Baytree
+            if not userIsAdmin(request.user) and not userIsSuperUser(request.user):
+                return Response(
+                    {"errors": "You are not permitted to access these resources"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+            queryset = MentorSession.objects.all()
+            read_serializer = SessionSerializer(queryset, many=True)
+        return Response(read_serializer.data)
+
+    def post(self, request):
+        create_serializer = SessionSerializer(data=request.data)
+        if create_serializer.is_valid():
+            session_object = create_serializer.save()
+            read_serializer = SessionSerializer(session_object)
+            return Response(read_serializer.data, status=201)
+        return Response(create_serializer.errors, status=400)
+
+    def put(self, request, id=None):
+        try:
+            session = MentorSession.objects.get(id=id)
+
+            # Only the mentor the session belongs to can access the session or an admin
+            if (
+                session.mentor_id != request.user.id
+                and not userIsAdmin(request.user)
+                and not userIsSuperUser(request.user)
+            ):
+                return Response(
+                    {"errors": "You are not permitted to access this resource."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+        except MentorSession.DoesNotExist:
+            return Response({"errors": "This session does not exist."}, status=400)
+        update_serializer = SessionSerializer(session, data=request.data)
+
+        if update_serializer.is_valid():
+            session_object = update_serializer.save()
+            read_serializer = SessionSerializer(session_object)
+            return Response(read_serializer.data, status=200)
+        return Response(update_serializer.errors, status=400)
+
+    def delete(self, request, id=None):
+        try:
+            session = MentorSession.objects.get(id=id)
+
+            # Only the mentor the session belongs to can access the session or an admin
+            if (
+                session.mentor_id != request.user.id
+                and not userIsAdmin(request.user)
+                and not userIsSuperUser(request.user)
+            ):
+                return Response(
+                    {"errors": "You are not permitted to access this resource."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+        except MentorSession.DoesNotExist:
+            return Response({"errors": "This session does not exist."}, status=400)
+
+        session.delete()
+
+        return Response(status=204)
 
 
 class ViewsAppSessionView(APIView):

@@ -9,34 +9,35 @@ export type ModalComponent = React.FC<{
   onOutsideClick: () => void;
   useMobileLayout?: boolean;
 }>;
-
 interface ModalProps {
   isOpen: boolean;
   onOutsideClick: () => void;
-  modalComponent: ModalComponent;
+  modalComponent: React.ReactElement;
   width?: string;
   height?: string;
   enableCloseButton?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = (props) => {
-  const onMobileDevice = useMobileLayout();
   const modalElementRef = useRef<HTMLDivElement>(null);
+  const onMobileDevice = useMobileLayout();
+  const onMobileDeviceRef = useRef(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        !onMobileDevice &&
-        modalElementRef.current &&
-        !modalElementRef.current.contains(event.target as Node) &&
-        (document.getElementsByClassName("Toastify").length == 0 ||
-          !document
-            .getElementsByClassName("Toastify")[0]
-            .contains(event.target as Node)) &&
-        (document.getElementsByClassName("MuiPopover-root").length == 0 ||
-          !document
-            .getElementsByClassName("MuiPopover-root")[0]
-            .contains(event.target as Node))
+        (!onMobileDeviceRef.current &&
+          modalElementRef.current &&
+          !modalElementRef.current.contains(event.target as Node) &&
+          (document.getElementsByClassName("Toastify").length == 0 ||
+            !document
+              .getElementsByClassName("Toastify")[0]
+              .contains(event.target as Node)) &&
+          (document.getElementsByClassName("MuiPopover-root").length == 0 ||
+            !document
+              .getElementsByClassName("MuiPopover-root")[0]
+              .contains(event.target as Node))) ||
+        (event.target as any).id === "ModalOverlay"
       ) {
         props.onOutsideClick();
       }
@@ -48,9 +49,21 @@ const Modal: React.FC<ModalProps> = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+    onMobileDeviceRef.current = onMobileDevice;
+  }, [onMobileDevice]);
+
+  useEffect(() => {
+    if (props.isOpen) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "auto";
+    }
+  });
+
   return props.isOpen
     ? ReactDOM.createPortal(
-        <Overlay>
+        <Overlay id="ModalOverlay">
           <div></div>
           <StyledModal
             ref={modalElementRef}
@@ -75,10 +88,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                 </Button>
               )}
             </div>
-            {React.createElement(props.modalComponent, {
-              onOutsideClick: props.onOutsideClick,
-              useMobileLayout: onMobileDevice,
-            })}
+            {props.modalComponent}
           </StyledModal>
         </Overlay>,
         document.getElementById("modalContainer") as HTMLElement
@@ -105,10 +115,11 @@ interface StyledModalProps {
 const StyledModal = styled.div<StyledModalProps>`
   position: fixed;
   background: white;
+  border-radius: 12px;
   width: ${(props) =>
-    props.useMobileLayout ? "100vw" : props.width ?? "60vw"};
+    props.useMobileLayout ? "100vw" : props.width ?? "80vw"};
   height: ${(props) =>
-    props.useMobileLayout ? "100vh" : props.height ?? "60vh"};
+    props.useMobileLayout ? "100vh" : props.height ?? "80vh"};
   top: ${(props) =>
     props.useMobileLayout
       ? "0"
@@ -116,13 +127,13 @@ const StyledModal = styled.div<StyledModalProps>`
         props.height !== "auto" &&
         props.height !== "fit-content"
       ? `calc((100vh - ${props.height}) / 2)`
-      : "20vh"};
+      : "10vh"};
   left: ${(props) =>
     props.useMobileLayout
       ? "0"
       : props.width
       ? `calc((100vw - ${props.width}) / 2)`
-      : "20vw"};
+      : "10vw"};
   z-index: 501;
   padding: 2rem;
   overflow-y: auto;

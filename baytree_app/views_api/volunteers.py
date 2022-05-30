@@ -1,3 +1,4 @@
+from .permissions import MentorsViewsApiPermissions
 from users.permissions import AdminPermissions
 from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import permission_classes, api_view

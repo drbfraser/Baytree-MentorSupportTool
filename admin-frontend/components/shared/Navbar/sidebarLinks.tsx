@@ -6,13 +6,14 @@ import {
   MdAutoGraph,
   MdSupervisorAccount,
 } from "react-icons/md";
-import { ModalComponent } from "../Modal";
+import { NavbarModalComponent } from "./navbar";
 
 export interface SidebarLink {
   url?: string;
   title: string;
   icon: React.FC<IconBaseProps>;
-  modalComponent?: ModalComponent;
+  modalComponent?: NavbarModalComponent;
+  enableModalCloseButton?: boolean;
   modalWidth?: string;
   modalHeight?: string;
 }

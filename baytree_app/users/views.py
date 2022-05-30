@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, viewsets
 
+from baytree_app.views import BatchRestViewSet
+
 from .serializers import MentorRoleSerializer
 from baytree_app.views import create_object
 from baytree_app.settings import EMAIL_USER
@@ -39,44 +41,12 @@ import xmltodict
 
 # Provides Mentor Role CRUD REST API endpoints with bulk-update/create support
 # adapted from https://stackoverflow.com/a/61490489
-class MentorRoleViewSet(viewsets.ModelViewSet):
+class MentorRoleViewSet(BatchRestViewSet):
     queryset = MentorRole.objects.all().order_by("name")
     serializer_class = MentorRoleSerializer
     permission_classes = [IsAuthenticated & AdminPermissions]
     filterset_fields = {"name": ["icontains", "exact"]}
-
-    # Method for batch updating/creating arrays of objects
-    def create(self, request, *args, **kwargs):
-        if isinstance(request.data, list):
-            for data_row in request.data:
-                if "isDeleted" in data_row:
-                    if "id" not in data_row:
-                        Response(
-                            "No id was found for deleted row.",
-                            status=status.HTTP_400_BAD_REQUEST,
-                        )
-
-                    mentorRole = MentorRole.objects.filter(pk=data_row["id"])
-
-                    if not mentorRole.exists():
-                        return Response(
-                            "MentorRole id " + data_row.id + " was not found.",
-                            status=status.HTTP_404_NOT_FOUND,
-                        )
-
-                    mentorRole.delete()
-                else:
-                    serializer = MentorRoleSerializer(data=data_row, partial=True)
-                    if serializer.is_valid():
-                        serializer.save()
-                    else:
-                        return Response(
-                            serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST,
-                        )
-            return Response("Successfully batch updated.", status=status.HTTP_200_OK)
-        else:
-            return super(MentorRole, self).create(request, *args, **kwargs)
+    model_instance = MentorRole
 
 
 def createUsers(users: dict):

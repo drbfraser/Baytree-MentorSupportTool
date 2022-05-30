@@ -2,11 +2,13 @@ import { Typography, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../actions/auth/actionCreators";
-import { ModalComponent } from "../Modal";
+import useMobileLayout from "../../../hooks/useMobileLayout";
+import { NavbarModalComponent } from "./navbar";
 
-const LogoutModal: ModalComponent = (props) => {
+const LogoutModal: NavbarModalComponent = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const onMobileDevice = useMobileLayout();
 
   return (
     <div
@@ -23,7 +25,7 @@ const LogoutModal: ModalComponent = (props) => {
       <div
         style={{
           display: "flex",
-          flexDirection: props.useMobileLayout ? "column" : "row",
+          flexDirection: onMobileDevice ? "column" : "row",
           justifyContent: "space-around",
           paddingTop: "3rem",
         }}
@@ -35,7 +37,7 @@ const LogoutModal: ModalComponent = (props) => {
             await dispatch(logout());
             router.push("/");
           }}
-          style={{ marginBottom: props.useMobileLayout ? "3rem" : "0" }}
+          style={{ marginBottom: onMobileDevice ? "3rem" : "0" }}
         >
           Log out
         </Button>

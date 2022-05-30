@@ -1,11 +1,11 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import styled from "styled-components";
-import { MOBILE_BREAKPOINT } from "../constants/constants";
+import { createMentorAccount } from "../api/mentorAccount";
 import BaytreeLogo from "../Assets/baytree-logo.png";
 import BaytreePhoto from "../Assets/baytree-photo.jpg";
-import { createMentorAccount } from "../api/mentorAccount";
-import { toast } from "react-toastify";
+import { MOBILE_BREAKPOINT } from "../constants/constants";
 import { checkPassword } from "../Utils/password";
 import OverlaySpinner from "./shared/overlaySpinner";
 
@@ -68,7 +68,7 @@ const CreateAccount = (props: any) => {
             src={BaytreeLogo}
             style={{
               height: "auto",
-              width: "11rem",
+              width: "11rem"
             }}
             alt="Logo"
           />
@@ -150,7 +150,7 @@ const CreateAccount = (props: any) => {
               maxHeight: "95vh",
               height: "auto",
               width: "100%",
-              boxShadow: "0 0 0.3rem grey",
+              boxShadow: "0 0 0.3rem grey"
             }}
           />
         </Photo>

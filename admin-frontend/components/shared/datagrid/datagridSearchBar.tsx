@@ -8,7 +8,7 @@ import {
 
 const DataGridSearchBar: FC<DataGridSearchBarProps> = (props) => {
   const curTimeoutIdRef = useRef<number | null>(null);
-  const DEBOUNCE_TIME_MILLISECONDS = 1500;
+  const DEBOUNCE_TIME_MILLISECONDS = 850;
 
   return (
     <TextField
@@ -31,7 +31,7 @@ const DataGridSearchBar: FC<DataGridSearchBarProps> = (props) => {
 interface DataGridSearchBarProps {
   searchText: string;
   setSearchText: Dispatch<SetStateAction<string>>;
-  isSearchingRef: MutableRefObject<boolean>;
+  isSearchingRef: MutableRefObject<number>;
   cols: DataGridColumn[];
 }
 

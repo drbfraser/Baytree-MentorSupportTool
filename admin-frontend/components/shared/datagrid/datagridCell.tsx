@@ -20,6 +20,8 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
           ? "lightpink"
           : props.isCellChanged
           ? "lightgreen"
+          : props.color
+          ? props.color
           : "unset"
       }
     >
@@ -49,7 +51,9 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
           onBlur={(event) => props.onChangedValue(event.target.value)}
         ></TextField>
       ) : (
-        <Typography>{props.value}</Typography>
+        <Typography sx={{ whiteSpace: "nowrap", wordBreak: "break-word" }}>
+          {props.value}
+        </Typography>
       )}
     </StyledDataGridCell>
   );
@@ -66,6 +70,7 @@ interface DataRowCellProps {
   dataField: string;
   isDataGridSaveable: boolean;
   isColumnEditable: boolean;
+  color?: string;
 }
 
 const StyledDataGridCell = styled(TableCell)<{ cellBackgroundColor: string }>`

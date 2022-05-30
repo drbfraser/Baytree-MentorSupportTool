@@ -1,9 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import {
-  getVolunteersFromViews,
-  Volunteer,
-} from "../../../api/backend/views/volunteers";
+import { getVolunteersFromViews } from "../../../api/backend/views/volunteers";
 import { HELP_MESSAGE } from "../../../constants/constants";
 import DataGrid, {
   onLoadPagedDataRowsFunc,

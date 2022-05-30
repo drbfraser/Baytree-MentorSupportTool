@@ -14,7 +14,12 @@ import DataGridLoadingBody from "./datagridLoadingBody";
 const DataGridBody: FC<DataGridBodyProps> = (props) => {
   return props.isLoadingDataRows ? (
     <DataGridLoadingBody
-      numCols={props.onSaveDataRows ? props.cols.length + 1 : props.cols.length}
+      numCols={
+        props.onSaveDataRows || props.dataRowActions
+          ? props.cols.length + 1
+          : props.cols.length
+      }
+      numLoadingRows={props.pageSize}
     ></DataGridLoadingBody>
   ) : (
     <>
@@ -63,6 +68,7 @@ export interface DataGridBodyProps {
   primaryKeyDataField: string;
   dataRowActions?: DataRowAction[];
   isDataGridDeleteable?: boolean;
+  pageSize?: number;
 }
 
 export default DataGridBody;

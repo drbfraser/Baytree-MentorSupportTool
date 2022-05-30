@@ -7,6 +7,7 @@ import {
   ListItemText,
   Popover,
   TableCell,
+  Tooltip,
 } from "@mui/material";
 import { FC, useRef, useState } from "react";
 import { MdMoreVert } from "react-icons/md";
@@ -21,23 +22,27 @@ const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
     <TableCell>
       <ActionButtonContainer>
         {props.actions.length === 1 ? (
-          <Button
-            color="success"
-            ref={actionButtonRef}
-            variant="contained"
-            onClick={() => props.actions[0].actionFunction(props.dataRow)}
-          >
-            {props.actions[0].icon}
-          </Button>
+          <Tooltip title={props.actions[0].name}>
+            <Button
+              color="success"
+              ref={actionButtonRef}
+              variant="contained"
+              onClick={() => props.actions[0].actionFunction(props.dataRow)}
+            >
+              {props.actions[0].icon}
+            </Button>
+          </Tooltip>
         ) : (
-          <Button
-            color="success"
-            ref={actionButtonRef}
-            variant="contained"
-            onClick={() => setIsActionsPopoverOpened(true)}
-          >
-            <MdMoreVert size="24"></MdMoreVert>
-          </Button>
+          <Tooltip title="More Actions">
+            <Button
+              color="success"
+              ref={actionButtonRef}
+              variant="contained"
+              onClick={() => setIsActionsPopoverOpened(true)}
+            >
+              <MdMoreVert size="24"></MdMoreVert>
+            </Button>
+          </Tooltip>
         )}
         {props.actions.length > 1 && (
           <Popover

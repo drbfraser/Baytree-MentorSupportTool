@@ -79,7 +79,12 @@ const MentorRoles: NextPage = () => {
       <MentorRolesTitle variant="h5">Mentor Roles</MentorRolesTitle>
       <DataGrid
         cols={[
-          { header: "Mentor Role", dataField: "name", enableSearching: true },
+          {
+            header: "Mentor Role",
+            dataField: "name",
+            enableSearching: true,
+            keepColumnOnMobile: true,
+          },
           {
             header: "Session Group",
             dataField: "viewsSessionGroupId",

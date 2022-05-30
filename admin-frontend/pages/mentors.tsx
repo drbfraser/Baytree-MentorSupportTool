@@ -89,7 +89,14 @@ const Mentors: NextPage = () => {
           setShowAddMentorModal(false);
           setDataGridKey(dataGridKey + 1);
         }}
-        modalComponent={AddMentorModal}
+        modalComponent={
+          <AddMentorModal
+            onOutsideClick={() => {
+              setShowAddMentorModal(false);
+              setDataGridKey(dataGridKey + 1);
+            }}
+          />
+        }
         height="100vh"
       ></Modal>
     </>

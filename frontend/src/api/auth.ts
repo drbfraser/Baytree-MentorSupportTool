@@ -1,66 +1,48 @@
+import axios from "axios";
 import { API_BASE_URL } from "./url";
+
+interface LoginData {
+  user_id: number,
+  viewsPersonId: number,
+  is_admin: boolean,
+  is_mentor: boolean,
+  is_superuser: boolean
+}
+
+const authApi = axios.create({
+  baseURL: `${API_BASE_URL}/token/`,
+  withCredentials: true,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json"
+  }
+});
 
 export const login = async (email: string, password: string) => {
   try {
-    const apiRes = await fetch(
-      `${API_BASE_URL}/token/`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ email, password }),
-      }
-    );
-
-    if (apiRes.status === 200) {
-      return await apiRes.json();
-    } else {
-      return null;
-    }
+    const apiRes = await authApi.post<LoginData>("", {email, password});
+    if (apiRes.status === 200)
+      return {data: apiRes.data, error: ""}
+    if (apiRes.status === 401)
+      return {data: undefined, error: "Invalid email or password"}
+    else throw Error;
   } catch (err) {
-    return null;
+    return {data: undefined, error: "An error has occurred, please try again"}
   }
-};
+}
 
 export const logout = async () => {
   try {
-    const apiRes = await fetch(
-      `${API_BASE_URL}/token/logout/`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      }
-    );
-    if (apiRes.status === 200) {
-      return true;
-    } else {
-      return false;
-    }
+    const apiRes = await authApi.get("logout/");
+    return apiRes.status === 200;
   } catch (err) {
     return false;
   }
-};
+}
 
 export const verifyFetch = async () => {
   try {
-    const apiRes = await fetch(
-      `${API_BASE_URL}/token/verify/`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      }
-    );
+    const apiRes = await authApi.post("verify/")
     return apiRes.status === 200;
   } catch (err) {
     return false;
@@ -69,31 +51,21 @@ export const verifyFetch = async () => {
 
 export const refreshAccessToken = async () => {
   try {
-    const apiRes = await fetch(
-      `${API_BASE_URL}/token/refresh/`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      }
-    );
-    return apiRes;
+    const apiRes = await authApi.post("refresh")
+    return apiRes.status === 200;
   } catch (err) {
-    return null;
+    return false;
   }
 };
 
 export const verify = async () => {
   try {
-    if (!await verifyFetch()) {
-      const res = await refreshAccessToken();
-      return res && res.status === 200;
+    const verified = await verifyFetch();
+    if (!verified) {
+      return await refreshAccessToken();
     }
-
     return true;
   } catch (err) {
+    return false;
   }
 };

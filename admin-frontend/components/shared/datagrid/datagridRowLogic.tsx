@@ -1,5 +1,5 @@
 import { MdDelete, MdRestoreFromTrash } from "react-icons/md";
-import { DataRow, DataRowAction } from "./datagrid";
+import { DataGridColumn, DataRow, DataRowAction } from "./datagrid";
 import {
   setChangedDataRowFunc,
   setCreatedDataRowFunc,
@@ -74,3 +74,13 @@ export const getDataRowActions = (
         },
       ]
     : dataRowActions;
+
+export const shouldKeepColumnOnMobile = (
+  col: DataGridColumn,
+  cols: DataGridColumn[]
+) => {
+  return col.keepColumnOnMobile || cols.every((col) => !col.keepColumnOnMobile);
+};
+
+export const someExpandableColumnExists = (cols: DataGridColumn[]) =>
+  cols.some((col) => col.expandableColumn);

@@ -20,9 +20,16 @@ import DataGridHeaderRow from "./datagridHeaderRow";
 import styled from "styled-components";
 import Pager from "../pager";
 import DataGridSearchBar from "./datagridSearchBar";
-import { IconType } from "react-icons";
+import useMobileLayout from "../../../hooks/useMobileLayout";
+import { someExpandableColumnExists } from "./datagridRowLogic";
 
 const DataGrid: FC<DataGridProps> = (props) => {
+  const onLoadDataRows = props.data
+    ? async () => props.data as DataRow[]
+    : props.onLoadDataRows
+    ? props.onLoadDataRows
+    : async () => [];
+
   const [isLoadingDataRows, setIsLoadingDataRows] = useState(false);
   const [isLoadingColValueOptions, setIsLoadingColValueOptions] =
     useState(false);
@@ -31,8 +38,11 @@ const DataGrid: FC<DataGridProps> = (props) => {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [maxPageNumber, setMaxPageNumber] = useState(0);
+  const clearPagerFuncRef = useRef<(() => void) | null>(null);
 
-  const isSearchingRef = useRef(false);
+  const isOnMobileDevice = useMobileLayout();
+
+  const isSearchingRef = useRef(0);
   const [searchText, setSearchText] = useState("");
 
   const [cols, setCols] = useState<DataGridColumn[]>(props.cols);
@@ -58,11 +68,12 @@ const DataGrid: FC<DataGridProps> = (props) => {
     // Is paginated
     if (props.pageSize) {
       await loadDataRows(
-        props.onLoadDataRows,
+        onLoadDataRows,
         setDataRows,
         setIsLoadingDataRows,
         searchText,
         isSearchingRef,
+        clearPagerFuncRef,
         cols,
         {
           pagination: {
@@ -75,11 +86,12 @@ const DataGrid: FC<DataGridProps> = (props) => {
       );
     } else {
       await loadDataRows(
-        props.onLoadDataRows,
+        onLoadDataRows,
         setDataRows,
         setIsLoadingDataRows,
         searchText,
         isSearchingRef,
+        clearPagerFuncRef,
         cols
       );
     }
@@ -95,7 +107,14 @@ const DataGrid: FC<DataGridProps> = (props) => {
           cols={cols}
         ></DataGridSearchBar>
       )}
-      <Table>
+      <Table
+        sx={{
+          tableLayout:
+            isOnMobileDevice || someExpandableColumnExists(cols)
+              ? "fixed"
+              : "auto",
+        }}
+      >
         <DataGridHeaderRow
           cols={cols}
           onSaveButtonClick={() => {
@@ -125,6 +144,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
             !isLoadingColValueOptions &&
             !isSavingDataRows
           }
+          hasDataRowActions={!!props.dataRowActions}
         ></DataGridHeaderRow>
         <DataGridBody
           isLoadingDataRows={isLoadingDataRows || isSavingDataRows}
@@ -187,12 +207,13 @@ const DataGrid: FC<DataGridProps> = (props) => {
               primaryKeyDataFieldRef.current
             )
           }
-          onLoadDataRows={props.onLoadDataRows}
+          onLoadDataRows={onLoadDataRows}
           onSaveDataRows={props.onSaveDataRows}
           cols={cols}
           primaryKeyDataField={primaryKeyDataFieldRef.current}
           dataRowActions={props.dataRowActions}
           isDataGridDeleteable={props.isDataGridDeleteable ?? true}
+          pageSize={props.pageSize}
         ></DataGridBody>
         {props.onSaveDataRows && !props.disableDataRowCreation && (
           <DataGridAddRow
@@ -216,11 +237,10 @@ const DataGrid: FC<DataGridProps> = (props) => {
       </Table>
       {props.pageSize && (
         <Pager
+          clearPagerFuncRef={clearPagerFuncRef}
           currentPageNumber={currentPage}
           maxPageNumber={maxPageNumber}
-          onGotoPagePressed={(pageNumber) => setCurrentPage(pageNumber)}
-          onNextPagePressed={(pageNumber) => setCurrentPage(pageNumber)}
-          onPreviousPagePressed={(pageNumber) => setCurrentPage(pageNumber)}
+          onChangePage={(pageNumber) => setCurrentPage(pageNumber)}
         ></Pager>
       )}
     </>
@@ -228,7 +248,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
 };
 
 export interface DataGridProps {
-  onLoadDataRows: onLoadDataRowsFunc | onLoadPagedDataRowsFunc;
+  onLoadDataRows?: onLoadDataRowsFunc | onLoadPagedDataRowsFunc;
   onSaveDataRows?: onSaveDataRowsFunc;
   disableDataRowCreation?: boolean;
   cols: DataGridColumn[];
@@ -236,6 +256,7 @@ export interface DataGridProps {
   pageSize?: number;
   dataRowActions?: DataRowAction[];
   isDataGridDeleteable?: boolean;
+  data?: DataRow[];
 }
 
 export type onLoadDataRowsFunc = (loadOptions: {
@@ -270,7 +291,7 @@ export type onSaveDataRowsFunc = (
   // rowChanges includes updated, created, and deleted rows.
   // updated have an id and created don't. deleted rows have a field
   // 'isDeleted' which is set to true. This works automatically with
-  // a POST request containing rowChanges to the BatchUpdateViewSet.
+  // a POST request containing rowChanges to the BatchRestViewSet.
   rowChanges: DataRow[]
 ) => Promise<boolean>;
 
@@ -282,6 +303,8 @@ export interface DataGridColumn {
   onLoadValueOptions?: () => Promise<ValueOption[]>;
   disableEditing?: boolean;
   enableSearching?: boolean;
+  keepColumnOnMobile?: boolean;
+  expandableColumn?: boolean;
 }
 
 export interface ValueOption {

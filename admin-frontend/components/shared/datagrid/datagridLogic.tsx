@@ -156,7 +156,8 @@ export const loadDataRows = async (
   setDataRows: Dispatch<SetStateAction<DataRow[]>>,
   setIsLoadingDataRows: Dispatch<SetStateAction<boolean>>,
   searchText: string,
-  isSearchingRef: MutableRefObject<boolean>,
+  isSearchingRef: MutableRefObject<number>,
+  clearPagerFuncRef: MutableRefObject<(() => void) | null>,
   cols: DataGridColumn[],
   options?: {
     pagination?: {
@@ -168,6 +169,11 @@ export const loadDataRows = async (
   }
 ) => {
   try {
+    if (isSearchingRef.current === 2) {
+      isSearchingRef.current = 0;
+      return;
+    }
+
     setIsLoadingDataRows(true);
 
     const dataFieldsToSearch = getDataFieldsToSearch(cols);
@@ -180,7 +186,10 @@ export const loadDataRows = async (
         searchText,
         dataFieldsToSearch,
         limit: pageSize,
-        offset: getOffsetFromPage(pageSize, currentPageNum),
+        offset: getOffsetFromPage(
+          pageSize,
+          isSearchingRef.current ? 1 : currentPageNum
+        ),
       })) as PagedDataRows<DataRow>;
 
       setMaxPageNum(calcMaxPageNum(pageResponse.count, pageSize));
@@ -189,10 +198,20 @@ export const loadDataRows = async (
 
       if (pageResponse.count === 0) {
         setCurrentPageNum(0);
-      } else if (currentPageNum === 0 || isSearchingRef.current) {
-        // if initial load or just searched
-        isSearchingRef.current = false;
+      } else if (currentPageNum === 0 || isSearchingRef.current === 1) {
+        // if initial load or is searching
         setCurrentPageNum(1);
+        // clear the pager since reseting to page 1
+        if (clearPagerFuncRef.current) {
+          clearPagerFuncRef.current();
+        }
+      }
+
+      if (isSearchingRef.current === 1 && currentPageNum > 1) {
+        // prevent double loading edge case bug when searching past page 1
+        isSearchingRef.current = 2;
+      } else {
+        isSearchingRef.current = 0;
       }
     } else {
       const dataRows = await onLoadDataRows({ searchText, dataFieldsToSearch });

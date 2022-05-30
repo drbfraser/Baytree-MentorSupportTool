@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from baytree_app.serializers import BatchRestSerializer
+
 from .models import AdminUser, CustomUser, MenteeUser, MentorUser, MentorRole
 
 
@@ -17,28 +19,10 @@ class MenteeSerializer(serializers.ModelSerializer):
         fields = ("user", "mentorUsers")
 
 
-class MentorRoleSerializer(serializers.ModelSerializer):
-    # Need to override id as read_only=False so that it is in 'validated_data'
-    id = serializers.IntegerField(read_only=False)
-
+class MentorRoleSerializer(BatchRestSerializer):
     class Meta:
         model = MentorRole
         fields = ["id", "name", "viewsSessionGroupId", "activity"]
-
-    def create(self, validated_data):
-        defaults = {
-            "viewsSessionGroupId": validated_data.get("viewsSessionGroupId", None),
-            "activity": validated_data.get("activity", None),
-        }
-
-        if "name" in validated_data:
-            defaults["name"] = validated_data.get("name", None)
-
-        answer, created = MentorRole.objects.update_or_create(
-            id=validated_data.get("id", None), defaults=defaults
-        )
-
-        return answer
 
 
 class MentorSerializer(serializers.ModelSerializer):

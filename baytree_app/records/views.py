@@ -40,9 +40,7 @@ class ViewsAppSessionView(APIView):
 
         #Check to see if the mentor has zero sessions entered
         if parsedSession["volunteer"]["sessions"] is None:
-            volunteer = []
-            jsonVolunteer = json.dumps(volunteer)
-            return Response(jsonVolunteer,status=200)
+            return Response([],status=200)
         
         #sort throught the dictionary
         volunteerSessionList = parsedSession["volunteer"]["sessions"]["session"]
@@ -54,9 +52,7 @@ class ViewsAppSessionView(APIView):
             for noteDict in volunteerNoteList:
                 if sessionDict["SessionID"] == noteDict["TypeID"]:
                     volunteer.append({"SessionID":sessionDict["SessionID"],"Title": sessionDict["Title"],"StartDate": sessionDict["StartDate"],"Duration": sessionDict["Duration"],"Status": sessionDict["Status"],"Snippet": noteDict["Snippet"],"Note": noteDict["Note"]})
-                       
-        jsonVolunteer = json.dumps(volunteer)
         
-        return Response(jsonVolunteer,status=200)
+        return Response(volunteer, status=200)
 
 
