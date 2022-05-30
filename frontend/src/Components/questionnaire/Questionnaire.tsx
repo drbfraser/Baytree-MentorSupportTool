@@ -17,6 +17,7 @@ const Questionnaire = () => {
         <Loading />
       ) : (
         <Formik
+          enableReinitialize
           initialValues={initialAnswer}
           onSubmit={async (answer, { resetForm, setSubmitting }) => {
             setSubmitting(true);

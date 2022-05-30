@@ -32,7 +32,7 @@ export const resetPassword = async (
 export const sendPasswordResetEmail = async (email: string) => {
   const apiRes = await userApi.post("sendResetPasswordEmail", {
     email,
-    accountType: "Mentor"
+    accountType: "User"
   })
 
   return apiRes;
@@ -41,7 +41,7 @@ export const sendPasswordResetEmail = async (email: string) => {
 export const fetchMenteeListByMentorId = (id: number) => {
   return userApi.get("mentors", {
     params: { id }
-  }).then(({data}) => data.data[0].menteeUsers || []); // Why ???
+  }).then(({ data }) => data.data[0].menteeUsers || []); // Why ???
 }
 
 export interface SessionsCount {

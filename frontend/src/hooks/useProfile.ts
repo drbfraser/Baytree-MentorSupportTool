@@ -1,27 +1,37 @@
 import { useEffect, useState } from "react";
-import { dummyMentor, getMentorProfile, Mentor } from "../api/views";
+import { dummyUser, fetchMenteeProfile, getMentorProfile, User } from "../api/views";
 import { useAuth } from "../context/AuthContext";
 
 const useMentorProfile = () => {
   const { user } = useAuth();
-  const [loadingProfile, setLoadingProfile] = useState(false);
-  const [mentor, setMentor] = useState<Mentor>(dummyMentor);
+  const [loadingMentor, setLoadingMentor] = useState(false);
+  const [loadingMentee, setLoadingMentee] = useState(false);
+  const [mentor, setMentor] = useState<User>(dummyUser);
+  const [mentee, setMentee] = useState<User>(dummyUser);
 
+  // Fetch the mentor
   useEffect(() => {
-    setLoadingProfile(true);
+    setLoadingMentor(true);
     getMentorProfile(user?.viewsPersonId)
       .then(({ data, error }) => {
         if (data && error === "") setMentor(data);
-        else setMentor(dummyMentor);
+        else setMentor(dummyUser);
       })
-      .then(() => setLoadingProfile(false))
-
-    return () => {
-      setLoadingProfile(false);
-    }
+      .then(() => setLoadingMentor(false))
   }, [user]);
 
-  return { loadingProfile, mentor, userId: user?.userId };
+  // Fetch the mentee
+  useEffect(() => {
+    setLoadingMentee(true);
+    fetchMenteeProfile()
+      .then(({ data, error }) => {
+        if (data && error === "") setMentee(data);
+        else setMentor(dummyUser);
+      })
+      .then(() => setLoadingMentee(false))
+  }, [user])
+
+  return { loadingMentor, loadingMentee, mentor, mentee, userId: user?.userId };
 };
 
 export default useMentorProfile;
