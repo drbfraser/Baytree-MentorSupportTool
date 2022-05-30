@@ -44,9 +44,23 @@ import xmltodict
 class MentorRoleViewSet(BatchRestViewSet):
     queryset = MentorRole.objects.all().order_by("name")
     serializer_class = MentorRoleSerializer
-    permission_classes = [IsAuthenticated & AdminPermissions]
     filterset_fields = {"name": ["icontains", "exact"]}
     model_instance = MentorRole
+
+    def get_permissions(self):
+        if (
+            self.action == "create"
+            or self.action == "update"
+            or self.action == "partial_update"
+            or self.action == "destroy"
+        ):
+            permission_classes = [IsAuthenticated & AdminPermissions]
+        elif self.action == "list" or self.action == "retrieve":
+            permission_classes = [
+                IsAuthenticated & (AdminPermissions | MentorPermissions)
+            ]
+
+        return [permission() for permission in permission_classes]
 
 
 def createUsers(users: dict):
