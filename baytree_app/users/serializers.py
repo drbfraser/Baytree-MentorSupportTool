@@ -34,10 +34,11 @@ class MentorRoleSerializer(BatchRestSerializer):
 class MentorSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     menteeUsers = MenteeSerializer(many=True, read_only=True)
+    mentorRole = MentorRoleSerializer()
 
     class Meta:
         model = MentorUser
-        fields = ("user", "status", "menteeUsers", "viewsPersonId")
+        fields = ("user", "status", "menteeUsers", "viewsPersonId", "mentorRole")
 
 
 class AdminSerializer(serializers.ModelSerializer):

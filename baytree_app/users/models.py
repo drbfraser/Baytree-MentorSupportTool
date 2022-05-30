@@ -55,6 +55,7 @@ class MentorUser(models.Model):
     status = models.CharField(max_length=30, default="Active", choices=STATUS)
     viewsPersonId = models.CharField(max_length=30, default=None)
     menteeUsers = models.ManyToManyField("MenteeUser", through=Mentoring)
+    mentorRole = models.OneToOneField(MentorRole, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.user.last_name + ", " + self.user.first_name
