@@ -83,7 +83,7 @@ const LoadingDataGridCell: FC = () => {
   return (
     <>
       {Array.from(Array(NUM_SKELETON_ROWS).keys()).map((idx) => (
-        <Skeleton></Skeleton>
+        <Skeleton key={`skeleton_${idx}`}></Skeleton>
       ))}
     </>
   );

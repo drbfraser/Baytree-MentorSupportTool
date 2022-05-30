@@ -27,7 +27,7 @@ const DataGridBodyDataRows: FC<DataGridBodyDataRowsProps> = (props) => {
     <>
       {props.dataRows.map((dataRow) => (
         <DataGridRow
-          key={dataRow[props.primaryKeyDataField]}
+          key={`dataRow_${dataRow[props.primaryKeyDataField]}`}
           primaryKeyDataField={props.primaryKeyDataField}
           dataRow={dataRow}
           originalDataRow={props.getOriginalDataRow(dataRow)}

@@ -137,6 +137,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
               !!props.isDataRowDeleted,
               props.createdDataRow
             )}
+            primaryKeyDataField={props.primaryKeyDataField}
           ></DataRowActionsCell>
         ) : someExpandableColumnExists(props.cols) ||
           (isOnMobileDevice &&
@@ -233,6 +234,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                     !!props.isDataRowDeleted,
                     props.createdDataRow
                   )}
+                  primaryKeyDataField={props.primaryKeyDataField}
                 ></DataRowActionsCell>
               ) : null}
             </TableCell>

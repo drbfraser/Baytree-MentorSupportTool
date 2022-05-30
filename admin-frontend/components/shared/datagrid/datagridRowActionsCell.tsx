@@ -17,6 +17,7 @@ import { DataRow, DataRowAction } from "./datagridTypes";
 interface DataRowActionsCellProps {
   actions: DataRowAction[];
   dataRow: DataRow;
+  primaryKeyDataField: string;
 }
 
 const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
@@ -60,8 +61,13 @@ const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
             anchorEl={actionButtonRef.current}
           >
             <List>
-              {props.actions.map((action) => (
-                <ListItem disablePadding>
+              {props.actions.map((action, idx) => (
+                <ListItem
+                  key={`datarow_${
+                    props.dataRow[props.primaryKeyDataField]
+                  }_${idx}`}
+                  disablePadding
+                >
                   <ListItemButton
                     onClick={() => {
                       setIsActionsPopoverOpened(false);
