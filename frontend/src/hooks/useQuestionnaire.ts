@@ -49,10 +49,7 @@ const useQuestionnaire = () => {
     .every((q) => (answer[q.QuestionID] || "") !== "");
   }
 
-  const loadingQuestionnaire = useMemo(() => {
-    console.log(loading, loadingMentor, loadingMentee)
-    return loading || loadingMentor || loadingMentee;
-  }, [loading, loadingMentee, loadingMentor])
+  const loadingQuestionnaire = loading || loadingMentor || loadingMentee;
 
   return { loading: loadingQuestionnaire, questions, initialAnswer, validateAnswer }
 }
