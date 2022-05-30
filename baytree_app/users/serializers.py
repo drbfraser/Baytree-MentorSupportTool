@@ -22,7 +22,13 @@ class MenteeSerializer(serializers.ModelSerializer):
 class MentorRoleSerializer(BatchRestSerializer):
     class Meta:
         model = MentorRole
-        fields = ["id", "name", "viewsSessionGroupId", "activity"]
+        fields = [
+            "id",
+            "name",
+            "viewsQuestionnaireId",
+            "viewsSessionGroupId",
+            "activity",
+        ]
 
 
 class MentorSerializer(serializers.ModelSerializer):

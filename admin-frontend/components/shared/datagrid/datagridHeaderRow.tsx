@@ -16,7 +16,7 @@ interface DataGridHeaderRowProps {
 
 const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
   const isOnMobileDevice = useMobileLayout();
-  const SAVE_BUTTON_CELL_WIDTH_PERCENT = 30;
+  const SAVE_BUTTON_CELL_WIDTH_PERCENT = isOnMobileDevice ? 30 : 10;
 
   return (
     <TableHead>

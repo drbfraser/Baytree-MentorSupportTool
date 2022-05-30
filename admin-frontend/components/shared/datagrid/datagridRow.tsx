@@ -247,7 +247,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
 const ColHeader: FC<ColHeaderProps> = (props) => {
   return (
     <div style={{ marginTop: "0.5rem" }}>
-      <Typography>{props.header}</Typography>
+      <Typography sx={{ fontSize: "0.8rem" }}>{props.header}</Typography>
     </div>
   );
 };

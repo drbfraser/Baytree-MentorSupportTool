@@ -6,6 +6,7 @@ import {
   MentorRole,
   saveMentorRoles,
 } from "../api/backend/mentorRoles";
+import { getQuestionnairesFromViews } from "../api/backend/views/questionnaires";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
 import DataGrid from "../components/shared/datagrid/datagrid";
 import {
@@ -64,6 +65,19 @@ const MentorRoles: NextPage = () => {
     }
   };
 
+  const getQuestionnaireOptions = async () => {
+    const response = await getQuestionnairesFromViews();
+    if (response) {
+      const questionnaires = response.data;
+      return questionnaires.map((questionnaire) => ({
+        id: questionnaire.viewsQuestionnaireId,
+        name: questionnaire.title,
+      }));
+    } else {
+      throw "Failed to retrieve questionnaires option data.";
+    }
+  };
+
   return (
     <MentorRolesCard>
       <MentorRolesTitle variant="h5">Mentor Roles</MentorRolesTitle>
@@ -79,6 +93,11 @@ const MentorRoles: NextPage = () => {
             header: "Session Group",
             dataField: "viewsSessionGroupId",
             onLoadValueOptions: getSessionGroupOptions,
+          },
+          {
+            header: "Questionnaire",
+            dataField: "viewsQuestionnaireId",
+            onLoadValueOptions: getQuestionnaireOptions,
           },
           {
             header: "Activity",

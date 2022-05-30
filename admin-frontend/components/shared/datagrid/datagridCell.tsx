@@ -48,8 +48,9 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
               props.dataField
             }_selectRef${selectIdRef.current++}`}
             fullWidth
-            defaultValue={props.value}
+            defaultValue={props.value ?? ""}
             onChange={(event) => props.onChangedValue(event.target.value)}
+            sx={{ fontSize: "0.8rem" }}
           >
             {props.valueOptions.map((valueOption, k) => (
               <MenuItem key={valueOption.id} value={valueOption.id}>
@@ -63,9 +64,18 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
           fullWidth
           defaultValue={props.value}
           onBlur={(event) => props.onChangedValue(event.target.value)}
+          inputProps={{
+            style: { fontSize: "0.8rem" },
+          }}
         ></TextField>
       ) : (
-        <Typography sx={{ whiteSpace: "nowrap", wordBreak: "break-word" }}>
+        <Typography
+          sx={{
+            fontSize: "0.8rem",
+            whiteSpace: "nowrap",
+            wordBreak: "break-word",
+          }}
+        >
           {props.value}
         </Typography>
       )}

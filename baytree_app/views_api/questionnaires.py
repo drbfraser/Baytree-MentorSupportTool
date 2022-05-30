@@ -18,7 +18,7 @@ questionnaire_views_response_fields = [
     "UpdatedBy",
 ]
 questionnaire_translated_fields = [
-    "questionnaireId",
+    "viewsQuestionnaireId",
     "title",
     "description",
     "created",
@@ -50,7 +50,9 @@ def get_questionnaires_endpoint(request):
 
     questionnaires = [
         {
-            questionnaire_translated_fields[i]: questionnaire[field]
+            questionnaire_translated_fields[i]: int(questionnaire[field])
+            if field == "QuestionnaireID"
+            else questionnaire[field]
             for i, field in enumerate(questionnaire_views_response_fields)
         }
         for questionnaire in parsed_questionnaire_list
