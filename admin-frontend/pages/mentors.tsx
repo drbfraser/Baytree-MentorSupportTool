@@ -6,7 +6,11 @@ import styled from "styled-components";
 import AddMentorModal from "../components/pages/mentors/addMentorModal";
 import Button from "../components/shared/button";
 import Modal from "../components/shared/Modal";
-import { getMentorUsers, saveMentorUsers } from "../api/backend/mentorUsers";
+import {
+  getMentorUsers,
+  MentorUser,
+  saveMentorUsers,
+} from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
 import DataGrid from "../components/shared/datagrid/datagrid";
 import {
@@ -60,14 +64,14 @@ const Mentors: NextPage = () => {
     let successfulSave = true;
 
     if (updatedRows.length > 0) {
-      const updateRes = await saveMentorUsers(updatedRows);
+      const updateRes = await saveMentorUsers(updatedRows as MentorUser[]);
       if (!updateRes) {
         successfulSave = false;
       }
     }
 
     if (deletedRows.length > 0) {
-      const delRes = await deleteUsers(deletedRows.map((row) => row.id));
+      const delRes = await deleteUsers(deletedRows.map((row) => row.user_id));
       if (!delRes || delRes.status !== 200) {
         successfulSave = false;
       }
