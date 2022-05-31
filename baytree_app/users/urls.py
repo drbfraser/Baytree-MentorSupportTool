@@ -16,6 +16,7 @@ from .serializers import (
 
 from .views import (
     MentorRoleViewSet,
+    MentorUserViewSet,
     StatisticViews,
     postUser,
     resetAccountPassword,
@@ -28,6 +29,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r"mentor-roles", MentorRoleViewSet)
+router.register(r"mentors", MentorUserViewSet)
 
 urlpatterns = [
     path(
@@ -36,14 +38,6 @@ urlpatterns = [
             model=MenteeUser,
             serializer=MenteeSerializer,
             permission_classes=[MenteesViewPermissions],
-        ),
-    ),
-    path(
-        "mentors",
-        GenerateCrudEndpointsForModel.as_view(
-            model=MentorUser,
-            serializer=MentorSerializer,
-            permission_classes=[MentorsViewPermissions],
         ),
     ),
     path(

@@ -20,6 +20,8 @@ class MenteeSerializer(serializers.ModelSerializer):
 
 
 class MentorRoleSerializer(BatchRestSerializer):
+    primary_key = "id"
+
     class Meta:
         model = MentorRole
         fields = [
@@ -31,14 +33,22 @@ class MentorRoleSerializer(BatchRestSerializer):
         ]
 
 
-class MentorSerializer(serializers.ModelSerializer):
+class MentorSerializer(BatchRestSerializer):
     user = UserSerializer()
     menteeUsers = MenteeSerializer(many=True, read_only=True)
     mentorRole = MentorRoleSerializer()
+    primary_key = "user_id"
 
     class Meta:
         model = MentorUser
-        fields = ("user", "status", "menteeUsers", "viewsPersonId", "mentorRole")
+        fields = (
+            "user_id",
+            "user",
+            "status",
+            "menteeUsers",
+            "viewsPersonId",
+            "mentorRole",
+        )
 
 
 class AdminSerializer(serializers.ModelSerializer):

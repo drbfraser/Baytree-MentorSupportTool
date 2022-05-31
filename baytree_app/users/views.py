@@ -8,7 +8,7 @@ from rest_framework import status, viewsets
 
 from baytree_app.views import BatchRestViewSet
 
-from .serializers import MentorRoleSerializer
+from .serializers import MentorRoleSerializer, MentorSerializer
 from baytree_app.views import create_object
 from baytree_app.settings import EMAIL_USER
 from emails.email import generateEmailTemplateHtml
@@ -61,6 +61,13 @@ class MentorRoleViewSet(BatchRestViewSet):
             ]
 
         return [permission() for permission in permission_classes]
+
+
+class MentorUserViewSet(BatchRestViewSet):
+    queryset = MentorUser.objects.all()
+    serializer_class = MentorSerializer
+    permission_classes = [IsAuthenticated & (AdminPermissions | MentorOwnerPermissions)]
+    model_instance = MentorUser
 
 
 def createUsers(users: dict):
