@@ -4,8 +4,9 @@ import { backendGet, backendPost } from "./base";
 export interface MentorRole {
   id: number;
   name: string;
+  viewsQuestionnaireId: number;
   viewsSessionGroupId: number;
-  activity: number;
+  activity: string;
 }
 
 export const mentorRolesBackendEndpoint = `users/mentor-roles/`;

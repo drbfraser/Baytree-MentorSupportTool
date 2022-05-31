@@ -23,13 +23,14 @@ const Mentors: NextPage = () => {
     limit,
     offset,
   }) => {
-    const mentorsData = await getMentorUsers(limit, offset);
-    if (mentorsData && mentorsData.data !== null) {
+    const mentorsData = await getMentorUsers({ limit, offset });
+    if (mentorsData) {
       return {
-        count: mentorsData.total,
-        results: mentorsData.data.map((mentor) => ({
+        count: mentorsData.count,
+        results: mentorsData.results.map((mentor) => ({
           id: mentor.user.id,
           email: mentor.user.email,
+          mentorRole: mentor.mentorRole,
         })),
       };
     } else {
