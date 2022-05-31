@@ -29,7 +29,7 @@ const useMentorProfile = () => {
         else setMentor(dummyUser);
       })
       .then(() => setLoadingMentee(false))
-  }, [user])
+  }, [user]);
 
   return { loadingMentor, loadingMentee, mentor, mentee, userId: user?.userId };
 };

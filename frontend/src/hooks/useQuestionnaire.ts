@@ -49,9 +49,22 @@ const useQuestionnaire = () => {
     .every((q) => (answer[q.QuestionID] || "") !== "");
   }
 
+  // Validate the asnwer
+  const validateQuestionnaire = () => {
+    let countMentorName = 0;
+    let countMenteeName = 0;
+    for (const question of questions) {
+      const category = question.category;
+      if (category === MENTOR_NAME_TAG) countMentorName++;
+      if (category === MENTEE_NAME_TAG) countMenteeName++;
+    }
+    // Only one mentor name question and mentee name question
+    return countMenteeName === 1 && countMentorName === 1;
+  } 
+
   const loadingQuestionnaire = loading || loadingMentor || loadingMentee;
 
-  return { loading: loadingQuestionnaire, questions, initialAnswer, validateAnswer }
+  return { loading: loadingQuestionnaire, questions, initialAnswer, validateQuestionnaire, validateAnswer }
 }
 
 export default useQuestionnaire;

@@ -6,16 +6,16 @@ import { submitAnswer } from "../../api/misc";
 import useQuestionnaire, { isAutoFilled, isRequired } from "../../hooks/useQuestionnaire";
 import Loading from "../shared/Loading";
 import TitledContainer from "../shared/TitledContainer";
+import InvalidQuestionnaire from "./InvalidQuestionnaire";
 import { ChoiceQuestion, TextQuestion } from "./QuestionField";
 
 const Questionnaire = () => {
-  const { loading, questions, initialAnswer, validateAnswer } = useQuestionnaire();
+  const { loading, questions, initialAnswer, validateQuestionnaire, validateAnswer } = useQuestionnaire();
   return (
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
-      {loading ? (
-        <Loading />
-      ) : (
+      { loading ? <Loading /> :
+       !validateQuestionnaire() ? <InvalidQuestionnaire /> : (
         <Formik
           enableReinitialize
           initialValues={initialAnswer}
