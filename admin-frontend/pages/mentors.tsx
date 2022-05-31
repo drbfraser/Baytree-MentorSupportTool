@@ -6,13 +6,15 @@ import styled from "styled-components";
 import AddMentorModal from "../components/pages/mentors/addMentorModal";
 import Button from "../components/shared/button";
 import Modal from "../components/shared/Modal";
-import { getMentorUsers } from "../api/backend/mentorUsers";
+import { getMentorUsers, saveMentorUsers } from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
 import DataGrid from "../components/shared/datagrid/datagrid";
 import {
+  OnLoadColumnValueOptionsFunc,
   onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
 } from "../components/shared/datagrid/datagridTypes";
+import { getMentorRoles, MentorRole } from "../api/backend/mentorRoles";
 
 const Mentors: NextPage = () => {
   const [showAddMentorModal, setShowAddMentorModal] = useState(false);
@@ -28,9 +30,9 @@ const Mentors: NextPage = () => {
       return {
         count: mentorsData.count,
         results: mentorsData.results.map((mentor) => ({
-          id: mentor.user.id,
+          user_id: mentor.user_id,
           email: mentor.user.email,
-          mentorRole: mentor.mentorRole,
+          mentorRole_id: mentor.mentorRole ? mentor.mentorRole.id : "",
         })),
       };
     } else {
@@ -38,14 +40,40 @@ const Mentors: NextPage = () => {
     }
   };
 
-  const saveMentorUserDataRows: onSaveDataRowsFunc = async (rowChanges) => {
-    const res = await deleteUsers(rowChanges.map((row) => row.id));
-
-    if (res) {
-      return res.status === 200;
+  const onLoadMentorRoleOptions: OnLoadColumnValueOptionsFunc = async () => {
+    const mentorRoles = (await getMentorRoles()) as MentorRole[] | null;
+    if (mentorRoles) {
+      return mentorRoles.map((mentorRole) => ({
+        id: mentorRole.id,
+        name: mentorRole.name,
+      }));
     } else {
-      return false;
+      throw "Failed to get mentor role options";
     }
+  };
+
+  const saveMentorUserDataRows: onSaveDataRowsFunc = async (
+    createdRows,
+    updatedRows,
+    deletedRows
+  ) => {
+    let successfulSave = true;
+
+    if (updatedRows.length > 0) {
+      const updateRes = await saveMentorUsers(updatedRows);
+      if (!updateRes) {
+        successfulSave = false;
+      }
+    }
+
+    if (deletedRows.length > 0) {
+      const delRes = await deleteUsers(deletedRows.map((row) => row.id));
+      if (!delRes || delRes.status !== 200) {
+        successfulSave = false;
+      }
+    }
+
+    return successfulSave;
   };
 
   return (
@@ -79,10 +107,17 @@ const Mentors: NextPage = () => {
               header: "Email",
               dataField: "email",
               disableEditing: true,
+              keepColumnOnMobile: true,
+            },
+            {
+              header: "Mentor Role",
+              dataField: "mentorRole_id",
+              onLoadValueOptions: onLoadMentorRoleOptions,
             },
           ]}
           pageSize={PAGE_LIMIT}
           disableDataRowCreation
+          primaryKeyDataField="user_id"
         ></DataGrid>
       </Paper>
       <Modal

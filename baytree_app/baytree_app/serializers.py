@@ -4,19 +4,13 @@ from rest_framework import serializers
 class BatchRestSerializer(serializers.ModelSerializer):
     """Serializer to be used to with the BatchRestViewSet.
     Inherits from ModelSerializer, and should be used in a similar
-    fashion. NOTE: The primary key MUST be included in the Meta fields list
-    and should be an IntegerField. A different primary_key can be set by
-    setting primary_key = <pk field name> on your derived serializer. The
-    default primary_key value is "id".
+    fashion. NOTE: The model primary key MUST be included in the Meta fields list
+    and should be declared as read_only=False:
+    ex. <pk> = serializers.IntegerField(read_only=False).
+    The primary key name should be set on the serializer: primary_key = <pk field name>
     """
 
     def create(self, validated_data):
-        if not hasattr(self, "primary_key"):
-            self.primary_key = "id"
-
-        if not hasattr(self, self.primary_key):
-            setattr(self, self.primary_key, serializers.IntegerField(read_only=False))
-
         defaults = {}
 
         for field in self.Meta.fields:

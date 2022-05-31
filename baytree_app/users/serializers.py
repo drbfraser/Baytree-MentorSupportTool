@@ -20,6 +20,7 @@ class MenteeSerializer(serializers.ModelSerializer):
 
 
 class MentorRoleSerializer(BatchRestSerializer):
+    id = serializers.IntegerField(read_only=False)
     primary_key = "id"
 
     class Meta:
@@ -34,9 +35,16 @@ class MentorRoleSerializer(BatchRestSerializer):
 
 
 class MentorSerializer(BatchRestSerializer):
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
+    user_id = serializers.IntegerField(read_only=False)
+
     menteeUsers = MenteeSerializer(many=True, read_only=True)
-    mentorRole = MentorRoleSerializer()
+    mentorRole = MentorRoleSerializer(read_only=True)
+    # Used for updating mentorRole by foreign key id
+    mentorRole_id = serializers.PrimaryKeyRelatedField(
+        queryset=MentorRole.objects.all(), source="mentorRole", write_only=True
+    )
+
     primary_key = "user_id"
 
     class Meta:
@@ -48,6 +56,7 @@ class MentorSerializer(BatchRestSerializer):
             "menteeUsers",
             "viewsPersonId",
             "mentorRole",
+            "mentorRole_id",
         )
 
 

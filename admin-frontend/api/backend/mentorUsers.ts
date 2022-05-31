@@ -17,7 +17,7 @@ export type User = {
 };
 
 import { PagedDataRows } from "../../components/shared/datagrid/datagridTypes";
-import { backendGet, backendPost } from "./base";
+import { ApiOptions, backendGet, backendPost } from "./base";
 import { MentorRole } from "./mentorRoles";
 
 export interface MentorUser {
@@ -31,12 +31,7 @@ export interface MentorUser {
 
 export const mentorsBackendEndpoint = `users/mentors/`;
 
-export const getMentorUsers = async (options?: {
-  searchText?: string;
-  dataFieldsToSearch?: string[];
-  limit?: number;
-  offset?: number;
-}) => {
+export const getMentorUsers = async (options?: ApiOptions) => {
   const queryParams: Record<string, any> = {};
 
   if (options) {
@@ -58,6 +53,10 @@ export const getMentorUsers = async (options?: {
     mentorsBackendEndpoint,
     queryParams
   );
+};
+
+export const saveMentorUsers = async (mentorUserDataRows: MentorUser[]) => {
+  return await backendPost(mentorsBackendEndpoint, mentorUserDataRows);
 };
 
 export const sendMentorAccountCreationEmail = async (
