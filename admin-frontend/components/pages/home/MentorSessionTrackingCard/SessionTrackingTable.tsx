@@ -5,11 +5,12 @@ import styled from "styled-components";
 import { Session as ViewsSession } from "../../../../api/backend/views/sessions";
 import { SessionResponse as DjangoSession } from "../../../../api/backend/sessions";
 import { BAYTREE_PRIMARY_COLOR } from "../../../../constants/constants";
-import DataGrid from "../../../shared/datagrid";
+import DataGrid from "../../../shared/datagrid/datagrid";
 import Modal from "../../../shared/Modal";
 import Pager from "../../../shared/pager";
 import MentorSessionsModal from "./MentorSessionsModal";
 import { Mentor } from "../../../../pages/home";
+import { MdSchedule } from "react-icons/md";
 
 interface MentorSessionCount extends Mentor {
   numSessionsCompleted: number;
@@ -140,35 +141,47 @@ const SessionTrackingTable: React.FunctionComponent<
             {
               header: "Name",
               dataField: "fullName",
-              componentFunc: clickableMentorNameText,
-              keepOnMobile: true,
+              keepColumnOnMobile: true,
             },
             {
               header: "Email",
               dataField: "email",
-              dataType: "email",
-              keepOnMobile: false,
             },
             {
               header: "Completed",
               dataField: "numSessionsCompleted",
-              dataType: "string",
-              keepOnMobile: true,
             },
             {
               header: "Cancelled",
               dataField: "numSessionsCancelled",
-              dataType: "string",
-              keepOnMobile: true,
             },
             {
               header: "Missed",
               dataField: "numSessionsMissed",
-              dataType: "string",
-              keepOnMobile: true,
             },
           ]}
           data={pagedMentorSessionCounts}
+          dataRowActions={[
+            {
+              actionFunction: (dataRow) => {
+                const mentor = props.mentors.find(
+                  (mentor) => mentor.id === dataRow.id
+                );
+
+                if (mentor) {
+                  setMentorSessionsModalMentor(mentor);
+                  setIsMentorSessionsModalOpen(true);
+                } else {
+                  toast.error(
+                    "Something went wrong! Please contact technical support for further assistance."
+                  );
+                }
+              },
+              icon: <MdSchedule></MdSchedule>,
+              name: "Sessions",
+            },
+          ]}
+          isDataGridDeleteable={false}
         ></DataGrid>
         <Pager
           currentPageNumber={pageNum}

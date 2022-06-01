@@ -72,7 +72,10 @@ def get_volunteers(
 
         # Check if no volunteers were returned from Views:
         if parsed["contacts"]["volunteers"]["@count"] == "0":
-            return {"total": parsed["contacts"]["volunteers"]["@count"], "data": []}
+            return {
+                "total": int(parsed["contacts"]["volunteers"]["@count"]),
+                "data": [],
+            }
 
         # Make sure the volunteers are wrapped in a list, if there is a single volunteer
         if not isinstance(parsed["contacts"]["volunteers"]["volunteer"], list):
@@ -88,7 +91,10 @@ def get_volunteers(
             for volunteer in parsed["contacts"]["volunteers"]["volunteer"]
         ]
 
-        return {"total": parsed["contacts"]["volunteers"]["@count"], "data": volunteers}
+        return {
+            "total": int(parsed["contacts"]["volunteers"]["@count"]),
+            "data": volunteers,
+        }
 
     elif id != None:
         response = requests.get(
@@ -132,11 +138,14 @@ def get_volunteers(
             }
             for volunteer in parsed["contacts"]["volunteers"]["volunteer"]
         ]
-        return {"total": parsed["contacts"]["volunteers"]["@count"], "data": volunteers}
+        return {
+            "total": int(parsed["contacts"]["volunteers"]["@count"]),
+            "data": volunteers,
+        }
 
 
 @api_view(("GET",))
-@permission_classes([AdminPermissions | MentorsViewsApiPermissions])
+@permission_classes((AdminPermissions,))
 def get_volunteers_endpoint(request):
     """
     Handles a request from the client browser and calls get_volunteers
