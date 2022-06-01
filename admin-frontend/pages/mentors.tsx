@@ -1,59 +1,51 @@
 import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
-import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
-import { toast } from "react-toastify";
+import { useState } from "react";
+import { MdAdd } from "react-icons/md";
 import styled from "styled-components";
 import AddMentorModal from "../components/pages/mentors/addMentorModal";
 import Button from "../components/shared/button";
-import DataGrid from "../components/shared/datagrid";
 import Modal from "../components/shared/Modal";
-import { HELP_MESSAGE } from "../constants/constants";
 import { getMentorUsers } from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
-import OverlaySpinner from "../components/shared/overlaySpinner";
+import DataGrid from "../components/shared/datagrid/datagrid";
+import {
+  onLoadPagedDataRowsFunc,
+  onSaveDataRowsFunc,
+} from "../components/shared/datagrid/datagridTypes";
 
 const Mentors: NextPage = () => {
   const [showAddMentorModal, setShowAddMentorModal] = useState(false);
-  const [loadingData, setLoadingData] = useState(true);
-  const [pageNum, setPageNum] = useState(1);
-  const [maxPageNum, setMaxPageNum] = useState(1);
-  const [pageData, setPageData] = useState<
-    {
-      email: string;
-      viewsPersonId: string;
-    }[]
-  >([]);
   const [dataGridKey, setDataGridKey] = useState<number>(1);
-  const PAGE_LIMIT = 10;
+  const PAGE_LIMIT = 5;
 
-  useEffect(() => {
-    async function getData() {
-      setLoadingData(true);
-      const mentorsData = await getMentorUsers(
-        PAGE_LIMIT,
-        (pageNum - 1) * PAGE_LIMIT
-      );
-
-      if (mentorsData && mentorsData.data !== null) {
-        setMaxPageNum(Math.ceil(mentorsData.total / PAGE_LIMIT));
-        console.log(mentorsData);
-        setPageData(
-          mentorsData.data.map((mentorData) => ({
-            email: mentorData.user.email,
-            viewsPersonId: mentorData.viewsPersonId,
-            id: mentorData.user.id,
-          }))
-        );
-        setLoadingData(false);
-      } else {
-        toast.error(HELP_MESSAGE);
-        setLoadingData(false);
-      }
+  const loadMentorUserDataRows: onLoadPagedDataRowsFunc = async ({
+    limit,
+    offset,
+  }) => {
+    const mentorsData = await getMentorUsers(limit, offset);
+    if (mentorsData && mentorsData.data !== null) {
+      return {
+        count: mentorsData.total,
+        results: mentorsData.data.map((mentor) => ({
+          id: mentor.user.id,
+          email: mentor.user.email,
+        })),
+      };
+    } else {
+      throw "Failed to get mentor user data";
     }
+  };
 
-    getData();
-  }, [pageNum, dataGridKey]);
+  const saveMentorUserDataRows: onSaveDataRowsFunc = async (rowChanges) => {
+    const res = await deleteUsers(rowChanges.map((row) => row.id));
+
+    if (res) {
+      return res.status === 200;
+    } else {
+      return false;
+    }
+  };
 
   return (
     <>
@@ -79,38 +71,17 @@ const Mentors: NextPage = () => {
         </Header>
         <DataGrid
           key={`${dataGridKey}`}
-          data={pageData}
+          onLoadDataRows={loadMentorUserDataRows}
+          onSaveDataRows={saveMentorUserDataRows}
           cols={[
             {
               header: "Email",
               dataField: "email",
-              dataType: "email",
+              disableEditing: true,
             },
           ]}
-          dataRowActions={[
-            {
-              name: "Delete",
-              icon: MdDelete,
-              action: async (dataRow: any) => {
-                setLoadingData(true);
-                const res = await deleteUsers(dataRow.id);
-                setDataGridKey(dataGridKey + 1);
-                if (res && res.status === 200) {
-                  toast.success("Successfully deleted user!");
-                } else {
-                  toast.error(HELP_MESSAGE);
-                }
-                setLoadingData(false);
-              },
-            },
-            {
-              name: "Modify",
-              icon: MdEdit,
-              action: () => {
-                alert("TODO: modify");
-              },
-            },
-          ]}
+          pageSize={PAGE_LIMIT}
+          disableDataRowCreation
         ></DataGrid>
       </Paper>
       <Modal
@@ -129,12 +100,6 @@ const Mentors: NextPage = () => {
         }
         height="100vh"
       ></Modal>
-      <OverlaySpinner
-        active={loadingData}
-        onClick={() => {
-          setLoadingData(false);
-        }}
-      ></OverlaySpinner>
     </>
   );
 };

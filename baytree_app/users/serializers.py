@@ -1,12 +1,14 @@
 from rest_framework import serializers
 
-from .models import AdminUser, CustomUser, MenteeUser, MentorUser
+from baytree_app.serializers import BatchRestSerializer
+
+from .models import AdminUser, CustomUser, MenteeUser, MentorUser, MentorRole
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'first_name', 'last_name')
+        fields = ("id", "email", "first_name", "last_name")
 
 
 class MenteeSerializer(serializers.ModelSerializer):
@@ -14,7 +16,19 @@ class MenteeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MenteeUser
-        fields = ('user', 'mentorUsers')
+        fields = ("user", "mentorUsers")
+
+
+class MentorRoleSerializer(BatchRestSerializer):
+    class Meta:
+        model = MentorRole
+        fields = [
+            "id",
+            "name",
+            "viewsQuestionnaireId",
+            "viewsSessionGroupId",
+            "activity",
+        ]
 
 
 class MentorSerializer(serializers.ModelSerializer):
@@ -23,7 +37,7 @@ class MentorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MentorUser
-        fields = ('user', 'status', 'menteeUsers', 'viewsPersonId')
+        fields = ("user", "status", "menteeUsers", "viewsPersonId")
 
 
 class AdminSerializer(serializers.ModelSerializer):
@@ -31,4 +45,4 @@ class AdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AdminUser
-        fields = ('user', )
+        fields = ("user",)

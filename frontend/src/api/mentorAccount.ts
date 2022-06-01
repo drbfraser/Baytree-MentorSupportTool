@@ -14,7 +14,7 @@ export const createMentorAccount = async (
   password: string,
   createAccountLinkId: string
 ) => {
-  const apiRes = await userApi.post("mentor/createAccount", {
+  const apiRes = await userApi.post("mentors/createAccount", {
     createAccountLinkId,
     password
   });
@@ -25,7 +25,10 @@ export const resetPassword = async (
   password: string,
   resetPasswordLinkId: string
 ) => {
-  const apiRes = userApi.put("resetPassword", { resetPasswordLinkId, password });
+  const apiRes = userApi.put("resetPassword", {
+    resetPasswordLinkId,
+    password
+  });
   return apiRes;
 };
 
@@ -33,16 +36,18 @@ export const sendPasswordResetEmail = async (email: string) => {
   const apiRes = await userApi.post("sendResetPasswordEmail", {
     email,
     accountType: "Mentor"
-  })
+  });
 
   return apiRes;
 };
 
 export const fetchMenteeListByMentorId = (id: number) => {
-  return userApi.get("mentors", {
-    params: { id }
-  }).then(({data}) => data.data[0].menteeUsers || []); // Why ???
-}
+  return userApi
+    .get("mentors", {
+      params: { id }
+    })
+    .then(({ data }) => data.data[0].menteeUsers || []); // Why ???
+};
 
 export interface SessionsCount {
   sessions_attended: number;
@@ -52,9 +57,10 @@ export interface SessionsCount {
 }
 
 export const getSessionCount = async (mentorId: number) => {
-  const response = await userApi.get<{ status: string, data: SessionsCount }>(
+  const response = await userApi.get<{ status: string; data: SessionsCount }>(
     "statistics/mentor",
-    { params: { id: mentorId } });
+    { params: { id: mentorId } }
+  );
 
   if (response.status === 200 && response.data.status === "success") {
     return response.data.data;

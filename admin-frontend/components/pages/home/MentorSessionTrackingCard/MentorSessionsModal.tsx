@@ -9,7 +9,7 @@ import {
 } from "../../../../constants/constants";
 import { Mentor } from "../../../../pages/home";
 import { MONTH_NAMES } from "../../../../util/misc";
-import DataGrid from "../../../shared/datagrid";
+import DataGrid from "../../../shared/datagrid/datagrid";
 
 export interface MentorSessionsModalProps {
   mentor: Mentor;
@@ -39,34 +39,29 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
       <SessionsGrid>
         <DataGrid
           cols={[
-            { header: "Date", dataField: "startDate", dataType: "date" },
-            { header: "Activity", dataField: "activity", dataType: "string" },
+            { header: "Date", dataField: "startDate", expandableColumn: true },
+            { header: "Activity", dataField: "activity" },
+            { header: "Notes", dataField: "notes" },
           ]}
-          data={props.mentorSessions.map((mentorSession) => {
-            // If the Django backend session has a corresponding views session
-            const sessionHasAViewsSession = (
-              mentorSession: any
-            ): mentorSession is ViewsSession & DjangoSession => {
-              return mentorSession.leadStaff !== undefined;
-            };
-
-            if (sessionHasAViewsSession(mentorSession)) {
-              return mentorSession;
-            } else {
-              return {
-                ...mentorSession,
-                startDate: mentorSession.clock_in,
-                activity: "Mentoring",
+          onLoadDataRows={async () => {
+            return props.mentorSessions.map((mentorSession) => {
+              // If the Django backend session has a corresponding views session
+              const sessionHasAViewsSession = (
+                mentorSession: any
+              ): mentorSession is ViewsSession & DjangoSession => {
+                return mentorSession.leadStaff !== undefined;
               };
-            }
-          })}
-          expandRowComponentFunc={(dataRow: any) => {
-            return (
-              <ExpandRowComponentLayout>
-                <NotesTitle variant="h6">Notes: </NotesTitle>
-                <NotesText variant="body1">{dataRow.notes}</NotesText>
-              </ExpandRowComponentLayout>
-            );
+
+              if (sessionHasAViewsSession(mentorSession)) {
+                return mentorSession;
+              } else {
+                return {
+                  ...mentorSession,
+                  startDate: mentorSession.clock_in,
+                  activity: "Mentoring",
+                };
+              }
+            });
           }}
         ></DataGrid>
       </SessionsGrid>

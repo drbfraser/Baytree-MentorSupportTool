@@ -1,4 +1,5 @@
 from django.urls import path
+from .views import ViewsAppSessionView
 
 from .views import SessionView, ViewsAppSessionView
 

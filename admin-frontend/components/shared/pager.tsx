@@ -1,5 +1,5 @@
 import { TextField, Typography } from "@mui/material";
-import React, { useRef } from "react";
+import React, { MutableRefObject, useEffect, useRef } from "react";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import { toast } from "react-toastify";
 import useMobileLayout from "../../hooks/useMobileLayout";
@@ -9,11 +9,22 @@ export interface PagerProps {
   onChangePage: (newPage: number) => void;
   currentPageNumber: number;
   maxPageNumber: number;
+  clearPagerFuncRef?: MutableRefObject<(() => void) | null>;
 }
 
 const Pager: React.FC<PagerProps> = (props) => {
   const onMobileDevice = useMobileLayout();
   const currentPageNumberInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (props.clearPagerFuncRef) {
+      props.clearPagerFuncRef.current = () => {
+        if (currentPageNumberInputRef.current) {
+          currentPageNumberInputRef.current.value = "";
+        }
+      };
+    }
+  }, [currentPageNumberInputRef.current]);
 
   const renderPageNumberPicker = () => {
     return (
