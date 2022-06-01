@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, mixins
 
 from users.permissions import AdminPermissions
 
@@ -10,30 +10,24 @@ class HolidayListAPIView(generics.ListAPIView):
   queryset = Holiday.objects.all()
   serializer_class = HolidaySerializer
 
-holiday_list_view = HolidayListAPIView.as_view()
-
-# POST api/holidays/create
+# POST api/holidays/create/
 class HolidayCreateAPIView(generics.CreateAPIView):
   queryset = Holiday.objects.all()
   serializer_class = HolidaySerializer
   permission_classes = [AdminPermissions]
 
-holiday_create_view = HolidayCreateAPIView.as_view()
-
-# PUT api/holidays/<id>/update/
-class HolidayUpdateAPIView(generics.UpdateAPIView):
+# PUT, DELETE api/holidays/<id>/
+class HolidayUpdateDestroyAPIVIew(
+  mixins.UpdateModelMixin,
+  mixins.DestroyModelMixin,
+  generics.GenericAPIView):
   queryset = Holiday.objects.all()
   serializer_class = HolidaySerializer
-  lookup_field = 'pk'
+  lookup_field = "pk"
   permission_classes = [AdminPermissions]
 
-holiday_update_view = HolidayUpdateAPIView.as_view()
+  def put(self, request, *args, **kwargs):
+    return self.update(request, *args, **kwargs)
 
-# DELETE api/hokidays/<id>/delete/
-class HolidayDestroyAPIView(generics.DestroyAPIView):
-  queryset = Holiday.objects.all()
-  serializer_class = HolidaySerializer
-  lookup_field = 'pk'
-  permission_classes = [AdminPermissions]
-
-holiday_destroy_view = HolidayDestroyAPIView.as_view()
+  def delete(self, request, *args, **kwargs):
+    return self.destroy(request, *args, **kwargs)
