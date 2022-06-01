@@ -1,10 +1,8 @@
 from django.urls import path
-from .views import QuestionnaireView
+from .views import get_questionnaire, submit_answer_set
 
 
 urlpatterns = [
-    path('', QuestionnaireView.as_view()),
-    path('<int:id>', QuestionnaireView.as_view()),
-    path('get_questionnaire/', QuestionnaireView.get_questionnaire),
-    path('get_questionnaire/<str:id>', QuestionnaireView.get_questionnaire)
+    path('questionnaire/', get_questionnaire),
+    path('questionnaire/submitAnswer/', submit_answer_set)
 ]
