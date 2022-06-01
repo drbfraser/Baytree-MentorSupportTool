@@ -12,7 +12,7 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import AccessToken
 
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
@@ -392,3 +392,48 @@ class GenerateCrudEndpointsForModel(APIView):
                 {"error": "Failed to update object"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
+class BatchRestViewSet(viewsets.ModelViewSet):
+    """Custom viewset that allows batch updates (create, update, delete) of multiple
+    objects via a POST endpoint. Inherits from the ModelViewSet
+    which also provides REST functionality.
+    Must provide a 'model_instance' class field which contains a Model instance.
+    Must use a serializer of type BatchRestSerializer."""
+
+    def create(self, request, *args, **kwargs):
+        """Overridden POST Method for batch updating/creating arrays of objects
+        Deleted rows must include an "isDeleted" field
+        Changed rows must include the original row id
+        Created rows must not have an id"""
+
+        if isinstance(request.data, list):
+            for data_row in request.data:
+                if "isDeleted" in data_row:
+                    if "id" not in data_row:
+                        Response(
+                            "No id was found for deleted row.",
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+
+                    object = self.model_instance.objects.filter(pk=data_row["id"])
+
+                    if not object.exists():
+                        return Response(
+                            "object id " + data_row.id + " was not found.",
+                            status=status.HTTP_404_NOT_FOUND,
+                        )
+
+                    object.delete()
+                else:
+                    serializer = self.serializer_class(data=data_row, partial=True)
+                    if serializer.is_valid():
+                        serializer.save()
+                    else:
+                        return Response(
+                            serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+            return Response("Successfully batch updated.", status=status.HTTP_200_OK)
+        else:
+            return super(self.model_instance, self).create(request, *args, **kwargs)

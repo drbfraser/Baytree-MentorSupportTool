@@ -26,8 +26,17 @@ const Modal: React.FC<ModalProps> = (props) => {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        !onMobileDeviceRef.current &&
-        modalElementRef.current &&
+        (!onMobileDeviceRef.current &&
+          modalElementRef.current &&
+          !modalElementRef.current.contains(event.target as Node) &&
+          (document.getElementsByClassName("Toastify").length == 0 ||
+            !document
+              .getElementsByClassName("Toastify")[0]
+              .contains(event.target as Node)) &&
+          (document.getElementsByClassName("MuiPopover-root").length == 0 ||
+            !document
+              .getElementsByClassName("MuiPopover-root")[0]
+              .contains(event.target as Node))) ||
         (event.target as any).id === "ModalOverlay"
       ) {
         props.onOutsideClick();
