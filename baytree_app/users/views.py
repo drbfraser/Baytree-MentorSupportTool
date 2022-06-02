@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, viewsets
 
 from baytree_app.views import BatchRestViewSet
+from views_api.volunteers import get_volunteers
 
 from .serializers import MentorRoleSerializer, MentorSerializer
 from baytree_app.views import create_object
@@ -68,6 +69,86 @@ class MentorUserViewSet(BatchRestViewSet):
     serializer_class = MentorSerializer
     permission_classes = [IsAuthenticated & (AdminPermissions | MentorOwnerPermissions)]
     model_instance = MentorUser
+
+    def list(self, request, *args, **kwargs):
+        should_join_views_volunteers = request.GET.get("joinViews", None)
+
+        if (
+            not should_join_views_volunteers
+            or should_join_views_volunteers.lower() != "true"
+        ):
+            return super().list(request, *args, **kwargs)
+
+        search_name = request.GET.get("searchName", None)
+        limit = request.GET.get("limit", None)
+        offset = request.GET.get("offset", None)
+
+        if search_name:
+            volunteers_response = get_volunteers(searchName=search_name)
+
+            mentor_users = MentorUser.objects.all().values()
+
+            mentor_users = self.join_views_volunteers_to_mentor_users(
+                mentor_users, volunteers_response["data"]
+            )
+
+            limit = limit if limit else len(mentor_users)
+            offset = offset if offset else 0
+
+            return Response(
+                {
+                    "count": len(mentor_users),
+                    "results": mentor_users[offset : limit + offset],
+                }
+            )
+        else:
+            response = super().list(request, *args, **kwargs)
+
+            if "count" in response.data:
+                volunteers_response = get_volunteers(
+                    id=[m_user["viewsPersonId"] for m_user in response.data["results"]],
+                )
+
+                mentor_users = self.join_views_volunteers_to_mentor_users(
+                    response.data["results"], volunteers_response["data"]
+                )
+
+                return Response(
+                    {
+                        "count": response.data["count"],
+                        "results": mentor_users,
+                    }
+                )
+
+            else:
+                volunteers_response = get_volunteers(
+                    id=[m_user["viewsPersonId"] for m_user in response.data],
+                )
+
+                mentor_users = self.join_views_volunteers_to_mentor_users(
+                    response.data, volunteers_response["data"]
+                )
+
+                return Response(mentor_users)
+
+    def join_views_volunteers_to_mentor_users(self, mentor_users, views_volunteers):
+        inner_join_result = []
+
+        for m_user in mentor_users:
+            v_match = next(
+                filter(
+                    lambda v: v["viewsPersonId"] == m_user["viewsPersonId"],
+                    views_volunteers,
+                ),
+                None,
+            )
+
+            if v_match:
+                m_user["firstName"] = v_match["firstname"]
+                m_user["lastName"] = v_match["surname"]
+                inner_join_result.append(m_user)
+
+        return inner_join_result
 
 
 def createUsers(users: dict):

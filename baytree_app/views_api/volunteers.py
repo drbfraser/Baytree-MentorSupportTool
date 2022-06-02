@@ -1,3 +1,4 @@
+from typing import List, Union
 from .permissions import MentorsViewsApiPermissions
 from users.permissions import AdminPermissions
 from .constants import views_base_url, views_username, views_password
@@ -38,7 +39,11 @@ staff members since we could retrieve members that aren't actually mentors.
 
 
 def get_volunteers(
-    id: str = None, limit: int = 5, offset: int = 0, searchEmail: str = None
+    id: Union[List[str], str] = None,
+    limit: int = None,
+    offset: int = None,
+    searchEmail: str = None,
+    searchName: str = None,  # ex. 'Joh Smit' (firstname, surname)
 ):
     """
     Gets volunteers from Views API.
@@ -75,18 +80,51 @@ def get_volunteers(
             }
 
         # Make sure the volunteers are wrapped in a list, if there is a single volunteer
-        if not isinstance(parsed["contacts"]["volunteers"]["volunteer"], list):
-            parsed["contacts"]["volunteers"]["volunteer"] = [
-                parsed["contacts"]["volunteers"]["volunteer"]
-            ]
+        volunteers = parsed["contacts"]["volunteers"]["volunteer"]
+        if not isinstance(volunteers, list):
+            volunteers = [volunteers]
 
-        volunteers = [
-            {
-                volunteerTranslateFields[i]: volunteer[field]
-                for i, field in enumerate(volunteerFields)
+        volunteers = translate_volunteer_fields(volunteers)
+
+        return {
+            "total": int(parsed["contacts"]["volunteers"]["@count"]),
+            "data": volunteers,
+        }
+
+    elif searchName != None and searchName != "":
+        name_parts = searchName.split(" ")
+        first_name = name_parts[0]
+        last_name = name_parts[1] if len(name_parts) > 1 else ""
+
+        views_request_url = "{}search?Forename={}&Surname={}".format(
+            volunteers_base_url, first_name, last_name
+        )
+
+        if limit != None:
+            views_request_url += "&pageFold=" + str(limit)
+
+        if offset != None:
+            views_request_url += "&offset=" + str(offset)
+
+        response = requests.get(
+            views_request_url, auth=(views_username, views_password)
+        )
+
+        parsed = xmltodict.parse(response.text)
+
+        # Check if no volunteers were returned from Views:
+        if parsed["contacts"]["volunteers"]["@count"] == "0":
+            return {
+                "total": int(parsed["contacts"]["volunteers"]["@count"]),
+                "data": [],
             }
-            for volunteer in parsed["contacts"]["volunteers"]["volunteer"]
-        ]
+
+        # Make sure the volunteers are wrapped in a list, if there is a single volunteer
+        volunteers = parsed["contacts"]["volunteers"]["volunteer"]
+        if not isinstance(volunteers, list):
+            volunteers = [volunteers]
+
+        volunteers = translate_volunteer_fields(volunteers)
 
         return {
             "total": int(parsed["contacts"]["volunteers"]["@count"]),
@@ -94,15 +132,31 @@ def get_volunteers(
         }
 
     elif id != None:
+        ids = id
+        if not isinstance(id, list):
+            ids = [id]
+
+        views_request_url = "{}search?".format(volunteers_base_url)
+
+        for id in ids:
+            views_request_url += "&PersonID[]={}".format(id)
+
         response = requests.get(
-            volunteers_base_url + id, auth=(views_username, views_password)
+            views_request_url, auth=(views_username, views_password)
         )
         parsed = xmltodict.parse(response.text)
-        volunteer = {
-            volunteerTranslateFields[i]: parsed["volunteer"][field]
-            for i, field in enumerate(volunteerFields)
+
+        # Make sure the volunteers are wrapped in a list, if there is a single volunteer
+        volunteers = parsed["contacts"]["volunteers"]["volunteer"]
+        if not isinstance(volunteers, list):
+            volunteers = [volunteers]
+
+        volunteers = translate_volunteer_fields(volunteers)
+
+        return {
+            "total": int(parsed["contacts"]["volunteers"]["@count"]),
+            "data": volunteers,
         }
-        return volunteer
     else:
         if limit != None:
             if offset == None:
@@ -115,6 +169,7 @@ def get_volunteers(
                 + str(offset),
                 auth=(views_username, views_password),
             )
+
         else:
             response = requests.get(
                 volunteers_base_url + "search?q=", auth=(views_username, views_password)
@@ -123,22 +178,26 @@ def get_volunteers(
         parsed = xmltodict.parse(response.text)
 
         # Make sure the volunteers are wrapped in a list, if there is a single volunteer
-        if not isinstance(parsed["contacts"]["volunteers"]["volunteer"], list):
-            parsed["contacts"]["volunteers"]["volunteer"] = [
-                parsed["contacts"]["volunteers"]["volunteer"]
-            ]
+        volunteers = parsed["contacts"]["volunteers"]["volunteer"]
+        if not isinstance(volunteers, list):
+            volunteers = [volunteers]
 
-        volunteers = [
-            {
-                volunteerTranslateFields[i]: volunteer[field]
-                for i, field in enumerate(volunteerFields)
-            }
-            for volunteer in parsed["contacts"]["volunteers"]["volunteer"]
-        ]
+        volunteers = translate_volunteer_fields(volunteers)
+
         return {
             "total": int(parsed["contacts"]["volunteers"]["@count"]),
             "data": volunteers,
         }
+
+
+def translate_volunteer_fields(volunteers):
+    return [
+        {
+            volunteerTranslateFields[i]: volunteer[field]
+            for i, field in enumerate(volunteerFields)
+        }
+        for volunteer in volunteers
+    ]
 
 
 @api_view(("GET",))
@@ -148,14 +207,22 @@ def get_volunteers_endpoint(request):
     Handles a request from the client browser and calls get_volunteers
     to return its response to the client.
     """
-    id = request.GET.get("id", None)
+    id = request.GET.getlist("id")
+    id = None if id == [] else id
     searchEmail = request.GET.get("searchEmail", None)
+    searchName = request.GET.get("searchName", None)
 
     if searchEmail != None and searchEmail != "":
         response = get_volunteers(
             limit=request.GET.get("limit", None),
             offset=request.GET.get("offset", None),
             searchEmail=searchEmail,
+        )
+    elif searchName != None and searchName != "":
+        response = get_volunteers(
+            limit=request.GET.get("limit", None),
+            offset=request.GET.get("offset", None),
+            searchName=searchName,
         )
     elif id != None:
         response = get_volunteers(id)

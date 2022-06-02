@@ -43,9 +43,13 @@ export const getMentorUsers = async (options?: ApiOptions) => {
       queryParams["offset"] = offset;
     }
     if (searchText && dataFieldsToSearch) {
-      dataFieldsToSearch.forEach(
-        (dataField) => (queryParams[`${dataField}__icontains`] = searchText)
-      );
+      dataFieldsToSearch.forEach((dataField) => {
+        if (dataField === "email") {
+          queryParams[`user__email__icontains`] = searchText;
+        } else {
+          queryParams[`${dataField}__icontains`] = searchText;
+        }
+      });
     }
   }
 

@@ -26,10 +26,17 @@ const Mentors: NextPage = () => {
   const PAGE_LIMIT = 5;
 
   const loadMentorUserDataRows: onLoadPagedDataRowsFunc = async ({
+    searchText,
+    dataFieldsToSearch,
     limit,
     offset,
   }) => {
-    const mentorsData = await getMentorUsers({ limit, offset });
+    const mentorsData = await getMentorUsers({
+      searchText,
+      dataFieldsToSearch,
+      limit,
+      offset,
+    });
     if (mentorsData) {
       return {
         count: mentorsData.count,
@@ -112,6 +119,7 @@ const Mentors: NextPage = () => {
               dataField: "email",
               disableEditing: true,
               keepColumnOnMobile: true,
+              enableSearching: true,
             },
             {
               header: "Mentor Role",
