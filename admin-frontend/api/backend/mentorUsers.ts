@@ -63,8 +63,20 @@ export const getMentorUsers = async (options?: ApiOptions) => {
       dataFieldsToSearch.forEach((dataField) => {
         if (dataField === "email") {
           queryParams[`user__email__icontains`] = searchText;
-        } else if (dataField === "firstName" || dataField === "lastName") {
-          queryParams["searchName"] = searchText;
+        } else if (dataField === "firstName") {
+          const firstAndLast = searchText.split(" ");
+          if (firstAndLast.length > 1) {
+            queryParams["searchFirstName"] = firstAndLast[0];
+          } else {
+            queryParams["searchName"] = searchText;
+          }
+        } else if (dataField === "lastName") {
+          const firstAndLast = searchText.split(" ");
+          if (firstAndLast.length > 1) {
+            queryParams["searchLastName"] = firstAndLast[1];
+          } else {
+            queryParams["searchName"] = searchText;
+          }
         } else {
           queryParams[`${dataField}__icontains`] = searchText;
         }

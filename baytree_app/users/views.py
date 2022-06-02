@@ -79,12 +79,29 @@ class MentorUserViewSet(BatchRestViewSet):
         ):
             return super().list(request, *args, **kwargs)
 
+        search_first_name = request.GET.get("searchFirstName", None)
+        search_last_name = request.GET.get("searchLastName", None)
         search_name = request.GET.get("searchName", None)
         limit = request.GET.get("limit", None)
         offset = request.GET.get("offset", None)
 
-        if search_name:
-            volunteers_response = get_volunteers(searchName=search_name)
+        if search_name or search_first_name or search_last_name:
+            if search_first_name or search_last_name:
+                volunteers_response = get_volunteers(
+                    searchFirstName=search_first_name, searchLastName=search_last_name
+                )
+            else:
+                volunteers_first_name_response = get_volunteers(
+                    searchFirstName=search_name
+                )
+
+                volunteers_last_name_response = get_volunteers(
+                    searchLastName=search_name
+                )
+
+                volunteers_response = volunteers_first_name_response
+                volunteers_response["total"] += volunteers_last_name_response["total"]
+                volunteers_response["data"] += volunteers_last_name_response["data"]
 
             mentor_users = MentorUser.objects.all()
 
@@ -101,6 +118,7 @@ class MentorUserViewSet(BatchRestViewSet):
                     "results": mentor_users[offset : limit + offset],
                 }
             )
+
         else:
             response = super().list(request, *args, **kwargs)
 
