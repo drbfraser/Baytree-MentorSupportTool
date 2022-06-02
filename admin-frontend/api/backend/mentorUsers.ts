@@ -20,7 +20,11 @@ import { PagedDataRows } from "../../components/shared/datagrid/datagridTypes";
 import { ApiOptions, backendGet, backendPost } from "./base";
 import { MentorRole } from "./mentorRoles";
 
-export interface MentorUser {
+export type MentorUser =
+  | (MentorUserBackendFields & MentorUserViewsFields) // if includeDataFromViews == true
+  | MentorUserBackendFields;
+
+export interface MentorUserBackendFields {
   user_id: number;
   user: User;
   status: MentorUserStatus;
@@ -29,27 +33,46 @@ export interface MentorUser {
   mentorRole: MentorRole | null;
 }
 
+export interface MentorUserViewsFields {
+  firstName: string;
+  lastName: string;
+}
+
 export const mentorsBackendEndpoint = `users/mentors/`;
 
 export const getMentorUsers = async (options?: ApiOptions) => {
   const queryParams: Record<string, any> = {};
 
   if (options) {
-    const { searchText, dataFieldsToSearch, limit, offset } = options;
+    const {
+      searchText,
+      dataFieldsToSearch,
+      limit,
+      offset,
+      includeDataFromViews,
+    } = options;
     if (limit) {
       queryParams["limit"] = limit;
     }
+
     if (offset) {
       queryParams["offset"] = offset;
     }
+
     if (searchText && dataFieldsToSearch) {
       dataFieldsToSearch.forEach((dataField) => {
         if (dataField === "email") {
           queryParams[`user__email__icontains`] = searchText;
+        } else if (dataField === "firstName" || dataField === "lastName") {
+          queryParams["searchName"] = searchText;
         } else {
           queryParams[`${dataField}__icontains`] = searchText;
         }
       });
+    }
+
+    if (includeDataFromViews) {
+      queryParams["joinViews"] = "true";
     }
   }
 

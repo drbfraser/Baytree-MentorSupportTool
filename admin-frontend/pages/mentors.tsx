@@ -9,6 +9,8 @@ import Modal from "../components/shared/Modal";
 import {
   getMentorUsers,
   MentorUser,
+  MentorUserBackendFields,
+  MentorUserViewsFields,
   saveMentorUsers,
 } from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
@@ -36,13 +38,20 @@ const Mentors: NextPage = () => {
       dataFieldsToSearch,
       limit,
       offset,
+      includeDataFromViews: true,
     });
+
     if (mentorsData) {
+      const mentorDataRows = mentorsData.results as (MentorUserBackendFields &
+        MentorUserViewsFields)[];
+
       return {
         count: mentorsData.count,
-        results: mentorsData.results.map((mentor) => ({
+        results: mentorDataRows.map((mentor) => ({
           user_id: mentor.user_id,
           email: mentor.user.email,
+          firstName: mentor.firstName,
+          lastName: mentor.lastName,
           mentorRole_id: mentor.mentorRole ? mentor.mentorRole.id : "",
         })),
       };
@@ -119,6 +128,17 @@ const Mentors: NextPage = () => {
               dataField: "email",
               disableEditing: true,
               keepColumnOnMobile: true,
+            },
+            {
+              header: "First Name",
+              dataField: "firstName",
+              disableEditing: true,
+              enableSearching: true,
+            },
+            {
+              header: "Last Name",
+              dataField: "lastName",
+              disableEditing: true,
               enableSearching: true,
             },
             {

@@ -432,4 +432,5 @@ export type ApiOptions = {
   dataFieldsToSearch?: string[];
   limit?: number;
   offset?: number;
+  includeDataFromViews?: boolean;
 };

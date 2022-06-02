@@ -86,14 +86,14 @@ class MentorUserViewSet(BatchRestViewSet):
         if search_name:
             volunteers_response = get_volunteers(searchName=search_name)
 
-            mentor_users = MentorUser.objects.all().values()
+            mentor_users = MentorUser.objects.all()
 
             mentor_users = self.join_views_volunteers_to_mentor_users(
                 mentor_users, volunteers_response["data"]
             )
 
-            limit = limit if limit else len(mentor_users)
-            offset = offset if offset else 0
+            limit = int(limit) if limit else len(mentor_users)
+            offset = int(offset) if offset else 0
 
             return Response(
                 {
@@ -135,18 +135,34 @@ class MentorUserViewSet(BatchRestViewSet):
         inner_join_result = []
 
         for m_user in mentor_users:
-            v_match = next(
-                filter(
-                    lambda v: v["viewsPersonId"] == m_user["viewsPersonId"],
-                    views_volunteers,
-                ),
-                None,
-            )
+            if isinstance(m_user, MentorUser):
+                v_match = next(
+                    filter(
+                        lambda v: v["viewsPersonId"] == m_user.viewsPersonId,
+                        views_volunteers,
+                    ),
+                    None,
+                )
 
-            if v_match:
-                m_user["firstName"] = v_match["firstname"]
-                m_user["lastName"] = v_match["surname"]
-                inner_join_result.append(m_user)
+                if v_match:
+                    m_user = MentorSerializer(m_user).data
+                    m_user["firstName"] = v_match["firstname"]
+                    m_user["lastName"] = v_match["surname"]
+                    inner_join_result.append(m_user)
+
+            else:
+                v_match = next(
+                    filter(
+                        lambda v: v["viewsPersonId"] == m_user["viewsPersonId"],
+                        views_volunteers,
+                    ),
+                    None,
+                )
+
+                if v_match:
+                    m_user["firstName"] = v_match["firstname"]
+                    m_user["lastName"] = v_match["surname"]
+                    inner_join_result.append(m_user)
 
         return inner_join_result
 
