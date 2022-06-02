@@ -1,4 +1,5 @@
 from rest_framework.response import Response
+from views_api.associations import get_associations
 from users.models import MentorRole
 from users.models import MentorUser
 
@@ -168,14 +169,24 @@ def post_session(request):
     # POST request for Mentee #
     ###########################
 
-    # NOTE: Mentee ID is neede here
+    associations = get_associations(mentor_user.viewsPersonId)
+    mentee_association = next(
+        filter(lambda a: a["association"] == "Mentor", associations), None
+    )
+
+    if not mentee_association:
+        return Response(
+            {"Error": "A mentee is not associated with the mentor!"}, status=400
+        )
+
+    mentee_views_person_id = mentee_association["masterId"]
 
     viewMenteeData = """<?xml version="1.0" encoding="utf-8"?>
                         <participants>
                             <ContactID>{0}</ContactID>
                             <Attended>{1}</Attended>
                         </participants>""".format(
-        4, 1
+        mentee_views_person_id, 1
     )
     mentee_url = views_base_url + "sessions/" + sessionID + "/participants"
     try:

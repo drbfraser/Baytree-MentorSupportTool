@@ -31,6 +31,7 @@ class MentorRoleSerializer(BatchRestSerializer):
             "viewsQuestionnaireId",
             "viewsSessionGroupId",
             "activity",
+            "volunteeringType",
         ]
 
 

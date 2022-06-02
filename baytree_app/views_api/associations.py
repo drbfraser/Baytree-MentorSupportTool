@@ -50,9 +50,8 @@ whether the related person to a participant is a family member, or mentor, .etc
 
 
 @api_view(("GET",))
-def get_associations(request):
+def get_associations_endpoint(request):
     volunteer_id = request.GET.get("volunteerId", None)
-
     if volunteer_id:
         if (not userIsAdmin(request.user)) and (not userIsSuperUser(request.user)):
             mentor_user = MentorUser.objects.filter(pk=request.user.id)
@@ -63,12 +62,17 @@ def get_associations(request):
             if mentor_user.viewsPersonId != volunteer_id:
                 return Response("You are not authorized to access this resource.", 401)
 
-        response = requests.get(
-            staff_associations_base_url.format(volunteer_id),
-            auth=(views_username, views_password),
-        )
+        return Response(get_associations(volunteer_id=volunteer_id), 200)
 
-        return parse_associations(response)
+
+def get_associations(volunteer_id):
+
+    response = requests.get(
+        staff_associations_base_url.format(volunteer_id),
+        auth=(views_username, views_password),
+    )
+
+    return parse_associations(response)
 
 
 def parse_associations(response):
@@ -77,8 +81,8 @@ def parse_associations(response):
     # Check if no associations were returned from Views:
     if not "association" in parsed["staff"]["associations"]:
         return {
-            "total": 0,
-            "data": [],
+            "count": 0,
+            "results": [],
         }
 
     # Make sure the associations are wrapped in a list, if there is a single association
@@ -86,12 +90,10 @@ def parse_associations(response):
     if not isinstance(associations, list):
         associations = [associations]
 
-    return Response(
-        {
-            "total": len(parsed["staff"]["associations"]["association"]),
-            "data": translate_association_fields(associations),
-        }
-    )
+    return {
+        "count": len(parsed["staff"]["associations"]["association"]),
+        "results": translate_association_fields(associations),
+    }
 
 
 def translate_association_fields(associations):
