@@ -10,7 +10,7 @@ class SuperUserPermissions(BasePermission):
 
 
 def userIsAdmin(user):
-    return user and AdminUser.objects.filter(user_id=user.id)
+    return user and AdminUser.objects.filter(user_id=user.id).exists()
 
 
 def requestUserIsUserObject(user, obj):
@@ -20,19 +20,23 @@ def requestUserIsUserObject(user, obj):
 def userIsSuperUser(user):
     return user and user.is_superuser
 
+
 def user_is_mentor_of(user, mentee_user_id):
     mentorUser = MentorUser.objects.get(pk=user.id)
     menteeUser = MenteeUser.objects.get(pk=mentee_user_id)
 
     return menteeUser in mentorUser.menteeUsers.all()
 
+
 class AdminPermissions(BasePermission):
     def has_permission(self, request, view):
         return userIsAdmin(request.user) or userIsSuperUser(request.user)
 
+
 class IsUserAMentor(BasePermission):
     def has_permission(self, request, view):
         return MentorUser.objects.filter(pk=request.user.id).exists()
+
 
 class MentorsViewPermissions(BasePermission):
     def has_permission(self, request, view):
@@ -40,20 +44,23 @@ class MentorsViewPermissions(BasePermission):
             return False
 
         if userIsSuperUser(request.user) or userIsAdmin(request.user):
-            return True # admins or super users have full permissions for mentor endpoints
+            return (
+                True  # admins or super users have full permissions for mentor endpoints
+            )
 
-        if request.method == 'GET':
-            if 'id' in request.GET:
-                ids = request.GET.getlist('id', '')
+        if request.method == "GET":
+            if "id" in request.GET:
+                ids = request.GET.getlist("id", "")
                 if not isinstance(ids, list):
                     ids = [ids]
                 for id in ids:
                     if id != str(request.user.id):
-                        return False # mentor can't see other mentor information
+                        return False  # mentor can't see other mentor information
             else:
-                return False # mentor can't see other mentor information
+                return False  # mentor can't see other mentor information
 
-        return True # mentor can see their own information
+        return True  # mentor can see their own information
+
 
 class MenteesViewPermissions(BasePermission):
     def has_permission(self, request, view):
@@ -61,19 +68,23 @@ class MenteesViewPermissions(BasePermission):
             return False
 
         if userIsSuperUser(request.user) or userIsAdmin(request.user):
-            return True # admins or super users have full permissions for mentee endpoints
+            return (
+                True  # admins or super users have full permissions for mentee endpoints
+            )
 
-        if request.method == 'GET':
-            if 'id' in request.GET:
-                ids = request.GET.getlist('id', '')
+        if request.method == "GET":
+            if "id" in request.GET:
+                ids = request.GET.getlist("id", "")
                 if not isinstance(ids, list):
                     ids = [ids]
                 for id in ids:
-                    if user_is_mentor_of(request.user, id): # mentors can see their mentee info
+                    if user_is_mentor_of(
+                        request.user, id
+                    ):  # mentors can see their mentee info
                         continue
                     if id != str(request.user.id):
-                        return False # mentees can't see other mentees information, and non-related mentors
+                        return False  # mentees can't see other mentees information, and non-related mentors
             else:
-                return False # mentees can't see other mentees information, and non-related mentors
+                return False  # mentees can't see other mentees information, and non-related mentors
 
-        return True # mentees can see their own info, as well as their mentors
+        return True  # mentees can see their own info, as well as their mentors

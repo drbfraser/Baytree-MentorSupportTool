@@ -173,7 +173,7 @@ def parse_volunteers(response):
     # Check if no volunteers were returned from Views:
     if parsed["contacts"]["volunteers"]["@count"] == "0":
         return {
-            "total": int(parsed["contacts"]["volunteers"]["@count"]),
+            "total": 0,
             "data": [],
         }
 

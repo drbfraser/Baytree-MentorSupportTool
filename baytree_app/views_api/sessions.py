@@ -69,17 +69,8 @@ def post_session(request):
         )
     mentor_user = mentor_user.first()
 
-    # Mentors can only create sessions for themselves
-    mentor_id = mentor_user[0].viewsPersonId
-    if request.data["LeadStaff"] != mentor_id:
-        return Response(
-            {"errors": "You are not permitted to access this resource."},
-            status=status.HTTP_401_UNAUTHORIZED,
-        )
-
-    # NOTE: Activity, Session Group ID, VenueID is needed here
     # Get mentor's mentor role
-    mentor_role = MentorRole.objects.all().filter(pk=mentor_user.mentorRole)
+    mentor_role = mentor_user.mentorRole
 
     viewSessionData = """<?xml version="1.0" encoding="utf-8"?>
                     <session id="">
@@ -97,18 +88,16 @@ def post_session(request):
                         <ContactType>Individual</ContactType>
                     </session>""".format(
         mentor_role.viewsSessionGroupId,
-        request.data["StartDate"],
-        request.data["StartTime"],
-        request.data["Duration"],
+        request.data["startDate"],
+        request.data["startTime"],
+        request.data["duration"],
         0,
         mentor_role.activity,
-        mentor_id,
+        mentor_user.viewsPersonId,
         2,
     )
 
-    # NOTE: Session Group ID needed here
-
-    session_url = views_base_url + "3/sessions"
+    session_url = views_base_url + "{}/sessions".format(mentor_role.viewsSessionGroupid)
     try:
         response = requests.post(
             session_url,
@@ -125,7 +114,7 @@ def post_session(request):
 
     except Exception as e:
         return Response(
-            {"Error": "Making a post request for session failed!"}, status=400
+            {"Error": "Making a post request for session failed!"}, status=500
         )
 
     #################################
@@ -147,7 +136,7 @@ def post_session(request):
             auth=(views_username, views_password),
         )
     except Exception as e:
-        return Response({"Error": "Making a post request for note failed!"}, status=400)
+        return Response({"Error": "Making a post request for note failed!"}, status=500)
 
     ###########################
     # POST request for Mentor #
@@ -160,7 +149,7 @@ def post_session(request):
                             <Role>Lead</Role>
                             <Volunteering>Mentoring</Volunteering>
                         </staff>""".format(
-        mentor_id, request.data["CancelledAttendee"]
+        mentor_user.viewsPersonId, 1
     )
     mentor_url = views_base_url + "sessions/" + sessionID + "/staff"
     try:
@@ -172,7 +161,7 @@ def post_session(request):
         )
     except Exception as e:
         return Response(
-            {"Error": "Making a post request for mentor failed!"}, status=400
+            {"Error": "Making a post request for mentor failed!"}, status=500
         )
 
     ###########################
@@ -186,7 +175,7 @@ def post_session(request):
                             <ContactID>{0}</ContactID>
                             <Attended>{1}</Attended>
                         </participants>""".format(
-        4, request.data["CancelledAttendee"]
+        4, 1
     )
     mentee_url = views_base_url + "sessions/" + sessionID + "/participants"
     try:
