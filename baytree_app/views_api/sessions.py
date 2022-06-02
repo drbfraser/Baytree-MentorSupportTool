@@ -1,4 +1,8 @@
 from rest_framework.response import Response
+from users.models import MentorRole
+from users.models import MentorUser
+
+from sessions.permissions import userIsAdmin, userIsSuperUser
 from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework import status
@@ -47,6 +51,157 @@ Mentors can take notes and attach these as "Session Notes" in views to a particu
 Mentors can also take note of attendance by attaching "Session Attendance" in views to a
 particular session.
 """
+
+
+@api_view(("POST",))
+def post_session(request):
+    ### todo: SessionGroupID, Activity, VenueID are hardcoded need to be changed once admin page (creating mentor account) is completed
+    ############################
+    # POST request for Session #
+    ############################
+
+    # Get mentor user object
+    mentor_user = MentorUser.objects.all().filter(pk=request.user.id)
+    if not mentor_user.exists():
+        return Response(
+            {"errors": "The current user creating a session is not a mentor!"},
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+    mentor_user = mentor_user.first()
+
+    # Mentors can only create sessions for themselves
+    mentor_id = mentor_user[0].viewsPersonId
+    if request.data["LeadStaff"] != mentor_id:
+        return Response(
+            {"errors": "You are not permitted to access this resource."},
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+
+    # NOTE: Activity, Session Group ID, VenueID is needed here
+    # Get mentor's mentor role
+    mentor_role = MentorRole.objects.all().filter(pk=mentor_user.mentorRole)
+
+    viewSessionData = """<?xml version="1.0" encoding="utf-8"?>
+                    <session id="">
+                        <SessionGroupID>{0}</SessionGroupID>
+                        <SessionType>Individual</SessionType>
+                        <Name>Mentoring Session</Name>
+                        <StartDate>{1}</StartDate>
+                        <StartTime>{2}</StartTime>
+                        <Duration>{3}</Duration>
+                        <Cancelled>{4}</Cancelled>
+                        <Activity>{5}</Activity>
+                        <LeadStaff>{6}</LeadStaff>
+                        <VenueID>{7}</VenueID>
+                        <RestrictedRecord>0</RestrictedRecord>
+                        <ContactType>Individual</ContactType>
+                    </session>""".format(
+        mentor_role.viewsSessionGroupId,
+        request.data["StartDate"],
+        request.data["StartTime"],
+        request.data["Duration"],
+        0,
+        mentor_role.activity,
+        mentor_id,
+        2,
+    )
+
+    # NOTE: Session Group ID needed here
+
+    session_url = views_base_url + "3/sessions"
+    try:
+        response = requests.post(
+            session_url,
+            data=viewSessionData,
+            headers={"content-type": "text/xml"},
+            auth=(views_username, views_password),
+        )
+        # getting session ID from response
+        sessionID = response.text[
+            (response.text.find("<SessionID>") + len("<SessionID>")) : (
+                response.text.find("</SessionID>")
+            )
+        ]
+
+    except Exception as e:
+        return Response(
+            {"Error": "Making a post request for session failed!"}, status=400
+        )
+
+    #################################
+    # POST request for Session Note #
+    #################################
+
+    viewNoteData = """<?xml version="1.0" encoding="utf-8"?>
+                        <notes>
+                            <Note>{0}</Note>
+                        </notes>""".format(
+        request.data["Notes"]
+    )
+    note_url = views_base_url + "sessions/" + sessionID + "/notes"
+    try:
+        response = requests.post(
+            note_url,
+            data=viewNoteData,
+            headers={"content-type": "text/xml"},
+            auth=(views_username, views_password),
+        )
+    except Exception as e:
+        return Response({"Error": "Making a post request for note failed!"}, status=400)
+
+    ###########################
+    # POST request for Mentor #
+    ###########################
+
+    viewMentorData = """<?xml version="1.0" encoding="utf-8"?>
+                        <staff>
+                            <ContactID>{0}</ContactID>
+                            <Attended>{1}</Attended>
+                            <Role>Lead</Role>
+                            <Volunteering>Mentoring</Volunteering>
+                        </staff>""".format(
+        mentor_id, request.data["CancelledAttendee"]
+    )
+    mentor_url = views_base_url + "sessions/" + sessionID + "/staff"
+    try:
+        response = requests.post(
+            mentor_url,
+            data=viewMentorData,
+            headers={"content-type": "text/xml"},
+            auth=(views_username, views_password),
+        )
+    except Exception as e:
+        return Response(
+            {"Error": "Making a post request for mentor failed!"}, status=400
+        )
+
+    ###########################
+    # POST request for Mentee #
+    ###########################
+
+    # NOTE: Mentee ID is neede here
+
+    viewMenteeData = """<?xml version="1.0" encoding="utf-8"?>
+                        <participants>
+                            <ContactID>{0}</ContactID>
+                            <Attended>{1}</Attended>
+                        </participants>""".format(
+        4, request.data["CancelledAttendee"]
+    )
+    mentee_url = views_base_url + "sessions/" + sessionID + "/participants"
+    try:
+        response = requests.post(
+            mentee_url,
+            data=viewMenteeData,
+            headers={"content-type": "text/xml"},
+            auth=(views_username, views_password),
+        )
+    except Exception as e:
+        return Response(
+            {"Error": "Making a post request for mentee failed!"}, status=400
+        )
+
+    return Response(response, status=200)
 
 
 def get_sessions(
