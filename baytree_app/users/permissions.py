@@ -41,6 +41,20 @@ class MentorPermissions(BasePermission):
         return userIsMentor(request.user)
 
 
+class MentorOwnerPermissions(BasePermission):
+    def has_permission(self, request, view):
+        if request.user == None or not request.user.is_authenticated:
+            return False
+
+        # Only allow mentors to GET their own data, not change anything
+        if request.method in SAFE_METHODS:
+            if "pk" in view.kwargs and view.kwargs["pk"]:
+                obj = view.get_queryset()[0]
+                return obj.pk == request.user.id
+
+        return False
+
+
 def userIsMentor(user):
     return user and MentorUser.objects.filter(user_id=user.id).exists()
 

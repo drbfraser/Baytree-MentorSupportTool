@@ -9,7 +9,7 @@ import MentorSessionTrackingCard from "../components/pages/home/MentorSessionTra
 import MentorQuestionnaireTrackingCard from "../components/pages/home/MentorQuestionnaireTrackingCard";
 import { getVolunteersFromViews } from "../api/backend/views/volunteers";
 import { toast } from "react-toastify";
-import { getMentorUsers } from "../api/backend/mentorUsers";
+import { getMentorUsers, MentorUser } from "../api/backend/mentorUsers";
 
 export interface Mentor {
   id: number;
@@ -56,14 +56,10 @@ const Home: NextPage = () => {
 
       const volunteersRes = await getVolunteersFromViews();
       if (volunteersRes && volunteersRes.status === 200 && volunteersRes.data) {
-        const mentorsRes = await getMentorUsers();
-        if (
-          mentorsRes &&
-          mentorsRes.status === 200 &&
-          mentorsRes.data !== null
-        ) {
+        const mentorsRes = (await getMentorUsers()) as MentorUser[] | null;
+        if (mentorsRes) {
           setMentors(
-            mentorsRes.data.map((mentor) => {
+            mentorsRes.map((mentor) => {
               const matchingVolunteer = volunteersRes.data.find(
                 (volunteer) => volunteer.viewsPersonId === mentor.viewsPersonId
               );

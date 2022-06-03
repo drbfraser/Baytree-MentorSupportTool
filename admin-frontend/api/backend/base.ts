@@ -426,3 +426,11 @@ export const backendPost = async (relativeEndpointUrl: string, body: any) => {
     return null;
   }
 };
+
+export type ApiOptions = {
+  searchText?: string;
+  dataFieldsToSearch?: string[];
+  limit?: number;
+  offset?: number;
+  includeDataFromViews?: boolean;
+};

@@ -43,10 +43,8 @@ export const sendPasswordResetEmail = async (email: string) => {
 
 export const fetchMenteeListByMentorId = (id: number) => {
   return userApi
-    .get("mentors", {
-      params: { id }
-    })
-    .then(({ data }) => data.data[0].menteeUsers || []); // Why ???
+    .get(`mentors/${id}/`, {})
+    .then(({ data }) => data.menteeUsers || []); // Why ???
 };
 
 export interface SessionsCount {

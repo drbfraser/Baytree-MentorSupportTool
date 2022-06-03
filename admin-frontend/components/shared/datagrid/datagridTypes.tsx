@@ -29,11 +29,9 @@ export type PagedDataRows<DataRowType> = {
 };
 
 export type onSaveDataRowsFunc = (
-  // rowChanges includes updated, created, and deleted rows.
-  // updated have an id and created don't. deleted rows have a field
-  // 'isDeleted' which is set to true. This works automatically with
-  // a POST request containing rowChanges to the BatchRestViewSet.
-  rowChanges: DataRow[]
+  createdRows: DataRow[],
+  updatedRows: DataRow[],
+  deletedRows: DataRow[]
 ) => Promise<boolean>;
 
 export interface DataGridColumn {
@@ -41,12 +39,14 @@ export interface DataGridColumn {
   dataField: string;
 
   valueOptions?: ValueOption[];
-  onLoadValueOptions?: () => Promise<ValueOption[]>;
+  onLoadValueOptions?: OnLoadColumnValueOptionsFunc;
   disableEditing?: boolean;
   enableSearching?: boolean;
   keepColumnOnMobile?: boolean;
   expandableColumn?: boolean;
 }
+
+export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
 
 export interface ValueOption {
   id: number;

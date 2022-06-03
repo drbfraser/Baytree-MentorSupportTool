@@ -25,12 +25,12 @@ const MentorRoles: NextPage = () => {
     limit,
     offset,
   }) => {
-    const mentorRolesPageRes = (await getMentorRoles(
+    const mentorRolesPageRes = (await getMentorRoles({
       searchText,
       dataFieldsToSearch,
       limit,
-      offset
-    )) as PagedDataRows<MentorRole>;
+      offset,
+    })) as PagedDataRows<MentorRole>;
 
     if (mentorRolesPageRes) {
       mentorRolesPageRes.results = mentorRolesPageRes.results.map(
@@ -46,9 +46,15 @@ const MentorRoles: NextPage = () => {
   };
 
   const saveMentorRoleData: onSaveDataRowsFunc = async (
-    dataRowChanges: DataRow[]
+    createdRows: DataRow[],
+    updatedRows: DataRow[],
+    deletedRows: DataRow[]
   ) => {
-    const result = await saveMentorRoles(dataRowChanges);
+    const result = await saveMentorRoles([
+      ...createdRows,
+      ...updatedRows,
+      ...deletedRows.map((row) => ({ ...row, isDeleted: true })),
+    ]);
     return !!result;
   };
 
