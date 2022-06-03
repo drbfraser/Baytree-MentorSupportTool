@@ -13,16 +13,21 @@ export interface SessionFormData {
   menteeViewsPersonId: string;
 }
 
-export const initialData = () =>
-  ({
-    cancelled: false,
-    date: new Date(),
-    clockIn: new Date(),
-    clockOut: new Date(),
-    notes: "",
-    viewsVenueId: "",
-    menteeViewsPersonId: ""
-  } as SessionFormData);
+let initialDataValues = {
+  cancelled: false,
+  date: new Date(),
+  clockIn: new Date(),
+  clockOut: new Date(),
+  notes: "",
+  viewsVenueId: "",
+  menteeViewsPersonId: ""
+} as SessionFormData;
+
+export const getInitialData = () => initialDataValues;
+
+export const setInitialData = (fieldName: string, value: any) => {
+  initialDataValues = { ...initialDataValues, [fieldName]: value };
+};
 
 export interface Mentee {
   id: number;

@@ -13,75 +13,80 @@ import {
   Typography
 } from "@mui/material";
 import { Field, Form, Formik } from "formik";
-import { FunctionComponent, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { toast } from "react-toastify";
-import {
-  getAssociations,
-  getParticipants,
-  getVenues,
-  Participant,
-  Venue
-} from "../../api/views";
-import { useAuth } from "../../context/AuthContext";
 import TitledContainer from "../shared/TitledContainer";
-import useMentees from "./hooks/useMentees";
-import useVenues from "./hooks/useVenues";
-import { initialData, Mentee, submitSession } from "./session";
-
-// Reponsive container for time
-const TimeInputContainer: FunctionComponent<{ label: string }> = ({
-  label,
-  children
-}) => {
-  return (
-    <Grid container item xs={12} sm={4} alignItems="center">
-      <Grid item xs={5} sm={12}>
-        <Typography sx={{ fontWeight: "bold" }} color="text.secondary">
-          {label}
-        </Typography>
-      </Grid>
-      <Grid item xs={7} sm={12}>
-        <FormControl fullWidth>{children}</FormControl>
-      </Grid>
-    </Grid>
-  );
-};
-
-// Reponsive container for select
-const SelectInputContainer: FunctionComponent<{ label: string }> = ({
-  label,
-  children
-}) => {
-  return (
-    <Grid container item xs={12} sm={6} alignItems="center">
-      <Grid item xs={5} sm={12}>
-        <Typography sx={{ fontWeight: "bold" }} color="text.secondary">
-          {label}
-        </Typography>
-      </Grid>
-      <Grid item xs={7} sm={12}>
-        <FormControl fullWidth>{children}</FormControl>
-      </Grid>
-    </Grid>
-  );
-};
+import useMentees, {
+  OnMenteesFailedToLoadReason
+} from "../../hooks/useMentees";
+import useVenues, { OnVenuesFailedToLoadReason } from "../../hooks/useVenues";
+import {
+  getInitialData,
+  Mentee,
+  setInitialData,
+  submitSession
+} from "./session";
+import { Venue } from "../../api/views";
+import { SelectInputContainer, TimeInputContainer } from "./Containers";
 
 const SessionForm = () => {
-  const { user } = useAuth();
-
+  // Used for setting formik field values outside of the form component
   const setFieldValueRef =
     useRef<
       (field: string, value: any, shouldValidate?: boolean | undefined) => void
     >();
 
-  const { venues, isLoadingVenues } = useVenues(setFieldValueRef);
-  const { mentees, isLoadingMentees } = useMentees(setFieldValueRef);
+  // Autofill venues select field once venues loaded
+  const onVenuesLoaded = (venues: Venue[]) => {
+    if (venues.length > 0) {
+      if (setFieldValueRef.current) {
+        setFieldValueRef.current("viewsVenueId", venues[0].id, true);
+      } else {
+        // form not rendered before data loaded
+        setInitialData("viewsVenueId", venues[0].id);
+      }
+    }
+  };
+
+  const onVenuesFailedToLoad = (reason: OnVenuesFailedToLoadReason) => {
+    toast.error(
+      `Loading venue data failed. Reason: ${reason}. Please try refreshing or contact an administrator.`
+    );
+  };
+
+  const { venues, isLoadingVenues } = useVenues({
+    onVenuesLoaded,
+    onVenuesFailedToLoad
+  });
+
+  // Autofill mentees select field once mentees loaded
+  const onMenteesLoaded = (mentees: Mentee[]) => {
+    if (mentees.length > 0) {
+      if (setFieldValueRef.current) {
+        setFieldValueRef.current("menteeViewsPersonId", mentees[0].id, true);
+      } else {
+        // form not rendered before data loaded
+        setInitialData("menteeViewsPersonId", mentees[0].id);
+      }
+    }
+  };
+
+  const onMenteesFailedToLoad = (reason: OnMenteesFailedToLoadReason) => {
+    toast.error(
+      `Loading mentee data failed. Reason: ${reason}. Please try refreshing or contact an administrator.`
+    );
+  };
+
+  const { mentees, isLoadingMentees } = useMentees({
+    onMenteesLoaded,
+    onMenteesFailedToLoad
+  });
 
   return (
     <>
       <TitledContainer title="Create Session">
         <Formik
-          initialValues={initialData()}
+          initialValues={getInitialData()}
           onSubmit={async (data, { setSubmitting, resetForm }) => {
             setSubmitting(true);
             const success = await submitSession(data);
@@ -236,17 +241,15 @@ const SessionForm = () => {
                   </SelectInputContainer>
                 </Grid>
                 <Divider />
-                {isSubmitting ? (
-                  <>
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                  </>
-                ) : (
-                  <Button type="submit" variant="contained" sx={{ mt: 3 }}>
-                    Submit
-                  </Button>
-                )}
+                {/* Submit Session Button */}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={isSubmitting}
+                  sx={{ mt: 3 }}
+                >
+                  Submit
+                </Button>
               </Form>
             );
           }}
