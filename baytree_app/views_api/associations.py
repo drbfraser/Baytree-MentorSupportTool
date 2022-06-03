@@ -79,7 +79,10 @@ def parse_associations(response):
     parsed = xmltodict.parse(response.text)
 
     # Check if no associations were returned from Views:
-    if not "association" in parsed["staff"]["associations"]:
+    if (
+        not parsed["staff"]["associations"]
+        or not "association" in parsed["staff"]["associations"]
+    ):
         return {
             "count": 0,
             "results": [],

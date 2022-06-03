@@ -61,6 +61,35 @@ def post_session(request):
     # POST request for Session #
     ############################
 
+    if "startDate" not in request.data:
+        return Response(
+            {"errors": "startDate must be provided."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if "startTime" not in request.data:
+        return Response(
+            {"errors": "startTime must be provided."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if "duration" not in request.data:
+        return Response(
+            {"errors": "duration must be provided."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if "viewsVenueId" not in request.data:
+        return Response(
+            {"errors": "viewsVenueId must be provided."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    start_date = request.data["startDate"]
+    start_time = request.data["startTime"]
+    duration = request.data["duration"]
+    views_venue_id = request.data["viewsVenueId"]
+
     # Get mentor user object
     mentor_user = MentorUser.objects.all().filter(pk=request.user.id)
     if not mentor_user.exists():
@@ -73,11 +102,34 @@ def post_session(request):
     # Get mentor's mentor role
     mentor_role = mentor_user.mentorRole
 
+    # Get mentee views person id (either in params or from views associations)
+    mentee_views_person_id = (
+        request.data["menteeViewsPersonId"]
+        if hasattr(request.data, "menteeViewsPersonId")
+        else None
+    )
+
+    # get first associated mentee for mentor if not provided in request body
+    if not mentee_views_person_id:
+        associations = get_associations(mentor_user.viewsPersonId)
+        mentee_association = next(
+            filter(lambda a: a["association"] == "Mentee", associations["results"]),
+            None,
+        )
+
+        if not mentee_association:
+            return Response(
+                {"Error": "A mentee is not associated with the mentor!"}, status=400
+            )
+
+        mentee_views_person_id = mentee_association["masterId"]
+
     viewSessionData = """<?xml version="1.0" encoding="utf-8"?>
                     <session id="">
+                        <AssociateWithSessionGroup>Yes</AssociateWithSessionGroup>
                         <SessionGroupID>{0}</SessionGroupID>
-                        <SessionType>Individual</SessionType>
-                        <Name>Mentoring Session</Name>
+                        <SessionType>121</SessionType>
+                        <Name>121 Session</Name>
                         <StartDate>{1}</StartDate>
                         <StartTime>{2}</StartTime>
                         <Duration>{3}</Duration>
@@ -89,16 +141,18 @@ def post_session(request):
                         <ContactType>Individual</ContactType>
                     </session>""".format(
         mentor_role.viewsSessionGroupId,
-        request.data["startDate"],
-        request.data["startTime"],
-        request.data["duration"],
+        start_date,
+        start_time,
+        duration,
         0,
         mentor_role.activity,
         mentor_user.viewsPersonId,
-        2,
+        views_venue_id,
     )
 
-    session_url = views_base_url + "{}/sessions".format(mentor_role.viewsSessionGroupid)
+    session_url = views_base_url + "work/sessiongroups/{}/sessions".format(
+        mentor_role.viewsSessionGroupId
+    )
     try:
         response = requests.post(
             session_url,
@@ -106,8 +160,15 @@ def post_session(request):
             headers={"content-type": "text/xml"},
             auth=(views_username, views_password),
         )
+
+        if response.status_code != 200:
+            return Response(
+                {"Error": "Making a post request for session failed!"},
+                status=response.status_code,
+            )
+
         # getting session ID from response
-        sessionID = response.text[
+        session_id = response.text[
             (response.text.find("<SessionID>") + len("<SessionID>")) : (
                 response.text.find("</SessionID>")
             )
@@ -122,22 +183,28 @@ def post_session(request):
     # POST request for Session Note #
     #################################
 
-    viewNoteData = """<?xml version="1.0" encoding="utf-8"?>
-                        <notes>
-                            <Note>{0}</Note>
-                        </notes>""".format(
-        request.data["Notes"]
-    )
-    note_url = views_base_url + "sessions/" + sessionID + "/notes"
-    try:
-        response = requests.post(
-            note_url,
-            data=viewNoteData,
-            headers={"content-type": "text/xml"},
-            auth=(views_username, views_password),
+    if "notes" in request.data:
+        viewNoteData = """<?xml version="1.0" encoding="utf-8"?>
+                            <notes>
+                                <Note>{0}</Note>
+                            </notes>""".format(
+            request.data["notes"]
         )
-    except Exception as e:
-        return Response({"Error": "Making a post request for note failed!"}, status=500)
+
+        note_url = views_base_url + "work/sessiongroups/sessions/{}/notes".format(
+            session_id
+        )
+        try:
+            response = requests.post(
+                note_url,
+                data=viewNoteData,
+                headers={"content-type": "text/xml"},
+                auth=(views_username, views_password),
+            )
+        except Exception as e:
+            return Response(
+                {"Error": "Making a post request for note failed!"}, status=500
+            )
 
     ###########################
     # POST request for Mentor #
@@ -148,11 +215,14 @@ def post_session(request):
                             <ContactID>{0}</ContactID>
                             <Attended>{1}</Attended>
                             <Role>Lead</Role>
-                            <Volunteering>Mentoring</Volunteering>
+                            <Volunteering>{2}</Volunteering>
                         </staff>""".format(
-        mentor_user.viewsPersonId, 1
+        mentor_user.viewsPersonId, 1, mentor_role.volunteeringType
     )
-    mentor_url = views_base_url + "sessions/" + sessionID + "/staff"
+    mentor_url = views_base_url + "work/sessiongroups/sessions/{}/staff".format(
+        session_id
+    )
+
     try:
         response = requests.post(
             mentor_url,
@@ -169,18 +239,6 @@ def post_session(request):
     # POST request for Mentee #
     ###########################
 
-    associations = get_associations(mentor_user.viewsPersonId)
-    mentee_association = next(
-        filter(lambda a: a["association"] == "Mentor", associations), None
-    )
-
-    if not mentee_association:
-        return Response(
-            {"Error": "A mentee is not associated with the mentor!"}, status=400
-        )
-
-    mentee_views_person_id = mentee_association["masterId"]
-
     viewMenteeData = """<?xml version="1.0" encoding="utf-8"?>
                         <participants>
                             <ContactID>{0}</ContactID>
@@ -188,7 +246,9 @@ def post_session(request):
                         </participants>""".format(
         mentee_views_person_id, 1
     )
-    mentee_url = views_base_url + "sessions/" + sessionID + "/participants"
+    mentee_url = views_base_url + "work/sessiongroups/sessions/{}/participants".format(
+        session_id
+    )
     try:
         response = requests.post(
             mentee_url,
