@@ -1,8 +1,8 @@
+import json
 from rest_framework.response import Response
 from users.permissions import MentorPermissions
 from users.models import MentorRole
 from users.models import MentorUser
-import json
 
 from sessions.permissions import userIsAdmin, userIsSuperUser
 from .constants import views_base_url, views_username, views_password
@@ -12,28 +12,26 @@ from users.permissions import AdminPermissions
 import requests
 import xmltodict
 
-volunteering_types_base_url = (
-    views_base_url + "admin/valuelists/sessiongroup/volunteeringtypes"
-)
+venues_base_url = views_base_url + "admin/valuelists/sessiongroup/venues"
 
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_volunteering_types_endpoint(request):
-    return Response(get_volunteering_types(), 200)
+def get_venues_endpoint(request):
+    return Response(get_venues(), 200)
 
 
-def get_volunteering_types():
+def get_venues():
     response = requests.get(
-        volunteering_types_base_url,
+        venues_base_url,
         auth=(views_username, views_password),
         headers={"Accept": "application/json"},
     )
 
-    return parse_volunteering_types(response)
+    return parse_venues(response)
 
 
-def parse_volunteering_types(response):
+def parse_venues(response):
     parsed = json.loads(response.text)
 
     # Check if no volunteering types were returned from Views:
@@ -45,9 +43,9 @@ def parse_volunteering_types(response):
 
     return {
         "count": len(parsed["items"]),
-        "results": translate_volunteering_type_fields(parsed["items"]),
+        "results": translate_venue_fields(parsed["items"]),
     }
 
 
-def translate_volunteering_type_fields(volunteering_types):
-    return [val for val in volunteering_types.values()]
+def translate_venue_fields(venues):
+    return [val for val in venues.values()]

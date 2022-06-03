@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .volunteeringTypes import get_volunteering_types_endpoint
+from .venues import get_venues_endpoint
 from .activities import get_activities_endpoint
 from .associations import get_associations_endpoint
 from .questionnaires import get_questionnaires_endpoint
@@ -19,4 +20,5 @@ urlpatterns = [
     path("associations", get_associations_endpoint),
     path("activities", get_activities_endpoint),
     path("volunteering-types", get_volunteering_types_endpoint),
+    path("venues", get_venues_endpoint),
 ]
