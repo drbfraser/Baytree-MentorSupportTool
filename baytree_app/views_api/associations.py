@@ -23,7 +23,7 @@ association_views_response_fields = [
     "MasterID",  # PersonID of the person who owns the association (participant/mentee owns it typically)
     "SlaveType",  # Type of related person (volunteer is staff, so this would be "Staff" for mentor, "Person" for family)
     "SlaveID",  # PersonID of related person (typically mentor/volunteer id)
-    "Association",  # Role of slave/related person ex. Mentor, Mother
+    "Association",  # Master person's role to slave person ex. Mentee, Mother to slave person
     "Description",  # Describe association (may be empty)
     "StartDate",  # ex. 2021-07-07
     "EndDate",  # ex. 0000-00-00
@@ -31,10 +31,10 @@ association_views_response_fields = [
 association_translated_fields = [
     "associationId",
     "masterType",  # ex. "Person" for participant
-    "masterId",  # PersonID of this person
+    "masterId",  # PersonID of the person who owns the association (participant/mentee owns it typically)
     "slaveType",  # Type of related person (volunteer is staff, so this would be "Staff" for mentor, "Person" for family)
-    "slaveId",  # PersonID of related person
-    "association",  # ex. Mentor, Mother
+    "slaveId",  # PersonID of related person (typically mentor/volunteer id)
+    "association",  # Master person's role to slave person ex. Mentee, Mother to slave person
     "description",  # Describe association (may be empty)
     "startDate",  # ex. 2021-07-07
     "endDate",  # ex. 0000-00-00
@@ -47,7 +47,7 @@ related to other "Persons". For instance, a person who is a participant (Mentee)
 could be related to a volunteer person (Mentor), so an association record would exist
 between the two. A "Association" field of the association record will help tell
 whether the related person to a participant is a family member, or mentor, .etc
-For instance, if the association is "Mentee", the "master" Person is a Mentee of the "slave" Person
+For instance, if the association is "Mentee", the "master" Person is a Mentee of the "slave" Person (a mentor)
 """
 
 
