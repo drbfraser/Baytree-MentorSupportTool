@@ -13,17 +13,13 @@ import { login } from "../api/auth";
 import Logo from "../Assets/baytree-logo.png";
 import Photo from "../Assets/baytree-photo.jpg";
 import { useAuth } from "../context/AuthContext";
-import LoginModal from "./shared/LoginModal";
-import Modal from "./shared/Modal";
 
 const Login = () => {
   const navigate = useNavigate();
-  const {setUserId, signOut} = useAuth();
+  const {setUserId} = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [loginResponse, setLoginResponse] = useState<any>();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,12 +34,7 @@ const Login = () => {
       setEmail("");
       setPassword("");
     } else {
-      if (!loginResponse.data_privacy_consent){
-        setShowModal(true);
-        setLoginResponse(loginResponse);
-      } else {
-        setUserId(loginResponse.user_id)
-      }
+      setUserId(loginResponse.user_id)
     }
   }
 
@@ -129,26 +120,6 @@ const Login = () => {
           </Card>
         </Grid>
       </Grid>
-      <Modal
-        isOpen={showModal}
-        onOutsideClick={() => {
-          setShowModal(false);
-        }}
-        modalComponent={
-          <LoginModal
-            onLoginClick={() => {
-              setUserId(loginResponse.user_id);
-            }}
-            onOutsideClick={() => {
-              setShowModal(false);
-            }}
-            onLogOut={() => {
-              signOut();
-            }}
-          />
-        }
-        height="fit-content"
-      ></Modal>
     </div>
   );
 };
