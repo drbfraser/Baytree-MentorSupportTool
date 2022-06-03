@@ -2,9 +2,8 @@ import { Typography, Button } from "@mui/material";
 import useMobileLayout from "../../hooks/useMobileLayout";
 
 interface AddLoginModalProps {
-  onOutsideClick: () => void;
-  onLoginClick: () => void;
-  onLogOut: () => void;
+  onAgreeClick: () => void;
+  onDisagreeClick: () => void;
 }
 
 const LoginModal: React.FC<AddLoginModalProps> = (props) => {
@@ -38,7 +37,7 @@ const LoginModal: React.FC<AddLoginModalProps> = (props) => {
         <Button
           variant="contained"
           color="success"
-          onClick={props.onLoginClick}
+          onClick={props.onAgreeClick}
           style={{ marginBottom: onMobileDevice ? "1rem" : "0" }}
         >
           Agree
@@ -47,9 +46,7 @@ const LoginModal: React.FC<AddLoginModalProps> = (props) => {
           variant="contained"
           color="error"
           onClick={() => {
-            console.log("cancelling the log in")
-            props.onOutsideClick();
-            props.onLogOut();
+            props.onDisagreeClick();
           }}
         >
           Disagree
