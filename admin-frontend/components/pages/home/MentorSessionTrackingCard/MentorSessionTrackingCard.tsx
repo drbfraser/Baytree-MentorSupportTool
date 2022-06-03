@@ -56,17 +56,10 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     const curMonthEndDate = getCurMonthEndDate();
     const viewsSessionRes = await getSessionsFromViews(
       selectedSessionGroupId as string,
-      undefined,
-      undefined,
-      curMonthStartDate,
-      curMonthEndDate
+      { startDateFrom: curMonthStartDate, startDateTo: curMonthEndDate }
     );
 
-    if (
-      viewsSessionRes &&
-      viewsSessionRes.status === 200 &&
-      viewsSessionRes.data
-    ) {
+    if (viewsSessionRes) {
       const sessionRes = await getSessions();
       if (sessionRes !== null) {
         const sessionsInCurMonth = sessionRes.filter(
@@ -78,7 +71,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
         // Combine Sessions from django backend with views session
         const combinedViewsAndDjangoSessions = sessionsInCurMonth.map(
           (djangoSession) => {
-            const matchingViewsSession = viewsSessionRes.data.find(
+            const matchingViewsSession = viewsSessionRes.results.find(
               (viewsSession) =>
                 viewsSession.viewsSessionId === djangoSession.viewsSessionId
             );

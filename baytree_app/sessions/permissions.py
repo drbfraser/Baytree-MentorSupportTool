@@ -10,7 +10,9 @@ class SuperUserPermissions(BasePermission):
 
 
 def userIsAdmin(user):
-    return user and AdminUser.objects.filter(user_id=user.id).exists()
+    return user and (
+        AdminUser.objects.filter(user_id=user.id).exists() or user.is_superuser
+    )
 
 
 def requestUserIsUserObject(user, obj):

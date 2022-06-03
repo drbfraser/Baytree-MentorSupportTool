@@ -1,17 +1,12 @@
 import Paper from "@mui/material/Paper";
 import styled from "styled-components";
-import {
-  COLORS,
-  HELP_MESSAGE,
-  MOBILE_BREAKPOINT,
-} from "../../../constants/constants";
+import { COLORS, HELP_MESSAGE } from "../../../constants/constants";
 
-import React, { PureComponent, useEffect, useState } from "react";
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
+import React, { useEffect, useState } from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { Button, ButtonGroup, Skeleton, Typography } from "@mui/material";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { stringify } from "querystring";
 import {
   getParticipantsFromViews,
   Participant,
@@ -94,19 +89,22 @@ const MenteeDemographicsCard: React.FC<{}> = () => {
     async function getMenteeDemographicsData() {
       setLoadingData(true);
       const participants = await getParticipantsFromViews();
-      if (participants && participants.data) {
+      if (participants) {
         const menteeDemographicsData: MenteeDemographicsData = {
           age: {
-            age8To9: getParticipantsInAgeRange(participants.data, 8, 9).length,
-            age10To12: getParticipantsInAgeRange(participants.data, 10, 12)
+            age8To9: getParticipantsInAgeRange(participants.results, 8, 9)
               .length,
-            age13To20: getParticipantsInAgeRange(participants.data, 13, 20)
+            age10To12: getParticipantsInAgeRange(participants.results, 10, 12)
               .length,
-            age20Plus: getParticipantsInAgeRange(participants.data, 20).length,
-            notEntered: getParticipantsAgeNotEntered(participants.data).length,
+            age13To20: getParticipantsInAgeRange(participants.results, 13, 20)
+              .length,
+            age20Plus: getParticipantsInAgeRange(participants.results, 20)
+              .length,
+            notEntered: getParticipantsAgeNotEntered(participants.results)
+              .length,
           },
-          ethnicity: getParticipantEthnicityCounts(participants.data),
-          birthLocation: getParticipantBirthCountryCounts(participants.data),
+          ethnicity: getParticipantEthnicityCounts(participants.results),
+          birthLocation: getParticipantBirthCountryCounts(participants.results),
         };
 
         setData(menteeDemographicsData);

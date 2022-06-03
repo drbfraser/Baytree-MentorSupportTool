@@ -1,4 +1,5 @@
 from rest_framework.response import Response
+from .util import try_parse_int
 from users.permissions import MentorPermissions
 from users.models import MentorRole
 from users.models import MentorUser
@@ -46,6 +47,7 @@ related to other "Persons". For instance, a person who is a participant (Mentee)
 could be related to a volunteer person (Mentor), so an association record would exist
 between the two. A "Association" field of the association record will help tell
 whether the related person to a participant is a family member, or mentor, .etc
+For instance, if the association is "Mentee", the "master" Person is a Mentee of the "slave" Person
 """
 
 
@@ -94,7 +96,7 @@ def parse_associations(response):
         associations = [associations]
 
     return {
-        "count": len(parsed["staff"]["associations"]["association"]),
+        "count": len(associations),
         "results": translate_association_fields(associations),
     }
 
@@ -102,7 +104,7 @@ def parse_associations(response):
 def translate_association_fields(associations):
     return [
         {
-            association_translated_fields[i]: association[field]
+            association_translated_fields[i]: try_parse_int(association[field])
             for i, field in enumerate(association_views_response_fields)
         }
         for association in associations
