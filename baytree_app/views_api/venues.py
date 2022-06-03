@@ -25,27 +25,30 @@ def get_venues():
     response = requests.get(
         venues_base_url,
         auth=(views_username, views_password),
-        headers={"Accept": "application/json"},
     )
 
     return parse_venues(response)
 
 
 def parse_venues(response):
-    parsed = json.loads(response.text)
+    parsed = xmltodict.parse(response.text)
 
     # Check if no volunteering types were returned from Views:
-    if not "items" in parsed or len(parsed["items"]) == 0:
+    if not "items" in parsed["valuelist"] or not "item" in parsed["valuelist"]["items"]:
         return {
             "count": 0,
             "results": [],
         }
 
+    items = parsed["valuelist"]["items"]["item"]
+    if not isinstance(items, list):
+        items = [items]
+
     return {
-        "count": len(parsed["items"]),
-        "results": translate_venue_fields(parsed["items"]),
+        "count": len(items),
+        "results": translate_venue_fields(items),
     }
 
 
 def translate_venue_fields(venues):
-    return [val for val in venues.values()]
+    return [{"id": int(venue["@id"]), "name": venue["#text"]} for venue in venues]
