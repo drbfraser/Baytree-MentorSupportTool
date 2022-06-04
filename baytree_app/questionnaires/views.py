@@ -1,12 +1,13 @@
-import json
 from datetime import datetime, timezone
 
 import requests
-from baytree_app.constants import (VIEWS_BASE_URL, VIEWS_PASSWORD,
-                                   VIEWS_USERNAME)
+from baytree_app.constants import (
+    VIEWS_BASE_URL, VIEWS_PASSWORD, VIEWS_USERNAME)
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from users.models import MentorUser
 
 extractedQuestionFields = ["QuestionID", "Question", "inputType", "validation", "category"]
 
@@ -23,15 +24,24 @@ def fetch_value_list(id):
 
 # GET /api/questionnaires/questionnaire/
 @api_view(("GET",))
-def get_questionnaire(request, id=5):
+def get_questionnaire(request):
     """
-    Fetch the questionnaire assigned by the user
+    Fetch the questionnaire assigned by the the mentor
     """
-    # Fetch questionnaire id from the requesting user
+    # Find the questionnaire id from the requesting user
+    mentors = MentorUser.objects.filter(user_id=request.user.id)
+    if not mentors:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    mentorRole = mentors.first().mentorRole
+
+    if not mentorRole:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     
+    qid = mentorRole.viewsQuestionnaireId
 
     # Fetch questionnaire by id
-    url = f"{VIEWS_BASE_URL}evidence/questionnaires/{id}.json"
+    url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}.json"
     response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
     if response.status_code != 200:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -40,7 +50,7 @@ def get_questionnaire(request, id=5):
     
     # Construct the data
     data = {}
-    data["questionnaireId"] = id
+    data["questionnaireId"] = qid
     data["questions"] = []
     
     # Extract the question data
