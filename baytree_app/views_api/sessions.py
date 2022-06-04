@@ -1,4 +1,5 @@
 from rest_framework.response import Response
+from .util import try_parse_int
 from views_api.associations import get_associations
 from users.models import MentorRole
 from users.models import MentorUser
@@ -306,7 +307,7 @@ class SessionsApiView(APIView):
                 {"Error": "Making a post request for mentee failed!"}, status=400
             )
 
-        return Response(response, status=200)
+        return Response({"sessionId": try_parse_int(session_id)}, status=200)
 
 
 def get_sessions(
