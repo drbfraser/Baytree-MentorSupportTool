@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  getMenteeIdsForMentor,
-  getParticipants,
-  Participant
-} from "../api/views";
+import { getMenteesForMentor, Participant } from "../api/views";
 import { useAuth } from "../context/AuthContext";
 import { Mentee } from "../Components/sessions/session";
 
@@ -13,46 +9,27 @@ import { Mentee } from "../Components/sessions/session";
  * error: null if no errors loading mentees, string with reason if an error occurred
  */
 const useMentees = () => {
-  const [mentees, setMentees] = useState<Mentee[] | null>(null);
+  const [mentees, setMentees] = useState<Participant[] | null>(null);
   const [error, setError] = useState<OnMenteesFailedToLoadReason | "">("");
   const { user } = useAuth();
 
   const getMenteeData = async () => {
     try {
       if (!user || !user.viewsPersonId) {
-        setError("FAIL_GET_LOGGED_IN_USER");
+        setError("INVALID_USER");
         return;
       }
 
-      const menteeIdsResponse = await getMenteeIdsForMentor();
+      const menteesResponse = await getMenteesForMentor();
 
-      if (!menteeIdsResponse.data) {
-        setError("FAIL_LOAD_ASSOCIATIONS");
+      if (!menteesResponse.data) {
+        setError("MENTEES_ENDPOINT");
         return;
       }
 
-      const menteeIds = menteeIdsResponse.data;
-
-      const participants = await getParticipants({ ids: menteeIds });
-      if (!participants.data) {
-        setError("FAIL_LOAD_PARTICIPANTS");
-        return;
-      }
-
-      const newMentees = menteeIds.map((id) => {
-        const participant = (participants.data as Participant[]).find(
-          (participant) => participant.viewsPersonId === id
-        ) as Participant;
-
-        return {
-          id,
-          name: `${participant.firstName} ${participant.lastName}`
-        };
-      });
-
-      setMentees(newMentees);
+      setMentees(menteesResponse.data);
     } catch {
-      setError("FAIL_EXCEPTION");
+      setError("EXCEPTION");
     }
   };
 
@@ -64,9 +41,8 @@ const useMentees = () => {
 };
 
 export type OnMenteesFailedToLoadReason =
-  | "FAIL_LOAD_ASSOCIATIONS"
-  | "FAIL_LOAD_PARTICIPANTS"
-  | "FAIL_GET_LOGGED_IN_USER"
-  | "FAIL_EXCEPTION";
+  | "MENTEES_ENDPOINT"
+  | "INVALID_USER"
+  | "EXCEPTION";
 
 export default useMentees;

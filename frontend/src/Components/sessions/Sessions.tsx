@@ -51,7 +51,8 @@ const SessionForm = () => {
           <Formik
             initialValues={{
               ...getInitialFormValues(),
-              menteeViewsPersonId: mentees.length > 0 ? mentees[0].id : "",
+              menteeViewsPersonId:
+                mentees.length > 0 ? mentees[0].viewsPersonId : "",
               viewsVenueId: venues.length > 0 ? venues[0].id : ""
             }}
             onSubmit={async (data, { setSubmitting, resetForm }) => {
@@ -159,8 +160,8 @@ const SessionForm = () => {
                         onChange={handleChange}
                       >
                         {mentees.map((mentee, i) => (
-                          <MenuItem key={i} value={mentee.id}>
-                            {mentee.name}
+                          <MenuItem key={i} value={mentee.viewsPersonId}>
+                            {`${mentee.firstName} ${mentee.lastName}`}
                           </MenuItem>
                         ))}
                       </Select>

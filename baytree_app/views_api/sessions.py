@@ -306,7 +306,7 @@ class SessionsApiView(APIView):
                 {"Error": "Making a post request for mentee failed!"}, status=400
             )
 
-        return Response(response, status=200)
+        return Response({"sessionId": session_id}, status=200)
 
 
 def get_sessions(

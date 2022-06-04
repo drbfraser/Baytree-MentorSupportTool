@@ -1,4 +1,6 @@
 from rest_framework.response import Response
+
+from .participants import get_participants
 from .util import try_parse_int
 from users.models import MentorUser
 
@@ -109,7 +111,7 @@ def translate_association_fields(associations):
 
 
 @api_view(("GET",))
-def get_mentees_ids_for_mentor(request):
+def get_mentees_for_mentor(request):
     mentor_user = MentorUser.objects.filter(pk=request.user.id)
     if not mentor_user.exists():
         return Response(
@@ -125,4 +127,6 @@ def get_mentees_ids_for_mentor(request):
         if association["association"] == "Mentee":
             menteeIds.append(association["masterId"])
 
-    return Response(menteeIds, status.HTTP_200_OK)
+    participants = get_participants(menteeIds)
+
+    return Response(participants["results"], status.HTTP_200_OK)
