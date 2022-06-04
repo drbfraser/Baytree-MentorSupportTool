@@ -1,7 +1,5 @@
-from django.http import HttpResponse
-from .participants import get_participant_by_id
+from typing import List, Union
 from users.models import MentorUser
-from .permissions import MentorsViewsApiPermissions
 from users.permissions import AdminPermissions
 from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import permission_classes, api_view
@@ -40,8 +38,48 @@ staff members since we could retrieve members that aren't actually mentors.
 """
 
 
+@api_view(("GET",))
+@permission_classes((AdminPermissions,))
+def get_volunteers_endpoint(request):
+    """
+    Handles a request from the client browser and calls get_volunteers
+    to return its response to the client.
+    """
+    id = request.GET.getlist("id")
+    id = None if id == [] else id
+    searchEmail = request.GET.get("searchEmail", None)
+    searchFirstName = request.GET.get("searchFirstName", None)
+    searchLastName = request.GET.get("searchLastName", None)
+
+    if searchEmail != None and searchEmail != "":
+        response = get_volunteers(
+            limit=request.GET.get("limit", None),
+            offset=request.GET.get("offset", None),
+            searchEmail=searchEmail,
+        )
+    elif searchFirstName or searchLastName:
+        response = get_volunteers(
+            limit=request.GET.get("limit", None),
+            offset=request.GET.get("offset", None),
+            searchFirstName=searchFirstName,
+            searchLastName=searchLastName,
+        )
+    elif id != None:
+        response = get_volunteers(id)
+    else:
+        response = get_volunteers(
+            limit=request.GET.get("limit", None), offset=request.GET.get("offset", None)
+        )
+
+    return Response(response, status=status.HTTP_200_OK)
+
 def get_volunteers(
-    id: str = None, limit: int = 5, offset: int = 0, searchEmail: str = None
+    id: Union[List[str], str] = None,
+    limit: int = None,
+    offset: int = None,
+    searchEmail: str = None,
+    searchFirstName: str = None,
+    searchLastName: str = None,
 ):
     """
     Gets volunteers from Views API.
@@ -68,44 +106,45 @@ def get_volunteers(
             views_request_url, auth=(views_username, views_password)
         )
 
-        parsed = xmltodict.parse(response.text)
+        return parse_volunteers(response)
 
-        # Check if no volunteers were returned from Views:
-        if parsed["contacts"]["volunteers"]["@count"] == "0":
-            return {
-                "total": int(parsed["contacts"]["volunteers"]["@count"]),
-                "data": [],
-            }
+    elif searchFirstName or searchLastName:
+        if limit != None:
+            views_request_url += "&pageFold=" + str(limit)
 
-        # Make sure the volunteers are wrapped in a list, if there is a single volunteer
-        if not isinstance(parsed["contacts"]["volunteers"]["volunteer"], list):
-            parsed["contacts"]["volunteers"]["volunteer"] = [
-                parsed["contacts"]["volunteers"]["volunteer"]
-            ]
+        if offset != None:
+            views_request_url += "&offset=" + str(offset)
 
-        volunteers = [
-            {
-                volunteerTranslateFields[i]: volunteer[field]
-                for i, field in enumerate(volunteerFields)
-            }
-            for volunteer in parsed["contacts"]["volunteers"]["volunteer"]
-        ]
+        views_request_url = "{}search?".format(volunteers_base_url)
 
-        return {
-            "total": int(parsed["contacts"]["volunteers"]["@count"]),
-            "data": volunteers,
-        }
+        if searchFirstName:
+            views_request_url += "&Forename={}".format(searchFirstName)
+
+        if searchLastName:
+            views_request_url += "&Surname={}".format(searchLastName)
+
+        response = requests.get(
+            views_request_url, auth=(views_username, views_password)
+        )
+
+        return parse_volunteers(response)
 
     elif id != None:
+        ids = id
+        if not isinstance(id, list):
+            ids = [id]
+
+        views_request_url = "{}search?".format(volunteers_base_url)
+
+        for id in ids:
+            views_request_url += "&PersonID[]={}".format(id)
+
         response = requests.get(
-            volunteers_base_url + id, auth=(views_username, views_password)
+            views_request_url, auth=(views_username, views_password)
         )
-        parsed = xmltodict.parse(response.text)
-        volunteer = {
-            volunteerTranslateFields[i]: parsed["volunteer"][field]
-            for i, field in enumerate(volunteerFields)
-        }
-        return volunteer
+
+        return parse_volunteers(response)
+
     else:
         if limit != None:
             if offset == None:
@@ -118,73 +157,54 @@ def get_volunteers(
                 + str(offset),
                 auth=(views_username, views_password),
             )
+
         else:
             response = requests.get(
                 volunteers_base_url + "search?q=", auth=(views_username, views_password)
             )
 
-        parsed = xmltodict.parse(response.text)
+        return parse_volunteers(response)
 
-        # Make sure the volunteers are wrapped in a list, if there is a single volunteer
-        if not isinstance(parsed["contacts"]["volunteers"]["volunteer"], list):
-            parsed["contacts"]["volunteers"]["volunteer"] = [
-                parsed["contacts"]["volunteers"]["volunteer"]
-            ]
 
-        volunteers = [
-            {
-                volunteerTranslateFields[i]: volunteer[field]
-                for i, field in enumerate(volunteerFields)
-            }
-            for volunteer in parsed["contacts"]["volunteers"]["volunteer"]
-        ]
+def parse_volunteers(response):
+    parsed = xmltodict.parse(response.text)
+
+    # Check if no volunteers were returned from Views:
+    if parsed["contacts"]["volunteers"]["@count"] == "0":
         return {
-            "total": int(parsed["contacts"]["volunteers"]["@count"]),
-            "data": volunteers,
+            "total": 0,
+            "data": [],
         }
 
+    # Make sure the volunteers are wrapped in a list, if there is a single volunteer
+    volunteers = parsed["contacts"]["volunteers"]["volunteer"]
+    if not isinstance(volunteers, list):
+        volunteers = [volunteers]
 
-@api_view(("GET",))
-@permission_classes((AdminPermissions,))
-def get_volunteers_endpoint(request):
+    return {
+        "total": int(parsed["contacts"]["volunteers"]["@count"]),
+        "data": translate_volunteer_fields(volunteers),
+    }
+
+
+def translate_volunteer_fields(volunteers):
+    return [
+        {
+            volunteerTranslateFields[i]: volunteer[field]
+            for i, field in enumerate(volunteerFields)
+        }
+        for volunteer in volunteers
+    ]
+
+@api_view(("GET", ))
+def get_volunteer_profile(request):
     """
-    Handles a request from the client browser and calls get_volunteers
-    to return its response to the client.
+    Fetch the detailed volunteer profile
+    based on the requesting user
     """
-    id = request.GET.get("id", None)
-    searchEmail = request.GET.get("searchEmail", None)
-
-    if searchEmail != None and searchEmail != "":
-        response = get_volunteers(
-            limit=request.GET.get("limit", None),
-            offset=request.GET.get("offset", None),
-            searchEmail=searchEmail,
-        )
-    elif id != None:
-        response = get_volunteers(id)
-    else:
-        response = get_volunteers(
-            limit=request.GET.get("limit", None), offset=request.GET.get("offset", None)
-        )
-
-    return Response(response, status=status.HTTP_200_OK)
-
-# GET api/views-api/volunteer/participants/
-@api_view(("GET",))
-def get_participant_by_volunteer(request): 
-    # Get mentee views id
     mentors = MentorUser.objects.filter(user_id=request.user.id)
-    
     if not mentors:
-        return Response([], status=status.HTTP_404_NOT_FOUND)
-
+        return Response(status=status.HTTP_404_NOT_FOUND)
     mentorViewsId = mentors.first().viewsPersonId
-
-    # Get the mentee id from association field
-    url = f"{views_base_url}contacts/staff/{mentorViewsId}/associations?q=Mentee"
-    response = requests.get(url, auth=(views_username, views_password))
-    data = xmltodict.parse(response.text)
-    menteeId = data["staff"]["associations"]["association"]["MasterID"]
-
-    # Get the mentee profile from mentee id
-    return get_participant_by_id(menteeId)
+    response = get_volunteers(id=f"{mentorViewsId}")
+    return Response(response, status=status.HTTP_200_OK)

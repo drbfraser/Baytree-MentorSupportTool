@@ -53,7 +53,7 @@ const useData = (
     "Failed to load data. Please ensure that you have a stable internet connection and refresh the page. Otherwise, contact your administrator.";
 
   const FAIL_SAVE_MESSAGE =
-    "Failed to save data. Please ensure that you have a stable internet connection and refresh the page. Otherwise, contact your administrator.";
+    "Failed to save data. Ensure that all data entered is valid and your internet is stable. Otherwise, try refreshing the page or contacting your administrator.";
 
   const _onLoadDataRows = data
     ? async () => data as DataRow[]

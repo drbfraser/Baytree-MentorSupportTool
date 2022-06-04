@@ -1,12 +1,3 @@
-/**
-  Endpoints creating/reading/updating/deleting Mentor User(s). Mentor Users are a sub-type of
-  Django users, so a corresponding Django user must be created (via the endpoints in users.ts)
-  before creating a Mentor User with these endpoints, and the Mentor User can be linked
-  to this Django user by assigning the Django User id number to the "user" field in
-  the MentorUserCreate interface below.
-*/
-
-import { generateBackendCrudFuncs } from "./base";
 import { API_BASE_URL } from "./url";
 
 export type MentorUserStatus =
@@ -18,39 +9,94 @@ export type MentorUserStatus =
   | "Staff"
   | "Inactive";
 
-export interface MentorUserCreate {
-  user: number;
-  menteeUsers: number[];
+export type User = {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+};
+
+import { PagedDataRows } from "../../components/shared/datagrid/datagridTypes";
+import { ApiOptions, backendGet, backendPost } from "./base";
+import { MentorRole } from "./mentorRoles";
+
+export type MentorUser =
+  | (MentorUserBackendFields & MentorUserViewsFields) // if includeDataFromViews == true
+  | MentorUserBackendFields;
+
+export interface MentorUserBackendFields {
+  user_id: number;
+  user: User;
   status: MentorUserStatus;
+  menteeUsers: any[];
   viewsPersonId: string;
+  mentorRole: MentorRole | null;
 }
 
-export interface MentorUserResponse {
-  user: {
-    id: number;
-    email: string;
-    first_name: string;
-    last_name: string;
-  };
-  menteeUsers: number[];
-  status: MentorUserStatus;
-  viewsPersonId: string;
+export interface MentorUserViewsFields {
+  firstName: string;
+  lastName: string;
 }
 
-export type MentorUserUpdate = Partial<MentorUserCreate> & { id: number };
+export const mentorsBackendEndpoint = `users/mentors/`;
 
-export const mentorUsersBackendEndpoint = `${API_BASE_URL}/users/mentors`;
+export const getMentorUsers = async (options?: ApiOptions) => {
+  const queryParams: Record<string, any> = {};
 
-export const {
-  create: addMentorUser,
-  read: getMentorUsers,
-  update: updateMentorUser,
-  delete: deleteMentorUser,
-} = generateBackendCrudFuncs<
-  MentorUserCreate,
-  MentorUserResponse,
-  MentorUserUpdate
->(mentorUsersBackendEndpoint);
+  if (options) {
+    const {
+      searchText,
+      dataFieldsToSearch,
+      limit,
+      offset,
+      includeDataFromViews,
+    } = options;
+    if (limit) {
+      queryParams["limit"] = limit;
+    }
+
+    if (offset) {
+      queryParams["offset"] = offset;
+    }
+
+    if (searchText && dataFieldsToSearch) {
+      dataFieldsToSearch.forEach((dataField) => {
+        if (dataField === "email") {
+          queryParams[`user__email__icontains`] = searchText;
+        } else if (dataField === "firstName") {
+          const firstAndLast = searchText.split(" ");
+          if (firstAndLast.length > 1) {
+            queryParams["searchFirstName"] = firstAndLast[0];
+          } else {
+            queryParams["searchName"] = searchText;
+          }
+        } else if (dataField === "lastName") {
+          const firstAndLast = searchText.split(" ");
+          if (firstAndLast.length > 1) {
+            queryParams["searchLastName"] = firstAndLast[1];
+          } else {
+            queryParams["searchName"] = searchText;
+          }
+        } else {
+          queryParams[`${dataField}__icontains`] = searchText;
+        }
+      });
+    }
+
+    if (includeDataFromViews) {
+      queryParams["joinViews"] = "true";
+    }
+  }
+
+  return await backendGet<PagedDataRows<MentorUser>>(
+    mentorsBackendEndpoint,
+    queryParams
+  );
+};
+
+export const saveMentorUsers = async (mentorUserDataRows: MentorUser[]) => {
+  return await backendPost(mentorsBackendEndpoint, mentorUserDataRows);
+};
 
 export const sendMentorAccountCreationEmail = async (
   viewsPersonId: string,
@@ -58,20 +104,23 @@ export const sendMentorAccountCreationEmail = async (
   email: string
 ) => {
   try {
-    const apiRes = await fetch(`${API_BASE_URL}/users/sendAccountCreationEmail`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        viewsPersonId,
-        mentorFirstName,
-        email,
-        accountType: "Mentor",
-      }),
-    });
+    const apiRes = await fetch(
+      `${API_BASE_URL}/users/sendAccountCreationEmail`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          viewsPersonId,
+          mentorFirstName,
+          email,
+          accountType: "Mentor",
+        }),
+      }
+    );
 
     return apiRes;
   } catch {

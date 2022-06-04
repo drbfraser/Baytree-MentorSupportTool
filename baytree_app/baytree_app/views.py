@@ -148,6 +148,10 @@ class CookieTokenVerifyView(TokenVerifyView):
 
 class CookieTokenObtainPairView(TokenObtainPairView):
     def finalize_response(self, request, response, *args, **kwargs):
+        # If wrong password, (unauthorized), don't return additional info or cookies
+        if response.status_code == 401:
+            return super().finalize_response(request, response, *args, **kwargs)
+
         if response.data.get("refresh"):
             cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
@@ -206,6 +210,10 @@ class CookieTokenRefreshSerializer(TokenRefreshSerializer):
 
 class CookieTokenRefreshView(TokenRefreshView):
     def finalize_response(self, request, response, *args, **kwargs):
+        # If wrong password, (unauthorized), don't return additional info or cookies
+        if response.status_code == 401:
+            return super().finalize_response(request, response, *args, **kwargs)
+
         access_token_obj = None
         if response.data.get("refresh"):
             cookie_max_age = 3600 * 24  # 1 day

@@ -1,30 +1,35 @@
 import { useEffect, useMemo, useState } from "react";
 import { Answer, fetchQuestions, Question } from "../api/misc";
+import useMentees from "./useMentees";
 import useMentorProfile from "./useProfile";
 
 export const MENTOR_NAME_TAG = "mentor_name";
 export const MENTEE_NAME_TAG = "mentee_name";
 
-export const isAutoFilled = (question: Question) => {
-  return question.category.includes(MENTOR_NAME_TAG) || question.category.includes(MENTEE_NAME_TAG);
-}
+export const MENTOR_NAME = /mentor('s)? name/ig;
+export const MENTEE_NAME = /mentee('s)? name/ig;
 
 export const isRequired = (question: Question) => {
   return question.validation.includes("required");
 }
 
+export const isMentorQuestion = (q: Question) => !!q.Question.match(MENTOR_NAME);
+export const isMenteeQuestion = (q: Question) => !!q.Question.match(MENTEE_NAME);
+
 const useQuestionnaire = () => {
-  const [loading, setLoading] = useState(true);
-  const { userId, mentor, mentee, loadingMentor, loadingMentee } = useMentorProfile();
+  const [loadingQuestionnaire, setLoadingQuestionniare] = useState(true);
+  const { mentor, loadingMentor } = useMentorProfile();
+  const { mentees, error: menteeError } = useMentees();
   const [questions, setQuestions] = useState([] as Question[]);
+  const [questionsError, setQuestionnaireError] = useState<string | undefined>(undefined);
 
   // Fetch the question
   useEffect(() => {
     fetchQuestions()
       .then(setQuestions)
-      .then(() => setLoading(false))
-      .catch((error) => console.error("Error: ", error));
-    return () => setLoading(false);
+      .then(() => setLoadingQuestionniare(false))
+      .catch((_error) => setQuestionnaireError("Cannot fetch the questionnaire"));
+    return () => setLoadingQuestionniare(false);
   }, []);
 
   // Generate the initital answers based on the question types
@@ -32,39 +37,51 @@ const useQuestionnaire = () => {
   const initialAnswer = useMemo(() => {
     let answer: Answer = {};
     for (const question of questions) {
-      if (question.category.includes(MENTOR_NAME_TAG))
+      if (isMentorQuestion(question))
         answer[question.QuestionID] = mentor.viewsPersonId > 0 ? `${mentor.firstname} ${mentor.surname}` : "";
-      else if (question.category.includes(MENTEE_NAME_TAG))
-        answer[question.QuestionID] = mentee.viewsPersonId > 0 ? `${mentee.firstname} ${mentee.surname}` : "";
       else answer[question.QuestionID] = "";
     }
-    answer["mentorId"] = `${userId}`
+    answer["mentorId"] = `${mentor.viewsPersonId}`;
     return answer;
-  }, [mentor, mentee, questions]);
+  }, [mentor, questions]);
 
   // Validate the answer based on the question requirement
   const validateAnswer = (answer: Answer) => {
     return questions
-    .filter(isRequired)
-    .every((q) => (answer[q.QuestionID] || "") !== "");
+      .filter(isRequired)
+      .every((q) => (answer[q.QuestionID] || "") !== "");
   }
 
-  // Validate the asnwer
-  const validateQuestionnaire = () => {
-    let countMentorName = 0;
-    let countMenteeName = 0;
-    for (const question of questions) {
-      const category = question.category;
-      if (category === MENTOR_NAME_TAG) countMentorName++;
-      if (category === MENTEE_NAME_TAG) countMenteeName++;
-    }
-    // Only one mentor name question and mentee name question
-    return countMenteeName === 1 && countMentorName === 1;
-  } 
+  const loading = loadingQuestionnaire || loadingMentor || !mentees;
 
-  const loadingQuestionnaire = loading || loadingMentor || loadingMentee;
+  // Validate the questionnaire based on these condition
+  // - Must have only one question for mentor's name
+  // - Must have only one quesrion for mentee's name
+  // - All questions must have input of type "text" or "number"
+  const isValidQuestionnaire = useMemo(() => {
+    const mentorQuestion = questions.filter(isMentorQuestion);
+    const menteeQuestion = questions.filter(isMenteeQuestion);
+    const validFormat = questions.every(q => q.inputType === "text" || q.inputType === "number")
+    return mentorQuestion.length === 1 && menteeQuestion.length === 1 && validFormat;
+  }, [questions]);
 
-  return { loading: loadingQuestionnaire, questions, initialAnswer, validateQuestionnaire, validateAnswer }
+  // Generate error based on the prvious errors
+  // and the validaity of the questionnaire and datat set
+  const errorMessage = () => {
+    if (questionsError) return questionsError;
+    if (menteeError) return menteeError;
+    if (!isValidQuestionnaire) return "The questionnaire is not correctly formatted";
+    if (mentees && mentees.length <= 0) return "The mentors does not any associate mentees";
+    return "";
+  };
+
+  return { 
+    loading, 
+    questions, 
+    initialAnswer, 
+    validateAnswer, 
+    errorMessage,
+    mentees }
 }
 
 export default useQuestionnaire;

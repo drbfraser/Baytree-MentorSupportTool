@@ -1,10 +1,12 @@
 import { Alert, AlertTitle } from "@mui/material";
+import { FunctionComponent } from "react";
 
-const InvalidQuestionnaire = () => {
+const InvalidQuestionnaire: FunctionComponent<{error: string}> = ({error}) => {
   return (
-    <Alert severity="error">
-      <AlertTitle>Some questions has unsupported input types</AlertTitle>
-      Please contact your adminstrators to resolve the issue.
+    <Alert severity="error" sx={{my: 3}}>
+      <AlertTitle>An error has occurred</AlertTitle>
+      Please refresh the page or contact your adminstrators to resolve the issue. <br />
+      Reason: {error}
     </Alert>
   )
 }

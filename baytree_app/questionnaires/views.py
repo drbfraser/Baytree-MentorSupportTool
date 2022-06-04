@@ -23,7 +23,7 @@ def fetch_value_list(id):
 
 # GET /api/questionnaires/questionnaire/
 @api_view(("GET",))
-def get_questionnaire(request, id=33):
+def get_questionnaire(request, id=5):
     """
     Fetch the questionnaire assigned by the user
     """

@@ -6,8 +6,10 @@ import {
   MentorRole,
   saveMentorRoles,
 } from "../api/backend/mentorRoles";
+import { getActivitiesFromViews } from "../api/backend/views/activities";
 import { getQuestionnairesFromViews } from "../api/backend/views/questionnaires";
 import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
+import { getVolunteeringTypesFromViews } from "../api/backend/views/volunteeringTypes";
 import DataGrid from "../components/shared/datagrid/datagrid";
 import {
   onLoadPagedDataRowsFunc,
@@ -25,12 +27,12 @@ const MentorRoles: NextPage = () => {
     limit,
     offset,
   }) => {
-    const mentorRolesPageRes = (await getMentorRoles(
+    const mentorRolesPageRes = (await getMentorRoles({
       searchText,
       dataFieldsToSearch,
       limit,
-      offset
-    )) as PagedDataRows<MentorRole>;
+      offset,
+    })) as PagedDataRows<MentorRole>;
 
     if (mentorRolesPageRes) {
       mentorRolesPageRes.results = mentorRolesPageRes.results.map(
@@ -46,9 +48,15 @@ const MentorRoles: NextPage = () => {
   };
 
   const saveMentorRoleData: onSaveDataRowsFunc = async (
-    dataRowChanges: DataRow[]
+    createdRows: DataRow[],
+    updatedRows: DataRow[],
+    deletedRows: DataRow[]
   ) => {
-    const result = await saveMentorRoles(dataRowChanges);
+    const result = await saveMentorRoles([
+      ...createdRows,
+      ...updatedRows,
+      ...deletedRows.map((row) => ({ ...row, isDeleted: true })),
+    ]);
     return !!result;
   };
 
@@ -78,6 +86,30 @@ const MentorRoles: NextPage = () => {
     }
   };
 
+  const getActivityOptions = async () => {
+    const activities = await getActivitiesFromViews();
+    if (activities) {
+      return activities.results.map((activity) => ({
+        id: activity,
+        name: activity,
+      }));
+    } else {
+      throw "Failed to retrieve activities option data.";
+    }
+  };
+
+  const getVolunteeringOptions = async () => {
+    const volunteeringTypes = await getVolunteeringTypesFromViews();
+    if (volunteeringTypes) {
+      return volunteeringTypes.results.map((volunteeringType) => ({
+        id: volunteeringType,
+        name: volunteeringType,
+      }));
+    } else {
+      throw "Failed to retrieve volunteering type option data.";
+    }
+  };
+
   return (
     <MentorRolesCard>
       <MentorRolesTitle variant="h5">Mentor Roles</MentorRolesTitle>
@@ -102,6 +134,12 @@ const MentorRoles: NextPage = () => {
           {
             header: "Activity",
             dataField: "activity",
+            onLoadValueOptions: getActivityOptions,
+          },
+          {
+            header: "Volunteering",
+            dataField: "volunteeringType",
+            onLoadValueOptions: getVolunteeringOptions,
           },
         ]}
         onLoadDataRows={getMentorRoleData}
