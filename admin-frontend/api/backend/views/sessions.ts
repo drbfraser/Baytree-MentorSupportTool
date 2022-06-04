@@ -1,5 +1,5 @@
-import { BackendGetResponse, generateBackendGetFunc } from "../base";
-import { API_BASE_URL } from "../url";
+import { PagedDataRows } from "../../../components/shared/datagrid/datagridTypes";
+import { backendGet } from "../base";
 
 export interface SessionResponse {
   viewsSessionId: string;
@@ -16,11 +16,6 @@ export interface SessionResponse {
   updated: string;
   venueName: string;
 }
-export const sessionsFromViewsBackendEndpoint = `${API_BASE_URL}/views-api/sessions`;
-
-/** Get unparsed sessions from Django backend */
-const getSessionsFromViewsBackendGetFunc =
-  generateBackendGetFunc<SessionResponse>(sessionsFromViewsBackendEndpoint);
 
 export interface Session {
   name: string;
@@ -37,34 +32,46 @@ export interface Session {
   updatedDate: Date;
 }
 
-/** Wrapper function to get sessions from views while parsing the appropiate format for each field */
+export const sessionsEndpoint = `views-api/sessions`;
+
 export const getSessionsFromViews = async (
   viewsSessionGroupId: string,
-  limit?: number,
-  offset?: number,
-  startDateFrom?: string,
-  startDateTo?: string
-): Promise<BackendGetResponse<Session>> => {
-  const filters: Record<string, any> = { sessionGroupId: viewsSessionGroupId };
+  params?: {
+    limit?: number;
+    offset?: number;
+    filters?: Record<string, string>;
+    startDateFrom?: string;
+    startDateTo?: string;
+  }
+): Promise<PagedDataRows<Session> | null> => {
+  let queryParams: Record<string, any> = {
+    sessionGroupId: viewsSessionGroupId,
+  };
 
-  if (startDateFrom) {
-    filters.startDateFrom = startDateFrom;
+  if (params) {
+    if (params.limit) {
+      queryParams["limit"] = params.limit;
+    }
+    if (params.offset) {
+      queryParams["offset"] = params.offset;
+    }
+    if (params.startDateFrom) {
+      queryParams["startDateFrom"] = params.startDateFrom;
+    }
+    if (params.startDateTo) {
+      queryParams["startDateTo"] = params.startDateTo;
+    }
   }
 
-  if (startDateTo) {
-    filters.startDateTo = startDateTo;
-  }
-
-  const sessionsResponse = await getSessionsFromViewsBackendGetFunc(
-    limit,
-    offset,
-    filters
+  const response = await backendGet<PagedDataRows<SessionResponse>>(
+    sessionsEndpoint,
+    queryParams
   );
 
-  if (sessionsResponse && sessionsResponse.data) {
+  if (response) {
     return {
-      ...sessionsResponse,
-      data: sessionsResponse.data.map((session) => ({
+      count: response.count,
+      results: response.results.map((session) => ({
         activity: session.activity,
         name: session.name,
         leadStaff: session.leadStaff,
@@ -83,7 +90,7 @@ export const getSessionsFromViews = async (
         updatedDate: new Date(Date.parse(`${session.created}`)),
       })),
     };
+  } else {
+    return null;
   }
-
-  return sessionsResponse;
 };

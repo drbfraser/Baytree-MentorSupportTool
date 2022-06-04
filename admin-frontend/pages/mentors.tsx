@@ -1,59 +1,100 @@
 import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
-import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
-import { toast } from "react-toastify";
+import { useState } from "react";
+import { MdAdd } from "react-icons/md";
 import styled from "styled-components";
 import AddMentorModal from "../components/pages/mentors/addMentorModal";
 import Button from "../components/shared/button";
-import DataGrid from "../components/shared/datagrid";
 import Modal from "../components/shared/Modal";
-import { HELP_MESSAGE } from "../constants/constants";
-import { getMentorUsers } from "../api/backend/mentorUsers";
+import {
+  getMentorUsers,
+  MentorUser,
+  MentorUserBackendFields,
+  MentorUserViewsFields,
+  saveMentorUsers,
+} from "../api/backend/mentorUsers";
 import { deleteUsers } from "../api/backend/users";
-import OverlaySpinner from "../components/shared/overlaySpinner";
+import DataGrid from "../components/shared/datagrid/datagrid";
+import {
+  OnLoadColumnValueOptionsFunc,
+  onLoadPagedDataRowsFunc,
+  onSaveDataRowsFunc,
+} from "../components/shared/datagrid/datagridTypes";
+import { getMentorRoles, MentorRole } from "../api/backend/mentorRoles";
 
 const Mentors: NextPage = () => {
   const [showAddMentorModal, setShowAddMentorModal] = useState(false);
-  const [loadingData, setLoadingData] = useState(true);
-  const [pageNum, setPageNum] = useState(1);
-  const [maxPageNum, setMaxPageNum] = useState(1);
-  const [pageData, setPageData] = useState<
-    {
-      email: string;
-      viewsPersonId: string;
-    }[]
-  >([]);
   const [dataGridKey, setDataGridKey] = useState<number>(1);
-  const PAGE_LIMIT = 10;
+  const PAGE_LIMIT = 5;
 
-  useEffect(() => {
-    async function getData() {
-      setLoadingData(true);
-      const mentorsData = await getMentorUsers(
-        PAGE_LIMIT,
-        (pageNum - 1) * PAGE_LIMIT
-      );
+  const loadMentorUserDataRows: onLoadPagedDataRowsFunc = async ({
+    searchText,
+    dataFieldsToSearch,
+    limit,
+    offset,
+  }) => {
+    const mentorsData = await getMentorUsers({
+      searchText,
+      dataFieldsToSearch,
+      limit,
+      offset,
+      includeDataFromViews: true,
+    });
 
-      if (mentorsData && mentorsData.data !== null) {
-        setMaxPageNum(Math.ceil(mentorsData.total / PAGE_LIMIT));
-        console.log(mentorsData);
-        setPageData(
-          mentorsData.data.map((mentorData) => ({
-            email: mentorData.user.email,
-            viewsPersonId: mentorData.viewsPersonId,
-            id: mentorData.user.id,
-          }))
-        );
-        setLoadingData(false);
-      } else {
-        toast.error(HELP_MESSAGE);
-        setLoadingData(false);
+    if (mentorsData) {
+      const mentorDataRows = mentorsData.results as (MentorUserBackendFields &
+        MentorUserViewsFields)[];
+
+      return {
+        count: mentorsData.count,
+        results: mentorDataRows.map((mentor) => ({
+          user_id: mentor.user_id,
+          email: mentor.user.email,
+          firstName: mentor.firstName,
+          lastName: mentor.lastName,
+          mentorRole_id: mentor.mentorRole ? mentor.mentorRole.id : "",
+        })),
+      };
+    } else {
+      throw "Failed to get mentor user data";
+    }
+  };
+
+  const onLoadMentorRoleOptions: OnLoadColumnValueOptionsFunc = async () => {
+    const mentorRoles = (await getMentorRoles()) as MentorRole[] | null;
+    if (mentorRoles) {
+      return mentorRoles.map((mentorRole) => ({
+        id: mentorRole.id,
+        name: mentorRole.name,
+      }));
+    } else {
+      throw "Failed to get mentor role options";
+    }
+  };
+
+  const saveMentorUserDataRows: onSaveDataRowsFunc = async (
+    createdRows,
+    updatedRows,
+    deletedRows
+  ) => {
+    let successfulSave = true;
+
+    if (updatedRows.length > 0) {
+      const updateRes = await saveMentorUsers(updatedRows as MentorUser[]);
+      if (!updateRes) {
+        successfulSave = false;
       }
     }
 
-    getData();
-  }, [pageNum, dataGridKey]);
+    if (deletedRows.length > 0) {
+      const delRes = await deleteUsers(deletedRows.map((row) => row.user_id));
+      if (!delRes || delRes.status !== 200) {
+        successfulSave = false;
+      }
+    }
+
+    return successfulSave;
+  };
 
   return (
     <>
@@ -79,38 +120,36 @@ const Mentors: NextPage = () => {
         </Header>
         <DataGrid
           key={`${dataGridKey}`}
-          data={pageData}
+          onLoadDataRows={loadMentorUserDataRows}
+          onSaveDataRows={saveMentorUserDataRows}
           cols={[
             {
               header: "Email",
               dataField: "email",
-              dataType: "email",
-            },
-          ]}
-          dataRowActions={[
-            {
-              name: "Delete",
-              icon: MdDelete,
-              action: async (dataRow: any) => {
-                setLoadingData(true);
-                const res = await deleteUsers(dataRow.id);
-                setDataGridKey(dataGridKey + 1);
-                if (res && res.status === 200) {
-                  toast.success("Successfully deleted user!");
-                } else {
-                  toast.error(HELP_MESSAGE);
-                }
-                setLoadingData(false);
-              },
+              disableEditing: true,
+              keepColumnOnMobile: true,
             },
             {
-              name: "Modify",
-              icon: MdEdit,
-              action: () => {
-                alert("TODO: modify");
-              },
+              header: "First Name",
+              dataField: "firstName",
+              disableEditing: true,
+              enableSearching: true,
+            },
+            {
+              header: "Last Name",
+              dataField: "lastName",
+              disableEditing: true,
+              enableSearching: true,
+            },
+            {
+              header: "Mentor Role",
+              dataField: "mentorRole_id",
+              onLoadValueOptions: onLoadMentorRoleOptions,
             },
           ]}
+          pageSize={PAGE_LIMIT}
+          disableDataRowCreation
+          primaryKeyDataField="user_id"
         ></DataGrid>
       </Paper>
       <Modal
@@ -129,12 +168,6 @@ const Mentors: NextPage = () => {
         }
         height="100vh"
       ></Modal>
-      <OverlaySpinner
-        active={loadingData}
-        onClick={() => {
-          setLoadingData(false);
-        }}
-      ></OverlaySpinner>
     </>
   );
 };

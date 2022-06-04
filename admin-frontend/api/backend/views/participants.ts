@@ -1,10 +1,7 @@
-import { BackendGetFunction, generateBackendGetFunc } from "../base";
-import { API_BASE_URL } from "../url";
-
 interface ParticipantUnparsed {
-  firstname: string;
-  surname: string;
-  viewsPersonId: string;
+  firstName: string;
+  lastName: string;
+  viewsPersonId: number;
   email: string;
   ethnicity: string;
   country: string;
@@ -18,34 +15,45 @@ export interface Participant extends ParticipantUnparsed {
   dateOfBirth: Date | null;
 }
 
-export const participantsFromViewsBackendEndpoint = `${API_BASE_URL}/views-api/participants`;
+import { PagedDataRows } from "../../../components/shared/datagrid/datagridTypes";
+import { backendGet } from "../base";
 
-const getParticipantsBackendFunc = generateBackendGetFunc<ParticipantResponse>(
-  participantsFromViewsBackendEndpoint
-);
+export const participantsEndpoint = `views-api/participants`;
 
-export const getParticipantsFromViews: BackendGetFunction<Participant> = async (
-  limit?: number,
-  offset?: number,
-  filters?: Record<string, string>
-) => {
-  const backendResponse = await getParticipantsBackendFunc(
-    limit,
-    offset,
-    filters
+export const getParticipantsFromViews = async (params?: {
+  limit?: number;
+  offset?: number;
+  filters?: Record<string, string>;
+}): Promise<PagedDataRows<Participant> | null> => {
+  let queryParams: Record<string, any> = {};
+  if (params) {
+    if (params.limit) {
+      queryParams["limit"] = params.limit;
+    }
+    if (params.offset) {
+      queryParams["offset"] = params.offset;
+    }
+    if (params.filters) {
+      queryParams = { ...queryParams, ...params.filters };
+    }
+  }
+
+  const response = await backendGet<PagedDataRows<ParticipantResponse>>(
+    participantsEndpoint,
+    queryParams
   );
 
-  if (backendResponse && backendResponse.data) {
+  if (response) {
     return {
-      ...backendResponse,
-      data: backendResponse.data.map((participant) => ({
+      count: response.count,
+      results: response.results.map((participant) => ({
         ...participant,
         dateOfBirth: isNaN(Date.parse(participant.dateOfBirth)) // is valid date?
           ? null
           : new Date(Date.parse(participant.dateOfBirth)),
       })),
     };
+  } else {
+    return null;
   }
-
-  return backendResponse;
 };

@@ -120,7 +120,7 @@ const SessionStatsCard: React.FC<{}> = () => {
         sessionGroup.value
       );
 
-      if (!sessionDataResponse || !sessionDataResponse.data) {
+      if (!sessionDataResponse) {
         setLoadingData(false);
         toast.error(HELP_MESSAGE);
         return;
@@ -128,7 +128,7 @@ const SessionStatsCard: React.FC<{}> = () => {
 
       sessionDataResponses.push({
         name: sessionGroup.label,
-        data: sessionDataResponse.data,
+        data: sessionDataResponse.results,
       });
     }
 

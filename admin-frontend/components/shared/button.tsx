@@ -44,6 +44,8 @@ const StyledButtonWrapper = styled(MatButton)<
       background: ${(props) => `${props.hoverColor}`};
     }
   }
+
+  margin-bottom: 0 !important;
 `;
 
 export default Button;
