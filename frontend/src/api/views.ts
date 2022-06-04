@@ -26,34 +26,16 @@ const viewsApi = axios.create({
   }
 });
 
-export const getMentorProfile = async (viewsPersonId?: number) => {
+export const getMentorProfile = async () => {
   try {
-    if (!viewsPersonId) {
-      return {
-        data: dummyUser,
-        error: ""
-      };
-    }
-    const apiRes = await viewsApi.get<User>("/volunteers", {
-      params: { id: viewsPersonId }
-    });
-    if (apiRes.status === 200) return { data: apiRes.data, error: "" };
+
+    const apiRes = await viewsApi.get<{ total: number, data: User[]}>("/volunteers/volunteer/");
+    if (apiRes.status === 200 && apiRes.data.total > 0) return { data: apiRes.data.data[0], error: "" };
     else throw Error;
   } catch (err) {
     return { data: undefined, error: "Cannot retrieve the user" };
   }
 }
-
-export const fetchMenteeProfile = async () => {
-  try {
-    const apiRes = await viewsApi.get<User>("/volunteers/participants/");
-    if (apiRes.status === 200)
-      return { data: apiRes.data, error: "" }
-    else throw Error
-  } catch (err) {
-    return { data: undefined, error: "Cannot retrieve the user" }
-  }
-};
 
 export interface Association {
   associationId: number;
