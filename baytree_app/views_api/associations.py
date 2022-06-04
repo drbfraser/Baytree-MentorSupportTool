@@ -50,22 +50,6 @@ For instance, if the association is "Mentee", the "master" Person is a Mentee of
 """
 
 
-@api_view(("GET",))
-def get_associations_endpoint(request):
-    volunteer_id = request.GET.get("volunteerId", None)
-    if volunteer_id:
-        if (not userIsAdmin(request.user)) and (not userIsSuperUser(request.user)):
-            mentor_user = MentorUser.objects.filter(pk=request.user.id)
-            if not mentor_user.exists():
-                return Response("You are not authorized to access this resource.", 401)
-            mentor_user = mentor_user.first()
-
-            if mentor_user.viewsPersonId != volunteer_id:
-                return Response("You are not authorized to access this resource.", 401)
-
-        return Response(get_associations(volunteer_id=volunteer_id), 200)
-
-
 def get_associations(volunteer_id):
 
     response = requests.get(
