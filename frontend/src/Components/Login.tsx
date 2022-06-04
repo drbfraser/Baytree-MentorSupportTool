@@ -1,4 +1,3 @@
-import { DataUsage } from "@mui/icons-material";
 import { CardContent } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -9,34 +8,29 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../api/auth";
 import Logo from "../Assets/baytree-logo.png";
 import Photo from "../Assets/baytree-photo.jpg";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const {setUserId} = useAuth();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handleLogin();
-  };
+    const isLoggedIn = await signIn(email, password);
 
-  const handleLogin = async () => {
-    const loginResponse = await login(email, password);
-
-    if (!loginResponse) {
+    if (!isLoggedIn) {
       setErrors(true);
       setEmail("");
       setPassword("");
     } else {
-      setUserId(loginResponse.user_id)
+      navigate("/dashboard/home", { replace: true });
     }
-  }
+  };
 
   return (
     <div className="content">
