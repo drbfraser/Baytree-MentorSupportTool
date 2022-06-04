@@ -1,11 +1,8 @@
-import {
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  TextField, useMediaQuery, useTheme
-} from "@mui/material";
+import { useMediaQuery, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import { useField } from "formik";
 import { FunctionComponent } from "react";
+import { useTheme } from "@mui/material";
+import { Question } from "../../api/misc";
 
 const choices = [
   "Strongly Disagree",
@@ -15,20 +12,19 @@ const choices = [
   "Strongly Agree"
 ];
 
-export const TextQuestion: FunctionComponent<{ name: string, autoFill?: boolean }> = ({ name, autoFill }) => {
-  const [field] = useField(name);
-  return <TextField sx={{ my: 3 }} variant="outlined" {...field} disabled={!!autoFill} />;
-};
+export const isChoiceQuestion = (question: Question) => {
+  return question.inputType === "number" && question.validation.includes("range[1,5]")
+}
 
 // Reponsive choice question
 // Horizontal on large screen
 // Vertical form in small screen
-export const ChoiceQuestion: FunctionComponent<{ name: string, autoFill?: boolean }> = ({
-  name, autoFill
+export const ChoiceQuestion: FunctionComponent<{ question: Question, autoFill?: boolean }> = ({
+  question, autoFill
 }) => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
-  const [field] = useField(name);
+  const [field] = useField(question.QuestionID);
 
   return (
     <RadioGroup
@@ -50,3 +46,5 @@ export const ChoiceQuestion: FunctionComponent<{ name: string, autoFill?: boolea
     </RadioGroup>
   );
 };
+
+export default ChoiceQuestion;

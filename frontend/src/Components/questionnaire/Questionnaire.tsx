@@ -6,8 +6,9 @@ import { submitAnswer } from "../../api/misc";
 import useQuestionnaire, { isAutoFilled, isRequired } from "../../hooks/useQuestionnaire";
 import Loading from "../shared/Loading";
 import TitledContainer from "../shared/TitledContainer";
+import ChoiceQuestion, { isChoiceQuestion } from "./ChoiceQuestion";
+import TextQuestion from "./TextQuestion";
 import InvalidQuestionnaire from "./InvalidQuestionnaire";
-import { ChoiceQuestion, TextQuestion } from "./QuestionField";
 
 const Questionnaire = () => {
   const { loading, questions, initialAnswer, validateAnswer } = useQuestionnaire();
@@ -47,10 +48,10 @@ const Questionnaire = () => {
                       {`${index + 1}. ${question.Question} ${required ? "*" : ""}`}
                     </Typography>
                     {/* Question input */}
-                    {question.inputType === "number" ? (
-                      <ChoiceQuestion name={question.QuestionID} autoFill={autoFill} />
+                    {isChoiceQuestion(question) ? (
+                      <ChoiceQuestion question={question} autoFill={autoFill} />
                     ) : (
-                      <TextQuestion name={question.QuestionID} autoFill={autoFill} />
+                      <TextQuestion question={question} autoFill={autoFill} />
                     )}
                   </FormControl>
                 )
