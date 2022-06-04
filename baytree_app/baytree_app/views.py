@@ -19,6 +19,9 @@ from rest_framework.decorators import api_view, permission_classes
 from django.apps import apps
 from django.db.models import ForeignKey
 
+from xmlrpc.client import DateTime
+from datetime import date, datetime
+from django.utils.timezone import make_aware
 
 @api_view(("GET",))
 @permission_classes((AllowAny,))
@@ -193,7 +196,12 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         else:
             response.data["is_mentor"] = False
 
-        response.data["is_superuser"] = user.is_superuser
+        response.data['is_superuser'] = user.is_superuser
+
+        response.data['last_login'] = user.last_login
+        user.last_login = make_aware(datetime.now())
+        user.save()
+
         return super().finalize_response(request, response, *args, **kwargs)
 
 

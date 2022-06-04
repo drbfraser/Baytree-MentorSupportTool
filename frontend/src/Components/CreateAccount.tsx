@@ -8,6 +8,11 @@ import BaytreePhoto from "../Assets/baytree-photo.jpg";
 import { MOBILE_BREAKPOINT } from "../constants/constants";
 import { checkPassword } from "../Utils/password";
 import OverlaySpinner from "./shared/overlaySpinner";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const CreateAccount = (props: any) => {
   const [password, setPassword] = useState("");
@@ -17,22 +22,36 @@ const CreateAccount = (props: any) => {
     useState(false);
   const [passwordInvalid, setPasswordInvalid] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const createAccount = async () => {
-    const params = new URLSearchParams(window.location.search);
-    const accountCreationLinkId = params.get("id");
-
+  const handleCreateAccount = () => {
     if (password !== passwordAgain) {
       setPasswordsDontMatch(true);
       setPasswordInvalid(false);
     } else if (checkPassword(password)) {
-      if (accountCreationLinkId) {
-        try {
-          setIsPageLoading(true);
+      setIsPageLoading(true);
+      setShowModal(true);
+    } else {
+      setPasswordInvalid(true);
+      setPasswordsDontMatch(false);
+    }
+  };
+
+  async function createAccount() {
+    const params = new URLSearchParams(window.location.search);
+    const accountCreationLinkId = params.get("id");
+
+    if (accountCreationLinkId) {
+      try {
+          setShowModal(false);
+          console.log("clicked agree");
+          console.log("creating a mentor account");
+
           const apiRes = await createMentorAccount(
             password,
             accountCreationLinkId
           );
+
           if (apiRes.status === 200) {
             setIsPageLoading(false);
             setAccountCreationSuccessful(true);
@@ -47,118 +66,178 @@ const CreateAccount = (props: any) => {
               "Invalid link. Please contact an administrator for further assistance."
             );
           }
-        } catch {
-          setIsPageLoading(false);
-          toast.error(
-            "Failed to create mentor account. Please contact an administrator for further assistance."
-          );
-        }
+      } catch {
+        console.log("Failed to create mentor account. Please contact an administrator for further assistance.");
+        setIsPageLoading(false);
+        toast.error(
+          "Failed to create mentor account. Please contact an administrator for further assistance."
+        );
       }
-    } else {
-      setPasswordInvalid(true);
-      setPasswordsDontMatch(false);
-    }
-  };
+  }
+  }
+
+  function modalAgreeClick() {
+      setShowModal(false);
+      setIsPageLoading(false);
+      createAccount();
+  }
+
+  function modalDisagreeClick() {
+    setShowModal(false);
+    setIsPageLoading(false);
+  }
 
   return (
-    <PageLayout>
-      <CardLayout>
-        <Logo>
-          <img
-            src={BaytreeLogo}
-            style={{
-              height: "auto",
-              width: "11rem"
-            }}
-            alt="Logo"
-          />
-        </Logo>
-        <PasswordEntry>
-          {accountCreationSuccessful ? (
-            <Typography variant="h4">Successfully created account!</Typography>
-          ) : (
-            <>
-              <Typography variant="h4">
-                Create your account password:
-              </Typography>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password (again)"
-                label="Password (again)"
-                type="password"
-                id="password-again"
-                value={passwordAgain}
-                onChange={(e) => setPasswordAgain(e.target.value)}
-              />
-              {passwordInvalid && (
-                <Typography variant="body1" color="red">
-                  Error: password should be at least 8 characters, no more than
-                  30 characters, and contain at least one number, symbol,
-                  lowercase letter, and uppercase letter
-                </Typography>
-              )}
-              {passwordsDontMatch && (
-                <Typography variant="body1" color="red">
-                  Error: both password fields should match
-                </Typography>
-              )}
-            </>
-          )}
-        </PasswordEntry>
-        <CreateAccountButton>
-          {accountCreationSuccessful ? (
-            <Button
-              variant="contained"
-              onClick={() => {
-                window.location.replace("/login");
+    <>
+      <PageLayout>
+        <CardLayout>
+          <Logo>
+            <img
+              src={BaytreeLogo}
+              style={{
+                height: "auto",
+                width: "11rem"
               }}
-              size="large"
-              color="success"
-            >
-              Login
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              onClick={createAccount}
-              size="large"
-              color="success"
-            >
-              Create Account!
-            </Button>
-          )}
-        </CreateAccountButton>
-        <Photo>
-          <img
-            src={BaytreePhoto}
-            alt="BaytreeBackground"
-            style={{
-              objectFit: "cover",
-              maxHeight: "95vh",
-              height: "auto",
-              width: "100%",
-              boxShadow: "0 0 0.3rem grey"
-            }}
-          />
-        </Photo>
-      </CardLayout>
-      <OverlaySpinner active={isPageLoading}></OverlaySpinner>
-    </PageLayout>
+              alt="Logo"
+            />
+          </Logo>
+          <PasswordEntry>
+            {accountCreationSuccessful ? (
+              <Typography variant="h4">Successfully created account!</Typography>
+            ) : (
+              <>
+                <Typography variant="h4">
+                  Create your account password:
+                </Typography>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password (again)"
+                  label="Password (again)"
+                  type="password"
+                  id="password-again"
+                  value={passwordAgain}
+                  onChange={(e) => setPasswordAgain(e.target.value)}
+                />
+                {passwordInvalid && (
+                  <Typography variant="body1" color="red">
+                    Error: password should be at least 8 characters, no more than
+                    30 characters, and contain at least one number, symbol,
+                    lowercase letter, and uppercase letter
+                  </Typography>
+                )}
+                {passwordsDontMatch && (
+                  <Typography variant="body1" color="red">
+                    Error: both password fields should match
+                  </Typography>
+                )}
+              </>
+            )}
+          </PasswordEntry>
+          <CreateAccountButton>
+            {accountCreationSuccessful ? (
+              <Button
+                variant="contained"
+                onClick={() => {
+                  window.location.replace("/login");
+                }}
+                size="large"
+                color="success"
+              >
+                Login
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={handleCreateAccount}
+                size="large"
+                color="success"
+              >
+                Create Account!
+              </Button>
+            )}
+          </CreateAccountButton>
+          <Photo>
+            <img
+              src={BaytreePhoto}
+              alt="BaytreeBackground"
+              style={{
+                objectFit: "cover",
+                maxHeight: "95vh",
+                height: "auto",
+                width: "100%",
+                boxShadow: "0 0 0.3rem grey"
+              }}
+            />
+          </Photo>
+        </CardLayout>
+        <OverlaySpinner active={isPageLoading}></OverlaySpinner>
+      </PageLayout>
+       <Dialog
+        open={showModal}
+        onClose={modalDisagreeClick}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        >
+        <DialogTitle id="alert-dialog-title">
+          {"Data Protection Privacy"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          Our Data Protection Privacy statement explains how we look after 
+          your information and what we do with it, you can find a copy on 
+          our website or by asking a member of staff. We will save the 
+          information you provide on our systems, which are accessible to 
+          all our staff. Generally, the information you provide us will be 
+          treated as confidential amongst our staff, however, in certain 
+          circumstances, we may need to disclose some information to third 
+          parties (including, for example, the social services). By 
+          accessing our services, you confirm that you consent to the 
+          storage and use of your data.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions style={diaplogActionsStyle}>
+          <Button 
+          style={disagreeDialogButtonStyle}
+          onClick={modalDisagreeClick}>Disagree</Button>
+          <Button 
+          style={agreeDialogButtonStyle}
+          onClick={modalAgreeClick} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
+
+const disagreeDialogButtonStyle = {
+  color: 'white',
+  backgroundColor: 'red',
+  marginRight: '20px',
+};
+
+const agreeDialogButtonStyle = {
+  color: 'white',
+  backgroundColor: 'green',
+  marginRight: '20px',
+};
+
+const diaplogActionsStyle = {
+  marginBottom: '15px',
+}
 
 const PageLayout = styled.div`
   display: flex;
