@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { dummyUser, fetchMenteeProfile, getMentorProfile, User } from "../api/views";
-import { useAuth } from "../context/AuthContext";
+import { dummyUser, getMentorProfile, User } from "../api/views";
 
 const useMentorProfile = () => {
   const [loadingMentor, setLoadingMentor] = useState(false);
