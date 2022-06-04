@@ -22,12 +22,17 @@ export type Answer = {
   [key: string]: string | undefined;
 };
 
-export const submitAnswer = async (answer: Answer) => {
+export const submitAnswer = async (answer: Answer, questionnaireId: number, viewsPersonId: number) => {
   try {
-    const respond = await baseApi.post("questions/", answer);
-    return { respond, error: undefined };
+    const respond = await baseApi.post("questionnaires/questionnaire/submit/", {
+      answer,
+      questionnaireId,
+      viewsPersonId
+    });
+    if (respond.status === 200) return respond;
+    else throw Error
   } catch (error) {
-    return { respond: undefined, error };
+    return undefined
   }
 };
 
@@ -35,9 +40,9 @@ export const submitAnswer = async (answer: Answer) => {
 
 export const fetchQuestions = () => {
   return baseApi
-    .get<{ quesionnaireId: number, questions: Question[] }>("questionnaires/questionnaire/")
+    .get<{ questionnaireId: number, questions: Question[] }>("questionnaires/questionnaire/")
     .then((response) => ({
-      quesionnaireId: response.data.quesionnaireId,
+      questionnaireId: response.data.questionnaireId,
       questions: response.data.questions.filter(q => q.enabled === "1")
     }))
 };

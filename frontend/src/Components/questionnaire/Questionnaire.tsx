@@ -13,7 +13,7 @@ import MentorNameInput from "./MentorNameQuestion";
 import TextInput from "./TextInput";
 
 const Questionnaire = () => {
-  const { loading, questions, initialAnswer, validateAnswer, mentees, errorMessage } = useQuestionnaire();
+  const { loading, questions, initialAnswer, validateAnswer, mentees, errorMessage, handleSubmitAnswer } = useQuestionnaire();
   return (
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
@@ -25,8 +25,8 @@ const Questionnaire = () => {
               initialValues={initialAnswer}
               onSubmit={async (answer, { resetForm, setSubmitting }) => {
                 setSubmitting(true);
-                const { respond, error } = await submitAnswer(answer);
-                if (!error && respond?.status === 200) {
+                const result = await handleSubmitAnswer(answer);
+                if (result) {
                   toast.success("Submitted successfullly, thank you");
                   resetForm();
                 } else toast.error("Failed to submit, please try again");

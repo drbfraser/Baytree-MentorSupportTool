@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Answer, fetchQuestions, Question } from "../api/misc";
+import { Answer, fetchQuestions, Question, submitAnswer } from "../api/misc";
 import useMentees from "./useMentees";
 import useMentorProfile from "./useProfile";
 
@@ -28,7 +28,7 @@ const useQuestionnaire = () => {
   useEffect(() => {
     fetchQuestions()
       .then(data => {
-        setQuestionnaireId(data.quesionnaireId);
+        setQuestionnaireId(data.questionnaireId);
         setQuestions(data.questions);
       })
       .then(() => setLoadingQuestionniare(false))
@@ -55,8 +55,9 @@ const useQuestionnaire = () => {
       .every((q) => (answer[q.QuestionID] || "") !== "");
   }
 
-  const submitAnswer = async (answer: Answer) => {
-
+  const handleSubmitAnswer = async (answer: Answer) => {
+    if (questionnaireId < 0) return undefined;
+    return await submitAnswer(answer, questionnaireId, mentor.viewsPersonId);
   }
 
   const loading = loadingQuestionnaire || loadingMentor || !mentees;
@@ -87,7 +88,7 @@ const useQuestionnaire = () => {
     questions,
     initialAnswer,
     validateAnswer,
-    submitAnswer,
+    handleSubmitAnswer,
     errorMessage,
     mentees
   }

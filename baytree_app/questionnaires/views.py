@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from django.http import HttpResponse
 
 import requests
 from baytree_app.constants import (
@@ -14,13 +15,13 @@ extractedQuestionFields = ["QuestionID", "Question", "inputType", "validation", 
 """
 Get the value list by the valueListID from Views database
 """
-def fetch_value_list(id):
-    url = f"{VIEWS_BASE_URL}admin/valuelists/{id}.json"
-    reponse = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
-    if reponse.status_code != 200:
-        return None
-    reponse = reponse.json()
-    return reponse["items"].values()
+def getQuestionnaireIdRoleByUserId(id):
+    # Find the questionnaire id from the requesting user
+    mentors = MentorUser.objects.filter(user_id=id)
+    if not mentors: return None
+    mentorRole = mentors.first().mentorRole
+    if not mentorRole: None
+    return mentorRole.viewsQuestionnaireId
 
 # GET /api/questionnaires/questionnaire/
 @api_view(("GET",))
@@ -29,16 +30,9 @@ def get_questionnaire(request):
     Fetch the questionnaire assigned by the the mentor
     """
     # Find the questionnaire id from the requesting user
-    mentors = MentorUser.objects.filter(user_id=request.user.id)
-    if not mentors:
+    qid = getQuestionnaireIdRoleByUserId(request.user.id)
+    if qid is None:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
-    mentorRole = mentors.first().mentorRole
-
-    if not mentorRole:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    qid = mentorRole.viewsQuestionnaireId
 
     # Fetch questionnaire by id
     url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}.json"
@@ -61,35 +55,47 @@ def get_questionnaire(request):
 
     return Response(data, status=status.HTTP_200_OK)
 
+
 # POST /api/questionnaires/questionnaire/submit/
 @api_view(("POST", ))
-def submit_answer_set(request, id=33):
+def submit_answer_set(request):
     """
-    Submit an answer set to the questionnaire
+    Submit the answer to the remote Views database
     """
-    # Contruct XML data from JSON
+    # Validate data existence
     data = request.data
+    if data["questionnaireId"] is None or data["answer"] is None or data["viewsPersonId"] is None:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    # Find the questionnaire id from the requesting user
+    qid = getQuestionnaireIdRoleByUserId(request.user.id)
+    if qid is None:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if data["questionnaireId"] != qid:
+        return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+    
+    # Construct XML payload
     answerXMLFormat = (
         '<answer id="{0}">'
             "<QuestionID>{0}</QuestionID>"
             "<Answer>{1}</Answer>"
         "</answer>"
     )
-    answersXML = [answerXMLFormat.format(id, data[id]) for id in data]
+    answersXML = [answerXMLFormat.format(id, data["answer"][id]) for id in data["answer"]]
 
     answerSetXML = (
         "<answer>"
             "<EntityType>Volunteer</EntityType>"
-            f"<EntityID>{76}</EntityID>"
+            f"<EntityID>{data['viewsPersonId']}</EntityID>"
             f"<Date>{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')}</Date>"
             f"{''.join(answersXML)}"
         "</answer>"
     )
 
-    print(answerSetXML)
-    url = f"{VIEWS_BASE_URL}evidence/questionnaires/{id}/answers"
+    # Send the answer set to View database
+    url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}/answers"
 
-    # reponse = requests.post(url, answerSetXML, auth=(VIEWS_USERNAME, VIEWS_PASSWORD), headers = {"content-type": "text/xml"})
+    response = requests.post(url, answerSetXML, auth=(VIEWS_USERNAME, VIEWS_PASSWORD), headers = {"content-type": "text/xml"})
 
     # Construct Views API request
-    return Response(status=status.HTTP_200_OK)
+    return HttpResponse(response)
