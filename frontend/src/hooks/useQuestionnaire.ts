@@ -19,15 +19,16 @@ export const isMenteeQuestion = (q: Question) => !!q.Question.match(MENTEE_NAME)
 const useQuestionnaire = () => {
   const [loadingQuestionnaire, setLoadingQuestionniare] = useState(true);
   const { mentor, loadingMentor } = useMentorProfile();
-  const { mentees, isLoadingMentees } = useMentees();
+  const { mentees, error: menteeError } = useMentees();
   const [questions, setQuestions] = useState([] as Question[]);
+  const [questionsError, setQuestionnaireError] = useState<string | undefined>(undefined);
 
   // Fetch the question
   useEffect(() => {
     fetchQuestions()
       .then(setQuestions)
       .then(() => setLoadingQuestionniare(false))
-      .catch((error) => console.error("Error: ", error));
+      .catch((_error) => setQuestionnaireError("Cannot fetch the questionnaire"));
     return () => setLoadingQuestionniare(false);
   }, []);
 
@@ -51,21 +52,35 @@ const useQuestionnaire = () => {
       .every((q) => (answer[q.QuestionID] || "") !== "");
   }
 
-  const loading = loadingQuestionnaire || loadingMentor || isLoadingMentees;
+  const loading = loadingQuestionnaire || loadingMentor || !mentees;
 
-  // Validate
+  // Validate the questionnaire based on these condition
+  // - Must have only one question for mentor's name
+  // - Must have only one quesrion for mentee's name
+  // - All questions must have input of type "text" or "number"
   const isValidQuestionnaire = useMemo(() => {
     const mentorQuestion = questions.filter(isMentorQuestion);
     const menteeQuestion = questions.filter(isMenteeQuestion);
-    return mentorQuestion.length === 1 && menteeQuestion.length === 1;
-  }, [questions])
+    const validFormat = questions.every(q => q.inputType === "text" || q.inputType === "number")
+    return mentorQuestion.length === 1 && menteeQuestion.length === 1 && validFormat;
+  }, [questions]);
+
+  // Generate error based on the prvious errors
+  // and the validaity of the questionnaire and datat set
+  const errorMessage = () => {
+    if (questionsError) return questionsError;
+    if (menteeError) return menteeError;
+    if (!isValidQuestionnaire) return "The questionnaire is not correctly formatted";
+    if (mentees && mentees.length <= 0) return "The mentors does not any associate mentees";
+    return "";
+  };
 
   return { 
     loading, 
     questions, 
     initialAnswer, 
     validateAnswer, 
-    isValidQuestionnaire,
+    errorMessage,
     mentees }
 }
 

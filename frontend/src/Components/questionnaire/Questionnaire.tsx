@@ -13,12 +13,12 @@ import MentorNameInput from "./MentorNameQuestion";
 import TextInput from "./TextInput";
 
 const Questionnaire = () => {
-  const { loading, questions, initialAnswer, validateAnswer, mentees, isValidQuestionnaire } = useQuestionnaire();
+  const { loading, questions, initialAnswer, validateAnswer, mentees, errorMessage } = useQuestionnaire();
   return (
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
       {loading ? <Loading />
-        : !isValidQuestionnaire ? <InvalidQuestionnaire /> :
+        : errorMessage() ? <InvalidQuestionnaire error={errorMessage()} /> :
           (
             <Formik
               enableReinitialize
@@ -51,11 +51,12 @@ const Questionnaire = () => {
                         </Typography>
                         {/* Question input */}
                         {isMentorQuestion(question) ? <MentorNameInput question={question} />
-                          : isMenteeQuestion(question) ? <MenteesNameInput
-                            name={question.QuestionID}
-                            onChange={handleChange} 
-                            menteeList={mentees} 
-                            defaultMentee={initialAnswer[question.QuestionID]} 
+                          : isMenteeQuestion(question) ?
+                            <MenteesNameInput
+                              name={question.QuestionID}
+                              onChange={handleChange}
+                              menteeList={mentees!}
+                              defaultMentee={initialAnswer[question.QuestionID]}
                             />
                             : isChoiceQuestion(question) ? <ChoiceInput question={question} />
                               : <TextInput question={question} />}

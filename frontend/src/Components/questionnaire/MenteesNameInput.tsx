@@ -1,9 +1,9 @@
 import { MenuItem, Select } from "@mui/material";
 
 import { FunctionComponent } from "react";
-import { Mentee } from "../sessions/session";
+import { Participant } from "../../api/views";
 
-// This is a temporary fix the error
+// This is a temporary fix the error of the Select options
 type OnInputChange = {
   (e: React.ChangeEvent<any>): void;
   <T = string | React.ChangeEvent<any>>(field: T): T extends React.ChangeEvent<any> ? void : (e: string | React.ChangeEvent<any>) => void;
@@ -12,7 +12,7 @@ type OnInputChange = {
 interface Props {
   name: string,
   onChange: OnInputChange,
-  menteeList: Mentee[];
+  menteeList: Participant[];
   defaultMentee?: string;
 }
 
@@ -20,8 +20,10 @@ const MenteesNameInput: FunctionComponent<Props> = ({ name, onChange, menteeList
   return (
     <Select name={name} onChange={onChange} defaultValue={defaultMentee} displayEmpty>
       <MenuItem value="" disabled>Please select a mentee</MenuItem>
-      {menteeList.map((mentee, index) => 
-        <MenuItem key={index} value={mentee.name}>{mentee.name}</MenuItem>
+      {menteeList.map((mentee, index) =>  {
+        const fullName = `${mentee.firstName} ${mentee.lastName}`
+        return <MenuItem key={index} value={fullName}>{fullName}</MenuItem>
+      }
       )}
     </Select>
   )
