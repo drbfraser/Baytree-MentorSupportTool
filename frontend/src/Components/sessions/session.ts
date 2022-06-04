@@ -9,8 +9,8 @@ export interface SessionFormData {
   clockIn: Date;
   clockOut: Date;
   notes: string;
-  viewsVenueId: string;
-  menteeViewsPersonId: string;
+  viewsVenueId: string | number;
+  menteeViewsPersonId: string | number;
 }
 
 export const getInitialFormValues = () =>
