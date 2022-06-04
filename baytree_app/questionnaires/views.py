@@ -58,7 +58,7 @@ class QuestionnaireView(APIView):
 
     def get_questionnaire(request, id=None):
         # id is optional. Defaults to 10 because that is the id of the questionnaire that matches the local db.
-        id = id if id is not None else 10
+        id = id if id is not None else 5
 
         url = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/{0}/questions?allquestions=1.json'.format(id)
 

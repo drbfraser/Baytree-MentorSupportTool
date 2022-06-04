@@ -10,12 +10,12 @@ import InvalidQuestionnaire from "./InvalidQuestionnaire";
 import { ChoiceQuestion, TextQuestion } from "./QuestionField";
 
 const Questionnaire = () => {
-  const { loading, questions, initialAnswer, validateQuestionnaire, validateAnswer } = useQuestionnaire();
+  const { loading, questions, initialAnswer, validateAnswer } = useQuestionnaire();
   return (
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
       { loading ? <Loading /> :
-       !validateQuestionnaire() ? <InvalidQuestionnaire /> : (
+       (
         <Formik
           enableReinitialize
           initialValues={initialAnswer}

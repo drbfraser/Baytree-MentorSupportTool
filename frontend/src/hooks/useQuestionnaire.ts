@@ -5,8 +5,11 @@ import useMentorProfile from "./useProfile";
 export const MENTOR_NAME_TAG = "mentor_name";
 export const MENTEE_NAME_TAG = "mentee_name";
 
+export const MENTOR_NAME = /mentor('s)? name/ig;
+export const MENTEE_NAME = /mentee('s)? name/ig;
+
 export const isAutoFilled = (question: Question) => {
-  return question.category.includes(MENTOR_NAME_TAG) || question.category.includes(MENTEE_NAME_TAG);
+  return [MENTOR_NAME, MENTEE_NAME].some(re => !!question.Question.match(re))
 }
 
 export const isRequired = (question: Question) => {
@@ -15,7 +18,7 @@ export const isRequired = (question: Question) => {
 
 const useQuestionnaire = () => {
   const [loading, setLoading] = useState(true);
-  const { userId, mentor, mentee, loadingMentor, loadingMentee } = useMentorProfile();
+  const { mentor, mentee, loadingMentor, loadingMentee } = useMentorProfile();
   const [questions, setQuestions] = useState([] as Question[]);
 
   // Fetch the question
@@ -32,13 +35,13 @@ const useQuestionnaire = () => {
   const initialAnswer = useMemo(() => {
     let answer: Answer = {};
     for (const question of questions) {
-      if (question.category.includes(MENTOR_NAME_TAG))
+      if (question.Question.match(MENTOR_NAME))
         answer[question.QuestionID] = mentor.viewsPersonId > 0 ? `${mentor.firstname} ${mentor.surname}` : "";
-      else if (question.category.includes(MENTEE_NAME_TAG))
+      else if (question.Question.match(MENTEE_NAME))
         answer[question.QuestionID] = mentee.viewsPersonId > 0 ? `${mentee.firstname} ${mentee.surname}` : "";
       else answer[question.QuestionID] = "";
     }
-    answer["mentorId"] = `${userId}`
+    answer["mentorId"] = `${mentor.viewsPersonId}`
     return answer;
   }, [mentor, mentee, questions]);
 
@@ -49,22 +52,9 @@ const useQuestionnaire = () => {
     .every((q) => (answer[q.QuestionID] || "") !== "");
   }
 
-  // Validate the asnwer
-  const validateQuestionnaire = () => {
-    let countMentorName = 0;
-    let countMenteeName = 0;
-    for (const question of questions) {
-      const category = question.category;
-      if (category === MENTOR_NAME_TAG) countMentorName++;
-      if (category === MENTEE_NAME_TAG) countMenteeName++;
-    }
-    // Only one mentor name question and mentee name question
-    return countMenteeName === 1 && countMentorName === 1;
-  } 
-
   const loadingQuestionnaire = loading || loadingMentor || loadingMentee;
 
-  return { loading: loadingQuestionnaire, questions, initialAnswer, validateQuestionnaire, validateAnswer }
+  return { loading: loadingQuestionnaire, questions, initialAnswer, validateAnswer }
 }
 
 export default useQuestionnaire;
