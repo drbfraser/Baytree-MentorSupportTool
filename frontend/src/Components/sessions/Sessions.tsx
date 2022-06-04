@@ -20,12 +20,7 @@ import useMentees, {
   OnMenteesFailedToLoadReason
 } from "../../hooks/useMentees";
 import useVenues, { OnVenuesFailedToLoadReason } from "../../hooks/useVenues";
-import {
-  getInitialData,
-  Mentee,
-  setInitialData,
-  submitSession
-} from "./session";
+import { getInitialFormValues, Mentee, submitSession } from "./session";
 import { Venue } from "../../api/views";
 import { SelectInputContainer, TimeInputContainer } from "./Containers";
 
@@ -41,9 +36,6 @@ const SessionForm = () => {
     if (venues.length > 0) {
       if (setFieldValueRef.current) {
         setFieldValueRef.current("viewsVenueId", venues[0].id, true);
-      } else {
-        // form not rendered before data loaded
-        setInitialData("viewsVenueId", venues[0].id);
       }
     }
   };
@@ -64,9 +56,6 @@ const SessionForm = () => {
     if (mentees.length > 0) {
       if (setFieldValueRef.current) {
         setFieldValueRef.current("menteeViewsPersonId", mentees[0].id, true);
-      } else {
-        // form not rendered before data loaded
-        setInitialData("menteeViewsPersonId", mentees[0].id);
       }
     }
   };
@@ -86,7 +75,7 @@ const SessionForm = () => {
     <>
       <TitledContainer title="Create Session">
         <Formik
-          initialValues={getInitialData()}
+          initialValues={getInitialFormValues()}
           onSubmit={async (data, { setSubmitting, resetForm }) => {
             setSubmitting(true);
             const success = await submitSession(data);
