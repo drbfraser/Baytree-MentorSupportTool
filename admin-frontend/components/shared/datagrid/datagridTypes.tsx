@@ -49,7 +49,7 @@ export interface DataGridColumn {
 export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
 
 export interface ValueOption {
-  id: number;
+  id: any;
   name: string;
 }
 

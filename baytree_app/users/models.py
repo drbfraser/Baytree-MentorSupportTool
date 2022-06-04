@@ -30,6 +30,7 @@ class MentorRole(models.Model):
     viewsSessionGroupId = models.IntegerField(null=True)
     viewsQuestionnaireId = models.IntegerField(null=True)
     activity = models.CharField(max_length=150, null=False, default="")
+    volunteeringType = models.CharField(max_length=150, null=False, default="")
 
     def __str__(self):
         return self.name

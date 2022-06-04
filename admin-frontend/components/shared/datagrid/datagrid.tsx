@@ -105,10 +105,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
       )}
       <Table
         sx={{
-          tableLayout:
-            isOnMobileDevice || someExpandableColumnExists(cols)
-              ? "fixed"
-              : "auto",
+          tableLayout: "fixed",
         }}
       >
         <DataGridHeaderRow

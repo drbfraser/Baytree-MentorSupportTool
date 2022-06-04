@@ -9,16 +9,25 @@ export interface SessionFormData {
   clockIn: Date;
   clockOut: Date;
   notes: string;
+  viewsVenueId: string | number;
+  menteeViewsPersonId: string | number;
 }
 
-export const initialData = () =>
+export const getInitialFormValues = () =>
   ({
     cancelled: false,
     date: new Date(),
     clockIn: new Date(),
     clockOut: new Date(),
-    notes: ""
+    notes: "",
+    viewsVenueId: "",
+    menteeViewsPersonId: ""
   } as SessionFormData);
+
+export interface Mentee {
+  id: number;
+  name: string;
+}
 
 const formatHM = (hours: number, minutes: number) => {
   const pad2Digits = (n: number) => n.toString().padStart(2, "0");
@@ -31,11 +40,16 @@ const getHoursAndMinutes = (time: Date) => ({
   totalMinutes: time.getHours() * 60 + time.getMinutes()
 });
 
-export const submitSession = async (
-  data: SessionFormData,
-  mentorId: number
-) => {
-  const { cancelled, date, clockIn, clockOut, notes } = data;
+export const submitSession = async (data: SessionFormData) => {
+  const {
+    cancelled,
+    date,
+    clockIn,
+    clockOut,
+    notes,
+    viewsVenueId,
+    menteeViewsPersonId
+  } = data;
 
   // Preprocess the data
   const startTime = getHoursAndMinutes(clockIn);
@@ -47,25 +61,33 @@ export const submitSession = async (
 
   // Form the view sesssion
   const viewSession = {
-    StartDate: `${format(date, "yyyy-MM-dd")}`,
-    StartTime: formatHM(startTime.hours, startTime.minutes),
-    Duration: formatHM(hoursDuration, minutesDuration),
-    CancelledSession: cancelled ? "1" : "0",
-    CancelledAttendee: cancelled ? "0" : "1",
-    LeadStuff: `${mentorId}`,
-    Notes: notes
+    startDate: `${format(date, "yyyy-MM-dd")}`,
+    startTime: formatHM(startTime.hours, startTime.minutes),
+    duration: formatHM(hoursDuration, minutesDuration),
+    notes,
+    viewsVenueId,
+    menteeViewsPersonId
   };
 
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/sessions/viewsapp/`,
-      viewSession,
-      {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true
-      }
-    );
-    if (response.status === 200) {
+    let viewsSubmitSuccessful = true;
+    let backendSubmitSuccessful = true;
+
+    // only submit to views if session not missed/cancelled
+    if (!cancelled) {
+      const response = await axios.post(
+        `${API_BASE_URL}/views-api/sessions`,
+        viewSession,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true
+        }
+      );
+
+      viewsSubmitSuccessful = response.status === 200;
+    }
+
+    if (viewsSubmitSuccessful && backendSubmitSuccessful) {
       toast.success("Session submitted successfully");
       return true;
     } else throw Error();
