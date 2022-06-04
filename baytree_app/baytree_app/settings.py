@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "django_filters",
     "views_api",
     "records",
+    "holidays"
 ]
 
 
