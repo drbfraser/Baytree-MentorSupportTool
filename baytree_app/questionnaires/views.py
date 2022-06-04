@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from users.models import MentorUser
 
-extractedQuestionFields = ["QuestionID", "Question", "inputType", "validation", "category"]
+extractedQuestionFields = ["QuestionID", "Question", "inputType", "validation", "category", "enabled"]
 
 """
 Get the value list by the valueListID from Views database
@@ -55,20 +55,8 @@ def get_questionnaire(request):
     
     # Extract the question data
     questions = response["questions"].values()
-    valuesLists = {} # Cache to avoid refetching
     for question in questions:
         q = {key: question[key] for key in extractedQuestionFields}
-        
-        # Fetch the value list based on the question
-        if question["inputType"] == "select":
-            valueListId = question["valueListID"]
-            if valueListId not in valuesLists:
-                valueList = fetch_value_list(valueListId)
-                if valueList is None:
-                    return Response(status=status.HTTP_404_NOT_FOUND)
-                valuesLists[valueListId] = valueList
-            q["valueList"] = valuesLists[valueListId]
-        
         data["questions"].append(q)
 
     return Response(data, status=status.HTTP_200_OK)

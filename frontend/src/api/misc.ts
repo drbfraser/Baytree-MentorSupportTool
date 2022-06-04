@@ -31,11 +31,15 @@ export const submitAnswer = async (answer: Answer) => {
   }
 };
 
+
+
 export const fetchQuestions = () => {
   return baseApi
-    .get<{ [key: string]: Question }>("questionnaires/get_questionnaire/")
-    .then((response) => Object.values(response.data))
-    .then((questions) => questions.filter((q) => q.enabled === "1"));
+    .get<{ quesionnaireId: number, questions: Question[] }>("questionnaires/questionnaire/")
+    .then((response) => ({
+      quesionnaireId: response.data.quesionnaireId,
+      questions: response.data.questions.filter(q => q.enabled === "1")
+    }))
 };
 
 // Resources

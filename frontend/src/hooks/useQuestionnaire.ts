@@ -18,6 +18,7 @@ export const isMenteeQuestion = (q: Question) => !!q.Question.match(MENTEE_NAME)
 
 const useQuestionnaire = () => {
   const [loadingQuestionnaire, setLoadingQuestionniare] = useState(true);
+  const [questionnaireId, setQuestionnaireId] = useState(-1);
   const { mentor, loadingMentor } = useMentorProfile();
   const { mentees, error: menteeError } = useMentees();
   const [questions, setQuestions] = useState([] as Question[]);
@@ -26,7 +27,10 @@ const useQuestionnaire = () => {
   // Fetch the question
   useEffect(() => {
     fetchQuestions()
-      .then(setQuestions)
+      .then(data => {
+        setQuestionnaireId(data.quesionnaireId);
+        setQuestions(data.questions);
+      })
       .then(() => setLoadingQuestionniare(false))
       .catch((_error) => setQuestionnaireError("Cannot fetch the questionnaire"));
     return () => setLoadingQuestionniare(false);
@@ -41,7 +45,6 @@ const useQuestionnaire = () => {
         answer[question.QuestionID] = mentor.viewsPersonId > 0 ? `${mentor.firstname} ${mentor.surname}` : "";
       else answer[question.QuestionID] = "";
     }
-    answer["mentorId"] = `${mentor.viewsPersonId}`;
     return answer;
   }, [mentor, questions]);
 
@@ -50,6 +53,10 @@ const useQuestionnaire = () => {
     return questions
       .filter(isRequired)
       .every((q) => (answer[q.QuestionID] || "") !== "");
+  }
+
+  const submitAnswer = async (answer: Answer) => {
+
   }
 
   const loading = loadingQuestionnaire || loadingMentor || !mentees;
@@ -75,13 +82,15 @@ const useQuestionnaire = () => {
     return "";
   };
 
-  return { 
-    loading, 
-    questions, 
-    initialAnswer, 
-    validateAnswer, 
+  return {
+    loading,
+    questions,
+    initialAnswer,
+    validateAnswer,
+    submitAnswer,
     errorMessage,
-    mentees }
+    mentees
+  }
 }
 
 export default useQuestionnaire;
