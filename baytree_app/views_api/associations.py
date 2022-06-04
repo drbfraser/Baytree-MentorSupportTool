@@ -7,6 +7,7 @@ from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import api_view
 import requests
 import xmltodict
+from rest_framework import status
 
 participant_associations_base_url = (
     views_base_url + "contacts/participants/{}/associations"
@@ -105,3 +106,23 @@ def translate_association_fields(associations):
         }
         for association in associations
     ]
+
+
+@api_view(("GET",))
+def get_mentees_ids_for_mentor(request):
+    mentor_user = MentorUser.objects.filter(pk=request.user.id)
+    if not mentor_user.exists():
+        return Response(
+            "The current requesting user is not a mentor!",
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+    mentor_user = mentor_user.first()
+
+    associations = get_associations(mentor_user.viewsPersonId)
+
+    menteeIds = []
+    for association in associations["results"]:
+        if association["association"] == "Mentee":
+            menteeIds.append(association["masterId"])
+
+    return Response(menteeIds, status.HTTP_200_OK)

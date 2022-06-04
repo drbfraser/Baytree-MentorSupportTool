@@ -4,7 +4,6 @@ import { getVenues, Venue } from "../api/views";
 /** Get venue list on views from the backend
  * @returns
  * venues: loaded venues,
- * isLoadingVenues: true if and only if venues are still loading,
  * error: empty string if no errors loading, string with error reason if error occurred.
  */
 const useVenues = () => {

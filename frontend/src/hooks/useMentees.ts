@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { getAssociations, getParticipants, Participant } from "../api/views";
+import {
+  getMenteeIdsForMentor,
+  getParticipants,
+  Participant
+} from "../api/views";
 import { useAuth } from "../context/AuthContext";
 import { Mentee } from "../Components/sessions/session";
 
 /** Get mentees for the currently logged in mentor from backend
  * @returns
  * mentees: loaded mentees, null if mentees aren't loaded yet
- * isLoadingMentees: true if and only if mentees are still loading,
  * error: null if no errors loading mentees, string with reason if an error occurred
  */
 const useMentees = () => {
@@ -20,19 +23,15 @@ const useMentees = () => {
         setError("FAIL_GET_LOGGED_IN_USER");
         return;
       }
-      const associations = await getAssociations(user.viewsPersonId);
 
-      if (!associations.data) {
+      const menteeIdsResponse = await getMenteeIdsForMentor();
+
+      if (!menteeIdsResponse.data) {
         setError("FAIL_LOAD_ASSOCIATIONS");
         return;
       }
 
-      const menteeAssociations = associations.data.filter(
-        (association) => association.association === "Mentee"
-      );
-      const menteeIds = menteeAssociations.map(
-        (association) => association.masterId
-      );
+      const menteeIds = menteeIdsResponse.data;
 
       const participants = await getParticipants({ ids: menteeIds });
       if (!participants.data) {

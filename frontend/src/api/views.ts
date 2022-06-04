@@ -119,3 +119,20 @@ export const getParticipants = async (params?: { ids: number[] }) => {
     return { data: undefined, error: "Cannot retrieve participants" };
   }
 };
+
+export const getMenteeIdsForMentor = async () => {
+  try {
+    const apiRes = await viewsApi.get<number[]>("/mentor-mentee-ids");
+    if (apiRes.status === 200)
+      return {
+        data: apiRes.data,
+        error: ""
+      };
+    else throw Error;
+  } catch (err) {
+    return {
+      data: undefined,
+      error: "Cannot retrieve mentee ids for current logged in mentor."
+    };
+  }
+};
