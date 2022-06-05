@@ -12,16 +12,17 @@ from users.models import MentorUser
 
 extractedQuestionFields = ["QuestionID", "Question", "inputType", "validation", "category", "enabled"]
 
-"""
-Get the value list by the valueListID from Views database
-"""
-def getQuestionnaireIdRoleByUserId(id):
-    # Find the questionnaire id from the requesting user
-    mentors = MentorUser.objects.filter(user_id=id)
+# Get the mentor info from the requesting user
+# Only returns info for mentor with assigned role and assigned questionnaire
+# Otherwise returns nothing
+def getMentorWithRoleAndQuestionnaireByUserId(id):
+    mentors = MentorUser.objects.filter(
+        user_id=id, 
+        mentorRole__isnull=False,
+        mentorRole__viewsQuestionnaireId__isnull=False
+    )
     if not mentors: return None
-    mentorRole = mentors.first().mentorRole
-    if not mentorRole: None
-    return mentorRole.viewsQuestionnaireId
+    return mentors.first()
 
 # GET /api/questionnaires/questionnaire/
 @api_view(("GET",))
@@ -30,9 +31,10 @@ def get_questionnaire(request):
     Fetch the questionnaire assigned by the the mentor
     """
     # Find the questionnaire id from the requesting user
-    qid = getQuestionnaireIdRoleByUserId(request.user.id)
-    if qid is None:
+    mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
+    if mentor is None:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    qid = mentor.mentorRole.viewsQuestionnaireId
 
     # Fetch questionnaire by id
     url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}.json"
@@ -64,13 +66,16 @@ def submit_answer_set(request):
     """
     # Validate data existence
     data = request.data
-    if data["questionnaireId"] is None or data["answer"] is None or data["viewsPersonId"] is None:
+    if data["questionnaireId"] is None or data["answer"] is None:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     # Find the questionnaire id from the requesting user
-    qid = getQuestionnaireIdRoleByUserId(request.user.id)
-    if qid is None:
+    mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
+    if mentor is None:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    # Redundancy check, user won't submit answer set to the wrong question
+    qid = mentor.mentorRole.viewsQuestionnaireId
     if data["questionnaireId"] != qid:
         return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
     
@@ -86,7 +91,7 @@ def submit_answer_set(request):
     answerSetXML = (
         "<answer>"
             "<EntityType>Volunteer</EntityType>"
-            f"<EntityID>{data['viewsPersonId']}</EntityID>"
+            f"<EntityID>{mentor.viewsPersonId}</EntityID>"
             f"<Date>{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')}</Date>"
             f"{''.join(answersXML)}"
         "</answer>"
