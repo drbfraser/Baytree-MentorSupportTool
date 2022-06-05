@@ -41,10 +41,12 @@ const Questionnaire = () => {
                     return (
                       <FormControl
                         key={question.QuestionID}
-                        fullWidth required={required}>
+                        fullWidth required={required}
+                        style={{margin: "2em 0"}}
+                        >
                         {/* Question labels */}
                         <Typography
-                          sx={{ mt: 3, fontWeight: "bold" }}
+                          sx={{ fontWeight: "bold" }}
                           color="text.secondary"
                         >
                           {`${index + 1}. ${question.Question} ${required ? "*" : ""}`}

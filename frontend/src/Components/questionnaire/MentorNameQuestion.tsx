@@ -7,7 +7,7 @@ const MentorNameInput: FunctionComponent<{question: Question}> = ({ question }) 
   const [field] = useField(question.QuestionID);
   return <TextField
     type={question.inputType}
-    sx={{ my: 3 }}
+    sx={{ mt: 1 }}
     variant="outlined"
     disabled 
     {...field} />;

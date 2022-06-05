@@ -29,7 +29,7 @@ export const ChoiceInput: FunctionComponent<{ question: Question }> = ({
     <RadioGroup
       {...field}
       row={isLargeScreen}
-      sx={{ my: 3 }}
+      sx={{ mt: 2 }}
       style={{ justifyContent: isLargeScreen ? "space-between" : "inherit" }}
     >
       {choices.map((choice, index) => (
