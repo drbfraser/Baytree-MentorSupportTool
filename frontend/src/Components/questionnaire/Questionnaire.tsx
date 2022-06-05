@@ -53,10 +53,8 @@ const Questionnaire = () => {
                         {isMentorQuestion(question) ? <MentorNameInput question={question} />
                           : isMenteeQuestion(question) ?
                             <MenteesNameInput
-                              name={question.QuestionID}
-                              onChange={handleChange}
+                              question={question}
                               menteeList={mentees!}
-                              defaultMentee={initialAnswer[question.QuestionID]}
                             />
                             : isChoiceQuestion(question) ? <ChoiceInput question={question} />
                               : <TextInput question={question} />}

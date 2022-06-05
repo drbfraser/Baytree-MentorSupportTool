@@ -1,24 +1,20 @@
 import { MenuItem, Select } from "@mui/material";
+import { useField } from "formik";
 
 import { FunctionComponent } from "react";
+import { Question } from "../../api/misc";
 import { Participant } from "../../api/views";
 
-// This is a temporary fix the error of the Select options
-type OnInputChange = {
-  (e: React.ChangeEvent<any>): void;
-  <T = string | React.ChangeEvent<any>>(field: T): T extends React.ChangeEvent<any> ? void : (e: string | React.ChangeEvent<any>) => void;
-}
-
 interface Props {
-  name: string,
-  onChange: OnInputChange,
+  question: Question;
   menteeList: Participant[];
-  defaultMentee?: string;
 }
 
-const MenteesNameInput: FunctionComponent<Props> = ({ name, onChange, menteeList, defaultMentee }) => {
+const MenteesNameInput: FunctionComponent<Props> = ({ question, menteeList }) => {
+  const [field, ] = useField(question.QuestionID);
+
   return (
-    <Select name={name} onChange={onChange} defaultValue={defaultMentee} displayEmpty>
+    <Select {...field} defaultValue="" displayEmpty>
       <MenuItem value="" disabled>Please select a mentee</MenuItem>
       {menteeList.map((mentee, index) =>  {
         const fullName = `${mentee.firstName} ${mentee.lastName}`
