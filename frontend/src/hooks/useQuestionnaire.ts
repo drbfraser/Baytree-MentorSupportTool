@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Answer, fetchQuestions, Question, submitAnswer } from "../api/misc";
+import { AnswerSet, fetchQuestions, Question, submitAnswerSetForQuestionnaire } from "../api/misc";
 import useMentees from "./useMentees";
 import useMentorProfile from "./useProfile";
-
-export const MENTOR_NAME_TAG = "mentor_name";
-export const MENTEE_NAME_TAG = "mentee_name";
 
 export const MENTOR_NAME = /mentor('s)? name/ig;
 export const MENTEE_NAME = /mentee('s)? name/ig;
@@ -39,25 +36,25 @@ const useQuestionnaire = () => {
   // Generate the initital answers based on the question types
   // and the mentor and mentee profile
   const initialAnswer = useMemo(() => {
-    let answer: Answer = {};
+    let answerSet: AnswerSet = {};
     for (const question of questions) {
       if (isMentorQuestion(question))
-        answer[question.QuestionID] = mentor.viewsPersonId > 0 ? `${mentor.firstname} ${mentor.surname}` : "";
-      else answer[question.QuestionID] = "";
+        answerSet[question.QuestionID] = mentor.viewsPersonId > 0 ? `${mentor.firstname} ${mentor.surname}` : "";
+      else answerSet[question.QuestionID] = "";
     }
-    return answer;
+    return answerSet;
   }, [mentor, questions]);
 
   // Validate the answer based on the question requirement
-  const validateAnswer = (answer: Answer) => {
+  const validateAnswerSet = (answerSet: AnswerSet) => {
     return questions
       .filter(isRequired)
-      .every((q) => (answer[q.QuestionID] || "") !== "");
+      .every((q) => (answerSet[q.QuestionID] || "") !== "");
   }
 
-  const handleSubmitAnswer = async (answer: Answer) => {
+  const handleSubmitAnswerSet = async (answerSet: AnswerSet) => {
     if (questionnaireId < 0) return undefined;
-    return await submitAnswer(answer, questionnaireId, mentor.viewsPersonId);
+    return await submitAnswerSetForQuestionnaire(answerSet, questionnaireId);
   }
 
   const loading = loadingQuestionnaire || loadingMentor || !mentees;
@@ -87,8 +84,8 @@ const useQuestionnaire = () => {
     loading,
     questions,
     initialAnswer,
-    validateAnswer,
-    handleSubmitAnswer,
+    validateAnswerSet,
+    handleSubmitAnswerSet,
     errorMessage,
     mentees
   }

@@ -2,7 +2,6 @@ import { Button, FormControl, Typography } from "@mui/material";
 import { Form, Formik } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { submitAnswer } from "../../api/misc";
 import useQuestionnaire, { isMenteeQuestion, isMentorQuestion, isRequired } from "../../hooks/useQuestionnaire";
 import Loading from "../shared/Loading";
 import TitledContainer from "../shared/TitledContainer";
@@ -13,7 +12,7 @@ import MentorNameInput from "./MentorNameQuestion";
 import TextInput from "./TextInput";
 
 const Questionnaire = () => {
-  const { loading, questions, initialAnswer, validateAnswer, mentees, errorMessage, handleSubmitAnswer } = useQuestionnaire();
+  const { loading, questions, initialAnswer, validateAnswerSet, mentees, errorMessage, handleSubmitAnswerSet } = useQuestionnaire();
   return (
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
@@ -25,9 +24,9 @@ const Questionnaire = () => {
               initialValues={initialAnswer}
               onSubmit={async (answer, { resetForm, setSubmitting }) => {
                 setSubmitting(true);
-                const result = await handleSubmitAnswer(answer);
+                const result = await handleSubmitAnswerSet(answer);
                 if (result) {
-                  toast.success("Submitted successfullly, thank you");
+                  toast.success("Submitted successfully, thank you");
                   resetForm();
                 } else toast.error("Failed to submit, please try again");
                 setSubmitting(false);
@@ -66,7 +65,7 @@ const Questionnaire = () => {
 
                   {/* Submit button */}
                   <Button
-                    disabled={isSubmitting || !validateAnswer(values)}
+                    disabled={isSubmitting || !validateAnswerSet(values)}
                     variant="contained"
                     type="submit"
                     sx={{ mt: 3 }}

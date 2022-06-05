@@ -66,7 +66,7 @@ def submit_answer_set(request):
     """
     # Validate data existence
     data = request.data
-    if data["questionnaireId"] is None or data["answer"] is None:
+    if data["questionnaireId"] is None or data["answerSet"] is None:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     # Find the questionnaire id from the requesting user
@@ -86,7 +86,7 @@ def submit_answer_set(request):
             "<Answer>{1}</Answer>"
         "</answer>"
     )
-    answersXML = [answerXMLFormat.format(id, data["answer"][id]) for id in data["answer"]]
+    answersXML = [answerXMLFormat.format(id, data["answerSet"][id]) for id in data["answerSet"]]
 
     answerSetXML = (
         "<answer>"

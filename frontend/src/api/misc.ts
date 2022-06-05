@@ -18,25 +18,22 @@ export interface Question {
   validation: string;
 }
 
-export type Answer = {
+export type AnswerSet = {
   [key: string]: string | undefined;
 };
 
-export const submitAnswer = async (answer: Answer, questionnaireId: number, viewsPersonId: number) => {
+export const submitAnswerSetForQuestionnaire = async (answerSet: AnswerSet, questionnaireId: number) => {
   try {
-    const respond = await baseApi.post("questionnaires/questionnaire/submit/", {
-      answer,
-      questionnaireId,
-      viewsPersonId
-    });
+    const respond = await baseApi.post(
+      "questionnaires/questionnaire/submit/",
+      { answerSet, questionnaireId }
+    );
     if (respond.status === 200) return respond;
     else throw Error
   } catch (error) {
     return undefined
   }
 };
-
-
 
 export const fetchQuestions = () => {
   return baseApi
