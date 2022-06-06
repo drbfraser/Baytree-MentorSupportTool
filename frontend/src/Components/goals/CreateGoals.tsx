@@ -19,7 +19,6 @@ import { useNavigate } from "react-router";
 import { updateGoal } from "../../api/goals";
 import { useAuth } from "../../context/AuthContext";
 
-
 const CreateGoals = (props: any) => {
   const { user } = useAuth();
 

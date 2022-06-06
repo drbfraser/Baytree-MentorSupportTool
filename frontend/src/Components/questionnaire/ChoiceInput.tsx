@@ -1,4 +1,10 @@
-import { FormControlLabel, Radio, RadioGroup, useMediaQuery, useTheme } from "@mui/material";
+import {
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  useMediaQuery,
+  useTheme
+} from "@mui/material";
 import { useField } from "formik";
 import { FunctionComponent } from "react";
 import { Question } from "../../api/misc";
@@ -12,8 +18,11 @@ const choices = [
 ];
 
 export const isChoiceQuestion = (question: Question) => {
-  return question.inputType === "number" && question.validation.includes("range[1,5]")
-}
+  return (
+    question.inputType === "number" &&
+    question.validation.includes("range[1,5]")
+  );
+};
 
 // Reponsive choice question
 // Horizontal on large screen

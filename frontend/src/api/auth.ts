@@ -2,11 +2,11 @@ import axios from "axios";
 import { API_BASE_URL } from "./url";
 
 interface LoginData {
-  user_id: number,
-  viewsPersonId: number,
-  is_admin: boolean,
-  is_mentor: boolean,
-  is_superuser: boolean
+  user_id: number;
+  viewsPersonId: number;
+  is_admin: boolean;
+  is_mentor: boolean;
+  is_superuser: boolean;
 }
 
 const authApi = axios.create({
@@ -20,16 +20,18 @@ const authApi = axios.create({
 
 export const login = async (email: string, password: string) => {
   try {
-    const apiRes = await authApi.post<LoginData>("", {email, password});
-    if (apiRes.status === 200)
-      return {data: apiRes.data, error: ""}
+    const apiRes = await authApi.post<LoginData>("", { email, password });
+    if (apiRes.status === 200) return { data: apiRes.data, error: "" };
     if (apiRes.status === 401)
-      return {data: undefined, error: "Invalid email or password"}
+      return { data: undefined, error: "Invalid email or password" };
     else throw Error;
   } catch (err) {
-    return {data: undefined, error: "An error has occurred, please try again"}
+    return {
+      data: undefined,
+      error: "An error has occurred, please try again"
+    };
   }
-}
+};
 
 export const logout = async () => {
   try {
@@ -38,11 +40,11 @@ export const logout = async () => {
   } catch (err) {
     return false;
   }
-}
+};
 
 export const verifyFetch = async () => {
   try {
-    const apiRes = await authApi.post("verify/")
+    const apiRes = await authApi.post("verify/");
     return apiRes.status === 200;
   } catch (err) {
     return false;
@@ -51,7 +53,7 @@ export const verifyFetch = async () => {
 
 export const refreshAccessToken = async () => {
   try {
-    const apiRes = await authApi.post("refresh")
+    const apiRes = await authApi.post("refresh");
     return apiRes.status === 200;
   } catch (err) {
     return false;
