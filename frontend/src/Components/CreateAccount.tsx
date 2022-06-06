@@ -8,11 +8,11 @@ import BaytreePhoto from "../Assets/baytree-photo.jpg";
 import { MOBILE_BREAKPOINT } from "../constants/constants";
 import { checkPassword } from "../Utils/password";
 import OverlaySpinner from "./shared/overlaySpinner";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const CreateAccount = (props: any) => {
   const [password, setPassword] = useState("");
@@ -43,43 +43,45 @@ const CreateAccount = (props: any) => {
 
     if (accountCreationLinkId) {
       try {
-          setShowModal(false);
-          console.log("clicked agree");
-          console.log("creating a mentor account");
+        setShowModal(false);
+        console.log("clicked agree");
+        console.log("creating a mentor account");
 
-          const apiRes = await createMentorAccount(
-            password,
-            accountCreationLinkId
+        const apiRes = await createMentorAccount(
+          password,
+          accountCreationLinkId
+        );
+
+        if (apiRes.status === 200) {
+          setIsPageLoading(false);
+          setAccountCreationSuccessful(true);
+        } else if (apiRes.status === 410) {
+          setIsPageLoading(false);
+          toast.error(
+            "Link expired. Please contact an administrator for further assistance."
           );
-
-          if (apiRes.status === 200) {
-            setIsPageLoading(false);
-            setAccountCreationSuccessful(true);
-          } else if (apiRes.status === 410) {
-            setIsPageLoading(false);
-            toast.error(
-              "Link expired. Please contact an administrator for further assistance."
-            );
-          } else {
-            setIsPageLoading(false);
-            toast.error(
-              "Invalid link. Please contact an administrator for further assistance."
-            );
-          }
+        } else {
+          setIsPageLoading(false);
+          toast.error(
+            "Invalid link. Please contact an administrator for further assistance."
+          );
+        }
       } catch {
-        console.log("Failed to create mentor account. Please contact an administrator for further assistance.");
+        console.log(
+          "Failed to create mentor account. Please contact an administrator for further assistance."
+        );
         setIsPageLoading(false);
         toast.error(
           "Failed to create mentor account. Please contact an administrator for further assistance."
         );
       }
-  }
+    }
   }
 
   function modalAgreeClick() {
-      setShowModal(false);
-      setIsPageLoading(false);
-      createAccount();
+    setShowModal(false);
+    setIsPageLoading(false);
+    createAccount();
   }
 
   function modalDisagreeClick() {
@@ -103,7 +105,9 @@ const CreateAccount = (props: any) => {
           </Logo>
           <PasswordEntry>
             {accountCreationSuccessful ? (
-              <Typography variant="h4">Successfully created account!</Typography>
+              <Typography variant="h4">
+                Successfully created account!
+              </Typography>
             ) : (
               <>
                 <Typography variant="h4">
@@ -133,8 +137,8 @@ const CreateAccount = (props: any) => {
                 />
                 {passwordInvalid && (
                   <Typography variant="body1" color="red">
-                    Error: password should be at least 8 characters, no more than
-                    30 characters, and contain at least one number, symbol,
+                    Error: password should be at least 8 characters, no more
+                    than 30 characters, and contain at least one number, symbol,
                     lowercase letter, and uppercase letter
                   </Typography>
                 )}
@@ -185,36 +189,41 @@ const CreateAccount = (props: any) => {
         </CardLayout>
         <OverlaySpinner active={isPageLoading}></OverlaySpinner>
       </PageLayout>
-       <Dialog
+      <Dialog
         open={showModal}
         onClose={modalDisagreeClick}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        >
+      >
         <DialogTitle id="alert-dialog-title">
           {"Data Protection Privacy"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-          Our Data Protection Privacy statement explains how we look after 
-          your information and what we do with it, you can find a copy on 
-          our website or by asking a member of staff. We will save the 
-          information you provide on our systems, which are accessible to 
-          all our staff. Generally, the information you provide us will be 
-          treated as confidential amongst our staff, however, in certain 
-          circumstances, we may need to disclose some information to third 
-          parties (including, for example, the social services). By 
-          accessing our services, you confirm that you consent to the 
-          storage and use of your data.
+            Our Data Protection Privacy statement explains how we look after
+            your information and what we do with it, you can find a copy on our
+            website or by asking a member of staff. We will save the information
+            you provide on our systems, which are accessible to all our staff.
+            Generally, the information you provide us will be treated as
+            confidential amongst our staff, however, in certain circumstances,
+            we may need to disclose some information to third parties
+            (including, for example, the social services). By accessing our
+            services, you confirm that you consent to the storage and use of
+            your data.
           </DialogContentText>
         </DialogContent>
         <DialogActions style={diaplogActionsStyle}>
-          <Button 
-          style={disagreeDialogButtonStyle}
-          onClick={modalDisagreeClick}>Disagree</Button>
-          <Button 
-          style={agreeDialogButtonStyle}
-          onClick={modalAgreeClick} autoFocus>
+          <Button
+            style={disagreeDialogButtonStyle}
+            onClick={modalDisagreeClick}
+          >
+            Disagree
+          </Button>
+          <Button
+            style={agreeDialogButtonStyle}
+            onClick={modalAgreeClick}
+            autoFocus
+          >
             Agree
           </Button>
         </DialogActions>
@@ -224,20 +233,20 @@ const CreateAccount = (props: any) => {
 };
 
 const disagreeDialogButtonStyle = {
-  color: 'white',
-  backgroundColor: 'red',
-  marginRight: '20px',
+  color: "white",
+  backgroundColor: "red",
+  marginRight: "20px"
 };
 
 const agreeDialogButtonStyle = {
-  color: 'white',
-  backgroundColor: 'green',
-  marginRight: '20px',
+  color: "white",
+  backgroundColor: "green",
+  marginRight: "20px"
 };
 
 const diaplogActionsStyle = {
-  marginBottom: '15px',
-}
+  marginBottom: "15px"
+};
 
 const PageLayout = styled.div`
   display: flex;

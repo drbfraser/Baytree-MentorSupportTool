@@ -28,7 +28,7 @@ export default function Records() {
   useEffect(() => {
     fetchSessionListByMentorId(user!.userId)
       .then(setStaffRecord)
-      .then(() => setIsLoading(false))
+      .then(() => setIsLoading(false));
   }, []);
 
   const columns: GridColDef[] = [
@@ -41,7 +41,9 @@ export default function Records() {
 
   return (
     <Box sx={{ minHeight: "100%" }}>
-      <Typography variant="h4" component="h2" sx={{ mb: 2 }}>Records</Typography>
+      <Typography variant="h4" component="h2" sx={{ mb: 2 }}>
+        Records
+      </Typography>
       <div style={{ width: "100%" }}>
         <DataGrid
           autoHeight
