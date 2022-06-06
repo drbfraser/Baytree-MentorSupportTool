@@ -33,6 +33,7 @@ const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
               <TableCell
                 key={`headerCell_${col.dataField}`}
                 sx={{
+                  textAlign: isOnMobileDevice ? "left" : "center",
                   width: `${
                     (100 - SAVE_BUTTON_CELL_WIDTH_PERCENT) /
                     (!someExpandableColumnExists(props.cols) && isOnMobileDevice
@@ -77,7 +78,7 @@ const DataGridSaveButtonHeaderCell: FC<DataGridSaveButtonHeaderCellProps> = (
     <TableCell sx={{ width: props.width }}>
       <AddButtonContainer>
         <Button
-          color="success"
+          color="primary"
           variant="contained"
           disabled={!props.enableSaveButton}
           onClick={props.onClick}

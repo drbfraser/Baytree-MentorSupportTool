@@ -72,7 +72,7 @@ const Mentors: NextPage = () => {
     }
   };
 
-  const saveMentorUserDataRows: onSaveDataRowsFunc = async (
+  const saveMentorUserDataRows: onSaveDataRowsFunc<MentorUser> = async (
     createdRows,
     updatedRows,
     deletedRows
@@ -80,7 +80,7 @@ const Mentors: NextPage = () => {
     let successfulSave = true;
 
     if (updatedRows.length > 0) {
-      const updateRes = await saveMentorUsers(updatedRows as MentorUser[]);
+      const updateRes = await saveMentorUsers(updatedRows);
       if (!updateRes) {
         successfulSave = false;
       }

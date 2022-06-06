@@ -6,6 +6,7 @@ import {
   DataRowAction,
   setChangedDataRowFunc,
   setDeletedDataRowFunc,
+  InvalidCell,
 } from "./datagridTypes";
 
 interface DataGridBodyDataRowsProps {
@@ -20,6 +21,7 @@ interface DataGridBodyDataRowsProps {
   isDataGridSaveable: boolean;
   dataRowActions?: DataRowAction[];
   isDataGridDeleteable?: boolean;
+  invalidCells: InvalidCell[];
 }
 
 const DataGridBodyDataRows: FC<DataGridBodyDataRowsProps> = (props) => {
@@ -39,6 +41,7 @@ const DataGridBodyDataRows: FC<DataGridBodyDataRowsProps> = (props) => {
           isDataGridSaveable={props.isDataGridSaveable}
           dataRowActions={props.dataRowActions}
           isDataGridDeleteable={props.isDataGridDeleteable}
+          invalidCells={props.invalidCells}
         ></DataGridRow>
       ))}
     </>
