@@ -128,7 +128,7 @@ export const loadColumnValueOptions = (
 };
 
 export const saveDataRows = async (
-  onSaveDataRows: onSaveDataRowsFunc,
+  onSaveDataRows: onSaveDataRowsFunc<DataRow>,
   createdDataRows: DataRow[],
   changedDataRows: DataRow[],
   deletedDataRows: DataRow[],
@@ -172,7 +172,7 @@ export const saveDataRows = async (
       )
     );
 
-    const success = await (onSaveDataRows as onSaveDataRowsFunc)(
+    const success = await (onSaveDataRows as onSaveDataRowsFunc<DataRow>)(
       createdDataRows.map((row) => {
         // Remove primary key value from created rows
         let createdDataRowClone = JSON.parse(JSON.stringify(row)) as DataRow;

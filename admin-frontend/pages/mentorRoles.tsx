@@ -49,10 +49,10 @@ const MentorRoles: NextPage = () => {
     }
   };
 
-  const saveMentorRoleData: onSaveDataRowsFunc = async (
-    createdRows: DataRow[],
-    updatedRows: DataRow[],
-    deletedRows: DataRow[]
+  const saveMentorRoleData: onSaveDataRowsFunc<MentorRole> = async (
+    createdRows: MentorRole[],
+    updatedRows: MentorRole[],
+    deletedRows: MentorRole[]
   ) => {
     const result = await saveMentorRoles([
       ...createdRows,

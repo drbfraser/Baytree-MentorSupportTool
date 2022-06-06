@@ -43,7 +43,7 @@ const useData = (
   isLoadingDataRows: boolean,
   isLoadingColValueOptions: boolean,
   isSavingDataRows: boolean,
-  onSaveDataRows?: onSaveDataRowsFunc,
+  onSaveDataRows?: onSaveDataRowsFunc<DataRow>,
   primaryKeyDataField?: string,
   onLoadDataRows?: onLoadDataRowsFunc | onLoadPagedDataRowsFunc,
   data?: DataRow[],

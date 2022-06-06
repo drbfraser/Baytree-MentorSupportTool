@@ -19,7 +19,7 @@ export interface DataGridBodyProps {
   createdDataRows: DataRow[];
   deletedDataRows: DataRow[];
   onLoadDataRows: onLoadDataRowsFunc | onLoadPagedDataRowsFunc;
-  onSaveDataRows?: onSaveDataRowsFunc;
+  onSaveDataRows?: onSaveDataRowsFunc<DataRow>;
   getOriginalDataRow: (dataRow: DataRow) => DataRow;
   getChangedDataRow: (changedDataRow: DataRow) => DataRow | undefined;
   isDataRowDeleted: (dataRow: DataRow) => boolean;

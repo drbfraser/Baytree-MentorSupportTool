@@ -20,7 +20,7 @@ import usePagination from "./hooks/usePagination";
 
 export interface DataGridProps {
   onLoadDataRows?: onLoadDataRowsFunc | onLoadPagedDataRowsFunc;
-  onSaveDataRows?: onSaveDataRowsFunc;
+  onSaveDataRows?: onSaveDataRowsFunc<any>;
   disableDataRowCreation?: boolean;
   cols: DataGridColumn[];
   primaryKeyDataField?: string; // default primary key is "id"
