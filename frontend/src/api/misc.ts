@@ -13,6 +13,7 @@ export interface Question {
   enabled: string;
   Question: string;
   QuestionID: string;
+  category: string;
   inputType: "text" | "number";
   validation: string;
 }
