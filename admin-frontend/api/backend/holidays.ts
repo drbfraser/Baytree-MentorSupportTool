@@ -30,8 +30,8 @@ export const deleteHoliday = async(holidayId: number) => {
     return await backendDelete(`${holidaysBackendEndpoint}${holidayId}/`);
 };
 
-export const updateHoliday = async (holidayId: number, holiday: Holiday) => {
-    return await backendPut(`${holidaysBackendEndpoint}${holidayId}/`, holiday);
+export const updateHoliday = async (holiday: Holiday) => {
+    return await backendPut(`${holidaysBackendEndpoint}${holiday.id}/`, holiday);
 };
 
 export const saveHolidays = async (
