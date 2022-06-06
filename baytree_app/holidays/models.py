@@ -8,3 +8,4 @@ class Holiday(models.Model):
   startDate = models.DateField()
   endDate = models.DateField()
   isAnnual = models.BooleanField()
+  note = models.CharField(max_length=120, null=True)
