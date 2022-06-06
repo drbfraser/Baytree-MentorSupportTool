@@ -1,4 +1,6 @@
+import { TableBody } from "@mui/material";
 import { FC } from "react";
+import DataGridAddRow from "./datagridAddRow";
 import DataGridBodyCreatedDataRows from "./datagridBodyCreatedDataRows";
 import DataGridBodyDataRows from "./datagridBodyDataRows";
 import DataGridLoadingBody from "./datagridLoadingBody";
@@ -30,44 +32,63 @@ export interface DataGridBodyProps {
   dataRowActions?: DataRowAction[];
   isDataGridDeleteable?: boolean;
   pageSize?: number;
+  disableDataRowCreation?: boolean;
+  isLoadingColValueOptions?: boolean;
+  isSavingDataRows?: boolean;
+  createDataRow: () => void;
 }
 
 const DataGridBody: FC<DataGridBodyProps> = (props) => {
-  return props.isLoadingDataRows ? (
-    <DataGridLoadingBody
-      numCols={
-        props.onSaveDataRows || props.dataRowActions
-          ? props.cols.length + 1
-          : props.cols.length
-      }
-      numLoadingRows={props.pageSize}
-    ></DataGridLoadingBody>
-  ) : (
-    <>
-      <DataGridBodyDataRows
-        primaryKeyDataField={props.primaryKeyDataField}
-        cols={props.cols}
-        dataRows={props.dataRows}
-        getOriginalDataRow={props.getOriginalDataRow}
-        getChangedDataRow={props.getChangedDataRow}
-        isDataRowDeleted={props.isDataRowDeleted}
-        setChangedDataRow={props.setChangedDataRow}
-        setDeletedDataRow={props.setDeletedDataRow}
-        isDataGridSaveable={!!props.onSaveDataRows}
-        dataRowActions={props.dataRowActions}
-        isDataGridDeleteable={props.isDataGridDeleteable}
-      ></DataGridBodyDataRows>
-      <DataGridBodyCreatedDataRows
-        primaryKeyDataField={props.primaryKeyDataField}
-        cols={props.cols}
-        createdDataRows={props.createdDataRows}
-        getChangedDataRow={props.getChangedDataRow}
-        setChangedDataRow={props.setChangedDataRow}
-        setCreatedDataRow={props.setCreatedDataRow}
-        setDeletedDataRow={props.setDeletedDataRow}
-        removeCreatedDataRow={props.removeCreatedDataRow}
-      ></DataGridBodyCreatedDataRows>
-    </>
+  return (
+    <TableBody>
+      {props.isLoadingDataRows ? (
+        <DataGridLoadingBody
+          numCols={
+            props.onSaveDataRows || props.dataRowActions
+              ? props.cols.length + 1
+              : props.cols.length
+          }
+          numLoadingRows={props.pageSize}
+        ></DataGridLoadingBody>
+      ) : (
+        <>
+          <DataGridBodyDataRows
+            primaryKeyDataField={props.primaryKeyDataField}
+            cols={props.cols}
+            dataRows={props.dataRows}
+            getOriginalDataRow={props.getOriginalDataRow}
+            getChangedDataRow={props.getChangedDataRow}
+            isDataRowDeleted={props.isDataRowDeleted}
+            setChangedDataRow={props.setChangedDataRow}
+            setDeletedDataRow={props.setDeletedDataRow}
+            isDataGridSaveable={!!props.onSaveDataRows}
+            dataRowActions={props.dataRowActions}
+            isDataGridDeleteable={props.isDataGridDeleteable}
+          ></DataGridBodyDataRows>
+          <DataGridBodyCreatedDataRows
+            primaryKeyDataField={props.primaryKeyDataField}
+            cols={props.cols}
+            createdDataRows={props.createdDataRows}
+            getChangedDataRow={props.getChangedDataRow}
+            setChangedDataRow={props.setChangedDataRow}
+            setCreatedDataRow={props.setCreatedDataRow}
+            setDeletedDataRow={props.setDeletedDataRow}
+            removeCreatedDataRow={props.removeCreatedDataRow}
+          ></DataGridBodyCreatedDataRows>
+          {props.onSaveDataRows && !props.disableDataRowCreation && (
+            <DataGridAddRow
+              numColumns={props.cols.length}
+              onAddRow={props.createDataRow}
+              enableAddButton={
+                !props.isLoadingDataRows &&
+                !props.isLoadingColValueOptions &&
+                !props.isSavingDataRows
+              }
+            ></DataGridAddRow>
+          )}
+        </>
+      )}
+    </TableBody>
   );
 };
 

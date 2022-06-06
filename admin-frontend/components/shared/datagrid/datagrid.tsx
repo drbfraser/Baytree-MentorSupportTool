@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Table } from "@mui/material";
+import { Table, TableHead } from "@mui/material";
 import DataGridBody from "./datagridBody";
 import DataGridHeaderRow from "./datagridHeaderRow";
 import Pager from "../pager";
@@ -138,18 +138,8 @@ const DataGrid: FC<DataGridProps> = (props) => {
           dataRowActions={props.dataRowActions}
           isDataGridDeleteable={props.isDataGridDeleteable ?? true}
           pageSize={props.pageSize}
+          createDataRow={createDataRow}
         ></DataGridBody>
-        {props.onSaveDataRows && !props.disableDataRowCreation && (
-          <DataGridAddRow
-            numColumns={cols.length}
-            onAddRow={createDataRow}
-            enableAddButton={
-              !isLoadingDataRows &&
-              !isLoadingColValueOptions &&
-              !isSavingDataRows
-            }
-          ></DataGridAddRow>
-        )}
       </Table>
       {props.pageSize && (
         <Pager

@@ -163,7 +163,14 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                     (someExpandableColumnExists(props.cols) &&
                       !col.expandableColumn)) && (
                     <>
-                      <ColHeader header={col.header}></ColHeader>
+                      <ColHeader
+                        key={`colheader_${
+                          (props.dataRow ?? (props.createdDataRow as DataRow))[
+                            props.primaryKeyDataField
+                          ]
+                        }_df_${col.dataField}`}
+                        header={col.header}
+                      ></ColHeader>
                       <DataRowCell
                         key={`pk_${
                           (props.dataRow ?? (props.createdDataRow as DataRow))[
@@ -172,6 +179,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                         }_df_${col.dataField}`}
                         isDataGridSaveable={props.isDataGridSaveable}
                         dataField={col.dataField}
+                        dataType={col.dataType}
                         primaryKeyVal={
                           (props.dataRow ?? (props.createdDataRow as DataRow))[
                             props.primaryKeyDataField

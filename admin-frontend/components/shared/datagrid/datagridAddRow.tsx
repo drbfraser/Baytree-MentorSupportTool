@@ -15,14 +15,16 @@ const DataGridAddRow: FC<DataGridAddRowProps> = (props) => {
       <TableCell colSpan={props.numColumns + 1}>
         <AddButtonContainer>
           <Tooltip title="Add Row">
-            <Button
-              color="success"
-              variant="contained"
-              disabled={!props.enableAddButton}
-              onClick={props.onAddRow}
-            >
-              <MdAdd size="24" />
-            </Button>
+            <span>
+              <Button
+                color="success"
+                variant="contained"
+                disabled={!props.enableAddButton}
+                onClick={props.onAddRow}
+              >
+                <MdAdd size="24" />
+              </Button>
+            </span>
           </Tooltip>
         </AddButtonContainer>
       </TableCell>

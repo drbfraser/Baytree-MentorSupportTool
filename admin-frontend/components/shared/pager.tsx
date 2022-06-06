@@ -106,52 +106,56 @@ const Pager: React.FC<PagerProps> = (props) => {
         }}
       >
         <Tooltip title="Previous Page">
-          <Button
-            style={{
-              padding: "0 0.6rem",
-              height: "fit-content",
-              margin: "0.6rem 0.6rem 0px 0px",
-            }}
-            color="success"
-            variant="contained"
-            disabled={props.currentPageNumber <= 1}
-            onClick={() => {
-              if (currentPageNumberInputRef.current) {
-                currentPageNumberInputRef.current.value = "";
-                if (props.currentPageNumber > 1) {
-                  props.onChangePage(props.currentPageNumber - 1);
-                } else {
-                  toast.error("There are no more previous pages!");
+          <span>
+            <Button
+              style={{
+                padding: "0 0.6rem",
+                height: "fit-content",
+                margin: "0.6rem 0.6rem 0px 0px",
+              }}
+              color="success"
+              variant="contained"
+              disabled={props.currentPageNumber <= 1}
+              onClick={() => {
+                if (currentPageNumberInputRef.current) {
+                  currentPageNumberInputRef.current.value = "";
+                  if (props.currentPageNumber > 1) {
+                    props.onChangePage(props.currentPageNumber - 1);
+                  } else {
+                    toast.error("There are no more previous pages!");
+                  }
                 }
-              }
-            }}
-          >
-            <MdArrowLeft size="3rem"></MdArrowLeft>
-          </Button>
+              }}
+            >
+              <MdArrowLeft size="3rem"></MdArrowLeft>
+            </Button>
+          </span>
         </Tooltip>
         <Tooltip title="Next Page">
-          <Button
-            style={{
-              padding: "0 0.6rem",
-              height: "fit-content",
-              margin: "0.6rem 0.6rem 0px 0px",
-            }}
-            color="success"
-            variant="contained"
-            disabled={props.currentPageNumber >= props.maxPageNumber}
-            onClick={() => {
-              if (currentPageNumberInputRef.current) {
-                currentPageNumberInputRef.current.value = "";
-              }
-              if (props.currentPageNumber < props.maxPageNumber) {
-                props.onChangePage(props.currentPageNumber + 1);
-              } else {
-                toast.error("There are no more pages left!");
-              }
-            }}
-          >
-            <MdArrowRight size="3rem"></MdArrowRight>
-          </Button>
+          <span>
+            <Button
+              style={{
+                padding: "0 0.6rem",
+                height: "fit-content",
+                margin: "0.6rem 0.6rem 0px 0px",
+              }}
+              color="success"
+              variant="contained"
+              disabled={props.currentPageNumber >= props.maxPageNumber}
+              onClick={() => {
+                if (currentPageNumberInputRef.current) {
+                  currentPageNumberInputRef.current.value = "";
+                }
+                if (props.currentPageNumber < props.maxPageNumber) {
+                  props.onChangePage(props.currentPageNumber + 1);
+                } else {
+                  toast.error("There are no more pages left!");
+                }
+              }}
+            >
+              <MdArrowRight size="3rem"></MdArrowRight>
+            </Button>
+          </span>
         </Tooltip>
         {!onMobileDevice && renderPageNumberPicker()}
       </div>

@@ -50,7 +50,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
 
   return (
     <StyledDataGridCell
-      cellBackgroundColor={
+      cellbackgroundcolor={
         props.isCellDeleted
           ? "lightpink"
           : props.isCellChanged
@@ -88,6 +88,8 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
             disableMaskedInput={true}
             inputFormat="yyyy-MM-dd"
             key={`datepicker_${props.primaryKeyVal}_col_${props.dataField}`}
+            views={["year", "month", "day"]}
+            openTo="year"
             value={datePickerValue}
             onChange={(newValue) => {
               if (newValue) {
@@ -155,8 +157,8 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
   );
 };
 
-const StyledDataGridCell = styled(TableCell)<{ cellBackgroundColor: string }>`
-  background-color: ${(props) => props.cellBackgroundColor};
+const StyledDataGridCell = styled(TableCell)<{ cellbackgroundcolor: string }>`
+  background-color: ${(props) => props.cellbackgroundcolor};
 `;
 
 const LoadingDataGridCell: FC = () => {
