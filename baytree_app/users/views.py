@@ -347,19 +347,18 @@ def createMentorAccount(request):
                     {"email": foundAccountCreationLink.email, "password": password}
                 )
                 createdUserId = createdUserIds[0]
+
+                data_privacy_consent = make_aware(datetime.datetime.now())
                 create_object(
-                    {
-                        "user": createdUserId,
-                        "status": "Active",
-                        "viewsPersonId": foundAccountCreationLink.views_person_id,
-                    },
-                    MentorUser,
-                )
+                    {"user": createdUserId,
+                     "status": "Active",
+                    "viewsPersonId": foundAccountCreationLink.views_person_id,
+                    "data_privacy_consent": data_privacy_consent,
+                    }, MentorUser)
                 foundAccountCreationLink.delete()
-                return Response(
-                    {"status": "Successfully created mentor account"},
-                    status=status.HTTP_200_OK,
-                )
+
+                return Response({"status": "Successfully created mentor account"},
+                        status=status.HTTP_200_OK)
             else:
                 return Response(
                     {"error": "Link invalid"}, status=status.HTTP_401_UNAUTHORIZED

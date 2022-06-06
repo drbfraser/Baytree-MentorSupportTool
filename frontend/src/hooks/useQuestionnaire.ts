@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnswerSet, fetchQuestions, Question, submitAnswerSetForQuestionnaire } from "../api/misc";
 import useMentees from "./useMentees";
-import useMentorProfile from "./useProfile";
+import useMentor from "./useMentor";
 
 export const MENTOR_NAME = /mentor('s)? name/ig;
 export const MENTEE_NAME = /mentee('s)? name/ig;
@@ -16,7 +16,7 @@ export const isMenteeQuestion = (q: Question) => !!q.Question.match(MENTEE_NAME)
 const useQuestionnaire = () => {
   const [loadingQuestionnaire, setLoadingQuestionniare] = useState(true);
   const [questionnaireId, setQuestionnaireId] = useState(-1);
-  const { mentor, loadingMentor } = useMentorProfile();
+  const { mentor, loadingMentor } = useMentor();
   const { mentees, error: menteeError } = useMentees();
   const [questions, setQuestions] = useState([] as Question[]);
   const [questionsError, setQuestionnaireError] = useState<string | undefined>(undefined);

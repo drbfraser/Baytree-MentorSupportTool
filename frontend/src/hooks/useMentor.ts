@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { dummyUser, getMentorProfile, User } from "../api/views";
 
-const useMentorProfile = () => {
+const useMentor = () => {
   const [loadingMentor, setLoadingMentor] = useState(false);
   const [mentor, setMentor] = useState<User>(dummyUser);
 
@@ -19,4 +19,4 @@ const useMentorProfile = () => {
   return { loadingMentor, mentor };
 };
 
-export default useMentorProfile;
+export default useMentor;
