@@ -1,5 +1,5 @@
-import { TableCell, TableRow, Typography } from "@mui/material";
-import { FC, useState } from "react";
+import { Divider, TableCell, TableRow, Typography } from "@mui/material";
+import { FC, Fragment, useState } from "react";
 import useMobileLayout from "../../../hooks/useMobileLayout";
 import DataRowCell from "./datagridCell";
 import DataRowDeleteCell from "./datagridDeleteCell";
@@ -162,7 +162,11 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                     !col.keepColumnOnMobile) ||
                     (someExpandableColumnExists(props.cols) &&
                       !col.expandableColumn)) && (
-                    <>
+                    <Fragment
+                      key={`Fragment${
+                        props.dataRow![props.primaryKeyDataField]
+                      }_col_${col.dataField}`}
+                    >
                       <ColHeader
                         key={`colheader_${
                           (props.dataRow ?? (props.createdDataRow as DataRow))[
@@ -177,6 +181,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                             props.primaryKeyDataField
                           ]
                         }_df_${col.dataField}`}
+                        useDivInsteadOfTableCell={true}
                         isDataGridSaveable={props.isDataGridSaveable}
                         dataField={col.dataField}
                         dataType={col.dataType}
@@ -215,10 +220,10 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                         isCellDeleted={!!props.isDataRowDeleted}
                         isColumnEditable={!col.disableEditing}
                       ></DataRowCell>
-                    </>
+                      <Divider sx={{ margin: "0.5rem 0" }} />
+                    </Fragment>
                   )
               )}
-              <div></div>
               {props.isDataGridSaveable &&
               !props.dataRowActions &&
               props.isDataGridDeleteable ? (
@@ -230,6 +235,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                     )
                   }
                   isRowDeleted={!!props.isDataRowDeleted}
+                  useDivInsteadOfTableCell={true}
                 ></DataRowDeleteCell>
               ) : props.dataRowActions &&
                 props.dataRow &&
@@ -254,8 +260,16 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
 };
 
 const ColHeader: FC<ColHeaderProps> = (props) => {
+  const isOnMobileDevice = useMobileLayout();
+
   return (
-    <div style={{ marginTop: "0.5rem" }}>
+    <div
+      style={{
+        marginTop: "0.5rem",
+        display: "flex",
+        justifyContent: isOnMobileDevice ? "left" : "center",
+      }}
+    >
       <Typography sx={{ fontSize: "0.8rem" }}>{props.header}</Typography>
     </div>
   );

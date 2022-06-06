@@ -13,6 +13,7 @@ import styled from "styled-components";
 import { ColumnDataTypes, ValueOption } from "./datagridTypes";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { padLeftString } from "../../../util/misc";
+import useMobileLayout from "../../../hooks/useMobileLayout";
 
 interface DataRowCellProps {
   isSelectCell: boolean;
@@ -27,10 +28,12 @@ interface DataRowCellProps {
   isDataGridSaveable: boolean;
   isColumnEditable: boolean;
   color?: string;
+  useDivInsteadOfTableCell?: boolean;
 }
 
 const DataRowCell: FC<DataRowCellProps> = (props) => {
   const selectIdRef = useRef(0);
+  const isOnMobileDevice = useMobileLayout();
 
   // Current DatePicker value for date columns
   const [datePickerValue, setDatePickerValue] = useState<Date | null>(
@@ -48,7 +51,129 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
       : null
   );
 
-  return (
+  const [checkBoxChecked, setCheckBoxChecked] = useState<boolean | null>(
+    props.value && props.dataType === "boolean" ? props.value : null
+  );
+
+  const renderDataGridCell = () => {
+    return (
+      <DataGridCellContainer
+        justifycontent={isOnMobileDevice ? "flex-start" : "center"}
+      >
+        {props.isSelectCell && props.isColumnEditable ? (
+          !props.valueOptions ? (
+            <LoadingDataGridCell></LoadingDataGridCell>
+          ) : (
+            <Select
+              key={`select_datarow_${props.primaryKeyVal}_col_${
+                props.dataField
+              }_selectRef${selectIdRef.current++}`}
+              fullWidth
+              defaultValue={props.value ?? ""}
+              onChange={(event) => props.onChangedValue(event.target.value)}
+              sx={{ fontSize: "0.8rem" }}
+            >
+              {props.valueOptions.map((valueOption, k) => (
+                <MenuItem key={valueOption.id} value={valueOption.id}>
+                  {valueOption.name}
+                </MenuItem>
+              ))}
+            </Select>
+          )
+        ) : props.dataType === "date" &&
+          props.isDataGridSaveable &&
+          props.isColumnEditable ? (
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              disableMaskedInput={true}
+              inputFormat="yyyy-MM-dd"
+              key={`datepicker_${props.primaryKeyVal}_col_${props.dataField}`}
+              views={["year", "month", "day"]}
+              openTo="year"
+              value={datePickerValue}
+              onChange={(newValue) => {
+                if (newValue) {
+                  // Convert to date string to store in datarow
+                  const year = newValue.getFullYear();
+                  const month = newValue.getMonth();
+                  const day = newValue.getDate();
+                  const dateString = `${year}-${padLeftString(
+                    "0",
+                    2,
+                    (month + 1).toString()
+                  )}-${padLeftString("0", 2, day.toString())}`;
+                  props.onChangedValue(dateString);
+                  setDatePickerValue(newValue);
+                } else {
+                  props.onChangedValue(null);
+                  setDatePickerValue(newValue);
+                }
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  inputProps={{
+                    ...params.inputProps,
+                    readOnly: true,
+                    style: { fontSize: "0.8rem" },
+                  }}
+                />
+              )}
+            ></DatePicker>
+          </LocalizationProvider>
+        ) : props.dataType === "boolean" ? (
+          <Checkbox
+            color="success"
+            disabled={!props.isDataGridSaveable || !props.isColumnEditable}
+            key={`checkbox_${props.primaryKeyVal}_col_${props.dataField}`}
+            checked={!!checkBoxChecked}
+            onChange={(event) => {
+              setCheckBoxChecked(event.target.checked);
+              props.onChangedValue(event.target.checked);
+            }}
+            size={"large" as any} // Need to supress typescript error
+          ></Checkbox>
+        ) : props.isDataGridSaveable && props.isColumnEditable ? (
+          <TextField
+            fullWidth
+            defaultValue={props.value}
+            onBlur={(event) => props.onChangedValue(event.target.value)}
+            inputProps={{
+              style: { fontSize: "0.8rem" },
+            }}
+          ></TextField>
+        ) : (
+          <Typography
+            sx={{
+              fontSize: "0.8rem",
+              whiteSpace: "nowrap",
+              wordBreak: "break-word",
+            }}
+          >
+            {props.value}
+          </Typography>
+        )}
+      </DataGridCellContainer>
+    );
+  };
+
+  return props.useDivInsteadOfTableCell ? (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        backgroundColor: props.isCellDeleted
+          ? "lightpink"
+          : props.isCellChanged
+          ? "lightgreen"
+          : props.color
+          ? props.color
+          : "unset",
+      }}
+    >
+      {renderDataGridCell()}
+    </div>
+  ) : (
     <StyledDataGridCell
       cellbackgroundcolor={
         props.isCellDeleted
@@ -60,99 +185,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
           : "unset"
       }
     >
-      {props.isSelectCell && props.isColumnEditable ? (
-        !props.valueOptions ? (
-          <LoadingDataGridCell></LoadingDataGridCell>
-        ) : (
-          <Select
-            key={`select_datarow_${props.primaryKeyVal}_col_${
-              props.dataField
-            }_selectRef${selectIdRef.current++}`}
-            fullWidth
-            defaultValue={props.value ?? ""}
-            onChange={(event) => props.onChangedValue(event.target.value)}
-            sx={{ fontSize: "0.8rem" }}
-          >
-            {props.valueOptions.map((valueOption, k) => (
-              <MenuItem key={valueOption.id} value={valueOption.id}>
-                {valueOption.name}
-              </MenuItem>
-            ))}
-          </Select>
-        )
-      ) : props.dataType === "date" &&
-        props.isDataGridSaveable &&
-        props.isColumnEditable ? (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            disableMaskedInput={true}
-            inputFormat="yyyy-MM-dd"
-            key={`datepicker_${props.primaryKeyVal}_col_${props.dataField}`}
-            views={["year", "month", "day"]}
-            openTo="year"
-            value={datePickerValue}
-            onChange={(newValue) => {
-              if (newValue) {
-                // Convert to date string to store in datarow
-                const year = newValue.getFullYear();
-                const month = newValue.getMonth();
-                const day = newValue.getDate();
-                const dateString = `${year}-${padLeftString(
-                  "0",
-                  2,
-                  (month + 1).toString()
-                )}-${padLeftString("0", 2, day.toString())}`;
-                props.onChangedValue(dateString);
-                setDatePickerValue(newValue);
-              } else {
-                props.onChangedValue(null);
-                setDatePickerValue(newValue);
-              }
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                inputProps={{
-                  ...params.inputProps,
-                  readOnly: true,
-                }}
-              />
-            )}
-          ></DatePicker>
-        </LocalizationProvider>
-      ) : props.dataType === "boolean" &&
-        props.isDataGridSaveable &&
-        props.isColumnEditable ? (
-        <CheckboxContainer>
-          <Checkbox
-            color="success"
-            key={`checkbox_${props.primaryKeyVal}_col_${props.dataField}`}
-            // Need ternary operator to suppress MUI defaultValue changed error
-            defaultChecked={props.isCellChanged ? !props.value : props.value}
-            onChange={(event) => props.onChangedValue(event.target.checked)}
-            size={"large" as any} // Need to supress typescript error
-          ></Checkbox>
-        </CheckboxContainer>
-      ) : props.isDataGridSaveable && props.isColumnEditable ? (
-        <TextField
-          fullWidth
-          defaultValue={props.value}
-          onBlur={(event) => props.onChangedValue(event.target.value)}
-          inputProps={{
-            style: { fontSize: "0.8rem" },
-          }}
-        ></TextField>
-      ) : (
-        <Typography
-          sx={{
-            fontSize: "0.8rem",
-            whiteSpace: "nowrap",
-            wordBreak: "break-word",
-          }}
-        >
-          {props.value}
-        </Typography>
-      )}
+      {renderDataGridCell()}
     </StyledDataGridCell>
   );
 };
@@ -161,21 +194,21 @@ const StyledDataGridCell = styled(TableCell)<{ cellbackgroundcolor: string }>`
   background-color: ${(props) => props.cellbackgroundcolor};
 `;
 
+const DataGridCellContainer = styled.div<{ justifycontent: string }>`
+  display: flex;
+  justify-content: ${(props) => props.justifycontent ?? "flex-start"};
+`;
+
 const LoadingDataGridCell: FC = () => {
   const NUM_SKELETON_ROWS = 3;
 
   return (
-    <>
+    <div style={{ width: "100%", height: "100%" }}>
       {Array.from(Array(NUM_SKELETON_ROWS).keys()).map((idx) => (
         <Skeleton key={`skeleton_${idx}`}></Skeleton>
       ))}
-    </>
+    </div>
   );
 };
-
-const CheckboxContainer = styled.div`
-  display: flex;
-  justify-content: center;
-`;
 
 export default DataRowCell;
