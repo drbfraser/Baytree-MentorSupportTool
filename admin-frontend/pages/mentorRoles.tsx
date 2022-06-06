@@ -143,16 +143,6 @@ const MentorRoles: NextPage = () => {
             dataField: "volunteeringType",
             onLoadValueOptions: getVolunteeringOptions,
           },
-          {
-            header: "Example Date",
-            dataField: "exampleDate",
-            dataType: "date",
-          },
-          {
-            header: "Example Bool",
-            dataField: "exampleBool",
-            dataType: "boolean",
-          },
         ]}
         onLoadDataRows={getMentorRoleData}
         onSaveDataRows={saveMentorRoleData}
