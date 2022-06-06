@@ -1,7 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "./url";
 
-
 const baseApi = axios.create({
   baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
@@ -22,26 +21,31 @@ export type AnswerSet = {
   [key: string]: string | undefined;
 };
 
-export const submitAnswerSetForQuestionnaire = async (answerSet: AnswerSet, questionnaireId: number) => {
+export const submitAnswerSetForQuestionnaire = async (
+  answerSet: AnswerSet,
+  questionnaireId: number
+) => {
   try {
-    const respond = await baseApi.post(
-      "questionnaires/questionnaire/submit/",
-      { answerSet, questionnaireId }
-    );
+    const respond = await baseApi.post("questionnaires/questionnaire/submit/", {
+      answerSet,
+      questionnaireId
+    });
     if (respond.status === 200) return respond;
-    else throw Error
+    else throw Error;
   } catch (error) {
-    return undefined
+    return undefined;
   }
 };
 
 export const fetchQuestions = () => {
   return baseApi
-    .get<{ questionnaireId: number, questions: Question[] }>("questionnaires/questionnaire/")
+    .get<{ questionnaireId: number; questions: Question[] }>(
+      "questionnaires/questionnaire/"
+    )
     .then((response) => ({
       questionnaireId: response.data.questionnaireId,
-      questions: response.data.questions.filter(q => q.enabled === "1")
-    }))
+      questions: response.data.questions.filter((q) => q.enabled === "1")
+    }));
 };
 
 // Resources
@@ -59,9 +63,9 @@ export interface Session {
   Duration: string;
   Status: string;
   Snippet: string;
-  Note: string
+  Note: string;
 }
 
 export const fetchSessionListByMentorId = async (id: number) => {
   return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data);
-}
+};

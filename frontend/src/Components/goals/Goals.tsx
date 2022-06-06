@@ -73,8 +73,7 @@ export default function Goals() {
   };
 
   const handleGoalComplete = (goalId: any) => {
-    submitCompleteGoal(goalId)
-      .then((_response) => fetchGoals());
+    submitCompleteGoal(goalId).then((_response) => fetchGoals());
   };
 
   const handleChange1 = (panel: any) => (_event: any, isExpanded: any) => {

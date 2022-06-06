@@ -9,9 +9,11 @@ import Typography from "@mui/material/Typography";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchNotificationsByUserId, readNotification } from "../api/notification";
+import {
+  fetchNotificationsByUserId,
+  readNotification
+} from "../api/notification";
 import { useAuth } from "../context/AuthContext";
-
 
 export default function Notification() {
   const { user } = useAuth();
@@ -30,8 +32,9 @@ export default function Notification() {
 
   const handleNotificationComplete = (notificationId: any) => {
     if (!notifications.find((n) => n.id === notificationId).is_read) {
-      readNotification(+notificationId)
-        .then(() => setReadToggle((toggle) => !toggle));
+      readNotification(+notificationId).then(() =>
+        setReadToggle((toggle) => !toggle)
+      );
     }
   };
 

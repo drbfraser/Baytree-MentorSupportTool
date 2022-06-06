@@ -5,7 +5,7 @@ import { Question } from "../../api/misc";
 
 const TextInput: FunctionComponent<{ question: Question }> = ({ question }) => {
   const [field, meta] = useField(question.QuestionID);
-  const error = field.value === "" && meta.touched
+  const error = field.value === "" && meta.touched;
 
   return (
     <>
@@ -14,7 +14,8 @@ const TextInput: FunctionComponent<{ question: Question }> = ({ question }) => {
         sx={{ mt: 1 }}
         variant="outlined"
         {...field}
-        error={error} />
+        error={error}
+      />
       {error && <FormHelperText error>Required</FormHelperText>}
     </>
   );
