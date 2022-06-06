@@ -69,3 +69,8 @@ export type setDeletedDataRowFunc = (
   isDeleted: boolean,
   dataRow: DataRow
 ) => void;
+
+export interface InvalidCell {
+  primaryKey: string;
+  dataField: string;
+}

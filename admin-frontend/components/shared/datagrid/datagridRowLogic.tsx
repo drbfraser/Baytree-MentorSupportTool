@@ -6,6 +6,7 @@ import {
   setChangedDataRowFunc,
   setCreatedDataRowFunc,
   setDeletedDataRowFunc,
+  InvalidCell,
 } from "./datagridTypes";
 
 export const changeDataRowValue = (
@@ -97,3 +98,22 @@ export const shouldKeepColumnOnMobile = (
 
 export const someExpandableColumnExists = (cols: DataGridColumn[]) =>
   cols.some((col) => col.expandableColumn);
+
+export const checkCellInvalid = (
+  primaryKeyDataField: string,
+  invalidCells: InvalidCell[],
+  col: DataGridColumn,
+  dataRow?: DataRow,
+  changedDataRow?: DataRow,
+  createdDataRow?: DataRow
+) => {
+  return invalidCells.some(
+    (invalidCell) =>
+      invalidCell.primaryKey ===
+        (dataRow
+          ? dataRow[primaryKeyDataField]
+          : changedDataRow
+          ? changedDataRow[primaryKeyDataField]
+          : createdDataRow) && invalidCell.dataField === col.dataField
+  );
+};

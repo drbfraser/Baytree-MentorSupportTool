@@ -29,6 +29,7 @@ interface DataRowCellProps {
   isColumnEditable: boolean;
   color?: string;
   useDivInsteadOfTableCell?: boolean;
+  isCellInvalid?: boolean;
 }
 
 const DataRowCell: FC<DataRowCellProps> = (props) => {
@@ -162,13 +163,14 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor: props.isCellDeleted
-          ? "lightpink"
-          : props.isCellChanged
-          ? "lightgreen"
-          : props.color
-          ? props.color
-          : "unset",
+        backgroundColor:
+          props.isCellDeleted || props.isCellInvalid
+            ? "lightpink"
+            : props.isCellChanged
+            ? "lightgreen"
+            : props.color
+            ? props.color
+            : "unset",
       }}
     >
       {renderDataGridCell()}
@@ -176,7 +178,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
   ) : (
     <StyledDataGridCell
       cellbackgroundcolor={
-        props.isCellDeleted
+        props.isCellDeleted || props.isCellInvalid
           ? "lightpink"
           : props.isCellChanged
           ? "lightgreen"

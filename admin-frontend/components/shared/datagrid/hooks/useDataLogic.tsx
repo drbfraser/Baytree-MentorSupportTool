@@ -8,6 +8,7 @@ import {
   onLoadDataRowsFunc,
   PagedDataRows,
   onLoadPagedDataRowsFunc,
+  InvalidCell,
 } from "../datagridTypes";
 
 const failureLoadDataToastMessage =
@@ -140,15 +141,22 @@ export const saveDataRows = async (
   setIsSavingDataRows: Dispatch<SetStateAction<boolean>>,
   originalDataRowsRef: MutableRefObject<DataRow[]>,
   errorMessage: string,
-  cols: DataGridColumn[]
+  cols: DataGridColumn[],
+  setInvalidCells: Dispatch<SetStateAction<InvalidCell[]>>
 ) => {
   try {
-    const validationError = validateDataRows(
+    const invalidCells = validateDataRows(
       [...createdDataRows, ...changedDataRows],
-      cols
+      cols,
+      primaryKeyDataField
     );
-    if (validationError) {
-      toast.error(validationError);
+
+    if (invalidCells.length > 0) {
+      toast.error(
+        "There are one or more incorrect entries. Please ensure that all red entries are correct or filled in and save again."
+      );
+
+      setInvalidCells(invalidCells);
       return;
     }
 
@@ -191,6 +199,7 @@ export const saveDataRows = async (
       setCreatedDataRows([]);
       setChangedDataRows([]);
       setDeletedDataRows([]);
+      setInvalidCells([]);
       originalDataRowsRef.current = [];
     } else {
       setIsSavingDataRows(false);
@@ -202,7 +211,13 @@ export const saveDataRows = async (
   }
 };
 
-const validateDataRows = (dataRows: DataRow[], cols: DataGridColumn[]) => {
+const validateDataRows = (
+  dataRows: DataRow[],
+  cols: DataGridColumn[],
+  primaryKeyDataField: string
+) => {
+  const invalidCells: InvalidCell[] = [];
+
   for (const dataRow of dataRows) {
     for (const col of cols) {
       if (
@@ -210,12 +225,15 @@ const validateDataRows = (dataRows: DataRow[], cols: DataGridColumn[]) => {
         !dataRow[col.dataField] &&
         !col.disableEditing
       ) {
-        return `${col.header} is required, but it is empty in one or more entries. Please ensure that each entry is filled and try saving again!`;
+        invalidCells.push({
+          primaryKey: dataRow[primaryKeyDataField],
+          dataField: col.dataField,
+        });
       }
     }
   }
 
-  return "";
+  return invalidCells;
 };
 
 export const removeCreatedDataRow = (

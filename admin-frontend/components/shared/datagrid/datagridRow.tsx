@@ -7,6 +7,7 @@ import ExpandButtonCell from "./datagridExpandButton";
 import DataRowActionsCell from "./datagridRowActionsCell";
 import {
   changeDataRowValue,
+  checkCellInvalid,
   getDataRowActions,
   isCellChanged,
   shouldKeepColumnOnMobile,
@@ -19,6 +20,7 @@ import {
   setChangedDataRowFunc,
   setCreatedDataRowFunc,
   setDeletedDataRowFunc,
+  InvalidCell,
 } from "./datagridTypes";
 
 interface DataGridRowProps {
@@ -36,6 +38,7 @@ interface DataGridRowProps {
   isDataGridSaveable: boolean;
   dataRowActions?: DataRowAction[];
   isDataGridDeleteable?: boolean;
+  invalidCells: InvalidCell[];
 }
 
 const DataGridRow: FC<DataGridRowProps> = (props) => {
@@ -103,6 +106,14 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                     ? HEADER_ROW_COLOR
                     : undefined
                 }
+                isCellInvalid={checkCellInvalid(
+                  props.primaryKeyDataField,
+                  props.invalidCells,
+                  col,
+                  props.dataRow,
+                  props.changedDataRow,
+                  props.createdDataRow
+                )}
               ></DataRowCell>
             )
         )}
@@ -219,6 +230,14 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                         )}
                         isCellDeleted={!!props.isDataRowDeleted}
                         isColumnEditable={!col.disableEditing}
+                        isCellInvalid={checkCellInvalid(
+                          props.primaryKeyDataField,
+                          props.invalidCells,
+                          col,
+                          props.dataRow,
+                          props.changedDataRow,
+                          props.createdDataRow
+                        )}
                       ></DataRowCell>
                       <Divider sx={{ margin: "0.5rem 0" }} />
                     </Fragment>

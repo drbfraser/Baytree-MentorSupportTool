@@ -9,6 +9,7 @@ import {
 import {
   DataGridColumn,
   DataRow,
+  InvalidCell,
   onLoadDataRowsFunc,
   onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
@@ -69,6 +70,7 @@ const useData = (
   const [cols, setCols] = useState<DataGridColumn[]>(initialCols);
   const primaryKeyDataFieldRef = useRef(primaryKeyDataField ?? "id");
   const createRowNextIdRef = useRef(0); // next created row id
+  const [invalidCells, setInvalidCells] = useState<InvalidCell[]>([]);
 
   useEffect(() => {
     getData();
@@ -133,7 +135,8 @@ const useData = (
           setIsSavingDataRows,
           originalDataRowsRef,
           FAIL_SAVE_MESSAGE,
-          cols
+          cols,
+          setInvalidCells
         )
     : undefined;
 
@@ -227,6 +230,7 @@ const useData = (
     setDeletedDataRow: _setDeletedDataRow,
     createDataRow: _createDataRow,
     isAnyColumnSearchable: _isAnyColumnSearchable,
+    invalidCells,
   };
 };
 

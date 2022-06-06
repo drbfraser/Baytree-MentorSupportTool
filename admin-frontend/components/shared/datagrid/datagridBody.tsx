@@ -8,6 +8,7 @@ import {
   DataGridColumn,
   DataRow,
   DataRowAction,
+  InvalidCell,
   onLoadDataRowsFunc,
   onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
@@ -36,6 +37,7 @@ export interface DataGridBodyProps {
   isLoadingColValueOptions?: boolean;
   isSavingDataRows?: boolean;
   createDataRow: () => void;
+  invalidCells: InvalidCell[];
 }
 
 const DataGridBody: FC<DataGridBodyProps> = (props) => {
@@ -64,6 +66,7 @@ const DataGridBody: FC<DataGridBodyProps> = (props) => {
             isDataGridSaveable={!!props.onSaveDataRows}
             dataRowActions={props.dataRowActions}
             isDataGridDeleteable={props.isDataGridDeleteable}
+            invalidCells={props.invalidCells}
           ></DataGridBodyDataRows>
           <DataGridBodyCreatedDataRows
             primaryKeyDataField={props.primaryKeyDataField}
@@ -74,6 +77,7 @@ const DataGridBody: FC<DataGridBodyProps> = (props) => {
             setCreatedDataRow={props.setCreatedDataRow}
             setDeletedDataRow={props.setDeletedDataRow}
             removeCreatedDataRow={props.removeCreatedDataRow}
+            invalidCells={props.invalidCells}
           ></DataGridBodyCreatedDataRows>
           {props.onSaveDataRows && !props.disableDataRowCreation && (
             <DataGridAddRow
