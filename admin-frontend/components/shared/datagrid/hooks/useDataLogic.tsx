@@ -207,7 +207,8 @@ const validateDataRows = (dataRows: DataRow[], cols: DataGridColumn[]) => {
     for (const col of cols) {
       if (
         (col.isRequired || col.isRequired === undefined) &&
-        !dataRow[col.dataField]
+        !dataRow[col.dataField] &&
+        !col.disableEditing
       ) {
         return `${col.header} is required, but it is empty in one or more entries. Please ensure that each entry is filled and try saving again!`;
       }
