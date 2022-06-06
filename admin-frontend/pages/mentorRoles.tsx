@@ -104,7 +104,6 @@ const MentorRoles: NextPage = () => {
           {
             header: "Mentor Role",
             dataField: "name",
-            enableSearching: true,
             keepColumnOnMobile: true,
           },
           {
