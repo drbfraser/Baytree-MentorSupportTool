@@ -28,12 +28,8 @@ const useQuestionnaire = () => {
         setQuestionnaireId(data.questionnaireId);
         setQuestions(data.questions);
       })
-      .then(() => setLoadingQuestionniare(false))
-      .catch((_error) => {
-        setQuestionnaireError("Cannot fetch the questionnaire");
-        setLoadingQuestionniare(false);
-      });
-    return () => setLoadingQuestionniare(false);
+      .catch((_error) => setQuestionnaireError("Cannot fetch the questionnaire"))
+      .finally(() => setLoadingQuestionniare(false));
   }, []);
 
   // Generate the initital answers based on the question types

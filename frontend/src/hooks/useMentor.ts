@@ -14,8 +14,7 @@ const useMentor = () => {
         if (data && !mentorError) setMentor(data);
         else setError(mentorError);
       })
-      .then(() => setLoadingMentor(false));
-    return () => setLoadingMentor(false);
+      .finally(() => setLoadingMentor(false));
   }, []);
 
   return { loadingMentor, mentor, error };
