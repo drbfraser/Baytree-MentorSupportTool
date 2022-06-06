@@ -15,7 +15,6 @@ import {
   onLoadPagedDataRowsFunc,
   PagedDataRows,
   onSaveDataRowsFunc,
-  DataRow,
 } from "../components/shared/datagrid/datagridTypes";
 
 const MentorRoles: NextPage = () => {
@@ -39,8 +38,6 @@ const MentorRoles: NextPage = () => {
         (mentorRole) => ({
           ...mentorRole,
           viewsSessionGroupId: mentorRole.viewsSessionGroupId,
-          exampleDate: "2022-06-06",
-          exampleBool: true,
         })
       );
       return mentorRolesPageRes;
