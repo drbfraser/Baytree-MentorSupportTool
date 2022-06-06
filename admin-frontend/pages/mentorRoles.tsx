@@ -39,6 +39,8 @@ const MentorRoles: NextPage = () => {
         (mentorRole) => ({
           ...mentorRole,
           viewsSessionGroupId: mentorRole.viewsSessionGroupId,
+          exampleDate: "2022-06-06",
+          exampleBool: true,
         })
       );
       return mentorRolesPageRes;
@@ -140,6 +142,16 @@ const MentorRoles: NextPage = () => {
             header: "Volunteering",
             dataField: "volunteeringType",
             onLoadValueOptions: getVolunteeringOptions,
+          },
+          {
+            header: "Example Date",
+            dataField: "exampleDate",
+            dataType: "date",
+          },
+          {
+            header: "Example Bool",
+            dataField: "exampleBool",
+            dataType: "boolean",
           },
         ]}
         onLoadDataRows={getMentorRoleData}

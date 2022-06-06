@@ -18,11 +18,11 @@ export const changeDataRowValue = (
   createdDataRow?: DataRow
 ) => {
   if (createdDataRow) {
-    createdDataRow = JSON.parse(JSON.stringify(createdDataRow));
+    createdDataRow = cloneDataRow(createdDataRow);
     (createdDataRow as DataRow)[dataField] = newValue;
     (setCreatedDataRow as setCreatedDataRowFunc)(createdDataRow as DataRow);
   } else if (changedDataRow) {
-    changedDataRow = JSON.parse(JSON.stringify(changedDataRow));
+    changedDataRow = cloneDataRow(changedDataRow);
     (changedDataRow as DataRow)[dataField] = newValue;
     (setChangedDataRow as setChangedDataRowFunc)(changedDataRow as DataRow);
   } else {
@@ -30,10 +30,21 @@ export const changeDataRowValue = (
       return;
     }
 
-    dataRow = JSON.parse(JSON.stringify(dataRow));
+    dataRow = cloneDataRow(dataRow);
     (dataRow as DataRow)[dataField] = newValue;
     (setChangedDataRow as setChangedDataRowFunc)(dataRow as DataRow);
   }
+};
+
+export const cloneDataRow = (dataRow?: DataRow) => {
+  return JSON.parse(JSON.stringify(dataRow));
+};
+
+// https://stackoverflow.com/a/52869830
+export const isIsoDate = (str: string) => {
+  if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
+  var d = new Date(str);
+  return d.toISOString() === str;
 };
 
 export const isCellChanged = (

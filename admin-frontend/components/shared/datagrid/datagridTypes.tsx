@@ -37,6 +37,7 @@ export type onSaveDataRowsFunc = (
 export interface DataGridColumn {
   header: string;
   dataField: string;
+  dataType?: ColumnDataTypes;
 
   valueOptions?: ValueOption[];
   onLoadValueOptions?: OnLoadColumnValueOptionsFunc;
@@ -45,6 +46,8 @@ export interface DataGridColumn {
   keepColumnOnMobile?: boolean;
   expandableColumn?: boolean;
 }
+
+export type ColumnDataTypes = "date" | "boolean";
 
 export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
 

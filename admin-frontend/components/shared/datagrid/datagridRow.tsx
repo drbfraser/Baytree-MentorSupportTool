@@ -61,6 +61,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                 }_df_${col.dataField}`}
                 isDataGridSaveable={props.isDataGridSaveable}
                 dataField={col.dataField}
+                dataType={col.dataType}
                 primaryKeyVal={
                   (props.dataRow ?? (props.createdDataRow as DataRow))[
                     props.primaryKeyDataField
