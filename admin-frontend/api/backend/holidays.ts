@@ -23,15 +23,15 @@ export const getHolidays = async (options?: ApiOptions) => {
 };
 
 export const createHoliday = async(holiday: Holiday) => {
-    return await backendPost(holidaysBackendEndpoint, holiday);
+    return await backendPost(`${holidaysBackendEndpoint}create/`, holiday);
 };
 
 export const deleteHoliday = async(holidayId: number) => {
-    return await backendDelete(`${holidaysBackendEndpoint}/${holidayId}/`);
+    return await backendDelete(`${holidaysBackendEndpoint}${holidayId}/`);
 };
 
-export const updateHoliday = async (holiday: Holiday) => {
-    return await backendPut(holidaysBackendEndpoint, holiday);
+export const updateHoliday = async (holidayId: number, holiday: Holiday) => {
+    return await backendPut(`${holidaysBackendEndpoint}${holidayId}/`, holiday);
 };
 
 export const saveHolidays = async (
