@@ -153,7 +153,7 @@ export const saveDataRows = async (
 
     if (invalidCells.length > 0) {
       toast.error(
-        "There are one or more incorrect entries. Please ensure that all red entries are correct or filled in and save again."
+        "There are one or more incorrect entries. Please ensure that all yellow entries are correct or filled in and save again."
       );
 
       setInvalidCells(invalidCells);
@@ -222,6 +222,7 @@ const validateDataRows = (
     for (const col of cols) {
       if (
         (col.isRequired || col.isRequired === undefined) &&
+        col.dataType !== "boolean" &&
         !dataRow[col.dataField] &&
         !col.disableEditing
       ) {
