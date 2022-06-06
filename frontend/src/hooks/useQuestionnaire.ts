@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Answer, fetchQuestions, Question } from "../api/misc";
+import { AnswerSet, fetchQuestions, Question, submitAnswerSetForQuestionnaire } from "../api/misc";
 import useMentees from "./useMentees";
 import useMentor from "./useMentor";
-
-export const MENTOR_NAME_TAG = "mentor_name";
-export const MENTEE_NAME_TAG = "mentee_name";
 
 export const MENTOR_NAME = /mentor('s)? name/ig;
 export const MENTEE_NAME = /mentee('s)? name/ig;
@@ -18,6 +15,7 @@ export const isMenteeQuestion = (q: Question) => !!q.Question.match(MENTEE_NAME)
 
 const useQuestionnaire = () => {
   const [loadingQuestionnaire, setLoadingQuestionniare] = useState(true);
+  const [questionnaireId, setQuestionnaireId] = useState(-1);
   const { mentor, loadingMentor } = useMentor();
   const { mentees, error: menteeError } = useMentees();
   const [questions, setQuestions] = useState([] as Question[]);
@@ -26,7 +24,10 @@ const useQuestionnaire = () => {
   // Fetch the question
   useEffect(() => {
     fetchQuestions()
-      .then(setQuestions)
+      .then(data => {
+        setQuestionnaireId(data.questionnaireId);
+        setQuestions(data.questions);
+      })
       .then(() => setLoadingQuestionniare(false))
       .catch((_error) => setQuestionnaireError("Cannot fetch the questionnaire"));
     return () => setLoadingQuestionniare(false);
@@ -35,21 +36,25 @@ const useQuestionnaire = () => {
   // Generate the initital answers based on the question types
   // and the mentor and mentee profile
   const initialAnswer = useMemo(() => {
-    let answer: Answer = {};
+    let answerSet: AnswerSet = {};
     for (const question of questions) {
       if (isMentorQuestion(question))
-        answer[question.QuestionID] = mentor.viewsPersonId > 0 ? `${mentor.firstname} ${mentor.surname}` : "";
-      else answer[question.QuestionID] = "";
+        answerSet[question.QuestionID] = mentor.viewsPersonId > 0 ? `${mentor.firstname} ${mentor.surname}` : "";
+      else answerSet[question.QuestionID] = "";
     }
-    answer["mentorId"] = `${mentor.viewsPersonId}`;
-    return answer;
+    return answerSet;
   }, [mentor, questions]);
 
   // Validate the answer based on the question requirement
-  const validateAnswer = (answer: Answer) => {
+  const validateAnswerSet = (answerSet: AnswerSet) => {
     return questions
       .filter(isRequired)
-      .every((q) => (answer[q.QuestionID] || "") !== "");
+      .every((q) => (answerSet[q.QuestionID] || "") !== "");
+  }
+
+  const handleSubmitAnswerSet = async (answerSet: AnswerSet) => {
+    if (questionnaireId < 0) return undefined;
+    return await submitAnswerSetForQuestionnaire(answerSet, questionnaireId);
   }
 
   const loading = loadingQuestionnaire || loadingMentor || !mentees;
@@ -79,7 +84,8 @@ const useQuestionnaire = () => {
     loading,
     questions,
     initialAnswer,
-    validateAnswer,
+    validateAnswerSet,
+    handleSubmitAnswerSet,
     errorMessage,
     mentees
   }
