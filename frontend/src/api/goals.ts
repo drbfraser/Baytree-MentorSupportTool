@@ -9,23 +9,22 @@ const goalsApi = axios.create({
 
 export const fetchAllGoals = () => {
   return goalsApi.get("goal/").then((res) => res.data);
-}
+};
 
-export const fetchGoalByMentorId = async (id: number)  => {
+export const fetchGoalByMentorId = async (id: number) => {
   const response = await goalsApi.get("goal/", {
-    params: {mentor_id: id}
+    params: { mentor_id: id }
   });
   return response.data;
-}
+};
 
 export const submitCompleteGoal = (goalId: any) => {
   return goalsApi.patch(`goal/${goalId}`, { status: "ACHIEVED" });
-}
+};
 
 export const updateGoal = (goal: any, goalId?: any) => {
   if (!goalId) {
     return goalsApi.post("goal/", goal);
   }
   return goalsApi.patch(`goal/${goalId}`, goal);
-}
-
+};

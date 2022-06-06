@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { getMenteesForMentor, Participant } from "../api/views";
 import { useAuth } from "../context/AuthContext";
-import { Mentee } from "../Components/sessions/session";
 
 /** Get mentees for the currently logged in mentor from backend
  * @returns
@@ -37,7 +36,7 @@ const useMentees = () => {
     getMenteeData();
   }, []);
 
-  return { mentees, error };
+  return { mentees, error, loadingMentees: !mentees && !error };
 };
 
 export type OnMenteesFailedToLoadReason =

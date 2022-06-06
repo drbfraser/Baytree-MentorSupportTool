@@ -56,7 +56,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
 
   useEffect(() => {
     // Fetch the resources URL
-    fetchResourcesURL().then(setResourcesURL)
+    fetchResourcesURL().then(setResourcesURL);
   }, []);
 
   return (

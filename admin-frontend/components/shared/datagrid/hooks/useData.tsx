@@ -9,6 +9,7 @@ import {
 import {
   DataGridColumn,
   DataRow,
+  InvalidCell,
   onLoadDataRowsFunc,
   onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
@@ -43,7 +44,7 @@ const useData = (
   isLoadingDataRows: boolean,
   isLoadingColValueOptions: boolean,
   isSavingDataRows: boolean,
-  onSaveDataRows?: onSaveDataRowsFunc,
+  onSaveDataRows?: onSaveDataRowsFunc<DataRow>,
   primaryKeyDataField?: string,
   onLoadDataRows?: onLoadDataRowsFunc | onLoadPagedDataRowsFunc,
   data?: DataRow[],
@@ -69,6 +70,8 @@ const useData = (
   const [cols, setCols] = useState<DataGridColumn[]>(initialCols);
   const primaryKeyDataFieldRef = useRef(primaryKeyDataField ?? "id");
   const createRowNextIdRef = useRef(0); // next created row id
+  const [invalidCells, setInvalidCells] = useState<InvalidCell[]>([]);
+  const loadedColumnValueOptionsRef = useRef(false); // prevent double loading
 
   useEffect(() => {
     getData();
@@ -107,16 +110,17 @@ const useData = (
     }
   };
 
-  useEffect(
-    () =>
+  useEffect(() => {
+    if (!loadedColumnValueOptionsRef.current) {
       loadColumnValueOptions(
         cols,
         setCols,
         setIsLoadingColValueOptions,
         FAIL_LOAD_MESSAGE
-      ),
-    [initialCols]
-  );
+      );
+      loadedColumnValueOptionsRef.current = true;
+    }
+  }, [initialCols]);
 
   const _saveDataRows = onSaveDataRows
     ? () =>
@@ -132,7 +136,9 @@ const useData = (
           setDeletedDataRows,
           setIsSavingDataRows,
           originalDataRowsRef,
-          FAIL_SAVE_MESSAGE
+          FAIL_SAVE_MESSAGE,
+          cols,
+          setInvalidCells
         )
     : undefined;
 
@@ -226,6 +232,7 @@ const useData = (
     setDeletedDataRow: _setDeletedDataRow,
     createDataRow: _createDataRow,
     isAnyColumnSearchable: _isAnyColumnSearchable,
+    invalidCells,
   };
 };
 

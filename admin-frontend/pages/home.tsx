@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { NextPage } from "next";
 import styled from "styled-components";
 import { MOBILE_BREAKPOINT } from "../constants/constants";
-import SessionStatsCard from "../components/pages/home/sessionStatsCard";
 import MentorDemographicsCard from "../components/pages/home/mentorDemographicsCard";
 import MenteeDemographicsCard from "../components/pages/home/menteeDemographicsCard";
 import MentorSessionTrackingCard from "../components/pages/home/MentorSessionTrackingCard/MentorSessionTrackingCard";
@@ -93,7 +92,6 @@ const Home: NextPage = () => {
       <MentorQuestionnaireTrackingCard></MentorQuestionnaireTrackingCard>
       <MentorDemographicsCard></MentorDemographicsCard>
       <MenteeDemographicsCard></MenteeDemographicsCard>
-      <SessionStatsCard></SessionStatsCard>
     </HomePageLayout>
   );
 };
@@ -105,22 +103,20 @@ const HomePageLayout = styled.div`
   grid-gap: 1rem;
 
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(4, auto);
+  grid-template-rows: repeat(3, auto);
   grid-template-areas:
     "mentorSessionTrackingCard mentorSessionTrackingCard"
     "mentorQuestionnaireTrackingCard mentorQuestionnaireTrackingCard"
-    "mentorDemographicsCard menteeDemographicsCard"
-    "sessionStatsCard sessionStatsCard";
+    "mentorDemographicsCard menteeDemographicsCard";
 
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(5, auto);
+    grid-template-rows: repeat(4, auto);
     grid-template-areas:
       "mentorSessionTrackingCard"
       "mentorQuestionnaireTrackingCard"
       "mentorDemographicsCard"
-      "menteeDemographicsCard"
-      "sessionStatsCard";
+      "menteeDemographicsCard";
   }
 `;
 

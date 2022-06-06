@@ -155,6 +155,7 @@ const SessionForm = () => {
                       <Select
                         labelId="Mentee"
                         name="menteeViewsPersonId"
+                        required
                         value={values.menteeViewsPersonId}
                         label="Mentee"
                         onChange={handleChange}
@@ -170,6 +171,7 @@ const SessionForm = () => {
                       <Select
                         labelId="Venue"
                         name="viewsVenueId"
+                        required
                         value={values.viewsVenueId}
                         label="Venue"
                         onChange={handleChange}

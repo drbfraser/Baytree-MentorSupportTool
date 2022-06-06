@@ -240,7 +240,7 @@ const SearchBox: React.FunctionComponent<SearchBoxProps> = (props) => {
       <TextField
         fullWidth
         name="mentorFilter"
-        label="Search Mentor Name or Email"
+        label="Search Name or Email"
         type="mentorFilter"
         id="mentorFilter"
         value={props.mentorFilter}

@@ -26,3 +26,8 @@ export const MONTH_NAMES = [
   "November",
   "December",
 ];
+
+export const padLeftString = (padChar: string, width: number, str: string) => {
+  const padding = Array(1 + width - str.length).join(padChar);
+  return padding + str;
+};

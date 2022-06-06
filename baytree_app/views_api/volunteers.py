@@ -1,5 +1,5 @@
 from typing import List, Union
-from .permissions import MentorsViewsApiPermissions
+from users.models import MentorUser
 from users.permissions import AdminPermissions
 from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import permission_classes, api_view
@@ -72,7 +72,6 @@ def get_volunteers_endpoint(request):
         )
 
     return Response(response, status=status.HTTP_200_OK)
-
 
 def get_volunteers(
     id: Union[List[str], str] = None,
@@ -196,3 +195,16 @@ def translate_volunteer_fields(volunteers):
         }
         for volunteer in volunteers
     ]
+
+@api_view(("GET", ))
+def get_volunteer_profile(request):
+    """
+    Fetch the detailed volunteer profile
+    based on the requesting user
+    """
+    mentors = MentorUser.objects.filter(user_id=request.user.id)
+    if not mentors:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    mentorViewsId = mentors.first().viewsPersonId
+    response = get_volunteers(id=f"{mentorViewsId}")
+    return Response(response, status=status.HTTP_200_OK)

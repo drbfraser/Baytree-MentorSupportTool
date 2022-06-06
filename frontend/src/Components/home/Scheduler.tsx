@@ -18,7 +18,6 @@ import { fetchSessionListByMentorId } from "../../api/misc";
 import { useAuth } from "../../context/AuthContext";
 import Holidays from "../../Utils/Holidays";
 
-
 type Props = {
   height: string;
 };
@@ -30,7 +29,7 @@ type Event = {
   allDay: boolean;
   note: string;
   status: string;
-}
+};
 
 const Scheduler: React.FC<Props> = ({ height }) => {
   const { user } = useAuth();
@@ -77,14 +76,16 @@ const Scheduler: React.FC<Props> = ({ height }) => {
 
   useEffect(() => {
     fetchSessionListByMentorId(user!.userId)
-      .then(sessions => sessions.map<Event>((session, index) => ({
-        title: `${session.Title} ${index + 1}`,
-        start: new Date(session.StartDate),
-        end: DurationToEndDate(new Date(session.StartDate), session.Duration),
-        allDay: false,
-        note: session.Note,
-        status: session.Status
-      })))
+      .then((sessions) =>
+        sessions.map<Event>((session, index) => ({
+          title: `${session.Title} ${index + 1}`,
+          start: new Date(session.StartDate),
+          end: DurationToEndDate(new Date(session.StartDate), session.Duration),
+          allDay: false,
+          note: session.Note,
+          status: session.Status
+        }))
+      )
       .then(setSessionList)
       .catch((error) => console.error("Error:", error));
   }, []);

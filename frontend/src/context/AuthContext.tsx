@@ -1,4 +1,4 @@
-import { createContext, FunctionComponent, useContext, useEffect, useState } from "react";
+import { createContext, FunctionComponent, useContext } from "react";
 import { login, logout, verify } from "../api/auth";
 import useLocalStorage from "../hooks/useLocalStorage";
 
@@ -23,7 +23,7 @@ export const AuthProvider: FunctionComponent<{}> = (props) => {
   const [user, setUser] = useLocalStorage<StorageInfo>("user", undefined);
 
   const signIn = async (email: string, password: string) => {
-    const {data, error} = await login(email, password);
+    const { data, error } = await login(email, password);
     if (data && error === "") {
       setUser({
         userId: data.user_id,

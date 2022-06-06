@@ -1,74 +1,106 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Questionnaire
-from .serializers import QuestionnaireSerializer
-from .permissions import *
-import requests
+from datetime import datetime, timezone
 from django.http import HttpResponse
-from .constants import VIEWS_USERNAME, VIEWS_PASSWORD
+
+import requests
+from baytree_app.constants import (
+    VIEWS_BASE_URL, VIEWS_PASSWORD, VIEWS_USERNAME)
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from users.models import MentorUser
+
+extractedQuestionFields = ["QuestionID", "Question", "inputType", "validation", "category", "enabled"]
+
+# Get the mentor info from the requesting user
+# Only returns info for mentor with assigned role and assigned questionnaire
+# Otherwise returns nothing
+def getMentorWithRoleAndQuestionnaireByUserId(id):
+    mentors = MentorUser.objects.filter(
+        user_id=id, 
+        mentorRole__isnull=False,
+        mentorRole__viewsQuestionnaireId__isnull=False
+    )
+    if not mentors: return None
+    return mentors.first()
+
+# GET /api/questionnaires/questionnaire/
+@api_view(("GET",))
+def get_questionnaire(request):
+    """
+    Fetch the questionnaire assigned by the the mentor
+    """
+    # Find the questionnaire id from the requesting user
+    mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
+    if mentor is None:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    qid = mentor.mentorRole.viewsQuestionnaireId
+
+    # Fetch questionnaire by id
+    url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}.json"
+    response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
+    if response.status_code != 200:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    response = response.json()
+    
+    # Construct the data
+    data = {}
+    data["questionnaireId"] = qid
+    data["questions"] = []
+    
+    # Extract the question data
+    questions = response["questions"].values()
+    for question in questions:
+        q = {key: question[key] for key in extractedQuestionFields}
+        data["questions"].append(q)
+
+    return Response(data, status=status.HTTP_200_OK)
 
 
-class QuestionnaireView(APIView):
-    permission_classes = [IsOwner]
+# POST /api/questionnaires/questionnaire/submit/
+@api_view(("POST", ))
+def submit_answer_set(request):
+    """
+    Submit the answer to the remote Views database
+    """
+    # Validate data existence
+    data = request.data
+    if data["questionnaireId"] is None or data["answerSet"] is None:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, id=None):
-        if id:
-            try:
-                queryset = Questionnaire.objects.get(id=id)
-            except Questionnaire.DoesNotExist:
-                return Response({'errors': 'This questionnaire does not exist.'}, status=400)
-            read_serializer = QuestionnaireSerializer(queryset)
-        else:
-            queryset = Questionnaire.objects.all()
-            read_serializer = QuestionnaireSerializer(queryset, many=True)
-        return Response(read_serializer.data)
+    # Find the questionnaire id from the requesting user
+    mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
+    if mentor is None:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    # Redundancy check, user won't submit answer set to the wrong question
+    qid = mentor.mentorRole.viewsQuestionnaireId
+    if data["questionnaireId"] != qid:
+        return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+    
+    # Construct XML payload
+    answerXMLFormat = (
+        '<answer id="{0}">'
+            "<QuestionID>{0}</QuestionID>"
+            "<Answer>{1}</Answer>"
+        "</answer>"
+    )
+    answersXML = [answerXMLFormat.format(id, data["answerSet"][id]) for id in data["answerSet"]]
 
-    def post(self, request):
-        create_serializer = QuestionnaireSerializer(data=request.data)
-        if create_serializer.is_valid():
-            questionnaire_object = create_serializer.save()
-            read_serializer = QuestionnaireSerializer(questionnaire_object)
-            return Response(read_serializer.data, status=201)
-        return Response(create_serializer.errors, status=400)
+    answerSetXML = (
+        "<answer>"
+            "<EntityType>Volunteer</EntityType>"
+            f"<EntityID>{mentor.viewsPersonId}</EntityID>"
+            f"<Date>{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')}</Date>"
+            f"{''.join(answersXML)}"
+        "</answer>"
+    )
 
-    def put(self, request, id=None):
-        try:
-            questionnaire = Questionnaire.objects.get(id=id)
-        except Questionnaire.DoesNotExist:
-            return Response({'errors': 'This questionnaire does not exist.'}, status=400)
-        update_serializer = QuestionnaireSerializer(questionnaire, data=request.data)
+    # Send the answer set to View database
+    url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}/answers"
 
-        if update_serializer.is_valid():
-            questionnaire_object = update_serializer.save()
-            read_serializer = QuestionnaireSerializer(questionnaire_object)
-            return Response(read_serializer.data, status=200)
-        return Response(update_serializer.errors, status=400)
+    response = requests.post(url, answerSetXML, auth=(VIEWS_USERNAME, VIEWS_PASSWORD), headers = {"content-type": "text/xml"})
 
-    def delete(self, request, id=None):
-        try:
-            questionnaire = Questionnaire.objects.get(id=id)
-        except Questionnaire.DoesNotExist:
-            return Response({'errors': 'This questionnaire does not exist.'}, status=400)
-        questionnaire.delete()
-        return Response(status=204)
-
-    def index(request):
-        return HttpResponse('index')
-
-    def get_questionnaire(request, id=None):
-        # id is optional. Defaults to 10 because that is the id of the questionnaire that matches the local db.
-        id = id if id is not None else 10
-
-        url = 'https://app.viewsapp.net/api/restful/evidence/questionnaires/{0}/questions?allquestions=1.json'.format(id)
-
-        if request.method == 'GET':
-            r = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
-            return HttpResponse(r)
-
-        elif request.method == 'POST':
-            #TODO: POST to Views
-            return HttpResponse('successful POST')
-
-        else:
-            return Response({"error": "Method not allowed"}, status=status.HTTP_400_BAD_REQUEST)
+    # Construct Views API request
+    return HttpResponse(response)

@@ -1,14 +1,18 @@
-import {
-  MenuItem,
-  Select,
-  Skeleton,
-  TableCell,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Skeleton, TableCell, TextField, Typography } from "@mui/material";
 import { FC, useRef } from "react";
 import styled from "styled-components";
-import { ValueOption } from "./datagridTypes";
+import { ColumnDataTypes, ValueOption } from "./datagridTypes";
+import useMobileLayout from "../../../hooks/useMobileLayout";
+import {
+  isLoadingSelectOptions,
+  shouldRenderBoolComponent,
+  shouldRenderDateComponent,
+  shouldRenderSelectComponent,
+  shouldRenderTextInputComponent,
+} from "./datagridCellLogic";
+import DataGridSelectComponent from "./datagridSelectComponent";
+import DataGridDateComponent from "./datagridDateComponent";
+import DataGridBoolComponent from "./datagridBoolComponent";
 
 interface DataRowCellProps {
   isSelectCell: boolean;
@@ -19,47 +23,70 @@ interface DataRowCellProps {
   isCellDeleted: boolean;
   primaryKeyVal: any;
   dataField: string;
+  dataType?: ColumnDataTypes;
   isDataGridSaveable: boolean;
   isColumnEditable: boolean;
   color?: string;
+  useDivInsteadOfTableCell?: boolean;
+  isCellInvalid?: boolean;
 }
 
 const DataRowCell: FC<DataRowCellProps> = (props) => {
   const selectIdRef = useRef(0);
+  const isOnMobileDevice = useMobileLayout();
 
-  return (
-    <StyledDataGridCell
-      cellBackgroundColor={
-        props.isCellDeleted
-          ? "lightpink"
-          : props.isCellChanged
-          ? "lightgreen"
-          : props.color
-          ? props.color
-          : "unset"
+  /** Renders the correct component for the current column dataType, edit options */
+  const renderComponentInCell = () => {
+    if (
+      shouldRenderSelectComponent(props.isSelectCell, props.isColumnEditable)
+    ) {
+      if (isLoadingSelectOptions(props.valueOptions)) {
+        return <LoadingDataGridCell></LoadingDataGridCell>;
+      } else {
+        return (
+          <DataGridSelectComponent
+            primaryKeyVal={props.primaryKeyVal}
+            dataField={props.dataField}
+            idNumber={selectIdRef.current++}
+            value={props.value}
+            onChangedValue={props.onChangedValue}
+            valueOptions={props.valueOptions}
+          />
+        );
       }
-    >
-      {props.isSelectCell && props.isColumnEditable ? (
-        !props.valueOptions ? (
-          <LoadingDataGridCell></LoadingDataGridCell>
-        ) : (
-          <Select
-            key={`select_datarow_${props.primaryKeyVal}_col_${
-              props.dataField
-            }_selectRef${selectIdRef.current++}`}
-            fullWidth
-            defaultValue={props.value ?? ""}
-            onChange={(event) => props.onChangedValue(event.target.value)}
-            sx={{ fontSize: "0.8rem" }}
-          >
-            {props.valueOptions.map((valueOption, k) => (
-              <MenuItem key={valueOption.id} value={valueOption.id}>
-                {valueOption.name}
-              </MenuItem>
-            ))}
-          </Select>
-        )
-      ) : props.isDataGridSaveable && props.isColumnEditable ? (
+    } else if (
+      shouldRenderDateComponent(
+        props.dataType,
+        props.isDataGridSaveable,
+        props.isColumnEditable
+      )
+    ) {
+      return (
+        <DataGridDateComponent
+          dataField={props.dataField}
+          onChangedValue={props.onChangedValue}
+          primaryKeyVal={props.primaryKeyVal}
+          value={props.value}
+        ></DataGridDateComponent>
+      );
+    } else if (shouldRenderBoolComponent(props.dataType)) {
+      return (
+        <DataGridBoolComponent
+          dataField={props.dataField}
+          onChangedValue={props.onChangedValue}
+          isColumnEditable={props.isColumnEditable}
+          isDataGridSaveable={props.isDataGridSaveable}
+          primaryKeyVal={props.primaryKeyVal}
+          value={props.value}
+        ></DataGridBoolComponent>
+      );
+    } else if (
+      shouldRenderTextInputComponent(
+        props.isDataGridSaveable,
+        props.isColumnEditable
+      )
+    ) {
+      return (
         <TextField
           fullWidth
           defaultValue={props.value}
@@ -68,7 +95,10 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
             style: { fontSize: "0.8rem" },
           }}
         ></TextField>
-      ) : (
+      );
+    } else {
+      // Render read-only text component
+      return (
         <Typography
           sx={{
             fontSize: "0.8rem",
@@ -78,24 +108,76 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
         >
           {props.value}
         </Typography>
-      )}
+      );
+    }
+  };
+
+  const renderDataGridCell = () => {
+    return (
+      <DataGridCellContainer
+        justifycontent={isOnMobileDevice ? "flex-start" : "center"}
+      >
+        {renderComponentInCell()}
+      </DataGridCellContainer>
+    );
+  };
+
+  // Use a div to suppress DOM errors on mobile layout
+  return props.useDivInsteadOfTableCell ? (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        backgroundColor: props.isCellInvalid
+          ? "lightyellow"
+          : props.isCellDeleted
+          ? "lightpink"
+          : props.isCellChanged
+          ? "lightgreen"
+          : props.color
+          ? props.color
+          : "unset",
+      }}
+    >
+      {renderDataGridCell()}
+    </div>
+  ) : (
+    <StyledDataGridCell
+      cellbackgroundcolor={
+        props.isCellInvalid
+          ? "lightyellow"
+          : props.isCellDeleted
+          ? "lightpink"
+          : props.isCellChanged
+          ? "lightgreen"
+          : props.color
+          ? props.color
+          : "unset"
+      }
+    >
+      {renderDataGridCell()}
     </StyledDataGridCell>
   );
 };
 
-const StyledDataGridCell = styled(TableCell)<{ cellBackgroundColor: string }>`
-  background-color: ${(props) => props.cellBackgroundColor};
+const StyledDataGridCell = styled(TableCell)<{ cellbackgroundcolor: string }>`
+  background-color: ${(props) => props.cellbackgroundcolor};
+`;
+
+const DataGridCellContainer = styled.div<{ justifycontent: string }>`
+  display: flex;
+  justify-content: ${(props) => props.justifycontent ?? "flex-start"};
 `;
 
 const LoadingDataGridCell: FC = () => {
   const NUM_SKELETON_ROWS = 3;
 
   return (
-    <>
+    <div style={{ width: "100%", height: "100%" }}>
       {Array.from(Array(NUM_SKELETON_ROWS).keys()).map((idx) => (
         <Skeleton key={`skeleton_${idx}`}></Skeleton>
       ))}
-    </>
+    </div>
   );
 };
 

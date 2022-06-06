@@ -37,6 +37,7 @@ export type onSaveDataRowsFunc<DataRowType> = (
 export interface DataGridColumn {
   header: string;
   dataField: string;
+  dataType?: ColumnDataTypes;
 
   valueOptions?: ValueOption[];
   onLoadValueOptions?: OnLoadColumnValueOptionsFunc;
@@ -44,8 +45,10 @@ export interface DataGridColumn {
   enableSearching?: boolean;
   keepColumnOnMobile?: boolean;
   expandableColumn?: boolean;
-  dataType?: string;
+  isRequired?: boolean;
 }
+
+export type ColumnDataTypes = "date" | "boolean";
 
 export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
 
@@ -66,3 +69,8 @@ export type setDeletedDataRowFunc = (
   isDeleted: boolean,
   dataRow: DataRow
 ) => void;
+
+export interface InvalidCell {
+  primaryKey: string;
+  dataField: string;
+}

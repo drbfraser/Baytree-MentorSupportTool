@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
 import { useRouter } from "next/router";
 import React from "react";
 import { useState } from "react";
@@ -88,9 +88,8 @@ interface SidebarItemProps {
 const SidebarItem: React.FC<SidebarItemProps> = (props) => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
-  const primaryColor = useSelector<RootState, string>(
-    (state) => state.theme.colors.primaryColor
-  );
+  const theme = useTheme();
+  const primaryColor = theme.palette.primary.main;
 
   return (
     <>

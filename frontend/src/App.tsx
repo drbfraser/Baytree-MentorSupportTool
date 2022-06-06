@@ -39,7 +39,7 @@ function App() {
           </Route>
           <Route path="/" element={<Navigate to="/dashboard/home" replace />} />
         </Route>
-        
+
         {/* If the path is not found, redirect to the root */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
