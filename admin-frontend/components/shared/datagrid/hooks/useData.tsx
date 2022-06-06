@@ -71,6 +71,7 @@ const useData = (
   const primaryKeyDataFieldRef = useRef(primaryKeyDataField ?? "id");
   const createRowNextIdRef = useRef(0); // next created row id
   const [invalidCells, setInvalidCells] = useState<InvalidCell[]>([]);
+  const loadedColumnValueOptionsRef = useRef(false); // prevent double loading
 
   useEffect(() => {
     getData();
@@ -109,16 +110,17 @@ const useData = (
     }
   };
 
-  useEffect(
-    () =>
+  useEffect(() => {
+    if (!loadedColumnValueOptionsRef.current) {
       loadColumnValueOptions(
         cols,
         setCols,
         setIsLoadingColValueOptions,
         FAIL_LOAD_MESSAGE
-      ),
-    [initialCols]
-  );
+      );
+      loadedColumnValueOptionsRef.current = true;
+    }
+  }, [initialCols]);
 
   const _saveDataRows = onSaveDataRows
     ? () =>

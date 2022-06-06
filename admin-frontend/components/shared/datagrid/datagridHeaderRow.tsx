@@ -78,7 +78,7 @@ const DataGridSaveButtonHeaderCell: FC<DataGridSaveButtonHeaderCellProps> = (
     <TableCell sx={{ width: props.width }}>
       <AddButtonContainer>
         <Button
-          color="success"
+          color="primary"
           variant="contained"
           disabled={!props.enableSaveButton}
           onClick={props.onClick}

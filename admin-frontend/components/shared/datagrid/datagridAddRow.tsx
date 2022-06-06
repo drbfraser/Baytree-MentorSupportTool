@@ -17,7 +17,7 @@ const DataGridAddRow: FC<DataGridAddRowProps> = (props) => {
           <Tooltip title="Add Row">
             <span>
               <Button
-                color="success"
+                color="primary"
                 variant="contained"
                 disabled={!props.enableAddButton}
                 onClick={props.onAddRow}

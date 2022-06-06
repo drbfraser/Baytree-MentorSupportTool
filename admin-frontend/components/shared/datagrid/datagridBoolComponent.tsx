@@ -17,7 +17,6 @@ const DataGridBoolComponent: FC<DataGridBoolComponentProps> = (props) => {
 
   return (
     <Checkbox
-      color="success"
       disabled={!props.isDataGridSaveable || !props.isColumnEditable}
       key={`checkbox_${props.primaryKeyVal}_col_${props.dataField}`}
       checked={!!checkBoxChecked}

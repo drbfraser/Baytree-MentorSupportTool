@@ -20,7 +20,7 @@ const DataRowDeleteCell: FC<DataRowDeleteCellProps> = (props) => {
       >
         <Tooltip title="Delete Item">
           <Button
-            color="error"
+            color="secondary"
             variant="contained"
             onClick={() => props.onDeleteRow(!props.isRowDeleted)}
           >
