@@ -1,10 +1,9 @@
-import { Paper, Typography } from "@mui/material";
+import { Button, Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import { useState } from "react";
 import { MdAdd } from "react-icons/md";
 import styled from "styled-components";
 import AddMentorModal from "../components/pages/mentors/addMentorModal";
-import Button from "../components/shared/button";
 import Modal from "../components/shared/Modal";
 import {
   getMentorUsers,
@@ -104,6 +103,7 @@ const Mentors: NextPage = () => {
             Mentors
           </Typography>
           <Button
+            color="primary"
             variant="contained"
             style={{
               padding: "0.3rem 0.6rem 0.3rem 0.6rem",
