@@ -43,7 +43,7 @@ const Holidays: NextPage = () => {
     }
    }
    for (const updatedHoliday of updatedHolidays) {
-    const result = await updateHoliday(updatedHoliday);
+    const result = await updateHoliday(updatedHoliday.id, updatedHoliday);
     if (!result) {
         return false;
     }
