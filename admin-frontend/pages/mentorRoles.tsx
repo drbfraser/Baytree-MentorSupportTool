@@ -38,7 +38,6 @@ const MentorRoles: NextPage = () => {
         (mentorRole) => ({
           ...mentorRole,
           viewsSessionGroupId: mentorRole.viewsSessionGroupId,
-          exampleBool: true,
         })
       );
       return mentorRolesPageRes;
@@ -141,7 +140,6 @@ const MentorRoles: NextPage = () => {
             dataField: "volunteeringType",
             onLoadValueOptions: getVolunteeringOptions,
           },
-          { header: "bool", dataField: "exampleBool", dataType: "boolean" },
         ]}
         onLoadDataRows={getMentorRoleData}
         onSaveDataRows={saveMentorRoleData}
