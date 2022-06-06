@@ -4,19 +4,21 @@ import { dummyUser, getMentorProfile, User } from "../api/views";
 const useMentor = () => {
   const [loadingMentor, setLoadingMentor] = useState(false);
   const [mentor, setMentor] = useState<User>(dummyUser);
+  const [error, setError] = useState("");
 
   // Fetch the mentor
   useEffect(() => {
     setLoadingMentor(true);
     getMentorProfile()
-      .then(({ data, error }) => {
-        if (data && error === "") setMentor(data);
-        else setMentor(dummyUser);
+      .then(({ data, error: mentorError }) => {
+        if (data && !mentorError) setMentor(data);
+        else setError("Cannot retrieve mentor profile");
       })
-      .then(() => setLoadingMentor(false))
+      .then(() => setLoadingMentor(false));
+    return () => setLoadingMentor(false);
   }, []);
 
-  return { loadingMentor, mentor };
+  return { loadingMentor, mentor, error };
 };
 
 export default useMentor;

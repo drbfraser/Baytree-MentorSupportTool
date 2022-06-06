@@ -28,7 +28,6 @@ const viewsApi = axios.create({
 
 export const getMentorProfile = async () => {
   try {
-
     const apiRes = await viewsApi.get<{ total: number, data: User[]}>("/volunteers/volunteer/");
     if (apiRes.status === 200 && apiRes.data.total > 0) return { data: apiRes.data.data[0], error: "" };
     else throw Error;

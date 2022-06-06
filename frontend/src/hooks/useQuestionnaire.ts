@@ -16,7 +16,7 @@ export const isMenteeQuestion = (q: Question) => !!q.Question.match(MENTEE_NAME)
 const useQuestionnaire = () => {
   const [loadingQuestionnaire, setLoadingQuestionniare] = useState(true);
   const [questionnaireId, setQuestionnaireId] = useState(-1);
-  const { mentor, loadingMentor } = useMentor();
+  const { mentor, loadingMentor, error: mentorError } = useMentor();
   const { mentees, error: menteeError } = useMentees();
   const [questions, setQuestions] = useState([] as Question[]);
   const [questionsError, setQuestionnaireError] = useState<string | undefined>(undefined);
@@ -29,7 +29,10 @@ const useQuestionnaire = () => {
         setQuestions(data.questions);
       })
       .then(() => setLoadingQuestionniare(false))
-      .catch((_error) => setQuestionnaireError("Cannot fetch the questionnaire"));
+      .catch((_error) => {
+        setQuestionnaireError("Cannot fetch the questionnaire");
+        setLoadingQuestionniare(false);
+      });
     return () => setLoadingQuestionniare(false);
   }, []);
 
@@ -57,7 +60,7 @@ const useQuestionnaire = () => {
     return await submitAnswerSetForQuestionnaire(answerSet, questionnaireId);
   }
 
-  const loading = loadingQuestionnaire || loadingMentor || !mentees;
+  const loading = loadingQuestionnaire || loadingMentor || !!mentees;
 
   // Validate the questionnaire based on these condition
   // - Must have only one question for mentor's name
@@ -73,6 +76,7 @@ const useQuestionnaire = () => {
   // Generate error based on the prvious errors
   // and the validaity of the questionnaire and datat set
   const errorMessage = () => {
+    if (mentorError) return mentorError;
     if (questionsError) return questionsError;
     if (menteeError) return menteeError;
     if (!isValidQuestionnaire) return "The questionnaire is not correctly formatted";
