@@ -17,7 +17,7 @@ const useQuestionnaire = () => {
   const [loadingQuestionnaire, setLoadingQuestionniare] = useState(true);
   const [questionnaireId, setQuestionnaireId] = useState(-1);
   const { mentor, loadingMentor, error: mentorError } = useMentor();
-  const { mentees, error: menteeError } = useMentees();
+  const { mentees, error: menteeError, loadingMentees } = useMentees();
   const [questions, setQuestions] = useState([] as Question[]);
   const [questionsError, setQuestionnaireError] = useState<string | undefined>(undefined);
 
@@ -60,7 +60,7 @@ const useQuestionnaire = () => {
     return await submitAnswerSetForQuestionnaire(answerSet, questionnaireId);
   }
 
-  const loading = loadingQuestionnaire || loadingMentor || !!mentees;
+  const loading = loadingQuestionnaire || loadingMentor || loadingMentees;
 
   // Validate the questionnaire based on these condition
   // - Must have only one question for mentor's name

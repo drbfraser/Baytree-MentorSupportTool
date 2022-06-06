@@ -32,7 +32,7 @@ export const getMentorProfile = async () => {
     if (apiRes.status === 200 && apiRes.data.total > 0) return { data: apiRes.data.data[0], error: "" };
     else throw Error;
   } catch (err) {
-    return { data: undefined, error: "Cannot retrieve the user" };
+    return { data: undefined, error: "Cannot retrieve mentor profile" };
   }
 }
 

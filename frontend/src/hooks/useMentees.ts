@@ -36,7 +36,7 @@ const useMentees = () => {
     getMenteeData();
   }, []);
 
-  return { mentees, error };
+  return { mentees, error, loadingMentees: !mentees && !error };
 };
 
 export type OnMenteesFailedToLoadReason =

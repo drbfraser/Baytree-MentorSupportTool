@@ -12,7 +12,7 @@ const useMentor = () => {
     getMentorProfile()
       .then(({ data, error: mentorError }) => {
         if (data && !mentorError) setMentor(data);
-        else setError("Cannot retrieve mentor profile");
+        else setError(mentorError);
       })
       .then(() => setLoadingMentor(false));
     return () => setLoadingMentor(false);
