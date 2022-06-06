@@ -15,7 +15,6 @@ api_patterns = [
     path('resources/', include('resources.urls')),
     path('users/', include('users.urls')),
     path('questionnaires/', include('questionnaires.urls')),
-    path('questions/', include('questions_and_answers.urls')),
     path('views-api/', include('views_api.urls')),
     path('goals/', include('goals.urls')),
     path('holidays/', include('holidays.urls')),

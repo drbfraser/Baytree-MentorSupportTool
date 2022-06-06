@@ -1,16 +1,17 @@
 import axios from "axios";
 import { API_BASE_URL } from "./url";
 
-export interface Mentor {
-  firstname: string;
-  surname: string;
-  viewsPersonId: number;
-  email: string;
-  ethnicity?: string;
-  country?: string;
+export interface User {
+  firstname: string,
+  surname: string,
+  viewsPersonId: number,
+  email: string,
+  dateOfBirth?: string
+  ethnicity?: string,
+  country?: string
 }
 
-export const dummyMentor: Mentor = {
+export const dummyUser: User = {
   firstname: "Super User",
   surname: "",
   viewsPersonId: -1,
@@ -25,23 +26,16 @@ const viewsApi = axios.create({
   }
 });
 
-export const getMentorProfile = async (viewsPersonId?: number) => {
+export const getMentorProfile = async () => {
   try {
-    if (!viewsPersonId) {
-      return {
-        data: dummyMentor,
-        error: ""
-      };
-    }
-    const apiRes = await viewsApi.get<Mentor>("/volunteers", {
-      params: { id: viewsPersonId }
-    });
-    if (apiRes.status === 200) return { data: apiRes.data, error: "" };
+
+    const apiRes = await viewsApi.get<{ total: number, data: User[]}>("/volunteers/volunteer/");
+    if (apiRes.status === 200 && apiRes.data.total > 0) return { data: apiRes.data.data[0], error: "" };
     else throw Error;
   } catch (err) {
     return { data: undefined, error: "Cannot retrieve the user" };
   }
-};
+}
 
 export interface Association {
   associationId: number;
