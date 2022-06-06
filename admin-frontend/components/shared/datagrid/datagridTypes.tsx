@@ -28,10 +28,10 @@ export type PagedDataRows<DataRowType> = {
     ]*/;
 };
 
-export type onSaveDataRowsFunc = (
-  createdRows: DataRow[],
-  updatedRows: DataRow[],
-  deletedRows: DataRow[]
+export type onSaveDataRowsFunc<DataRowType> = (
+  createdRows: DataRowType[],
+  updatedRows: DataRowType[],
+  deletedRows: DataRowType[]
 ) => Promise<boolean>;
 
 export interface DataGridColumn {
@@ -44,6 +44,7 @@ export interface DataGridColumn {
   enableSearching?: boolean;
   keepColumnOnMobile?: boolean;
   expandableColumn?: boolean;
+  dataType?: string;
 }
 
 export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
