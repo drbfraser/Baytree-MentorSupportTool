@@ -12,34 +12,21 @@ import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
 import { getVolunteeringTypesFromViews } from "../api/backend/views/volunteeringTypes";
 import DataGrid from "../components/shared/datagrid/datagrid";
 import {
-  onLoadPagedDataRowsFunc,
-  PagedDataRows,
   onSaveDataRowsFunc,
+  onLoadDataRowsFunc,
 } from "../components/shared/datagrid/datagridTypes";
 
 const MentorRoles: NextPage = () => {
-  const MENTOR_ROLE_PAGE_SIZE = 2;
-
-  const getMentorRoleData: onLoadPagedDataRowsFunc = async ({
+  const getMentorRoleData: onLoadDataRowsFunc = async ({
     searchText,
     dataFieldsToSearch,
-    limit,
-    offset,
   }) => {
     const mentorRolesPageRes = (await getMentorRoles({
       searchText,
       dataFieldsToSearch,
-      limit,
-      offset,
-    })) as PagedDataRows<MentorRole>;
+    })) as MentorRole[];
 
     if (mentorRolesPageRes) {
-      mentorRolesPageRes.results = mentorRolesPageRes.results.map(
-        (mentorRole) => ({
-          ...mentorRole,
-          viewsSessionGroupId: mentorRole.viewsSessionGroupId,
-        })
-      );
       return mentorRolesPageRes;
     } else {
       throw "Failed to retrieve mentor role data.";
@@ -143,7 +130,6 @@ const MentorRoles: NextPage = () => {
         ]}
         onLoadDataRows={getMentorRoleData}
         onSaveDataRows={saveMentorRoleData}
-        pageSize={MENTOR_ROLE_PAGE_SIZE}
         isDataGridDeleteable={true}
       ></DataGrid>
     </MentorRolesCard>
