@@ -123,6 +123,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
         props.isColumnEditable ? (
         <CheckboxContainer>
           <Checkbox
+            color="success"
             key={`checkbox_${props.primaryKeyVal}_col_${props.dataField}`}
             // Need ternary operator to suppress MUI defaultValue changed error
             defaultChecked={props.isCellChanged ? !props.value : props.value}

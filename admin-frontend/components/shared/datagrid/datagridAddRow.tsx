@@ -1,4 +1,4 @@
-import { TableRow, TableCell, Button } from "@mui/material";
+import { TableRow, TableCell, Button, Tooltip } from "@mui/material";
 import { FC } from "react";
 import { MdAdd } from "react-icons/md";
 import styled from "styled-components";
@@ -14,14 +14,16 @@ const DataGridAddRow: FC<DataGridAddRowProps> = (props) => {
     <TableRow>
       <TableCell colSpan={props.numColumns + 1}>
         <AddButtonContainer>
-          <Button
-            color="success"
-            variant="contained"
-            disabled={!props.enableAddButton}
-            onClick={props.onAddRow}
-          >
-            <MdAdd size="24" />
-          </Button>
+          <Tooltip title="Add Row">
+            <Button
+              color="success"
+              variant="contained"
+              disabled={!props.enableAddButton}
+              onClick={props.onAddRow}
+            >
+              <MdAdd size="24" />
+            </Button>
+          </Tooltip>
         </AddButtonContainer>
       </TableCell>
     </TableRow>
