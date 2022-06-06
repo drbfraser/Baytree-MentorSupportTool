@@ -61,7 +61,7 @@ const Pager: React.FC<PagerProps> = (props) => {
               height: "fit-content",
               margin: "0.6rem 0.6rem 0px 0px",
             }}
-            color="success"
+            color="primary"
             variant="contained"
             onClick={() => {
               if (currentPageNumberInputRef.current) {
@@ -113,7 +113,7 @@ const Pager: React.FC<PagerProps> = (props) => {
                 height: "fit-content",
                 margin: "0.6rem 0.6rem 0px 0px",
               }}
-              color="success"
+              color="primary"
               variant="contained"
               disabled={props.currentPageNumber <= 1}
               onClick={() => {
@@ -139,7 +139,7 @@ const Pager: React.FC<PagerProps> = (props) => {
                 height: "fit-content",
                 margin: "0.6rem 0.6rem 0px 0px",
               }}
-              color="success"
+              color="primary"
               variant="contained"
               disabled={props.currentPageNumber >= props.maxPageNumber}
               onClick={() => {
