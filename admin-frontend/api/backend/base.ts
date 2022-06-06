@@ -431,6 +431,9 @@ export const backendDelete = async (relativeEndpointUrl: string, params?: Record
   let response = await backendFetch(relativeEndpointUrl, "DELETE", undefined, params);
   if (response.ok) {
     try {
+      if (response.status === 204){
+        return "Success"
+      }
       return await response.json();
     } catch {
       return null;
