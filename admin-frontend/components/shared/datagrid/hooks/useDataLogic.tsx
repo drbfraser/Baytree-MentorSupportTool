@@ -139,9 +139,19 @@ export const saveDataRows = async (
   setDeletedDataRows: Dispatch<SetStateAction<DataRow[]>>,
   setIsSavingDataRows: Dispatch<SetStateAction<boolean>>,
   originalDataRowsRef: MutableRefObject<DataRow[]>,
-  errorMessage: string
+  errorMessage: string,
+  cols: DataGridColumn[]
 ) => {
   try {
+    const validationError = validateDataRows(
+      [...createdDataRows, ...changedDataRows],
+      cols
+    );
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
+
     setIsSavingDataRows(true);
 
     changedDataRows = JSON.parse(JSON.stringify(changedDataRows));
@@ -190,6 +200,21 @@ export const saveDataRows = async (
     setIsSavingDataRows(false);
     toast.error(errorMessage);
   }
+};
+
+const validateDataRows = (dataRows: DataRow[], cols: DataGridColumn[]) => {
+  for (const dataRow of dataRows) {
+    for (const col of cols) {
+      if (
+        (col.isRequired || col.isRequired === undefined) &&
+        !dataRow[col.dataField]
+      ) {
+        return `${col.header} is required, but it is empty in one or more entries. Please ensure that each entry is filled and try saving again!`;
+      }
+    }
+  }
+
+  return "";
 };
 
 export const removeCreatedDataRow = (

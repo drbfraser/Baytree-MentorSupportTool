@@ -45,6 +45,7 @@ export interface DataGridColumn {
   enableSearching?: boolean;
   keepColumnOnMobile?: boolean;
   expandableColumn?: boolean;
+  isRequired?: boolean;
 }
 
 export type ColumnDataTypes = "date" | "boolean";

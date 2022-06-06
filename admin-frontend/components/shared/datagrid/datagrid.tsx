@@ -1,11 +1,10 @@
 import { FC } from "react";
-import { Table, TableHead } from "@mui/material";
+import { Table } from "@mui/material";
 import DataGridBody from "./datagridBody";
 import DataGridHeaderRow from "./datagridHeaderRow";
 import Pager from "../pager";
 import DataGridSearchBar from "./datagridSearchBar";
 import useMobileLayout from "../../../hooks/useMobileLayout";
-import { someExpandableColumnExists } from "./datagridRowLogic";
 import {
   DataRow,
   DataGridColumn,
@@ -14,7 +13,6 @@ import {
   onSaveDataRowsFunc,
   DataRowAction,
 } from "./datagridTypes";
-import DataGridAddRow from "./datagridAddRow";
 import useLoading from "./hooks/useLoading";
 import useData from "./hooks/useData";
 import useSearch from "./hooks/useSearch";

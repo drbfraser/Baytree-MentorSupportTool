@@ -132,7 +132,8 @@ const useData = (
           setDeletedDataRows,
           setIsSavingDataRows,
           originalDataRowsRef,
-          FAIL_SAVE_MESSAGE
+          FAIL_SAVE_MESSAGE,
+          cols
         )
     : undefined;
 
