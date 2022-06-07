@@ -8,6 +8,7 @@ import {
   onLoadDataRowsFunc,
   PagedDataRows,
   onLoadPagedDataRowsFunc,
+  InvalidCell,
 } from "../datagridTypes";
 
 const failureLoadDataToastMessage =
@@ -128,7 +129,7 @@ export const loadColumnValueOptions = (
 };
 
 export const saveDataRows = async (
-  onSaveDataRows: onSaveDataRowsFunc,
+  onSaveDataRows: onSaveDataRowsFunc<DataRow>,
   createdDataRows: DataRow[],
   changedDataRows: DataRow[],
   deletedDataRows: DataRow[],
@@ -139,9 +140,26 @@ export const saveDataRows = async (
   setDeletedDataRows: Dispatch<SetStateAction<DataRow[]>>,
   setIsSavingDataRows: Dispatch<SetStateAction<boolean>>,
   originalDataRowsRef: MutableRefObject<DataRow[]>,
-  errorMessage: string
+  errorMessage: string,
+  cols: DataGridColumn[],
+  setInvalidCells: Dispatch<SetStateAction<InvalidCell[]>>
 ) => {
   try {
+    const invalidCells = validateDataRows(
+      [...createdDataRows, ...changedDataRows],
+      cols,
+      primaryKeyDataField
+    );
+
+    if (invalidCells.length > 0) {
+      toast.error(
+        "There are one or more incorrect entries. Please ensure that all yellow entries are correct or filled in and save again."
+      );
+
+      setInvalidCells(invalidCells);
+      return;
+    }
+
     setIsSavingDataRows(true);
 
     changedDataRows = JSON.parse(JSON.stringify(changedDataRows));
@@ -162,7 +180,7 @@ export const saveDataRows = async (
       )
     );
 
-    const success = await (onSaveDataRows as onSaveDataRowsFunc)(
+    const success = await (onSaveDataRows as onSaveDataRowsFunc<DataRow>)(
       createdDataRows.map((row) => {
         // Remove primary key value from created rows
         let createdDataRowClone = JSON.parse(JSON.stringify(row)) as DataRow;
@@ -181,6 +199,7 @@ export const saveDataRows = async (
       setCreatedDataRows([]);
       setChangedDataRows([]);
       setDeletedDataRows([]);
+      setInvalidCells([]);
       originalDataRowsRef.current = [];
     } else {
       setIsSavingDataRows(false);
@@ -190,6 +209,32 @@ export const saveDataRows = async (
     setIsSavingDataRows(false);
     toast.error(errorMessage);
   }
+};
+
+const validateDataRows = (
+  dataRows: DataRow[],
+  cols: DataGridColumn[],
+  primaryKeyDataField: string
+) => {
+  const invalidCells: InvalidCell[] = [];
+
+  for (const dataRow of dataRows) {
+    for (const col of cols) {
+      if (
+        (col.isRequired || col.isRequired === undefined) &&
+        col.dataType !== "boolean" &&
+        !dataRow[col.dataField] &&
+        !col.disableEditing
+      ) {
+        invalidCells.push({
+          primaryKey: dataRow[primaryKeyDataField],
+          dataField: col.dataField,
+        });
+      }
+    }
+  }
+
+  return invalidCells;
 };
 
 export const removeCreatedDataRow = (

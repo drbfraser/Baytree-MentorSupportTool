@@ -28,15 +28,16 @@ export type PagedDataRows<DataRowType> = {
     ]*/;
 };
 
-export type onSaveDataRowsFunc = (
-  createdRows: DataRow[],
-  updatedRows: DataRow[],
-  deletedRows: DataRow[]
+export type onSaveDataRowsFunc<DataRowType> = (
+  createdRows: DataRowType[],
+  updatedRows: DataRowType[],
+  deletedRows: DataRowType[]
 ) => Promise<boolean>;
 
 export interface DataGridColumn {
   header: string;
   dataField: string;
+  dataType?: ColumnDataTypes;
 
   valueOptions?: ValueOption[];
   onLoadValueOptions?: OnLoadColumnValueOptionsFunc;
@@ -44,7 +45,10 @@ export interface DataGridColumn {
   enableSearching?: boolean;
   keepColumnOnMobile?: boolean;
   expandableColumn?: boolean;
+  isRequired?: boolean;
 }
+
+export type ColumnDataTypes = "date" | "boolean";
 
 export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
 
@@ -65,3 +69,8 @@ export type setDeletedDataRowFunc = (
   isDeleted: boolean,
   dataRow: DataRow
 ) => void;
+
+export interface InvalidCell {
+  primaryKey: string;
+  dataField: string;
+}

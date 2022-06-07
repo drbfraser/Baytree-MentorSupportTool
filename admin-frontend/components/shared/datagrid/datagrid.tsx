@@ -4,8 +4,6 @@ import DataGridBody from "./datagridBody";
 import DataGridHeaderRow from "./datagridHeaderRow";
 import Pager from "../pager";
 import DataGridSearchBar from "./datagridSearchBar";
-import useMobileLayout from "../../../hooks/useMobileLayout";
-import { someExpandableColumnExists } from "./datagridRowLogic";
 import {
   DataRow,
   DataGridColumn,
@@ -14,7 +12,6 @@ import {
   onSaveDataRowsFunc,
   DataRowAction,
 } from "./datagridTypes";
-import DataGridAddRow from "./datagridAddRow";
 import useLoading from "./hooks/useLoading";
 import useData from "./hooks/useData";
 import useSearch from "./hooks/useSearch";
@@ -22,7 +19,7 @@ import usePagination from "./hooks/usePagination";
 
 export interface DataGridProps {
   onLoadDataRows?: onLoadDataRowsFunc | onLoadPagedDataRowsFunc;
-  onSaveDataRows?: onSaveDataRowsFunc;
+  onSaveDataRows?: onSaveDataRowsFunc<any>;
   disableDataRowCreation?: boolean;
   cols: DataGridColumn[];
   primaryKeyDataField?: string; // default primary key is "id"
@@ -70,6 +67,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
     setCreatedDataRow,
     createDataRow,
     isAnyColumnSearchable,
+    invalidCells,
   } = useData(
     props.cols,
     currentPage,
@@ -90,8 +88,6 @@ const DataGrid: FC<DataGridProps> = (props) => {
     props.data,
     props.pageSize
   );
-
-  const isOnMobileDevice = useMobileLayout();
 
   return (
     <>
@@ -138,18 +134,9 @@ const DataGrid: FC<DataGridProps> = (props) => {
           dataRowActions={props.dataRowActions}
           isDataGridDeleteable={props.isDataGridDeleteable ?? true}
           pageSize={props.pageSize}
+          createDataRow={createDataRow}
+          invalidCells={invalidCells}
         ></DataGridBody>
-        {props.onSaveDataRows && !props.disableDataRowCreation && (
-          <DataGridAddRow
-            numColumns={cols.length}
-            onAddRow={createDataRow}
-            enableAddButton={
-              !isLoadingDataRows &&
-              !isLoadingColValueOptions &&
-              !isSavingDataRows
-            }
-          ></DataGridAddRow>
-        )}
       </Table>
       {props.pageSize && (
         <Pager

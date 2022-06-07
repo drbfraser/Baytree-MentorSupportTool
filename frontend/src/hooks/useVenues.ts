@@ -7,7 +7,7 @@ import { getVenues, Venue } from "../api/views";
  * error: empty string if no errors loading, string with error reason if error occurred.
  */
 const useVenues = () => {
-  const [venues, setVenues] = useState<Venue[]>([]);
+  const [venues, setVenues] = useState<Venue[] | null>(null);
   const [error, setError] = useState<OnVenuesFailedToLoadReason | "">("");
 
   const getVenueData = async () => {

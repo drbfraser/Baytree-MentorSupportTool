@@ -427,6 +427,67 @@ export const backendPost = async (relativeEndpointUrl: string, body: any) => {
   }
 };
 
+export const backendDelete = async (relativeEndpointUrl: string, params?: Record<string, any>) => {
+  let response = await backendFetch(relativeEndpointUrl, "DELETE", undefined, params);
+  if (response.ok) {
+    try {
+      if (response.status === 204){
+        return "Success"
+      }
+      return await response.json();
+    } catch {
+      return null;
+    }
+  } else if (response.status === 401) {
+    const refreshRes = await refreshAccessToken();
+    if (refreshRes) {
+      response = await backendFetch(relativeEndpointUrl, "DELETE", undefined, params);
+      if (response.ok) {
+        try {
+          return await response.json();
+        } catch {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
+export const backendPut = async (relativeEndpointUrl: string, body: any) => {
+  let response = await backendFetch(relativeEndpointUrl, "PUT", body);
+  if (response.ok) {
+    try {
+      return await response.json();
+    } catch {
+      return null;
+    }
+  } else if (response.status === 401) {
+    const refreshRes = await refreshAccessToken();
+    if (refreshRes) {
+      response = await backendFetch(relativeEndpointUrl, "PUT", body);
+      if (response.ok) {
+        try {
+          return await response.json();
+        } catch {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
 export type ApiOptions = {
   searchText?: string;
   dataFieldsToSearch?: string[];

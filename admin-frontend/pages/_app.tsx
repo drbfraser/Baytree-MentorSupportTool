@@ -16,7 +16,7 @@ import { RootState, useStore } from "../stores/store";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { NextComponentType, NextPageContext } from "next";
 import React from "react";
-import { Typography } from "@mui/material";
+import { ThemeProvider, Typography } from "@mui/material";
 import { logout, verify } from "../actions/auth/actionCreators";
 import OverlaySpinner from "../components/shared/overlaySpinner";
 import styled from "styled-components";
@@ -25,6 +25,7 @@ import { ToastContainer } from "react-toastify";
 
 export const BODY_PADDING = "1rem";
 import "react-toastify/dist/ReactToastify.css";
+import theme from "../styles/theme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const store = useStore(pageProps.initialReduxState);
@@ -32,9 +33,14 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <ToastContainer></ToastContainer>
-      <Provider store={store}>
-        <PageChooser pageProps={pageProps} component={Component}></PageChooser>
-      </Provider>
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <PageChooser
+            pageProps={pageProps}
+            component={Component}
+          ></PageChooser>
+        </Provider>
+      </ThemeProvider>
     </>
   );
 }
@@ -44,8 +50,6 @@ const PageChooser: React.FC<{
   component: NextComponentType<NextPageContext, any, {}>;
 }> = ({ pageProps, component }) => {
   const router = useRouter();
-  const mobileLayout = useMobileLayout();
-  const [sidebarActive, setSidebarActive] = useState(!useMobileLayout);
   const dispatch = useDispatch();
   const isAuthenticated = useSelector<RootState, boolean>(
     (state) => state.auth.isAuthenticated
@@ -96,9 +100,6 @@ const PageChooser: React.FC<{
           </>
         ) : (
           <NonLoginPage
-            mobileLayout={mobileLayout}
-            sidebarActive={sidebarActive}
-            setSidebarActive={setSidebarActive}
             component={component}
             pageProps={pageProps}
           ></NonLoginPage>
@@ -111,19 +112,12 @@ const PageChooser: React.FC<{
 };
 
 const NonLoginPage: React.FC<{
-  mobileLayout: boolean;
-  sidebarActive: boolean;
-  setSidebarActive: (active: boolean) => void;
   component: NextComponentType<NextPageContext, any, {}>;
   pageProps: any;
-}> = ({
-  mobileLayout,
-  sidebarActive,
-  setSidebarActive,
-  component,
-  pageProps,
-}) => {
+}> = ({ component, pageProps }) => {
   const pageContentDivRef = useRef<HTMLDivElement>(null);
+  const mobileLayout = useMobileLayout();
+  const [sidebarActive, setSidebarActive] = useState(!useMobileLayout);
 
   return (
     <>
@@ -143,9 +137,11 @@ const NonLoginPage: React.FC<{
           pageContentDivRef={pageContentDivRef}
         ></Navbar>
         <div style={{ display: "flex", justifyContent: "left" }}>
-          {sidebarActive && !mobileLayout && (
-            <div style={{ width: SIDEBAR_WIDTH }}></div>
-          )}
+          <div
+            style={{
+              width: sidebarActive && !mobileLayout ? SIDEBAR_WIDTH : "0",
+            }}
+          ></div>
           <PageContent ref={pageContentDivRef}>
             {React.createElement(component, { ...pageProps })}
           </PageContent>

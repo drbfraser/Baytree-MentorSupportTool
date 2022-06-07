@@ -10,5 +10,6 @@ class HolidaySerializer(serializers.ModelSerializer):
       "title",
       "startDate",
       "endDate",
-      "isAnnual"
+      "isAnnual",
+      "note"
     ]
