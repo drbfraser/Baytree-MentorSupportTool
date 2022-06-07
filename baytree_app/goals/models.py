@@ -1,5 +1,6 @@
 import datetime
 from django.db import models
+from baytree_app.views_api.participants import get_participant_by_id
 from users.models import CustomUser
 
 class Goal(models.Model):
@@ -22,3 +23,7 @@ class Goal(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_mentee(self):
+        if self.mentee_id is None: return None
+        return get_participant_by_id(self.mentee_id)
