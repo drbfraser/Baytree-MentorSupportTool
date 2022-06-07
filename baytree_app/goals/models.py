@@ -1,6 +1,6 @@
 from django.db import models
 from views_api.participants import get_participant_by_id
-from users.models import CustomUser
+from users.models import MentorUser
 
 class Goal(models.Model):
     class Status(models.TextChoices):
@@ -8,7 +8,7 @@ class Goal(models.Model):
         IN_PROGRESS = 'IN PROGRESS', "IN PROGRESS"
         RECALIBRATED = 'RECALIBRATED', "RECALIBRATED"
 
-    mentor = models.ForeignKey(CustomUser, related_name="goal_mentor", on_delete=models.SET_NULL, null=True)
+    mentor = models.ForeignKey(MentorUser, related_name="goal_mentor", on_delete=models.SET_NULL, null=True)
     mentee_id = models.IntegerField(null=True)
     title = models.CharField(max_length=100)
     creation_date = models.DateField()
