@@ -1,6 +1,5 @@
-import datetime
 from django.db import models
-from baytree_app.views_api.participants import get_participant_by_id
+from views_api.participants import get_participant_by_id
 from users.models import CustomUser
 
 class Goal(models.Model):
