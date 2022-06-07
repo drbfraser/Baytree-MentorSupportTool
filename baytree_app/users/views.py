@@ -1,10 +1,8 @@
 import re
-import django_filters.rest_framework
-from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status, viewsets
+from rest_framework import status
 
 from baytree_app.views import BatchRestViewSet
 from views_api.volunteers import get_volunteers
