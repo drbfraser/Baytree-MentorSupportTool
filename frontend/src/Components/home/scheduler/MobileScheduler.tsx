@@ -5,14 +5,18 @@ import {
   Toolbar,
   DateNavigator,
   TodayButton,
-  AllDayPanel
+  AllDayPanel,
+  Appointments
 } from "@devexpress/dx-react-scheduler-material-ui";
 
 const MobileScheduler = () => {
   return (
     <Scheduler height="auto">
       <ViewState />
+      
       <DayView startDayHour={9} endDayHour={17} />
+      <Appointments />
+      
       <Toolbar />
       <AllDayPanel />
       <DateNavigator />

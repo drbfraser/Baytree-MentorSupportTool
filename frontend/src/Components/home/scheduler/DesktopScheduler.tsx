@@ -8,16 +8,23 @@ import {
   DateNavigator,
   TodayButton,
   MonthView,
-  AllDayPanel
+  AllDayPanel,
+  Appointments
 } from "@devexpress/dx-react-scheduler-material-ui";
+import { useScheduler } from "../../../context/SchedulerContext";
 
 const DesktopScheduler = () => {
+  const {events} = useScheduler();
+
   return (
-    <Scheduler height="auto">
+    <Scheduler data={events} height="auto">
       <ViewState defaultCurrentViewName="Day" />
+      
       <DayView startDayHour={9} endDayHour={17} />
       <WeekView startDayHour={9} endDayHour={17} />
       <MonthView />
+      <Appointments />
+
       <Toolbar />
       <AllDayPanel />
       <DateNavigator />
