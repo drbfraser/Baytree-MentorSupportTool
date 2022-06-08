@@ -3,6 +3,7 @@ import "./App.css";
 import CreateAccount from "./Components/CreateAccount";
 import Dashboard from "./Components/dashboard/Dashboard";
 import Goals from "./Components/goals/Goals";
+import GoalsPage from "./Components/goals/GoalsPage";
 import Home from "./Components/home/Home";
 import Login from "./Components/Login";
 import Notification from "./Components/Notification";
@@ -32,7 +33,7 @@ function App() {
             <Route path="home" element={<Home />} />
             <Route path="sessions" element={<Sessions />} />
             <Route path="questionnaires" element={<Questionnaire />} />
-            <Route path="goals" element={<Goals />} />
+            <Route path="goals" element={<GoalsPage />} />
             <Route path="records" element={<Records />} />
             <Route path="notifications" element={<Notification />} />
             <Route path="profile" element={<Profile />} />

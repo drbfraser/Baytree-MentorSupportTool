@@ -1,57 +1,32 @@
-import * as React from "react";
 import Card from "@mui/material/Card";
-import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import { FunctionComponent } from "react";
 
-export default function GoalsStatistics(props: any) {
+const GoalStatisticsCell: FunctionComponent<{ title: string, count: number, color?: string }> = (props) => {
+  return <Grid item xs={12} sm={4}>
+    <Card sx={{ boxShadow: 2, p: 3 }}>
+      <Typography
+        component="h6"
+        variant="h6"
+        color="text.secondary"
+        gutterBottom
+      >
+        {props.title.toUpperCase()}
+      </Typography>
+      <Typography component="p" variant="h2" color={props.color || "primary"}>
+        {props.count}
+      </Typography>
+    </Card>
+  </Grid>
+};
+
+export default function GoalsStatistics() {
   return (
-    <div>
-      <Card sx={{ boxShadow: 2, p: 3 }}>
-        <Grid style={{ display: "flex" }}>
-          <Grid item xs={4} sx={{ m: 0, p: 0 }}>
-            <Typography
-              component="h6"
-              variant="h6"
-              color="text.secondary"
-              gutterBottom
-            >
-              Active
-            </Typography>
-            <Typography component="p" variant="h2" color="red">
-              {props.activeGoals}
-            </Typography>
-          </Grid>
-          <Divider orientation="vertical" flexItem sx={{ m: 0, p: 0 }} />
-          <Grid item xs={4} sx={{ ml: 3, p: 0 }}>
-            <Typography
-              component="h6"
-              variant="h6"
-              color="text.secondary"
-              gutterBottom
-            >
-              Completed
-            </Typography>
-            <Typography component="p" variant="h2" color="green">
-              {props.completedGoals}
-            </Typography>
-          </Grid>
-          <Divider orientation="vertical" flexItem />
-          <Grid item xs={4} sx={{ ml: 3, p: 0 }}>
-            <Typography
-              component="h6"
-              variant="h6"
-              color="text.secondary"
-              gutterBottom
-            >
-              Total
-            </Typography>
-            <Typography component="p" variant="h2" color="blue">
-              {props.totalGoals}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Card>
-    </div>
+    <Grid container spacing={2}>
+      <GoalStatisticsCell title="Active" count={0} color="secondary" />
+      <GoalStatisticsCell title="Completed" count={0} />
+      <GoalStatisticsCell title="All" count={0} color="blue" />
+    </Grid>
   );
 }
