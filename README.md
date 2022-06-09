@@ -24,7 +24,7 @@ VIEWS_USERNAME=the_username
 VIEWS_PASSWORD=the_password
 ```
 
-According to Google's new less-secure app policy, the gmail account must have 2-factor authentication enabled and "app password" must be created which can be used with Django.
+According to Google's new less-secure app policy, the gmail account must have 2-factor authentication enabled and an "app password" must be created which can be used with Django.
 
 Replace instances of `something_random` with random strings, and `the_username` and `the_password` with appropriate credentials (which you can obtain by talking to someone on the team).
 
