@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from users.models import MentorRole, MentorUser
 from users.permissions import AdminPermissions
 
-from sessions.permissions import userIsAdmin, userIsSuperUser
+from users.permissions import userIsAdmin, userIsSuperUser
 from views_api.associations import get_associations
 
 from .constants import views_base_url, views_password, views_username
