@@ -24,6 +24,8 @@ VIEWS_USERNAME=the_username
 VIEWS_PASSWORD=the_password
 ```
 
+According to Google's new less-secure app policy, the gmail account must have 2-factor authentication enabled and an "app password" must be created which can be used with Django.
+
 Replace instances of `something_random` with random strings, and `the_username` and `the_password` with appropriate credentials (which you can obtain by talking to someone on the team).
 
 3. Install frontend dependencies (if running in Docker - see frontend section if not):
@@ -50,6 +52,7 @@ docker exec -it baytree_server python manage.py createsuperuser
 - To run only the backend + database: `docker-compose up server`
 - If new backend packages have been installed, run `docker-compose build` prior to running the `up` commands above
 - If new frontend packages have been installed, run the following prior to running the `up` commands above:
+
 ```
 docker-compose run --rm frontend npm install
 docker-compose run --rm admin-frontend npm install
@@ -68,11 +71,13 @@ The recommended way to run the backend is within Docker (using the instructions 
 ### Migrations
 
 After a model change, run the following to make database migrations:
+
 ```
 docker exec baytree_server python manage.py makemigrations
 ```
 
 To migrate your database, either because you or someone else made database migrations, run:
+
 ```
 docker exec baytree_server python manage.py migrate
 ```
@@ -80,6 +85,7 @@ docker exec baytree_server python manage.py migrate
 ### Creating a User
 
 You can create a super (admin) user by running:
+
 ```
 docker exec -it baytree_server python manage.py createsuperuser
 ```
@@ -95,6 +101,7 @@ You can install a new package by adding it to `requirements.txt` and then runnin
 ### Install Package
 
 To install a package, with the application running:
+
 - frontend: `docker exec baytree_frontend npm install [package name]`
 - admin-frontend: `docker exec baytree_admin_frontend npm install [package name]`
 
@@ -106,8 +113,8 @@ The frontends can either be run in Docker (using the instructions above) or outs
 2. Run `npm install` in both frontend folders
 3. Use the command `docker-compose up server` to run only the backend + database
 4. Use the following commands to run the frontends:
-    - frontend: `npm start`
-    - admin-frontend: `npm run dev`
+   - frontend: `npm start`
+   - admin-frontend: `npm run dev`
 
 <br>
 
@@ -119,7 +126,7 @@ The frontends can either be run in Docker (using the instructions above) or outs
 ● Xcode <br>
 ● Android Studio <br>
 
-### Run Application 
+### Run Application
 
 Run the file "prj\mobile\lib\main.dart"
 
@@ -131,8 +138,7 @@ flutter pub get
 
 After setting up the emulator run:
 
-flutter run --no-sound-null-safety 
-
+flutter run --no-sound-null-safety
 
 ## Admin Portal
 
