@@ -11,7 +11,6 @@ from .views import CookieTokenObtainPairView, CookieTokenRefreshView, CookieToke
 
 api_patterns = [
     path('sessions/', include('sessions.urls')),
-    path('records/', include('records.urls')),
     path('resources/', include('resources.urls')),
     path('users/', include('users.urls')),
     path('questionnaires/', include('questionnaires.urls')),
