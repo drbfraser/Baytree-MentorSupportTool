@@ -1,20 +1,19 @@
-from rest_framework.response import Response
-from .util import try_parse_int
-from views_api.associations import get_associations
-from users.models import MentorRole
-from users.models import MentorUser
-
-from rest_framework.views import APIView
-
-from sessions.permissions import userIsAdmin, userIsSuperUser
-from .constants import views_base_url, views_username, views_password
-from rest_framework.decorators import permission_classes, api_view
-from rest_framework import status
-from users.permissions import AdminPermissions
 import requests
 import xmltodict
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from users.models import MentorRole, MentorUser
+from users.permissions import AdminPermissions
 
-sessions_base_url = views_base_url + "work/sessiongroups/{}/sessions"
+from sessions.permissions import userIsAdmin, userIsSuperUser
+from views_api.associations import get_associations
+
+from .constants import views_base_url, views_password, views_username
+from .util import try_parse_int
+
+sessions_base_url = f"{views_base_url}work/sessiongroups/sessions"
+sessions_base_url_by_group = views_base_url + "work/sessiongroups/{}/sessions"
 
 session_views_response_fields = [
     "SessionID",
@@ -64,10 +63,10 @@ class SessionsApiView(APIView):
         to return its response to the client.
         """
         id = request.GET.get("id", None)
-        session_group_id = request.GET.get("sessionGroupId", None)
+        sessionGroupId = request.GET.get("sessionGroupId", None)
         mentor_user = MentorUser.objects.filter(pk=request.user.id)
 
-        if id != None and session_group_id != None:
+        if id != None and sessionGroupId != None:
             if not userIsAdmin(request.user) and (
                 not mentor_user.exists() or mentor_user.first().viewsPersonId != id
             ):
@@ -75,16 +74,16 @@ class SessionsApiView(APIView):
                     "You do not have permission to access this resource", 401
                 )
 
-            response = get_sessions(id, session_group_id=session_group_id)
+            response = get_sessions(id, sessionGroupId=sessionGroupId)
 
-        elif session_group_id != None:
+        elif sessionGroupId != None:
             if not userIsAdmin(request.user) and not mentor_user.exists():
                 return Response(
                     "You do not have permission to access this resource", 401
                 )
 
             response = get_sessions(
-                session_group_id=session_group_id,
+                sessionGroupId=sessionGroupId,
                 limit=request.GET.get("limit", None),
                 offset=request.GET.get("offset", None),
                 startDateFrom=request.GET.get("startDateFrom", None),
@@ -312,7 +311,7 @@ class SessionsApiView(APIView):
 
 def get_sessions(
     id: str = None,
-    session_group_id: str = None,
+    sessionGroupId: str = None,
     limit: int = None,
     offset: int = None,
     startDateFrom: str = None,
@@ -329,10 +328,10 @@ def get_sessions(
     So, if limit = 5 and offset = 5, this would say: "give me 5 sessions,
     but skip the first 5 in the total sessions returned by the Views API."
     """
-
-    if id != None and session_group_id != None:
+    
+    if id != None:
         response = requests.get(
-            sessions_base_url.format(session_group_id) + "/" + id,
+            f"{sessions_base_url}/{id}",
             auth=(views_username, views_password),
         )
         parsed = xmltodict.parse(response.text)
@@ -342,20 +341,17 @@ def get_sessions(
         }
         return session
     else:
-        request_url = sessions_base_url.format(session_group_id) + "/search?"
-        if limit != None:
-            request_url += "&pageFold={}".format(limit)
-        if offset != None:
-            request_url += "&offset={}".format(offset)
-        if startDateFrom != None:
-            request_url += "&StartDate-from={}".format(startDateFrom)
-        if startDateTo != None:
-            request_url += "&StartDate-to={}".format(startDateTo)
-        if personId != None:
-            request_url += "&LeadStaff={}".format(personId)
+        request_url = f"{sessions_base_url}/search" if sessionGroupId is None else sessions_base_url_by_group.format(sessionGroupId)
+        params = {}
+        if limit != None: params["limit"] = limit
+        if offset != None: params["offset"] = offset
+        if startDateFrom != None: params["StartDate-from"] = startDateFrom
+        if startDateTo != None: params["StartDate-to"] = startDateTo
+        if personId != None: params["LeadStaff"] = personId
 
         response = requests.get(
             request_url,
+            params=params,
             auth=(views_username, views_password),
         )
 

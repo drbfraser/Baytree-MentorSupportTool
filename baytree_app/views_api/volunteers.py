@@ -1,12 +1,16 @@
 from typing import List, Union
-from users.models import MentorUser
-from users.permissions import AdminPermissions
-from .constants import views_base_url, views_username, views_password
-from rest_framework.decorators import permission_classes, api_view
-from rest_framework.response import Response
-from rest_framework import status
+
 import requests
 import xmltodict
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from users.models import MentorUser
+from users.permissions import AdminPermissions
+from rest_framework import status
+
+from .constants import views_base_url, views_password, views_username
+from .sessions import get_sessions
 
 volunteers_base_url = views_base_url + "contacts/volunteers/"
 
@@ -196,6 +200,7 @@ def translate_volunteer_fields(volunteers):
         for volunteer in volunteers
     ]
 
+# GET /api/views-api/volunteers/volunteer/
 @api_view(("GET", ))
 def get_volunteer_profile(request):
     """
@@ -208,3 +213,17 @@ def get_volunteer_profile(request):
     mentorViewsId = mentors.first().viewsPersonId
     response = get_volunteers(id=f"{mentorViewsId}")
     return Response(response, status=status.HTTP_200_OK)
+
+
+queryKeys = ["sessionGroupId", "limit", "offset", "startDateFrom", "startDateTo"]
+
+# GET /api/views-api/volunteers/volunteer/sessions
+@api_view(("GET", ))
+def get_session_by_volunteer(request):
+    mentors = MentorUser.objects.filter(user_id=request.user.id)
+    if not mentors:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    params = { key: request.GET.get(key, None) for key in queryKeys }
+    params["personId"] = mentors.first().viewsPersonId
+    sessions = get_sessions(**params)
+    return Response(sessions, status=status.HTTP_200_OK)
