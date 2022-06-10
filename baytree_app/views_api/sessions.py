@@ -386,7 +386,9 @@ def get_mentee_from_session_by_id(id):
     response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
     if response.status_code != 200: return None
     parsed_mentee = xmltodict.parse(response.content)
-    parsed_mentee = parsed_mentee["session"]["participants"]["participant"]
+    parsed_mentee = parsed_mentee["session"]["participants"]
+    if parsed_mentee is None: return None
+    parsed_mentee = parsed_mentee["participant"]
     return {
         "menteeId": parsed_mentee["@id"],
         "name": parsed_mentee["Name"]
@@ -396,6 +398,8 @@ def get_note_from_session_by_id(id):
     url = f"{sessions_base_url}/{id}/notes"
     response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
     if response.status_code != 200: return None
-    parsed_mentee = xmltodict.parse(response.content)
-    parsed_mentee = parsed_mentee["session"]["notes"]["note"]
-    return parsed_mentee["Note"]
+    parsed_note = xmltodict.parse(response.content)
+    parsed_note = parsed_note["session"]["notes"]
+    if parsed_note is None: return None
+    parsed_note = parsed_note["note"]
+    return parsed_note["Note"]
