@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, MutableRefObject } from "react";
 import { toast } from "react-toastify";
+import { arraysEqual } from "../../../../util/misc";
 import {
   DataGridColumn,
   ValueOption,
@@ -220,11 +221,13 @@ const validateDataRows = (
 
   for (const dataRow of dataRows) {
     for (const col of cols) {
+      const val = dataRow[col.dataField];
+
       if (
         (col.isRequired || col.isRequired === undefined) &&
         col.dataType !== "boolean" &&
-        !dataRow[col.dataField] &&
-        !col.disableEditing
+        !col.disableEditing &&
+        (!val || (Array.isArray(val) && val.length === 0))
       ) {
         invalidCells.push({
           primaryKey: dataRow[primaryKeyDataField],
@@ -328,7 +331,11 @@ export const setChangedDataRow = (
 
 export const areDataRowsEqual = (dataRow1: DataRow, dataRow2: DataRow) => {
   for (const key in dataRow1) {
-    if (dataRow1[key] !== dataRow2[key]) {
+    const isArray = Array.isArray(dataRow1[key]);
+
+    if (isArray && !arraysEqual(dataRow1[key], dataRow2[key])) {
+      return false;
+    } else if (!isArray && dataRow1[key] !== dataRow2[key]) {
       return false;
     }
   }

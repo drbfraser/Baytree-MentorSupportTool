@@ -16,6 +16,7 @@ import DataGridBoolComponent from "./datagridBoolComponent";
 
 interface DataRowCellProps {
   isSelectCell: boolean;
+  isMultiSelect?: boolean;
   valueOptions?: ValueOption[];
   value: any;
   onChangedValue: (newValue: any) => void;
@@ -51,6 +52,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
             value={props.value}
             onChangedValue={props.onChangedValue}
             valueOptions={props.valueOptions}
+            isMultiSelect={props.isMultiSelect}
           />
         );
       }
