@@ -1,21 +1,51 @@
 import requests
 import xmltodict
+from baytree_app.constants import (VIEWS_BASE_URL, VIEWS_PASSWORD,
+                                   VIEWS_USERNAME)
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from views_api.session_groups import get_session_groups
 from users.models import MentorUser
-from users.permissions import userIsAdmin, userIsSuperUser
-from .volunteers import get_volunteers
-from .util import get_sessions, get_volunteers
-from .constants import sessions_base_url
-
+from users.permissions import userIsAdmin
 
 from views_api.associations import get_associations
 
-from .constants import views_base_url, views_password, views_username
 from .util import try_parse_int
+
+sessions_base_url = VIEWS_BASE_URL + "work/sessiongroups/sessions"
+sessions_base_url_by_group = VIEWS_BASE_URL + "work/sessiongroups/{}/sessions"
+
+session_views_response_fields = [
+    "SessionID",
+    "SessionGroupID",
+    "Name",
+    "StartDate",
+    "StartTime",
+    "Duration",
+    "Cancelled",
+    "Activity",
+    "LeadStaff",
+    "VenueID",
+    "Created",
+    "Updated",
+    "VenueName",
+]
+session_translated_fields = [
+    "viewsSessionId",
+    "viewsSessionGroupId",
+    "name",
+    "startDate",
+    "startTime",
+    "duration",
+    "cancelled",
+    "activity",
+    "leadStaff",
+    "venueId",
+    "created",
+    "updated",
+    "venueName",
+]
+
 
 """
 WHAT IS A SESSION:
@@ -165,7 +195,7 @@ class SessionsApiView(APIView):
         # POST request for Session #
         ############################
 
-        session_url = views_base_url + "work/sessiongroups/{}/sessions".format(
+        session_url = VIEWS_BASE_URL + "work/sessiongroups/{}/sessions".format(
             mentor_role.viewsSessionGroupId
         )
         try:
@@ -173,7 +203,7 @@ class SessionsApiView(APIView):
                 session_url,
                 data=viewSessionData,
                 headers={"content-type": "text/xml"},
-                auth=(views_username, views_password),
+                auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
             )
 
             if response.status_code != 200:
@@ -206,7 +236,7 @@ class SessionsApiView(APIView):
                 request.data["notes"]
             )
 
-            note_url = views_base_url + "work/sessiongroups/sessions/{}/notes".format(
+            note_url = VIEWS_BASE_URL + "work/sessiongroups/sessions/{}/notes".format(
                 session_id
             )
             try:
@@ -214,7 +244,7 @@ class SessionsApiView(APIView):
                     note_url,
                     data=viewNoteData,
                     headers={"content-type": "text/xml"},
-                    auth=(views_username, views_password),
+                    auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
                 )
             except Exception as e:
                 return Response(
@@ -234,7 +264,7 @@ class SessionsApiView(APIView):
                             </staff>""".format(
             mentor_user.viewsPersonId, 1, mentor_role.volunteeringType
         )
-        mentor_url = views_base_url + "work/sessiongroups/sessions/{}/staff".format(
+        mentor_url = VIEWS_BASE_URL + "work/sessiongroups/sessions/{}/staff".format(
             session_id
         )
 
@@ -243,7 +273,7 @@ class SessionsApiView(APIView):
                 mentor_url,
                 data=viewMentorData,
                 headers={"content-type": "text/xml"},
-                auth=(views_username, views_password),
+                auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
             )
         except Exception as e:
             return Response(
@@ -262,7 +292,7 @@ class SessionsApiView(APIView):
             mentee_views_person_id, 1
         )
         mentee_url = (
-            views_base_url
+            VIEWS_BASE_URL
             + "work/sessiongroups/sessions/{}/participants".format(session_id)
         )
         try:
@@ -270,7 +300,7 @@ class SessionsApiView(APIView):
                 mentee_url,
                 data=viewMenteeData,
                 headers={"content-type": "text/xml"},
-                auth=(views_username, views_password),
+                auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
             )
         except Exception as e:
             return Response(
@@ -280,38 +310,80 @@ class SessionsApiView(APIView):
         return Response({"sessionId": try_parse_int(session_id)}, status=200)
 
 
-# GET /api/views-api/sessions/<session_id>
-@api_view(("GET", ))
-def get_session_by_id(request, id = None):
-    if id is None: return Response(status=status.HTTP_404_NOT_FOUND)
+def get_sessions(
+    id: str = None,
+    sessionGroupId: str = None,
+    limit: int = None,
+    offset: int = None,
+    startDateFrom: str = None,
+    startDateTo: str = None,
+    personId=None,
+):
+    """
+    Gets sessions from Views API.
+    If an id argument is provided, the session with a matching id will be returned.
+    The limit and offset parameters are used to implement pagination.
+    The limit parameter determines how many sessions to return from the Views API.
+    The offset parameter determines which session to start at when asking for
+    a number of sessions from Views when using the limit parameter.
+    So, if limit = 5 and offset = 5, this would say: "give me 5 sessions,
+    but skip the first 5 in the total sessions returned by the Views API."
+    """
+    
+    if id != None:
+        response = requests.get(
+            f"{sessions_base_url}/{id}",
+            auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+        )
 
-    # Fetch the session by the id
-    session = get_sessions(id)
-    if session is None: return Response(status=status.HTTP_404_NOT_FOUND)
+        if response.status_code != 200: return None
 
-    # Check the ownership
-    user = request.user
-    mentors = MentorUser.objects.filter(viewsPersonId=str(session["leadStaff"]))
-    if not userIsAdmin(user) and not userIsSuperUser(user):
-        mentors = mentors.filter(user_id=user.id)
-        if not mentors: return Response(status=status.HTTP_403_FORBIDDEN)
+        parsed = xmltodict.parse(response.text)
+        session = {
+            session_translated_fields[i]: parsed["session"][field]
+            for i, field in enumerate(session_views_response_fields)
+        }
+        return session
+    else:
+        request_url = f"{sessions_base_url}/search" if sessionGroupId is None else sessions_base_url_by_group.format(sessionGroupId)
+        params = {}
+        if limit != None: params["limit"] = limit
+        if offset != None: params["offset"] = offset
+        if startDateFrom != None: params["StartDate-from"] = startDateFrom
+        if startDateTo != None: params["StartDate-to"] = startDateTo
+        if personId != None: params["LeadStaff"] = personId
 
-    # Fetch the detailed session group
-    session["sessionGroup"] = get_session_groups(session["viewsSessionGroupId"])
-    session["mentor"] = None
-    session["mentee"] = get_mentee_from_session_by_id(id)
-    session["note"] = get_note_from_session_by_id(id)
+        response = requests.get(
+            request_url,
+            params=params,
+            auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+        )
 
-    # Fetch a single mentor
-    mentors = get_volunteers(session["leadStaff"])
-    if mentors["total"] > 0:
-        session["mentor"] = mentors["data"][0]
+        if response.status_code != 200: return None
 
-    return Response(session, status=status.HTTP_200_OK)
+        parsed = xmltodict.parse(response.text)
+
+        # Handle edge case where no sessions were returned from views
+        if parsed["sessions"]["@count"] == "0":
+            return {"count": parsed["sessions"]["@count"], "results": []}
+
+        parsed_session_list = parsed["sessions"]["session"]
+        if not isinstance(parsed_session_list, list):
+            parsed_session_list = [parsed_session_list]
+
+        sessions = [
+            {
+                session_translated_fields[i]: session[field]
+                for i, field in enumerate(session_views_response_fields)
+            }
+            for session in parsed_session_list
+        ]
+        return {"count": int(parsed["sessions"]["@count"]), "results": sessions}
+
 
 def get_mentee_from_session_by_id(id):
     url = f"{sessions_base_url}/{id}/participants"
-    response = requests.get(url, auth=(views_username, views_password))
+    response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
     if response.status_code != 200: return None
     parsed_mentee = xmltodict.parse(response.content)
     parsed_mentee = parsed_mentee["session"]["participants"]["participant"]
@@ -322,7 +394,7 @@ def get_mentee_from_session_by_id(id):
 
 def get_note_from_session_by_id(id):
     url = f"{sessions_base_url}/{id}/notes"
-    response = requests.get(url, auth=(views_username, views_password))
+    response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
     if response.status_code != 200: return None
     parsed_mentee = xmltodict.parse(response.content)
     parsed_mentee = parsed_mentee["session"]["notes"]["note"]

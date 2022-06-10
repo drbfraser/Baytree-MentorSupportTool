@@ -6,17 +6,15 @@ from .activities import get_activities_endpoint
 from .associations import get_mentees_for_mentor
 from .questionnaires import get_questionnaires_endpoint
 from .participants import get_participants_endpoint
-from .volunteers import get_session_by_volunteer, get_volunteer_profile, get_volunteers_endpoint
+from .volunteers import get_volunteer_profile, get_volunteers_endpoint
 from .session_groups import get_session_groups_endpoint
-from .sessions import SessionsApiView, get_session_by_id
+from .sessions import SessionsApiView
 
 urlpatterns = [
     path("session-groups", get_session_groups_endpoint),
     path("sessions", SessionsApiView.as_view()),
-    path("sessions/<int:id>/", get_session_by_id),
     path("volunteers", get_volunteers_endpoint),
     path("volunteers/volunteer/", get_volunteer_profile),
-    path("volunteers/volunteer/sessions", get_session_by_volunteer),
     path("participants", get_participants_endpoint),
     path("questionnaires", get_questionnaires_endpoint),
     path("activities", get_activities_endpoint),
