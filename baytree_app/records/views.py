@@ -1,58 +1,58 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from users.permissions import AdminPermissions, userIsAdmin, userIsSuperUser
 from rest_framework import status
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from users.models import MentorUser
-from .constants import views_base_url, views_username, views_password
-from .permissions import *
-import requests
-import xmltodict
-import json
+from users.permissions import userIsAdmin, userIsSuperUser
+from views_api.session_groups import get_session_groups
+from views_api.sessions import (get_mentee_from_session_by_id,
+                                get_note_from_session_by_id, get_sessions)
+from views_api.volunteers import get_volunteers
 
-class ViewsAppSessionView(APIView):
-    permission_classes = [IsAuthenticated & (AdminPermissions | IsUserAMentor)]
+# Query params
+queryKeys = ["sessionGroupId", "limit", "offset", "startDateFrom", "startDateTo"]
 
-    def get(self, request, id=None):
+# GET /api/records
+@api_view(("GET", ))
+def get_sessions_by_volunteer(request):
+    """
+    Fetch all the sessions hosted by the requesting mentor
+    """
+    mentors = MentorUser.objects.filter(user_id=request.user.id)
+    if not mentors:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    params = { key: request.GET.get(key, None) for key in queryKeys }
+    params["personId"] = mentors.first().viewsPersonId
+    sessions = get_sessions(**params)
+    return Response(sessions, status=status.HTTP_200_OK)
 
-        mentorUser = MentorUser.objects.all().filter(user_id=id)
+# GET /api/records/<session_id>/
+@api_view(("GET", ))
+def get_session_by_id(request, id=None):
+    """
+    Fetch all detail of a session by its id
+    """
+    if id is None: return Response(status=status.HTTP_404_NOT_FOUND)
 
-        all_volunteer_url = views_base_url + str(mentorUser[0].viewsPersonId)
-    
-        try:
-            responseSession = requests.get(all_volunteer_url + '/sessions', 
-                headers = {"content-type": "text/xml"},
-                auth=(views_username, views_password))
-            try:
-                responseNote = requests.get(all_volunteer_url + '/notes', 
-                    headers = {"content-type": "text/xml"},
-                    auth=(views_username, views_password))
-            except Exception as e:
-                return Response({'errors': 'Request to viewsapp for notes failed'}, status=400) 
+    # Fetch the session by the id
+    session = get_sessions(id)
+    if session is None: return Response(status=status.HTTP_404_NOT_FOUND)
 
-        except Exception as e:
-            return Response({'errors': 'Request to viewsapp for session failed'}, status=400)       
-        
-        #turn the xml response to dictionary
-        parsedSession = xmltodict.parse(responseSession.text)
-        parsedNote = xmltodict.parse(responseNote.text)
+    # Check the ownership
+    user = request.user
+    mentors = MentorUser.objects.filter(viewsPersonId=str(session["leadStaff"]))
+    if not userIsAdmin(user) and not userIsSuperUser(user):
+        mentors = mentors.filter(user_id=user.id)
+        if not mentors: return Response(status=status.HTTP_403_FORBIDDEN)
 
-        #Check to see if the mentor has zero sessions entered
-        if parsedSession["volunteer"]["sessions"] is None:
-            return Response([],status=200)
-        
-        #sort throught the dictionary
-        volunteerSessionList = parsedSession["volunteer"]["sessions"]["session"]
-        volunteerNoteList = parsedNote["volunteer"]["notes"]["note"]
+    # Fetch the detailed session group
+    session["sessionGroup"] = get_session_groups(session["viewsSessionGroupId"])
+    session["mentor"] = None
+    session["mentee"] = get_mentee_from_session_by_id(id)
+    session["note"] = get_note_from_session_by_id(id)
 
-        #make json from dictionary
-        volunteer = []
-        for sessionDict in volunteerSessionList:
-            for noteDict in volunteerNoteList:
-                if sessionDict["SessionID"] == noteDict["TypeID"]:
-                    volunteer.append({"SessionID":sessionDict["SessionID"],"Title": sessionDict["Title"],"StartDate": sessionDict["StartDate"],"Duration": sessionDict["Duration"],"Status": sessionDict["Status"],"Snippet": noteDict["Snippet"],"Note": noteDict["Note"]})
-        
-        return Response(volunteer, status=200)
+    # Fetch a single mentor
+    mentors = get_volunteers(session["leadStaff"])
+    if mentors["total"] > 0:
+        session["mentor"] = mentors["data"][0]
 
-
+    return Response(session, status=status.HTTP_200_OK)

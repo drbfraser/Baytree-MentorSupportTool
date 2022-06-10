@@ -4,7 +4,7 @@ from .participants import get_participants
 from .util import try_parse_int
 from users.models import MentorUser
 
-from sessions.permissions import userIsAdmin, userIsSuperUser
+from users.permissions import userIsAdmin, userIsSuperUser
 from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import api_view
 import requests
