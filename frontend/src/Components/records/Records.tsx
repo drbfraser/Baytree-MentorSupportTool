@@ -7,8 +7,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { DataGrid, GridCellParams, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { fetchSessionListByMentorId, Session } from "../api/misc";
-import { useAuth } from "../context/AuthContext";
+import { fetchSessionListByMentorId, Session } from "../../api/misc";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Records() {
   const { user } = useAuth();
