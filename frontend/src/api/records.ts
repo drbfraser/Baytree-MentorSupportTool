@@ -10,7 +10,7 @@ const recordsApi = axios.create({
   }
 });
 
-type SessionRecord = {
+export type SessionRecord = {
   viewsSessionId: string;
   name: string;
   startDate: string;
@@ -19,7 +19,7 @@ type SessionRecord = {
   cancelled: string;
 }
 
-export const fetchSession = async () => {
+export const fetchSessions = async () => {
   try {
     const response = await recordsApi.get<{results: SessionRecord[]}>('');
     if (response.status === 200) return {data: response.data.results, error: ""}
@@ -30,7 +30,7 @@ export const fetchSession = async () => {
   }
 }
 
-type SessionDetail = {
+export type SessionDetail = {
   activity: string;
   sessionGroup?: {
     name: string;

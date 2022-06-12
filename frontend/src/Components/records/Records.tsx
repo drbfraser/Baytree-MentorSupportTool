@@ -1,72 +1,80 @@
-import { Box, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { DataGrid, GridCellParams, GridColDef } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
-import { fetchSessionListByMentorId, Session } from "../../api/misc";
-import { useAuth } from "../../context/AuthContext";
+import { Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { addMinutes, format } from "date-fns";
+import { FunctionComponent, ReactText, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { fetchSessions, SessionRecord } from "../../api/records";
+import Loading from "../shared/Loading";
+
+const RecordRow: FunctionComponent<{ session: SessionRecord }> = ({ session }) => {
+  const [startH, startM] = session.startTime.split(":").map(m => +m);
+  const startTime = addMinutes(new Date(session.startDate), startH * 60 + startM);
+
+  return <TableRow hover>
+    <TableCell>{session.name}</TableCell>
+    <TableCell>{format(startTime, "d MMM Y")}</TableCell>
+    <TableCell>{format(startTime, "hh:mm aa")}</TableCell>
+    <TableCell>{session.duration}</TableCell>
+    <TableCell align="center">
+      {+session.cancelled !== 0
+        ? <Chip label="CANCELLED" size="small" color="error" />
+        : <Chip label="ATTENDED" size="small" color="success" />}
+    </TableCell>
+  </TableRow>
+}
 
 export default function Records() {
-  const { user } = useAuth();
-  const [staffRecord, setStaffRecord] = useState([] as Session[]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [note, setNote] = useState("");
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [sessions, setSessions] = useState([] as SessionRecord[]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchSessionListByMentorId(user!.userId)
-      .then(setStaffRecord)
-      .then(() => setIsLoading(false));
+    fetchSessions()
+      .then(({ data, error }) => {
+        if (data && !error) setSessions(data);
+        else setError(error);
+      })
+      .then(() => setLoading(false));
   }, []);
 
-  const columns: GridColDef[] = [
-    { field: "Title", headerName: "Session Title", width: 300 },
-    { field: "StartDate", headerName: "Start Date", width: 300 },
-    { field: "Duration", headerName: "Duration", width: 150 },
-    { field: "Status", headerName: "Status", width: 150 },
-    { field: "Snippet", headerName: "Note", width: 600 }
-  ];
+  // Give the error toast when failure
+  useEffect(() => {
+    let toastId: ReactText;
+    if (error) toastId = toast.error(error);
+    return () => {
+      if (toastId) toast.dismiss(toastId);
+    }
+  }, [error]);
 
   return (
-    <Box sx={{ minHeight: "100%" }}>
+    <>
       <Typography variant="h4" component="h2" sx={{ mb: 2 }}>
         Records
       </Typography>
-      <div style={{ width: "100%" }}>
-        <DataGrid
-          autoHeight
-          getRowId={(row) => row.SessionID}
-          rows={staffRecord}
-          columns={columns}
-          pageSize={15}
-          loading={isLoading}
-          onCellClick={(params: GridCellParams) => {
-            setNote(params.row.Note);
-            handleClickOpen();
-          }}
-        />
-      </div>
-      <Dialog open={open} onClose={handleClose} scroll="paper">
-        <DialogTitle>Note:</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{note}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+      <TableContainer component={Paper} sx={{ overflow: "auto" }}>
+        <Table stickyHeader sx={{ minWidth: 650 }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Session Title</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>Start Time</TableCell>
+              <TableCell>Duration</TableCell>
+              <TableCell align="center">Status</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {loading && <TableRow>
+              <TableCell colSpan={5}><Loading /></TableCell>
+            </TableRow>}
+            {sessions.length === 0 && <TableRow>
+              <TableCell colSpan={5} align="center">No records found</TableCell>
+            </TableRow>}
+            {sessions.map(session => {
+              return <RecordRow session={session} key={session.viewsSessionId} />
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+    </>
   );
 }
