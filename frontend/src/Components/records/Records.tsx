@@ -4,12 +4,13 @@ import { FunctionComponent, ReactText, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { fetchSessions, SessionRecord } from "../../api/records";
 import Loading from "../shared/Loading";
+import RecordDetail from "./RecordDetail";
 
-const RecordRow: FunctionComponent<{ session: SessionRecord }> = ({ session }) => {
+const RecordRow: FunctionComponent<{ session: SessionRecord, handleClick: () => void }> = ({ session, handleClick }) => {
   const [startH, startM] = session.startTime.split(":").map(m => +m);
   const startTime = addMinutes(new Date(session.startDate), startH * 60 + startM);
 
-  return <TableRow hover>
+  return <TableRow hover onClick={handleClick}>
     <TableCell>{session.name}</TableCell>
     <TableCell>{format(startTime, "d MMM Y")}</TableCell>
     <TableCell>{format(startTime, "hh:mm aa")}</TableCell>
@@ -23,9 +24,14 @@ const RecordRow: FunctionComponent<{ session: SessionRecord }> = ({ session }) =
 }
 
 export default function Records() {
+  // Records
   const [sessions, setSessions] = useState([] as SessionRecord[]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Record dialog
+  const [open, setOpen] = useState(false);
+  const [sessionId, setSessionId] = useState<string | number | undefined>(undefined);
 
   useEffect(() => {
     fetchSessions()
@@ -65,16 +71,22 @@ export default function Records() {
             {loading && <TableRow>
               <TableCell colSpan={5}><Loading /></TableCell>
             </TableRow>}
-            {sessions.length === 0 && <TableRow>
+            {sessions.length === 0 && !loading && <TableRow>
               <TableCell colSpan={5} align="center">No records found</TableCell>
             </TableRow>}
             {sessions.map(session => {
-              return <RecordRow session={session} key={session.viewsSessionId} />
+              return <RecordRow 
+                session={session} 
+                key={session.viewsSessionId}
+                handleClick={() => {
+                  setSessionId(session.viewsSessionId);
+                  setOpen(true);
+                }} />
             })}
           </TableBody>
         </Table>
       </TableContainer>
-
+      <RecordDetail sessionId={sessionId} open={open} onClose={() => setOpen(false)} />
     </>
   );
 }
