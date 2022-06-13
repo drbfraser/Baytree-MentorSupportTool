@@ -141,4 +141,21 @@ def submit_answer_set(request):
 
     # Construct Views API request
     return HttpResponse(response)
+
+# TODO: Implement when certain of admin authorization to delete questionnaire answer sets
+# DELETE /api/questionnaires/questionnaire/delete/
+@api_view(("DELETE", ))
+def delete_answer_set(request):
+
+    # Validate data existence
+    data = request.data
+    if data["questionnaireId"] is None \
+        or data["answerSet"] is None \
+        or data["person"] is None:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    response = requests.delete()
+
+    # Construct Views API request
+    return HttpResponse(response)
     
