@@ -1,4 +1,4 @@
-import { Alert, Box, Chip, Dialog, DialogContent, DialogProps, DialogTitle, Grid, TextField, Typography } from "@mui/material";
+import { Alert, Chip, Dialog, DialogContent, DialogProps, DialogTitle, Grid, TextField, Typography } from "@mui/material";
 import { addMinutes, format } from "date-fns";
 import { FunctionComponent, useEffect, useState } from "react";
 import { fetchSessionById, SessionDetail } from "../../api/records";
@@ -14,9 +14,11 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, ...props }) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    let controller: AbortController | undefined;
     if (sessionId) {
+      controller = new AbortController();
       setLoading(true);
-      fetchSessionById(sessionId)
+      fetchSessionById(sessionId, controller)
         .then(({ data, error }) => {
           if (data && !error) setSession(data);
           else setError(error);
@@ -24,10 +26,7 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, ...props }) => {
         .finally(() => setLoading(false));
     }
     return () => {
-      console.log("Clean up")
-      setLoading(false);
-      setSession(undefined);
-      setError("");
+      controller?.abort();
     }
   }, [sessionId]);
 

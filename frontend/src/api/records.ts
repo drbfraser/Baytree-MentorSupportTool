@@ -45,13 +45,15 @@ export type SessionDetail = {
   updated: Date;
 } & SessionRecord;
 
-export const fetchSessionById = async (sessionId: number | string) => {
+export const fetchSessionById = async (sessionId: number | string, abort?: AbortController) => {
   try {
-    const response = await recordsApi.get<SessionDetail>(`${sessionId}/`);
+    const response = await recordsApi.get<SessionDetail>(`${sessionId}/`, {
+      signal: abort?.signal
+    });
     if (response.status === 200) return {data: response.data, error: ""}
     if (response.status === 404) return {data: undefined, error: "Session not found"}
     else throw Error
-  } catch (_) {
+  } catch (err: any) {
     return {data: undefined, error: "Cannot retrieve session"}
   }
 } 
