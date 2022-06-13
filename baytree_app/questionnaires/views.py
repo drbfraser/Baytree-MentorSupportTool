@@ -7,6 +7,7 @@ from baytree_app.constants import (
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from views_api.associations import get_mentee_ids_from_mentor
 
 from users.models import MentorUser
 
@@ -66,20 +67,22 @@ def submit_answer_set(request):
     """
     # Validate data existence
     data = request.data
-    if data["questionnaireId"] is None or data["answerSet"] is None:
+    if data["questionnaireId"] is None \
+        or data["answerSet"] is None \
+        or data["person"] is None:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
     if mentor is None:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    
+
     # Redundancy check, user won't submit answer set to the wrong question
     qid = mentor.mentorRole.viewsQuestionnaireId
     if data["questionnaireId"] != qid:
         return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-    
-    # Construct XML payload
+
+    # Construct answer XML format payload
     answerXMLFormat = (
         '<answer id="{0}">'
             "<QuestionID>{0}</QuestionID>"
@@ -88,19 +91,54 @@ def submit_answer_set(request):
     )
     answersXML = [answerXMLFormat.format(id, data["answerSet"][id]) for id in data["answerSet"]]
 
-    answerSetXML = (
+    url = ""
+
+    # Get the person
+    person = data["person"]
+
+    # Construct URL and answer set XML payload depending on whether person is a Mentor or Mentee
+    if person == "mentee":
+        # Find the Mentee's ID
+        # menteeUser = MentorUser.objects.filter(pk=request.user.id)
+        mentor_user = MentorUser.objects.filter(pk=request.user.id)
+        if not mentor_user.exists():
+            return Response(
+                "The current requesting user is not a mentor!",
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        
+        mentor_user = mentor_user.first()
+
+        menteeIds = get_mentee_ids_from_mentor(mentor_user)
+
+        menteeId = menteeIds[0]
+        # Construct Mentee the answer set XML payload
+        answerSetXML = (
         "<answer>"
-            "<EntityType>Volunteer</EntityType>"
-            f"<EntityID>{mentor.viewsPersonId}</EntityID>"
+            "<EntityType>Person</EntityType>"
+            f"<EntityID>{menteeId}</EntityID>"
             f"<Date>{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')}</Date>"
             f"{''.join(answersXML)}"
         "</answer>"
-    )
+        )
+        # Construct Mentee URL
+        url = f"{VIEWS_BASE_URL}contacts/participants/{menteeId}/questionnaires/{qid}"
+    else:
+        # Construct Mentor the answer set XML payload
+        answerSetXML = (
+            "<answer>"
+                "<EntityType>Volunteer</EntityType>"
+                f"<EntityID>{mentor.viewsPersonId}</EntityID>"
+                f"<Date>{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')}</Date>"
+                f"{''.join(answersXML)}"
+            "</answer>"
+        )
+        # Construct Mentor URL
+        url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}/answers"
 
     # Send the answer set to View database
-    url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}/answers"
-
     response = requests.post(url, answerSetXML, auth=(VIEWS_USERNAME, VIEWS_PASSWORD), headers = {"content-type": "text/xml"})
 
     # Construct Views API request
     return HttpResponse(response)
+    
