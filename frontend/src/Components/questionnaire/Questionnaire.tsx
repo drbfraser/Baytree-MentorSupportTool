@@ -23,7 +23,8 @@ const Questionnaire = () => {
     validateAnswerSet,
     mentees,
     errorMessage,
-    handleSubmitAnswerSet
+    handleSubmitAnswerSet,
+    handleDeleteAnswerSet,
   } = useQuestionnaire();
   return (
     <TitledContainer title="Monthly Progress Report">
@@ -38,12 +39,32 @@ const Questionnaire = () => {
           initialValues={initialAnswer}
           onSubmit={async (answer, { resetForm, setSubmitting }) => {
             setSubmitting(true);
-            const result = await handleSubmitAnswerSet(answer);
-            if (result) {
-              toast.success("Submitted successfully, thank you");
-              resetForm();
-            } else toast.error("Failed to submit, please try again");
-            setSubmitting(false);
+            const menteeResult = await handleSubmitAnswerSet(answer, "mentee");
+            if (menteeResult) {
+              const mentorResult = await handleSubmitAnswerSet(answer, "mentor");
+              if (mentorResult){
+                toast.success("Submitted successfully, thank you");
+                resetForm();
+              }
+              else {
+                toast.error("Failed to submit Volunteer questionnaire, please try again");
+                toast.error("Removing Participant questionnaire.");
+                // TODO: Implement when certain of admin authorization to delete questionnaire answer sets
+                // const deleteResult = await handleDeleteAnswerSet(answer, "mentee");
+                const deleteResult = false;
+                if (!deleteResult) {
+                  toast.error("Participant questionnaire could not be removed. \
+                  Views Volunteer and Participant questionnaires may now be inconsistent. \
+                  Please contact the administrator to manually remove inconsistent \
+                  questionnaire from Participant.");
+                }
+                setSubmitting(false);
+              }
+            } else {
+              toast.error("Failed to submit Participant questionnaire. \
+                          Volunteer answer set not submitted, please try again");
+              setSubmitting(false);
+            }
           }}
         >
           {({ values, isSubmitting, handleChange }) => (
