@@ -24,14 +24,16 @@ const Dashboard = () => {
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
-          p: 2,
+          flex: 1,
+          minWidth: 0,
           width: { md: `calc(100% - ${drawerWidth}px)` }
         }}
       >
         <Toolbar />
         {/* The main content of the application */}
-        <Outlet />
+        <Box sx={{p: 3}}>
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );
