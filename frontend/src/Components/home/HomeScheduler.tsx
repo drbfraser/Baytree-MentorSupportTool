@@ -1,29 +1,38 @@
-import { ViewState } from "@devexpress/dx-react-scheduler";
-import { AllDayPanel, Appointments, DateNavigator, DayView, MonthView, Scheduler, TodayButton, Toolbar, ViewSwitcher, WeekView } from "@devexpress/dx-react-scheduler-material-ui";
-import { Paper, useMediaQuery, useTheme } from "@mui/material";
-import useScheduler from "../../hooks/useScheduler";
+// fullcalendar bus in react-vite
+// https://github.com/fullcalendar/fullcalendar/issues/6371
+import '@fullcalendar/react/dist/vdom';
+import FullCalendar, { ToolbarInput } from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interationPlugin from "@fullcalendar/interaction";
+import { Paper, useMediaQuery, useTheme } from '@mui/material';
+import { useEffect, useRef } from 'react';
 
 const HomeScheduler = () => {
   const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up("sm"));
-  const { events } = useScheduler();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const calendarRef = useRef<FullCalendar | null>(null);
+
+  const headerToolbar: ToolbarInput = {
+    left: 'prev,next today',
+    center: !isMobile ? 'title' : undefined,
+    right: isMobile ? 'title' : 'dayGridMonth,timeGridWeek,timeGridDay'
+  }
+
+  useEffect(() => {
+    if (isMobile) {
+      calendarRef.current?.getApi().changeView("timeGridDay");
+    }
+  }, [isMobile])
 
   return (
-    <Paper elevation={4} sx={{ mb: 3, height: "55vh" }}>
-      <Scheduler data={events} height="auto">
-        <ViewState defaultCurrentViewName="Day" currentViewName={!isDesktop ? "Day" : undefined} />
-
-        <DayView startDayHour={9} endDayHour={17} />
-        {isDesktop && <WeekView startDayHour={9} endDayHour={17} />}
-        {isDesktop && <MonthView />}
-        {isDesktop && <Appointments />}
-
-        <Toolbar />
-        <AllDayPanel />
-        <DateNavigator />
-        <TodayButton />
-        {isDesktop && <ViewSwitcher />}
-      </Scheduler>
+    <Paper elevation={4} sx={{p: 2, mb: 2}}>
+      <FullCalendar
+      ref={calendarRef}
+      plugins={[dayGridPlugin, timeGridPlugin]}
+      initialView="timeGridDay"
+      headerToolbar={headerToolbar}
+      nowIndicator />
     </Paper>
   )
 };
