@@ -19,9 +19,17 @@ export type SessionRecord = {
   cancelled: string;
 }
 
-export const fetchSessions = async () => {
+type Params = {
+  startDateFrom?: string;
+  startDateTo?: string;
+  limit?: number;
+  offset?: number;
+  sessionGroupId?: number;
+}
+
+export const fetchSessions = async (params: Params = {}) => {
   try {
-    const response = await recordsApi.get<{results: SessionRecord[]}>('');
+    const response = await recordsApi.get<{results: SessionRecord[]}>('', { params });
     if (response.status === 200) return {data: response.data.results, error: ""}
     if (response.status === 404) return {data: undefined, error: "Cannot find any records"}
     else throw Error
