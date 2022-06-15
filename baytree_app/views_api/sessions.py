@@ -347,7 +347,7 @@ def get_sessions(
     else:
         request_url = f"{sessions_base_url}/search" if sessionGroupId is None else sessions_base_url_by_group.format(sessionGroupId)
         params = {}
-        if limit != None: params["limit"] = limit
+        if limit != None: params["pageFold"] = limit
         if offset != None: params["offset"] = offset
         if startDateFrom != None: params["StartDate-from"] = startDateFrom
         if startDateTo != None: params["StartDate-to"] = startDateTo
