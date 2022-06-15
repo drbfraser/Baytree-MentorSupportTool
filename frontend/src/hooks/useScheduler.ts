@@ -1,6 +1,9 @@
 import { EventInput, EventSourceFunc } from "@fullcalendar/react";
+import { format } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import { fetchHolidays, Holiday } from "../api/misc";
+import { fetchSessions, SessionRecord } from "../api/records";
+import { convertSessionDate } from "../Utils/sessionDate";
 
 const holidayToEvent = (holiday: Holiday) => {
   return {
@@ -15,10 +18,20 @@ const holidayToEvent = (holiday: Holiday) => {
   } as EventInput;
 };
 
+const sessionToEvent = (session: SessionRecord) => {
+  const [start, end] = convertSessionDate(session);
+  return {
+    title: session.name,
+    start,
+    end
+  } as EventInput;
+}
+
 const useScheduler = () => {
   const [holidays, setHolidays] = useState([] as Holiday[]);
   const [error, setError] = useState("");
 
+  // Always fetch holiday first
   useEffect(() => {
     fetchHolidays()
       .then(({ data, error }) => {
@@ -28,17 +41,31 @@ const useScheduler = () => {
   }, []);
 
   // Composite all events
-  const events = useMemo(() => {
+  const holidayEvents = useMemo(() => {
     return [
       ...holidays.map(holidayToEvent)
     ];
   }, [holidays]);
 
+  // Fetch events
   const fetchEvents: EventSourceFunc = ({ start, end }, success, fail) => {
-    return success(events);
+    fetchSessions({
+      startDateFrom: format(start, "yyyy-MM-dd"),
+      startDateTo: format(end, "yyyy-MM-dd")
+    }).then(({ data, error: sessionError }) => {
+      if (data && !sessionError)
+        success([
+          ...holidayEvents,
+          ...data.map(sessionToEvent)
+        ])
+      else {
+        setError(sessionError);
+        fail({ message: sessionError });
+      }
+    }).catch(() => fail({ message: "Cannot fetch session data" }))
   }
 
-  return { events, error }
+  return { fetchEvents, error };
 };
 
 export default useScheduler;

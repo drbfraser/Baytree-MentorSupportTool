@@ -10,7 +10,7 @@ const recordsApi = axios.create({
   }
 });
 
-export type SessionRecord = {
+export interface SessionRecord {
   viewsSessionId: string;
   name: string;
   startDate: string;
@@ -38,7 +38,7 @@ export const fetchSessions = async (params: Params = {}) => {
   }
 }
 
-export type SessionDetail = {
+export interface SessionDetail extends SessionRecord {
   activity: string;
   sessionGroup?: {
     name: string;
@@ -51,7 +51,7 @@ export type SessionDetail = {
   note?: string;
   created: Date;
   updated: Date;
-} & SessionRecord;
+};
 
 export const fetchSessionById = async (sessionId: number | string, abort?: AbortController) => {
   try {
