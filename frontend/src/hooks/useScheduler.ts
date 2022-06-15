@@ -1,16 +1,18 @@
-import { AppointmentModel } from "@devexpress/dx-react-scheduler";
+import { EventInput, EventSourceFunc } from "@fullcalendar/react";
 import { useEffect, useMemo, useState } from "react";
 import { fetchHolidays, Holiday } from "../api/misc";
 
 const holidayToEvent = (holiday: Holiday) => {
   return {
     title: holiday.title,
-    startDate: holiday.startDate,
-    endDate: holiday.endDate,
+    start: holiday.startDate,
+    end: holiday.endDate,
     allDay: true,
-    rRule: holiday.isAnnual ? "FREQ=YEARLY" : undefined,
-    type: "Holiday"
-  } as AppointmentModel
+    rrule: holiday.isAnnual ? {
+      freq: 'yearly',
+      dtstart: holiday.startDate
+    } : undefined
+  } as EventInput;
 };
 
 const useScheduler = () => {
@@ -31,8 +33,12 @@ const useScheduler = () => {
       ...holidays.map(holidayToEvent)
     ];
   }, [holidays]);
-  
-  return {events, error}
+
+  const fetchEvents: EventSourceFunc = ({ start, end }, success, fail) => {
+    return success(events);
+  }
+
+  return { events, error }
 };
 
 export default useScheduler;

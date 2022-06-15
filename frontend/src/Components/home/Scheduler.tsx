@@ -5,13 +5,16 @@ import FullCalendar, { ToolbarInput } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interationPlugin from "@fullcalendar/interaction";
+import rrulePlugin from "@fullcalendar/rrule";
 import { Paper, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useRef } from 'react';
+import useScheduler from '../../hooks/useScheduler';
 
 const Scheduler = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const calendarRef = useRef<FullCalendar | null>(null);
+  const {events} = useScheduler();
 
   const headerToolbar: ToolbarInput = {
     left: 'prev,next today',
@@ -29,10 +32,11 @@ const Scheduler = () => {
     <Paper elevation={4} sx={{p: 2, mb: 2}}>
       <FullCalendar
       ref={calendarRef}
-      plugins={[dayGridPlugin, timeGridPlugin, interationPlugin]}
+      plugins={[dayGridPlugin, timeGridPlugin, interationPlugin, rrulePlugin]}
       initialView="timeGridDay"
       headerToolbar={headerToolbar}
-      nowIndicator />
+      nowIndicator
+      events={events} />
     </Paper>
   )
 };
