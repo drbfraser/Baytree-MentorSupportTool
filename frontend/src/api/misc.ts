@@ -72,6 +72,7 @@ export const fetchSessionListByMentorId = async (id: number) => {
 
 // Holidays
 export interface Holiday {
+  id: number,
   title: string,
   startDate: string,
   endDate: string,

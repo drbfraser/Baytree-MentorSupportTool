@@ -33,7 +33,12 @@ const Scheduler = () => {
     if (isMobile) {
       calendarRef.current?.getApi().changeView("timeGridDay");
     }
-  }, [isMobile])
+  }, [isMobile]);
+
+  // TODO: Add handle click on the event
+  const handleClick = (eventId: string) => {
+    console.log(eventId);
+  };
 
   return (
     <Paper elevation={4} sx={{ mb: 2 }}>
@@ -44,6 +49,9 @@ const Scheduler = () => {
           initialView="timeGridDay"
           headerToolbar={headerToolbar}
           nowIndicator
+          eventClick={({event}) => {
+            handleClick(event.id)
+          }}
           events={fetchEvents} />
       </Box>
     </Paper>

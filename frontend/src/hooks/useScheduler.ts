@@ -7,6 +7,7 @@ import { convertSessionDate } from "../Utils/sessionDate";
 
 const holidayToEvent = (holiday: Holiday) => {
   return {
+    id: `holiday-${holiday.id}`,
     title: holiday.title,
     start: holiday.startDate,
     end: holiday.endDate,
@@ -21,6 +22,7 @@ const holidayToEvent = (holiday: Holiday) => {
 const sessionToEvent = (session: SessionRecord) => {
   const [start, end] = convertSessionDate(session);
   return {
+    id: `session-${session.viewsSessionId}`,
     title: session.name,
     start,
     end
