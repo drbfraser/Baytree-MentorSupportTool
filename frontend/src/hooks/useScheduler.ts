@@ -38,14 +38,15 @@ const sessionToEvent = (session: SessionRecord) => {
 const useScheduler = () => {
   const [holidays, setHolidays] = useState([] as Holiday[]);
   const [error, setError] = useState("");
+  const [loadingHoliday, setLoadingHoliday] = useState(true);
+  const [loadingSession , setLoadingSession] = useState(false);
 
-  // Always fetch holiday first
   useEffect(() => {
     fetchHolidays()
       .then(({ data, error }) => {
         if (error) setError(error);
         else setHolidays(data)
-      })
+      }).finally(() => setLoadingHoliday(false));
   }, []);
 
   const holidayEvents = useMemo(() => {
@@ -56,7 +57,8 @@ const useScheduler = () => {
 
   // Fetch sessions lazily
   const fetchSessionEvents = useCallback<EventSourceFunc>(({ start, end }, success, fail) => {
-    console.log("Fetching...");
+    setLoadingSession(true);
+    console.log("Fetching");
     fetchSessions({
       startDateFrom: format(start, "yyyy-MM-dd"),
       startDateTo: format(end, "yyyy-MM-dd")
@@ -70,9 +72,10 @@ const useScheduler = () => {
         fail({ message: sessionError });
       }
     }).catch(() => fail({ message: "Cannot fetch session data" }))
+    .finally(() => setLoadingSession(false));
   }, []);
 
-  return { fetchSessionEvents, holidayEvents, error };
+  return { fetchSessionEvents, holidayEvents, error, loading: loadingHoliday || loadingSession };
 };
 
 export default useScheduler;

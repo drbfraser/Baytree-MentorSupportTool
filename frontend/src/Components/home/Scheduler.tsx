@@ -7,7 +7,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interationPlugin from "@fullcalendar/interaction";
 import rrulePlugin from "@fullcalendar/rrule";
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { Box, Paper, useMediaQuery, useTheme } from '@mui/material';
+import { Box, LinearProgress, Paper, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import useEventDetailPopup from '../../hooks/useEventDetailPopup';
@@ -18,7 +18,7 @@ const Scheduler = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const calendarRef = useRef<FullCalendar | null>(null);
-  const { fetchSessionEvents, holidayEvents, error } = useScheduler();
+  const { fetchSessionEvents, holidayEvents, error, loading } = useScheduler();
   const { open, handleClose, event, handleEventId } = useEventDetailPopup();
 
   useEffect(() => {
@@ -42,6 +42,7 @@ const Scheduler = () => {
   return (
     <>
       <Paper elevation={4} sx={{ mb: 2 }}>
+        {loading && <LinearProgress />}
         <Box sx={{ p: 2 }}>
           <FullCalendar
             ref={calendarRef}
