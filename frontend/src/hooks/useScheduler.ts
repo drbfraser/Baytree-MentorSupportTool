@@ -1,13 +1,19 @@
 import { EventInput, EventSourceFunc } from "@fullcalendar/react";
 import { format } from "date-fns";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchHolidays, Holiday } from "../api/misc";
 import { fetchSessions, SessionRecord } from "../api/records";
 import { convertSessionDate } from "../Utils/sessionDate";
 
+export enum EVENT_TYPE {
+  SESSION = "session",
+  HOLIDAY = "holiday"
+}
+export const EVENT_ID_REGEX = /(?<type>\w+)-(?<id>[0-9]+)/;
+
 const holidayToEvent = (holiday: Holiday) => {
   return {
-    id: `holiday-${holiday.id}`,
+    id: `${EVENT_TYPE.HOLIDAY}-${holiday.id}`,
     title: holiday.title,
     start: holiday.startDate,
     end: holiday.endDate,
@@ -22,7 +28,7 @@ const holidayToEvent = (holiday: Holiday) => {
 const sessionToEvent = (session: SessionRecord) => {
   const [start, end] = convertSessionDate(session);
   return {
-    id: `session-${session.viewsSessionId}`,
+    id: `${EVENT_TYPE.SESSION}-${session.viewsSessionId}`,
     title: session.name,
     start,
     end
@@ -42,22 +48,21 @@ const useScheduler = () => {
       })
   }, []);
 
-  // Composite all events
   const holidayEvents = useMemo(() => {
     return [
       ...holidays.map(holidayToEvent)
     ];
   }, [holidays]);
 
-  // Fetch events
-  const fetchEvents: EventSourceFunc = ({ start, end }, success, fail) => {
+  // Fetch sessions lazily
+  const fetchSessionEvents = useCallback<EventSourceFunc>(({ start, end }, success, fail) => {
+    console.log("Fetching...");
     fetchSessions({
       startDateFrom: format(start, "yyyy-MM-dd"),
       startDateTo: format(end, "yyyy-MM-dd")
     }).then(({ data, error: sessionError }) => {
       if (data && !sessionError)
         success([
-          ...holidayEvents,
           ...data.map(sessionToEvent)
         ])
       else {
@@ -65,9 +70,9 @@ const useScheduler = () => {
         fail({ message: sessionError });
       }
     }).catch(() => fail({ message: "Cannot fetch session data" }))
-  }
+  }, []);
 
-  return { fetchEvents, error };
+  return { fetchSessionEvents, holidayEvents, error };
 };
 
 export default useScheduler;

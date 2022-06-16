@@ -10,13 +10,16 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { Box, Paper, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
-import useScheduler from '../../hooks/useScheduler';
+import useEventDetailPopup from '../../hooks/useEventDetailPopup';
+import useScheduler, { EVENT_TYPE } from '../../hooks/useScheduler';
+import RecordDetail from '../records/RecordDetail';
 
 const Scheduler = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const calendarRef = useRef<FullCalendar | null>(null);
-  const { fetchEvents, error } = useScheduler();
+  const { fetchSessionEvents, holidayEvents, error } = useScheduler();
+  const { open, handleClose, event, handleEventId } = useEventDetailPopup();
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -29,32 +32,37 @@ const Scheduler = () => {
     right: isMobile ? 'title' : 'dayGridMonth,timeGridWeek,timeGridDay'
   }
 
+  // Change the calender into day views when user enter the mobile mode
   useEffect(() => {
     if (isMobile) {
       calendarRef.current?.getApi().changeView("timeGridDay");
     }
   }, [isMobile]);
 
-  // TODO: Add handle click on the event
-  const handleClick = (eventId: string) => {
-    console.log(eventId);
-  };
-
   return (
-    <Paper elevation={4} sx={{ mb: 2 }}>
-      <Box sx={{ p: 2 }}>
-        <FullCalendar
-          ref={calendarRef}
-          plugins={[dayGridPlugin, timeGridPlugin, interationPlugin, rrulePlugin]}
-          initialView="timeGridDay"
-          headerToolbar={headerToolbar}
-          nowIndicator
-          eventClick={({event}) => {
-            handleClick(event.id)
-          }}
-          events={fetchEvents} />
-      </Box>
-    </Paper>
+    <>
+      <Paper elevation={4} sx={{ mb: 2 }}>
+        <Box sx={{ p: 2 }}>
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[dayGridPlugin, timeGridPlugin, interationPlugin, rrulePlugin]}
+            initialView="timeGridDay"
+            headerToolbar={headerToolbar}
+            nowIndicator
+            lazyFetching
+            eventSources={[
+              holidayEvents, // Static holiday events
+              fetchSessionEvents // Lazily-fetched holidays
+            ]}
+            
+            eventClick={({event}) => {
+              handleEventId(event.id);
+            }} />
+        </Box>
+      </Paper>
+      {event.type === EVENT_TYPE.SESSION &&
+        <RecordDetail sessionId={event.id} open={open} handleClose={handleClose} />}
+    </>
   )
 };
 
