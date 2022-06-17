@@ -1,8 +1,9 @@
-import { Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Chip, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
 import { addMinutes, format } from "date-fns";
 import { FunctionComponent, ReactText, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { fetchSessions, SessionRecord } from "../../api/records";
+import { SessionRecord } from "../../api/records";
+import useRecords, { PAGNINATE_OPTIONS } from "../../hooks/useRecords";
 import Loading from "../shared/Loading";
 import RecordDetail from "./RecordDetail";
 
@@ -24,23 +25,11 @@ const RecordRow: FunctionComponent<{ session: SessionRecord, handleClick: () => 
 }
 
 export default function Records() {
-  // Records
-  const [sessions, setSessions] = useState([] as SessionRecord[]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { sessions, paginate, loading, error, handleChangePage, handleChangeRowsPerPage } = useRecords();
 
   // Record dialog
   const [open, setOpen] = useState(false);
   const [sessionId, setSessionId] = useState<string | number | undefined>(undefined);
-
-  useEffect(() => {
-    fetchSessions()
-      .then(({ data, error }) => {
-        if (data && !error) setSessions(data);
-        else setError(error);
-      })
-      .then(() => setLoading(false));
-  }, []);
 
   // Give the error toast when failure
   useEffect(() => {
@@ -74,9 +63,9 @@ export default function Records() {
             {sessions.length === 0 && !loading && <TableRow>
               <TableCell colSpan={5} align="center">No records found</TableCell>
             </TableRow>}
-            {sessions.map(session => {
-              return <RecordRow 
-                session={session} 
+            {!loading && sessions.map(session => {
+              return <RecordRow
+                session={session}
                 key={session.viewsSessionId}
                 handleClick={() => {
                   setSessionId(session.viewsSessionId);
@@ -84,6 +73,18 @@ export default function Records() {
                 }} />
             })}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                colSpan={5}
+                rowsPerPageOptions={PAGNINATE_OPTIONS}
+                rowsPerPage={paginate.limit}
+                count={paginate.count}
+                page={paginate.page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage} />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
       {open && <RecordDetail sessionId={sessionId} open={open} handleClose={() => setOpen(false)} />}

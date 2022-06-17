@@ -29,8 +29,8 @@ type Params = {
 
 export const fetchSessions = async (params: Params = {}) => {
   try {
-    const response = await recordsApi.get<{results: SessionRecord[]}>('', { params });
-    if (response.status === 200) return {data: response.data.results, error: ""}
+    const response = await recordsApi.get<{count: number, results: SessionRecord[]}>('', { params });
+    if (response.status === 200) return {data: response.data, error: ""}
     if (response.status === 404) return {data: undefined, error: "Cannot find any records"}
     else throw Error
   } catch (_) {
