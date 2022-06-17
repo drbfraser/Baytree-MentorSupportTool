@@ -12,6 +12,7 @@ import Logo from "../Assets/baytree-logo.png";
 import Photo from "../Assets/baytree-photo.jpg";
 import { useAuth } from "../context/AuthContext";
 
+// Main Login Page
 const Login = () => {
   const navigate = useNavigate();
   const { signIn } = useAuth();
