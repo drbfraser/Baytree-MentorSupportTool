@@ -87,7 +87,7 @@ export default function Records() {
           </TableFooter>
         </Table>
       </TableContainer>
-      {open && <RecordDetail sessionId={sessionId} open={open} handleClose={() => setOpen(false)} />}
+      <RecordDetail sessionId={sessionId} open={open} handleClose={() => setOpen(false)} />
     </>
   );
 }

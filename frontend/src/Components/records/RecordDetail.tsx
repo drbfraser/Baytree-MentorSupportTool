@@ -1,7 +1,20 @@
-import { 
-  Alert, Button, Chip, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, Grid, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Chip, 
+  Dialog, 
+  DialogActions,
+  DialogContent, 
+  DialogProps, 
+  DialogTitle, 
+  Grid, 
+  Typography
+} from "@mui/material";
+import { AxiosError } from "axios";
 import { addMinutes, format } from "date-fns";
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent } from "react";
+import { useQuery } from "react-query";
 import { fetchSessionById, SessionDetail } from "../../api/records";
 import InfoTextField from "../shared/InfoTextField";
 import Loading from "../shared/Loading";
@@ -11,33 +24,26 @@ type Props = {
   handleClose: () => void;
 } & DialogProps;
 
+const generateMessage = (error?: AxiosError | null) => {
+  const status = error?.response?.status;
+  if (status === undefined) return undefined;
+  if (status === 404) return "Session detail not found";
+  else "Cannot retrive session detail";
+}
+
 const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...props }) => {
-  const [session, setSession] = useState<SessionDetail | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    let controller: AbortController | undefined;
+  const { data, isLoading, error } = useQuery<SessionDetail | undefined, AxiosError>(["sessionDetail", sessionId], async ({ signal }) => {
     if (sessionId) {
-      controller = new AbortController();
-      setLoading(true);
-      fetchSessionById(sessionId, controller)
-        .then(({ data, error }) => {
-          if (data && !error) setSession(data);
-          else setError(error);
-        })
-        .finally(() => setLoading(false));
+      return await fetchSessionById(sessionId, signal);
     }
-    return () => {
-      controller?.abort();
-    }
-  }, [sessionId]);
+  });
 
-  const isAttended = session?.cancelled === "0";
-
+  const errorMessage = generateMessage(error);
+  
   const renderSession = (session: SessionDetail) => {
     const [startH, startM] = session.startTime.split(":").map(m => +m);
     const startTime = addMinutes(new Date(session.startDate), startH * 60 + startM);
+    const isAttended = session.cancelled === "0";
 
     return <>
       <DialogTitle sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -74,9 +80,13 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...pro
   }
 
   return <Dialog fullWidth maxWidth="md" onClose={handleClose} {...props}>
-    {loading ? <Loading />
-      : error && <Alert severity="error">{error}</Alert>}
-    {session && renderSession(session)}
+    {isLoading ? <Loading />
+      : errorMessage && <Alert severity="error">
+        <AlertTitle>Someting gone wrong</AlertTitle>
+        {errorMessage} <br />
+        Please refresh the page or contact the adminstrator
+        </Alert>}
+    {data && renderSession(data)}
   </Dialog>
 }
 
