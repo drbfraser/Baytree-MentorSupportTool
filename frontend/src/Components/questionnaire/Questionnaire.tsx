@@ -46,22 +46,31 @@ const Questionnaire = () => {
                 resetForm();
               }
               else {
-                toast.error("Failed to submit Volunteer questionnaire, please try again");
-                toast.error("Removing Participant questionnaire.");
-                // TODO: Implement when certain of admin authorization to delete questionnaire answer sets
-                // const deleteResult = await handleDeleteAnswerSet(answer, "mentee");
-                const deleteResult = false;
-                if (!deleteResult) {
-                  toast.error("Participant questionnaire could not be removed. \
-                  Views Volunteer and Participant questionnaires may now be inconsistent. \
-                  Please contact the administrator to manually remove inconsistent \
-                  questionnaire from Participant.");
-                }
+                const volunteerQuestionnaireSubmissionError = 
+                "Failed to submit Volunteer questionnaire. \
+                Views Volunteer and Participant questionnaires may now be inconsistent. \
+                Please contact the administrator to manually remove inconsistent \
+                questionnaire from Participant's profile before trying again.";
+                toast.error(volunteerQuestionnaireSubmissionError, {
+                  autoClose: false,
+                  hideProgressBar: true,
+                });
+                console.error(volunteerQuestionnaireSubmissionError)
+                // TODO: implement server logging
+
                 setSubmitting(false);
               }
             } else {
-              toast.error("Failed to submit Participant questionnaire. \
-                          Volunteer answer set not submitted, please try again");
+              const questionnaireSubmissionError = 
+              "Failed to submit Participant questionnaire. \
+              Volunteer answer set not submitted.";
+              toast.error(questionnaireSubmissionError + " Please try again.",
+              {
+                autoClose: false,
+                hideProgressBar: true,
+              });
+              console.error(questionnaireSubmissionError)
+              // TODO: Implement server logging
               setSubmitting(false);
             }
           }}
