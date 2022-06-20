@@ -3,13 +3,13 @@ import { NextPage } from "next";
 import styled from "styled-components";
 import DataGrid from "../components/shared/datagrid/datagrid";
 import { 
-    getHolidays,
-    saveHolidays,
-    Holiday,
-    createHoliday,
-    updateHoliday,
-    deleteHoliday
-} from "../api/backend/holidays";
+    getCalendarEvents,
+    saveCalendarEvents,
+    CalendarEvents,
+    createCalendarEvent,
+    updateCalendarEvent,
+    deleteCalendarEvent
+} from "../api/backend/calendarEvents";
 import {
   onLoadPagedDataRowsFunc,
   PagedDataRows,
@@ -18,38 +18,38 @@ import {
   onLoadDataRowsFunc,
 } from "../components/shared/datagrid/datagridTypes";
 
-const Holidays: NextPage = () => {
+const CalendarEvents: NextPage = () => {
 
-  const getHolidayData: onLoadDataRowsFunc = async ({
+  const getCalendarEventData: onLoadDataRowsFunc = async ({
     searchText,
     dataFieldsToSearch,
   }) => {
-    const holidays = await getHolidays();
-    if (!holidays) {
-        throw "Failed to get holidays.";
+    const calendarEvents = await getCalendarEvents();
+    if (!calendarEvents) {
+        throw "Failed to get calendar events.";
     }
-    return holidays;
+    return calendarEvents;
   };
 
-  const saveHolidayData: onSaveDataRowsFunc<Holiday> = async (
-    createdHolidays,
-    updatedHolidays,
-    deletedHolidays
+  const saveCalendarEventData: onSaveDataRowsFunc<CalendarEvents> = async (
+    createdCalendarEvents,
+    updatedCalendarEvents,
+    deletedCalendarEvents
   ) => {
-   for (const createdHoliday of createdHolidays) {
-    const result = await createHoliday(createdHoliday);
+   for (const createdCalendarEvent of createdCalendarEvents) {
+    const result = await createCalendarEvent(createdCalendarEvent);
     if (!result) {
         return false;
     }
    }
-   for (const updatedHoliday of updatedHolidays) {
-    const result = await updateHoliday(updatedHoliday);
+   for (const updatedCalendarEvent of updatedCalendarEvents) {
+    const result = await updateCalendarEvent(updatedCalendarEvent);
     if (!result) {
         return false;
     }
    }
-   for (const deletedHoliday of deletedHolidays) {
-    const result = await deleteHoliday(deletedHoliday.id);
+   for (const deletedCalendarEvent of deletedCalendarEvents) {
+    const result = await deleteCalendarEvent(deletedCalendarEvent.id);
     if (!result) {
         return false;
     }
@@ -58,8 +58,8 @@ const Holidays: NextPage = () => {
   };
 
   return (
-    <HolidaysCard>
-      <HolidaysTitle variant="h5">Holidays</HolidaysTitle>
+    <CalendarEventsCard>
+      <CalendarEventsTitle variant="h5">Events</CalendarEventsTitle>
       <DataGrid
         cols={[
           {
@@ -87,19 +87,19 @@ const Holidays: NextPage = () => {
             dataField: "note",
           },
         ]}
-        onLoadDataRows={getHolidayData}
-        onSaveDataRows={saveHolidayData}
+        onLoadDataRows={getCalendarEventData}
+        onSaveDataRows={saveCalendarEventData}
       ></DataGrid>
-    </HolidaysCard>
+    </CalendarEventsCard>
   );
 };
 
-const HolidaysCard = styled(Paper)`
+const CalendarEventsCard = styled(Paper)`
   padding: 2rem;
 `;
 
-const HolidaysTitle = styled(Typography)`
+const CalendarEventsTitle = styled(Typography)`
   margin-bottom: 1rem;
 `;
 
-export default Holidays;
+export default CalendarEvents;

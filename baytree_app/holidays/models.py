@@ -3,9 +3,10 @@ from turtle import title
 from django.db import models
 
 # Create your models here.
-class Holiday(models.Model):
+class CalendarEvent(models.Model):
   title = models.CharField(max_length=120, null=False)
   startDate = models.DateField()
   endDate = models.DateField()
   isAnnual = models.BooleanField()
   note = models.CharField(max_length=120, null=True)
+# TODO: rename HOLIDAY table to Calendar Event table

@@ -2,27 +2,27 @@ from rest_framework import generics, mixins
 
 from users.permissions import AdminPermissions
 
-from .models import Holiday
-from .serializers import HolidaySerializer
+from .models import CalendarEvent
+from .serializers import CalendarEventSerializer
 
-# GET api/holidays/
-class HolidayListAPIView(generics.ListAPIView):
-  queryset = Holiday.objects.all()
-  serializer_class = HolidaySerializer
+# GET api/calendar_events/
+class CalendarEventListAPIView(generics.ListAPIView):
+  queryset = CalendarEvent.objects.all()
+  serializer_class = CalendarEventSerializer
 
-# POST api/holidays/create/
-class HolidayCreateAPIView(generics.CreateAPIView):
-  queryset = Holiday.objects.all()
-  serializer_class = HolidaySerializer
+# POST api/calendar_events/create/
+class CalendarEventCreateAPIView(generics.CreateAPIView):
+  queryset = CalendarEvent.objects.all()
+  serializer_class = CalendarEventSerializer
   permission_classes = [AdminPermissions]
 
-# PUT, DELETE api/holidays/<id>/
-class HolidayUpdateDestroyAPIVIew(
+# PUT, DELETE api/calendar_events/<id>/
+class CalendarEventUpdateDestroyAPIVIew(
   mixins.UpdateModelMixin,
   mixins.DestroyModelMixin,
   generics.GenericAPIView):
-  queryset = Holiday.objects.all()
-  serializer_class = HolidaySerializer
+  queryset = CalendarEvent.objects.all()
+  serializer_class = CalendarEventSerializer
   lookup_field = "pk"
   permission_classes = [AdminPermissions]
 

@@ -1,14 +1,14 @@
 from django.urls import path
 
 from .views import (
-  HolidayListAPIView,
-  HolidayCreateAPIView,
-  HolidayUpdateDestroyAPIVIew
+  CalendarEventListAPIView,
+  CalendarEventCreateAPIView,
+  CalendarEventUpdateDestroyAPIVIew
 )
 
-# /api/holidays/
+# /api/calendar_events/
 urlpatterns = [
-  path('', HolidayListAPIView.as_view()),
-  path('create/', HolidayCreateAPIView.as_view()),
-  path('<int:pk>/', HolidayUpdateDestroyAPIVIew.as_view()),
+  path('', CalendarEventListAPIView.as_view()),
+  path('create/', CalendarEventCreateAPIView.as_view()),
+  path('<int:pk>/', CalendarEventUpdateDestroyAPIVIew.as_view()),
 ]
