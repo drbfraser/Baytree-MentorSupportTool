@@ -39,24 +39,6 @@ export const submitAnswerSetForQuestionnaire = async (
   }
 };
 
-export const deleteAnswerSetForQuestionnaire = async (
-  answerSet: AnswerSet,
-  questionnaireId: number,
-  person: string,
-) => {
-  try {
-    const respond = await baseApi.delete("questionnaires/questionnaire/delete/", {data: {
-      answerSet,
-      questionnaireId,
-      person
-    }});
-    if (respond.status === 200) return respond;
-    else throw Error;
-  } catch (error) {
-    return undefined;
-  }
-};
-
 export const fetchQuestions = () => {
   return baseApi
     .get<{ questionnaireId: number; questions: Question[] }>(

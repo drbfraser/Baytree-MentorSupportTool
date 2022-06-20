@@ -24,7 +24,6 @@ const Questionnaire = () => {
     mentees,
     errorMessage,
     handleSubmitAnswerSet,
-    handleDeleteAnswerSet,
   } = useQuestionnaire();
   return (
     <TitledContainer title="Monthly Progress Report">

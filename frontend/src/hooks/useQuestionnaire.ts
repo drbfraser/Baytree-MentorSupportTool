@@ -3,8 +3,7 @@ import {
   AnswerSet,
   fetchQuestions,
   Question,
-  submitAnswerSetForQuestionnaire,
-  deleteAnswerSetForQuestionnaire,
+  submitAnswerSetForQuestionnaire
 } from "../api/misc";
 import useMentees from "./useMentees";
 import useMentor from "./useMentor";
@@ -71,11 +70,6 @@ const useQuestionnaire = () => {
     return await submitAnswerSetForQuestionnaire(answerSet, questionnaireId, person);
   };
 
-  const handleDeleteAnswerSet = async (answerSet: AnswerSet, person: string) => {
-    if (questionnaireId < 0) return undefined;
-    return await deleteAnswerSetForQuestionnaire(answerSet, questionnaireId, person);
-  };
-
   const loading = loadingQuestionnaire || loadingMentor || loadingMentees;
 
   // Validate the questionnaire based on these condition
@@ -112,7 +106,6 @@ const useQuestionnaire = () => {
     initialAnswer,
     validateAnswerSet,
     handleSubmitAnswerSet,
-    handleDeleteAnswerSet,
     errorMessage,
     mentees
   };

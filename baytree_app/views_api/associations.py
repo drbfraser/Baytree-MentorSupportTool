@@ -110,6 +110,7 @@ def get_mentees_for_mentor(request):
 
     return Response(participants["results"], status.HTTP_200_OK)
 
+
 def get_mentee_ids_from_mentor(mentor_user):
     associations = get_associations(mentor_user.viewsPersonId)
 
