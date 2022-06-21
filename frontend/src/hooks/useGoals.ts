@@ -10,9 +10,9 @@ const useGoals = () => {
     setLoading(true);
     fetchAllGoals()
     .then(({data, error}) => {
-      if (!data || error) {
+      if (!data || error !== "") {
         setError(error);
-      } else setGoals(goals);
+      } else setGoals(data);
     }).finally(() => setLoading(false));
     return () => setLoading(false);
   }, []);

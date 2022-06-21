@@ -23,7 +23,7 @@ export const fetchAllGoals = async () => {
   try {
     const apiRes = await goalsApi.get<Goal[]>("");
     if (apiRes.status === 200)
-      return {data: apiRes.data, error: undefined}
+      return {data: apiRes.data, error: ""}
     if (apiRes.status === 404)
       return {data: undefined, error: "Cannot find users or goals"}
     else throw Error
