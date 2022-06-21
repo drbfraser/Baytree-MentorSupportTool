@@ -17,7 +17,7 @@ const exportGoals = (goals: Goal[], mentor: User) => {
 
   const data = goals.map(({mentee, creation_date, goal_review_date, title, description, last_update_date, status}) => ({
     mentor: mentorName,
-    mentee: `${mentee.firstName} ${mentee.lastName}`,
+    mentee: mentee ? `${mentee.firstName} ${mentee.lastName}` : "",
     creation_date,
     goal_review_date,
     title,

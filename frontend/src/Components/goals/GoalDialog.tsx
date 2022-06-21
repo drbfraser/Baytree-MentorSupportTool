@@ -1,20 +1,14 @@
-import { DatePicker, LocalizationProvider } from "@mui/lab";
+import { DatePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { FunctionComponent } from "react";
-import { Goal } from "../../api/goals";
+import { toast } from "react-toastify";
+import { Goal, GoalInput, submitGoal } from "../../api/goals";
 import useMentees from "../../hooks/useMentees";
 import Loading from "../shared/Loading";
 
-type GoalInput = {
-  title: string;
-  goal_reivew_date: Date;
-  mentee_id?: number | string;
-  description: string;
-}
-
-const initiialAnswer = (goal?: Goal) => {
+const initialAnswer = (goal?: Goal) => {
   if (!goal) return {
     title: "",
     description: "",
@@ -25,26 +19,36 @@ const initiialAnswer = (goal?: Goal) => {
     title: goal.title,
     description: goal.description,
     goal_reivew_date: new Date(goal.goal_review_date),
-    mentee_id: goal.mentee.viewsPersonId
+    mentee_id: goal.mentee?.viewsPersonId || ""
   } as GoalInput
 }
 
-const GoalDialog: FunctionComponent<{ goal?: Goal } & DialogProps> = ({ goal, ...props }) => {
+const emptyAnswer = (input: GoalInput) => {
+  return input.title === "" || input.description === ""
+}
+
+const GoalDialog: FunctionComponent<{ goal?: Goal, open: boolean, handleClose: () => void }> = ({ goal, open, handleClose }) => {
   const { mentees, loadingMentees } = useMentees();
   const title = goal ? "Edit goal" : "Create new goal";
-  const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
-    initialValues: initiialAnswer(goal),
-    onSubmit: (answer) => { }
+  const { values, handleSubmit, handleChange, setFieldValue, isSubmitting, setSubmitting } = useFormik({
+    initialValues: initialAnswer(goal),
+    onSubmit: async (answer) => {
+      setSubmitting(true);
+      const success = await submitGoal(answer, goal?.id);
+      if (success) toast.success("Goal submitted successfully");
+      else toast.error("Goal submitted unsuccessfully");
+      setSubmitting(false);
+    }
   });
 
   console.log("Redering...");
 
-  return <Dialog {...props}>
+  return <Dialog open={open} fullWidth maxWidth="sm">
     <DialogTitle>{title}</DialogTitle>
-    <DialogContent>
-      {(!mentees || loadingMentees) && <Loading />}
-      {mentees &&
-        <form onSubmit={handleSubmit}>
+    {(!mentees || loadingMentees) && <Loading />}
+    {mentees &&
+      <form onSubmit={handleSubmit}>
+        <DialogContent>
           <Typography sx={{ fontWeight: "bold" }} color="text.secondary" gutterBottom>
             Title
           </Typography>
@@ -83,7 +87,7 @@ const GoalDialog: FunctionComponent<{ goal?: Goal } & DialogProps> = ({ goal, ..
               onChange={(value) =>
                 setFieldValue("goal_reivew_date", value, true)
               }
-              renderInput={(params) => <TextField fullWidth {...params} sx={{mb: 2}} />}
+              renderInput={(params) => <TextField fullWidth {...params} sx={{ mb: 2 }} />}
             />
           </LocalizationProvider>
 
@@ -91,13 +95,23 @@ const GoalDialog: FunctionComponent<{ goal?: Goal } & DialogProps> = ({ goal, ..
             Description
           </Typography>
           <TextField fullWidth sx={{ mb: 2 }} name="description" value={values.description} onChange={handleChange} multiline minRows={3} />
-        </form>}
-    </DialogContent>
-    <DialogActions>
-      <Button>Cancel</Button>
-      <Button>Submit</Button>
-    </DialogActions>
-  </Dialog>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleClose}
+            disabled={isSubmitting}>Cancel</Button>
+          <LoadingButton
+            variant="contained"
+            type="submit"
+            disabled={emptyAnswer(values) || isSubmitting}
+            loading={isSubmitting}
+          >Submit</LoadingButton>
+        </DialogActions>
+      </form>
+    }
+
+
+  </Dialog >
 }
 
 export default GoalDialog;

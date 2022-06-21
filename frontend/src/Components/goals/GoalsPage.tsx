@@ -58,7 +58,7 @@ const GoalsPage = () => {
       completed={goals.filter(g => g.status === "ACHIEVED").length} />
       
     <GoalsDetailList goals={goals.filter(filter)} openDialog={openGoalDialog} />
-    {open && <GoalDialog open={open} goal={editGoal} onClose={() => setOpen(false)} fullWidth maxWidth="sm" />}
+    {open && <GoalDialog open={open} goal={editGoal} handleClose={() => setOpen(false)} />}
   </>
 }
 

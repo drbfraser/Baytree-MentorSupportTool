@@ -1,7 +1,7 @@
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Stack, Typography } from "@mui/material";
+import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { format, formatDistanceToNow } from "date-fns";
 import { FunctionComponent } from "react";
 import { Goal } from "../../api/goals";
@@ -17,7 +17,7 @@ type Props = {
 const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick }) => {
   const creationTime = formatDistanceToNow(new Date(goal.creation_date), { addSuffix: true });
   const formatDate = (date: Date) => format(date, "eeee, MMMM do yyyy");
-  const menteeName = `${goal.mentee.firstName} ${goal.mentee.lastName}`;
+  const menteeName = goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : "N/A";
 
   return <Accordion expanded={expanded} onClick={handleClick}>
     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -61,9 +61,10 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
         </div>
       </Stack>
     </AccordionDetails>
+    <Divider />
     {goal.status === "IN PROGRESS" && <AccordionActions>
-      <Button variant="outlined" color="warning" startIcon={<EditIcon />} onClick={handleEdit}>Edit</Button>
-      <Button variant="outlined" startIcon={<CheckIcon />}>Complete</Button>
+      <Button variant="outlined" startIcon={<EditIcon />} onClick={handleEdit}>Edit</Button>
+      <Button variant="contained" startIcon={<CheckIcon />}>Complete</Button>
     </AccordionActions>}
   </Accordion>
 };
