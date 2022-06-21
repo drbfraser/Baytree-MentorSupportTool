@@ -6,7 +6,8 @@ const useGoals = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
+  const refreshGoals = () => {
+    console.log("Refreshing...")
     setLoading(true);
     fetchAllGoals()
     .then(({data, error}) => {
@@ -14,13 +15,18 @@ const useGoals = () => {
         setError(error);
       } else setGoals(data);
     }).finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    refreshGoals();
     return () => setLoading(false);
   }, []);
 
   return {
     goals,
     loading,
-    error
+    error,
+    refreshGoals,
   }
 }
 

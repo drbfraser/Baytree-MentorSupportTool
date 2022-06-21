@@ -46,7 +46,6 @@ export const submitGoal = async (input: GoalInput, id?: number) => {
     goal_review_date: format(input.goal_reivew_date, "yyyy-MM-dd"),
     description: input.description
   }
-  console.log(data);
   if (input.mentee_id) data.mentee_id = +input.mentee_id;
   try {
     const promise = id ? goalsApi.put(`${id}/`, data) : goalsApi.post("", data);

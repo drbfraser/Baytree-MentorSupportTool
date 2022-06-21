@@ -16,7 +16,7 @@ type Status = Goal["status"];
 
 const GoalsPage = () => {
   // Data state
-  const { loading, goals } = useGoals();
+  const { loading, goals, refreshGoals } = useGoals();
   const { mentor, loadingMentor } = useMentor();
   const [status, setStatus] = useState<Status | undefined>();
 
@@ -26,6 +26,11 @@ const GoalsPage = () => {
   const openGoalDialog = (goal?: Goal) => {
     setEditGoal(goal);
     setOpen(true);
+  }
+
+  const closeGoalDialog = (refresh?: boolean) => {
+    setOpen(false);
+    if (refresh) refreshGoals();
   }
 
   const filter = (goal: Goal) => {
@@ -58,7 +63,7 @@ const GoalsPage = () => {
       completed={goals.filter(g => g.status === "ACHIEVED").length} />
       
     <GoalsDetailList goals={goals.filter(filter)} openDialog={openGoalDialog} />
-    {open && <GoalDialog open={open} goal={editGoal} handleClose={() => setOpen(false)} />}
+    {open && <GoalDialog open={open} goal={editGoal} handleClose={closeGoalDialog} />}
   </>
 }
 

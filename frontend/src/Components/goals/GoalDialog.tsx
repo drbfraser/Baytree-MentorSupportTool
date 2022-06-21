@@ -3,6 +3,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { FunctionComponent } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Goal, GoalInput, submitGoal } from "../../api/goals";
 import useMentees from "../../hooks/useMentees";
@@ -27,7 +28,14 @@ const emptyAnswer = (input: GoalInput) => {
   return input.title === "" || input.description === ""
 }
 
-const GoalDialog: FunctionComponent<{ goal?: Goal, open: boolean, handleClose: () => void }> = ({ goal, open, handleClose }) => {
+type Props = {
+  goal?: Goal,
+  open: boolean,
+  handleClose: (refresh?: boolean) => void
+}
+
+const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
+  const navigate = useNavigate();
   const { mentees, loadingMentees } = useMentees();
   const title = goal ? "Edit goal" : "Create new goal";
   const { values, handleSubmit, handleChange, setFieldValue, isSubmitting, setSubmitting } = useFormik({
@@ -35,13 +43,15 @@ const GoalDialog: FunctionComponent<{ goal?: Goal, open: boolean, handleClose: (
     onSubmit: async (answer) => {
       setSubmitting(true);
       const success = await submitGoal(answer, goal?.id);
-      if (success) toast.success("Goal submitted successfully");
-      else toast.error("Goal submitted unsuccessfully");
       setSubmitting(false);
+      if (!success) { 
+        toast.error("Goal submitted unsuccessfully");
+        return;
+      }
+      toast.success("Goal submitted successfully");
+      handleClose(true);
     }
   });
-
-  console.log("Redering...");
 
   return <Dialog open={open} fullWidth maxWidth="sm">
     <DialogTitle>{title}</DialogTitle>
@@ -98,7 +108,7 @@ const GoalDialog: FunctionComponent<{ goal?: Goal, open: boolean, handleClose: (
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={handleClose}
+            onClick={() => handleClose()}
             disabled={isSubmitting}>Cancel</Button>
           <LoadingButton
             variant="contained"
