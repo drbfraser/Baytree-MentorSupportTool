@@ -5,6 +5,23 @@ stages:
 variables:
   DEV_BRANCH: "master"
   STG_BRANCH: "staging"
+  PROD_BRANCH: "production"
+  IMAGE_BACKEND: "baytree_server"
+  IMAGE_FRONTEND: "baytree_revproxy_frontend"
+
+build info:
+  # Always runs: allows pipeline execution to happen even if no other tasks run.
+  stage: build
+  image: alpine:latest
+  tags:
+    - docker
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "push"
+  script:
+    - echo "This task give the CI/CD pipeline something to (almost always) run."
+    - echo "  CI_PIPELINE_SOURCE  = $CI_PIPELINE_SOURCE"
+    - echo "  CI_MERGE_REQUEST_ID = $CI_MERGE_REQUEST_ID"
+    - echo "  CI_COMMIT_BRANCH    = $CI_COMMIT_BRANCH"
 
 build frontend:
   stage: build
@@ -17,8 +34,11 @@ build frontend:
         - frontend/**/*
         - .gitlab-ci.yml
       when: always
-    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH || $CI_COMMIT_BRANCH == $STG_BRANCH"
+    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH || $CI_COMMIT_BRANCH == $STG_BRANCH || $CI_COMMIT_BRANCH == $PROD_BRANCH"
       when: always
+    # Always build/test for schedule / manual "Run Pipeline" via web
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web"
   before_script:
     - cd frontend
     - npm ci
@@ -42,8 +62,11 @@ build admin-frontend:
         - admin-frontend/**/*
         - .gitlab-ci.yml
       when: always
-    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH || $CI_COMMIT_BRANCH == $STG_BRANCH"
+    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH || $CI_COMMIT_BRANCH == $STG_BRANCH || $CI_COMMIT_BRANCH == $PROD_BRANCH"
       when: always
+    # Always build/test for schedule / manual "Run Pipeline" via web
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web"
   before_script:
     - cd admin-frontend
     - npm ci
@@ -72,8 +95,11 @@ build server:
         - baytree_app/**/*
         - .gitlab-ci.yml
       when: always
-    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH || $CI_COMMIT_BRANCH == $STG_BRANCH"
+    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH || $CI_COMMIT_BRANCH == $STG_BRANCH || $CI_COMMIT_BRANCH == $PROD_BRANCH"
       when: always
+    # Always build/test for schedule / manual "Run Pipeline" via web
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web"
   variables:
     DOMAIN: "example.com"
     SECRET_KEY: "test"
@@ -98,7 +124,7 @@ build server:
   - cp /var/baytree/.env ./.env
   - docker-compose -f docker-compose.yml -f docker-compose.deploy.yml build
   - docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up --force-recreate -d
-  - docker image prune -f # remove unused images since we just built new ones
+  - docker image prune -f      # remove unused images since we just built new ones
   - bash -c 'sleep 15'
   - docker exec baytree_server python manage.py migrate
 
@@ -127,3 +153,41 @@ deploy staging:
       when: on_success
   script:
     - *deploy-script
+
+deploy dockerhub:
+  variables:
+    # The following are expected to be defined by GitLab's settings
+    #   Docker hub user & token: HUB_USER, HUB_TOKEN
+    #   Docker hub projects:     HUB_REPO_FRONTEND, HUB_REPO_BACKEND
+  stage: deploy
+  tags:
+    - deploy-dockerhub-shell
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $PROD_BRANCH"
+      when: manual
+  script:
+    # Version of the form v2022-12-31.abcd5678, based on date and short SHA1 of last commit on branch
+    - export VERSION=v$(git show -s --format=%cs $CI_COMMIT_SHA).`git rev-parse --short=8 $CI_COMMIT_SHA`
+    # Show what we are expecting to build / tag
+    - echo "Docker Hub configuration       user ='$HUB_USER'     version='$VERSION'"
+    - echo "Full tag (backend) is               = $HUB_USER/$HUB_REPO_BACKEND:$VERSION (& ':latest')"
+    - echo "Full tag (rev-proxy & frontend) is  = $HUB_USER/$HUB_REPO_FRONTEND:$VERSION (& ':latest')"
+
+    # Build and tag
+    - docker-compose -f docker-compose.yml -f docker-compose.deploy.yml build
+    - docker tag $IMAGE_BACKEND $HUB_USER/$HUB_REPO_BACKEND:latest
+    - docker tag $IMAGE_BACKEND $HUB_USER/$HUB_REPO_BACKEND:$VERSION
+
+    - docker tag $IMAGE_FRONTEND $HUB_USER/$HUB_REPO_FRONTEND:latest
+    - docker tag $IMAGE_FRONTEND $HUB_USER/$HUB_REPO_FRONTEND:$VERSION
+
+    # Push images to Docker Hub with the latest and version tags
+    - docker images
+    - docker login -u $HUB_USER -p $HUB_TOKEN
+    - docker push --all-tags $HUB_USER/$HUB_REPO_BACKEND
+    - docker push --all-tags $HUB_USER/$HUB_REPO_FRONTEND
+    - docker logout
+
+    # Cleanup the image and any tags of that image
+    - docker images -a | grep -e "$IMAGE_BACKEND" -e "$IMAGE_FRONTEND" | awk '{print $3}' | xargs docker rmi --force
+    - docker images
