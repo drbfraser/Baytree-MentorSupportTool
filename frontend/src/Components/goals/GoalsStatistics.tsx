@@ -54,6 +54,13 @@ const GoalsStatistics: FunctionComponent<GoalsStats> = (props) => {
   return (
     <Grid container spacing={2}>
       <GoalStatisticsCell 
+        title="All" 
+        count={all} 
+        color="blue"
+        activeColor="rgba(0, 0, 255, 0.2)"
+        active={!selected}
+        action={() => handleStatus()} />
+      <GoalStatisticsCell 
         title="Active" 
         count={active} 
         color="secondary"
@@ -66,13 +73,6 @@ const GoalsStatistics: FunctionComponent<GoalsStats> = (props) => {
         count={completed}
         active={selected === "ACHIEVED"}
         action={() => handleStatus("ACHIEVED")} />
-      <GoalStatisticsCell 
-        title="All" 
-        count={all} 
-        color="blue"
-        activeColor="RGBA(0, 0, 255, 0.2)"
-        active={!selected}
-        action={() => handleStatus()} />
     </Grid>
   );
 }

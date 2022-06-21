@@ -1,17 +1,22 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import useGoals from "../../hooks/useGoals";
-import Loading from "../shared/Loading";
-import GoalsStatistics from "./GoalsStatistics";
-import DownloadIcon from '@mui/icons-material/Download';
 import AddIcon from '@mui/icons-material/Add';
-import GoalListItem from "./GoalListItem";
+import DownloadIcon from '@mui/icons-material/Download';
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
+import { CSVLink } from "react-csv";
 import { Goal } from "../../api/goals";
+import useGoals from "../../hooks/useGoals";
+import useMentor from "../../hooks/useMentor";
+import exportGoals from "../../Utils/exportGoals";
+import Loading from "../shared/Loading";
+import GoalListItem from "./GoalListItem";
+import GoalsDetailList from './GoalsDetailList';
+import GoalsStatistics from "./GoalsStatistics";
 
 type Status = Goal["status"];
 
 const GoalsPage = () => {
   const { loading, goals } = useGoals();
+  const { mentor, loadingMentor } = useMentor();
   const [status, setStatus] = useState<Status | undefined>(undefined);
 
   const filter = (goal: Goal) => {
@@ -21,14 +26,18 @@ const GoalsPage = () => {
 
   const handleStatus = (status?: Status) => setStatus(status);
 
-  if (loading) return <Loading />;
+  if (loading || loadingMentor) return <Loading />;
 
   return <>
-    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2}}>
+    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
       <Typography variant="h4">Goals</Typography>
       {/* Menu buttons */}
       <Stack direction="row" spacing={1}>
-        <Button startIcon={<DownloadIcon />} variant="outlined">Export</Button>
+        <CSVLink {...exportGoals(goals, mentor)} style={{ textDecoration: "none" }} filename="goals.csv">
+          <Button sx={{height: "100%"}} startIcon={<DownloadIcon />} variant="outlined" color="info">
+            Export
+          </Button>
+        </CSVLink>
         <Button startIcon={<AddIcon />} variant="contained">Add</Button>
       </Stack>
     </Box>
@@ -38,11 +47,7 @@ const GoalsPage = () => {
       all={goals.length}
       active={goals.filter(g => g.status === "IN PROGRESS").length}
       completed={goals.filter(g => g.status === "ACHIEVED").length} />
-    <Box sx={{mt: 3}}>
-      {goals.filter(filter).map(goal => {
-        return <GoalListItem goal={goal} key={goal.id} />
-      })}
-    </Box>
+    <GoalsDetailList goals={goals.filter(filter)} />
   </>
 }
 
