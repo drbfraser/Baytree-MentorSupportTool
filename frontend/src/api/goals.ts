@@ -8,13 +8,15 @@ const goalsApi = axios.create({
   withCredentials: true
 });
 
-interface Goal {
+export interface Goal {
   id: number;
   mentee: Participant;
   title: string;
   creation_date: string;
   goal_review_date: string;
-  status: string;
+  last_update_date: string;
+  status: "IN PROGRESS" | "RECALIBREATED" | "ACHIEVED";
+  description: string;
 }
 
 export const fetchAllGoals = async () => {
@@ -30,20 +32,13 @@ export const fetchAllGoals = async () => {
   }
 };
 
-export const fetchGoalByMentorId = async (id: number) => {
-  const response = await goalsApi.get("goal/", {
-    params: { mentor_id: id }
-  });
-  return response.data;
-};
-
 export const submitCompleteGoal = (goalId: any) => {
-  return goalsApi.patch(`goal/${goalId}`, { status: "ACHIEVED" });
+  return goalsApi.put(`${goalId}/complete/`, { status: "ACHIEVED" });
 };
 
 export const updateGoal = (goal: any, goalId?: any) => {
   if (!goalId) {
-    return goalsApi.post("goal/", goal);
+    return goalsApi.post("", goal);
   }
-  return goalsApi.patch(`goal/${goalId}`, goal);
+  return goalsApi.put(`${goalId}`, goal);
 };
