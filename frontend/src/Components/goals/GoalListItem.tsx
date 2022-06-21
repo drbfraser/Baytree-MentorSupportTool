@@ -1,9 +1,9 @@
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Accordion, AccordionActions, AccordionDetails, AccordionProps, AccordionSummary, Box, Button, Stack, Typography } from "@mui/material";
+import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Stack, Typography } from "@mui/material";
 import { format, formatDistanceToNow } from "date-fns";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 import { Goal } from "../../api/goals";
 import GoalStatus from "./GoalStatus";
 
@@ -17,7 +17,7 @@ type Props = {
 const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick }) => {
   const creationTime = formatDistanceToNow(new Date(goal.creation_date), { addSuffix: true });
   const formatDate = (date: Date) => format(date, "eeee, MMMM do yyyy");
-  const menteeName = `${goal.mentee.firstName} ${goal.mentee.lastName}`
+  const menteeName = `${goal.mentee.firstName} ${goal.mentee.lastName}`;
 
   return <Accordion expanded={expanded} onClick={handleClick}>
     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -29,7 +29,10 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
       }}>
         <Typography variant="h6">{goal.title}</Typography>
         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-          <Typography variant="subtitle2">{creationTime}</Typography>
+          <Typography variant="subtitle2" sx={{display: {
+            xs: "none",
+            sm: "block"
+          }}}>{creationTime}</Typography>
           <GoalStatus status={goal.status} />
         </Stack>
       </Box>

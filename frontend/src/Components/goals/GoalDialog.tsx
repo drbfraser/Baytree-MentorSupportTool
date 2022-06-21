@@ -10,7 +10,7 @@ import Loading from "../shared/Loading";
 type GoalInput = {
   title: string;
   goal_reivew_date: Date;
-  mentee_id?: number;
+  mentee_id?: number | string;
   description: string;
 }
 
@@ -18,7 +18,8 @@ const initiialAnswer = (goal?: Goal) => {
   if (!goal) return {
     title: "",
     description: "",
-    goal_reivew_date: new Date()
+    goal_reivew_date: new Date(),
+    mentee_id: ""
   } as GoalInput;
   return {
     title: goal.title,
@@ -32,15 +33,16 @@ const GoalDialog: FunctionComponent<{ goal?: Goal } & DialogProps> = ({ goal, ..
   const { mentees, loadingMentees } = useMentees();
   const title = goal ? "Edit goal" : "Create new goal";
   const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
-    enableReinitialize: true,
     initialValues: initiialAnswer(goal),
     onSubmit: (answer) => { }
   });
 
+  console.log("Redering...");
+
   return <Dialog {...props}>
     <DialogTitle>{title}</DialogTitle>
     <DialogContent>
-      {!mentees || loadingMentees && <Loading />}
+      {(!mentees || loadingMentees) && <Loading />}
       {mentees &&
         <form onSubmit={handleSubmit}>
           <Typography sx={{ fontWeight: "bold" }} color="text.secondary" gutterBottom>
