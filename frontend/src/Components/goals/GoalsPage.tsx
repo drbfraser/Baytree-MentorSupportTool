@@ -62,7 +62,10 @@ const GoalsPage = () => {
       active={goals.filter(g => g.status === "IN PROGRESS").length}
       completed={goals.filter(g => g.status === "ACHIEVED").length} />
       
-    <GoalsDetailList goals={goals.filter(filter)} openDialog={openGoalDialog} />
+    <GoalsDetailList 
+      goals={goals.filter(filter)} 
+      openDialog={openGoalDialog}
+      afterComplete={refreshGoals} />
     {open && <GoalDialog open={open} goal={editGoal} handleClose={closeGoalDialog} />}
   </>
 }

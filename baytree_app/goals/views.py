@@ -1,11 +1,12 @@
 from django.http import Http404
-from rest_framework import generics
+from requests import Response
+from rest_framework import generics, mixins
 from users.models import MentorUser
+from users.permissions import userIsAdmin, userIsSuperUser
 
-from users.permissions import userIsSuperUser, userIsAdmin
-
-from .serializers import GoalSerializer
 from .models import Goal
+from .serializers import GoalSerializer
+
 
 class MentorGoalQuerySetMixin():  
   def get_queryset(self, *args, **kwargs):
@@ -26,10 +27,10 @@ class GoalListCreateAPIView(
         if mentors is None: raise Http404() 
         return serializer.save(mentor=mentors.first())
 
-# GET, PUT, DELETE /api/goals/<id>
+# GET, PUT, PATCH, DELETE /api/goals/<id>
 class GoalRetrieveUpdateDestroyAPIView(
+    MentorGoalQuerySetMixin,
     generics.RetrieveUpdateDestroyAPIView):
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
     lookup_field = 'pk'
-

@@ -4,7 +4,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { format, formatDistanceToNow } from "date-fns";
 import { FunctionComponent } from "react";
-import { Goal } from "../../api/goals";
+import { toast } from 'react-toastify';
+import { Goal, submitCompleteGoal } from "../../api/goals";
 import GoalStatus from "./GoalStatus";
 
 type Props = {
@@ -12,12 +13,23 @@ type Props = {
   expanded?: boolean;
   handleClick?: () => void;
   handleEdit?: () => void;
+  afterComplete?: () => void;
 };
 
-const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick }) => {
+const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick, afterComplete }) => {
   const creationTime = formatDistanceToNow(new Date(goal.creation_date), { addSuffix: true });
   const formatDate = (date: Date) => format(date, "eeee, MMMM do yyyy");
   const menteeName = goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : "N/A";
+
+  const submitComplete = async () => {
+    const success = submitCompleteGoal(goal.id);
+    if (!success) {
+      toast.error("Cannot update the goal");
+      return;
+    }
+    toast.success("Goal marked as completed");
+    afterComplete && afterComplete();
+  }
 
   return <Accordion expanded={expanded} onClick={handleClick}>
     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -64,7 +76,7 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
     <Divider />
     {goal.status === "IN PROGRESS" && <AccordionActions>
       <Button variant="outlined" startIcon={<EditIcon />} onClick={handleEdit}>Edit</Button>
-      <Button variant="contained" startIcon={<CheckIcon />}>Complete</Button>
+      <Button variant="contained" startIcon={<CheckIcon />} onClick={submitComplete}>Complete</Button>
     </AccordionActions>}
   </Accordion>
 };

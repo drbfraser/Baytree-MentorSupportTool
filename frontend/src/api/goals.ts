@@ -57,8 +57,13 @@ export const submitGoal = async (input: GoalInput, id?: number) => {
   }
 }
 
-export const submitCompleteGoal = (goalId: any) => {
-  return goalsApi.put(`${goalId}/complete/`, { status: "ACHIEVED" });
+export const submitCompleteGoal = async (goalId: number) => {
+  try {
+    await goalsApi.patch(`${goalId}/`, { status: "ACHIEVED" });
+    return true;
+  } catch (err) {
+    return false;
+  }
 };
 
 export const updateGoal = (goal: any, goalId?: any) => {
