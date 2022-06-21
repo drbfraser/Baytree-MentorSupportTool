@@ -8,16 +8,25 @@ import useGoals from "../../hooks/useGoals";
 import useMentor from "../../hooks/useMentor";
 import exportGoals from "../../Utils/exportGoals";
 import Loading from "../shared/Loading";
-import GoalListItem from "./GoalListItem";
+import GoalDialog from './GoalDialog';
 import GoalsDetailList from './GoalsDetailList';
 import GoalsStatistics from "./GoalsStatistics";
 
 type Status = Goal["status"];
 
 const GoalsPage = () => {
+  // Data state
   const { loading, goals } = useGoals();
   const { mentor, loadingMentor } = useMentor();
-  const [status, setStatus] = useState<Status | undefined>(undefined);
+  const [status, setStatus] = useState<Status | undefined>();
+
+  // Dialog state
+  const [open, setOpen] = useState(false);
+  const [editGoal, setEditGoal] = useState<Goal | undefined>();
+  const openGoalDialog = (goal?: Goal) => {
+    setEditGoal(goal);
+    setOpen(true);
+  }
 
   const filter = (goal: Goal) => {
     if (!status) return true;
@@ -38,7 +47,7 @@ const GoalsPage = () => {
             Export
           </Button>
         </CSVLink>
-        <Button startIcon={<AddIcon />} variant="contained">Add</Button>
+        <Button startIcon={<AddIcon />} variant="contained" onClick={() => openGoalDialog()}>Add</Button>
       </Stack>
     </Box>
     <GoalsStatistics
@@ -47,7 +56,9 @@ const GoalsPage = () => {
       all={goals.length}
       active={goals.filter(g => g.status === "IN PROGRESS").length}
       completed={goals.filter(g => g.status === "ACHIEVED").length} />
-    <GoalsDetailList goals={goals.filter(filter)} />
+      
+    <GoalsDetailList goals={goals.filter(filter)} openDialog={openGoalDialog} />
+    <GoalDialog open={open} goal={editGoal} onClose={() => setOpen(false)} fullWidth maxWidth="sm" />
   </>
 }
 
