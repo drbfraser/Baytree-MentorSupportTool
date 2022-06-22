@@ -1,323 +1,73 @@
-import React, { useEffect, useState } from "react";
-
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Grow from "@mui/material/Grow";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Typography from "@mui/material/Typography";
+import AddIcon from '@mui/icons-material/Add';
+import DownloadIcon from '@mui/icons-material/Download';
+import { Box, Button, Stack, Typography } from "@mui/material";
+import { useState } from "react";
+import { CSVLink } from "react-csv";
+import { Goal } from "../../api/goals";
+import useGoals from "../../hooks/useGoals";
+import useMentor from "../../hooks/useMentor";
+import exportGoals from "../../Utils/exportGoals";
+import Loading from "../shared/Loading";
+import GoalDialog from './GoalDialog';
+import GoalsList from './GoalsList';
 import GoalsStatistics from "./GoalsStatistics";
-import CreateGoals from "./CreateGoals";
-import Divider from "@mui/material/Divider";
-import AccordionActions from "@mui/material/AccordionActions";
-import Button from "@mui/material/Button";
-import EditIcon from "@mui/icons-material/Edit";
-import DoneIcon from "@mui/icons-material/Done";
-import moment from "moment";
-import TimelineDot from "@mui/lab/TimelineDot";
-import { API_BASE_URL } from "../../api/url";
-import { useAuth } from "../../context/AuthContext";
-import { fetchGoalByMentorId, submitCompleteGoal } from "../../api/goals";
-import { fetchMenteeListByMentorId } from "../../api/mentorAccount";
 
-// TODO: Refactor Goal page (maybe for interation 2)
-export default function Goals() {
-  const { user } = useAuth();
-  const [goals, setGoals] = useState([] as any[]);
-  const [goalType, setGoalType] = useState("IN PROGRESS");
-  const [tabValue, setTabValue] = useState(0);
-  const [expanded, setExpanded] = React.useState("");
-  const [menteeList, setMenteeList] = useState([] as any[]);
-  const [toBeUpdatedGoalId, setToBeUpdatedGoalId] = useState(undefined);
+const Goals = () => {
+  // Data state
+  const { loading, goals, refreshGoals } = useGoals();
+  const { mentor, loadingMentor } = useMentor();
+  const [status, setStatus] = useState<Goal["status"] | undefined>();
 
-  const handleChange = (
-    _event: React.SyntheticEvent<Element, Event>,
-    newValue: number
-  ) => {
-    if (newValue === 0) {
-      setGoalType("IN PROGRESS");
-    }
-    if (newValue === 1) {
-      setGoalType("ACHIEVED");
-    }
-    if (newValue === 2) {
-      setGoalType("ALL");
-    }
-    setTabValue(newValue);
-  };
+  // Dialog state
+  const [open, setOpen] = useState(false);
+  const [editGoal, setEditGoal] = useState<Goal | undefined>();
+  const openGoalDialog = (goal?: Goal) => {
+    setEditGoal(goal);
+    setOpen(true);
+  }
 
-  const fetchGoals = () => {
-    fetchGoalByMentorId(user!.userId)
-      .then(setGoals)
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+  const closeGoalDialog = (refresh?: boolean) => {
+    setOpen(false);
+    if (refresh) refreshGoals();
+  }
 
-  useEffect(() => {
-    fetchGoals();
+  const filter = (goal: Goal) => {
+    if (!status) return true;
+    return goal.status === status;
+  }
 
-    // Fetch mentee list only once
-    fetchMenteeListByMentorId(user!.userId)
-      .then(setMenteeList)
-      .catch((error) => console.error("Error:", error));
-  }, []);
+  const handleStatus = (status?: Goal["status"]) => setStatus(status);
 
-  const handleSubmitCreateGoal = () => {
-    setToBeUpdatedGoalId(undefined);
-    fetchGoals();
-  };
+  if (loading || loadingMentor) return <Loading />;
 
-  const handleGoalComplete = (goalId: any) => {
-    submitCompleteGoal(goalId).then((_response) => fetchGoals());
-  };
+  return <>
+    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+      <Typography variant="h4">Goals</Typography>
+      {/* Menu buttons */}
+      <Stack direction="row" spacing={1}>
+        <CSVLink {...exportGoals(goals, mentor)} style={{ textDecoration: "none" }} filename="goals.csv">
+          <Button sx={{ height: "100%" }} startIcon={<DownloadIcon />} variant="outlined" color="info">
+            Export
+          </Button>
+        </CSVLink>
+        <Button startIcon={<AddIcon />} variant="contained" onClick={() => openGoalDialog()}>Add</Button>
+      </Stack>
+    </Box>
 
-  const handleChange1 = (panel: any) => (_event: any, isExpanded: any) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+    {/* Clickable statistics */}
+    <GoalsStatistics
+      selected={status}
+      handleStatus={handleStatus}
+      all={goals.length}
+      active={goals.filter(g => g.status === "IN PROGRESS").length}
+      completed={goals.filter(g => g.status === "ACHIEVED").length} />
 
-  const toBeUpdatedGoal =
-    toBeUpdatedGoalId && goals
-      ? goals.find((g) => g.id === toBeUpdatedGoalId)
-      : undefined;
-
-  const exportGoalsToCsv = () => {
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent +=
-      "Mentor Name, Mentee Name, Goal Creation Date, Goal Review Date, Title, Description, Update Date, Status \n";
-
-    for (var i = 0; i < goals.length; i++) {
-      csvContent +=
-        '"' +
-        goals[i].mentor.email +
-        '","' +
-        goals[i].mentee +
-        '","' +
-        goals[i].date +
-        '","' +
-        goals[i].goal_review_date +
-        '","' +
-        goals[i].title.replaceAll('"', '""') +
-        '","' +
-        goals[i].content.replaceAll('"', '""') +
-        '","' +
-        goals[i].last_update_date +
-        '","' +
-        goals[i].status +
-        '"\n';
-    }
-
-    var encodedUri = encodeURI(csvContent);
-    var link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "Goals.csv");
-    document.body.appendChild(link);
-
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  return (
-    <Grow in={true}>
-      <Container>
-        <Grid container spacing={1}>
-          <Grid item xs={1}>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => exportGoalsToCsv()}
-            >
-              Export
-            </Button>
-          </Grid>
-          <Grid item xs={10}>
-            <Tabs
-              value={tabValue}
-              onChange={handleChange}
-              centered
-              sx={{ mb: 3 }}
-            >
-              <Tab label="Active" />
-              <Tab label="Completed" />
-              <Tab label="All" />
-            </Tabs>
-          </Grid>
-          <Grid item xs={1}>
-            <CreateGoals
-              menteeList={menteeList}
-              onSubmit={handleSubmitCreateGoal}
-            />
-          </Grid>
-        </Grid>
-        <GoalsStatistics
-          activeGoals={
-            goals.filter((goal) => goal.status === "IN PROGRESS").length
-          }
-          completedGoals={
-            goals.filter((goal) => goal.status === "ACHIEVED").length
-          }
-          totalGoals={goals.length}
-        />
-
-        {toBeUpdatedGoal && (
-          <CreateGoals
-            goal={toBeUpdatedGoal}
-            goalId={toBeUpdatedGoalId}
-            menteeList={menteeList}
-            onSubmit={handleSubmitCreateGoal}
-            onClose={() => setToBeUpdatedGoalId(undefined)}
-          />
-        )}
-
-        <Grid container style={{ marginTop: "24px" }}>
-          {Object.values(goals).map((data) =>
-            data.status === goalType || goalType === "ALL" ? (
-              <Accordion
-                key={data.id}
-                expanded={expanded === data.id}
-                onChange={handleChange1(data.id)}
-                style={{ width: "100%" }}
-              >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1bh-content"
-                  id="panel1bh-header"
-                >
-                  <div
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "space-between"
-                    }}
-                  >
-                    <Typography variant="h6">{data.title}</Typography>
-                    <div
-                      style={{
-                        flexShrink: 0,
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        alignItems: "center",
-                        paddingRight: "8px"
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          color: "text.secondary",
-                          margin: "8px",
-                          paddingRight: "8px"
-                        }}
-                      >
-                        {moment(data.date).fromNow()}
-                      </Typography>
-                      <Typography
-                        sx={{ color: "text.secondary", margin: "6px" }}
-                      >
-                        {data.status}
-                      </Typography>
-                      {data.status === "IN PROGRESS" ? (
-                        <TimelineDot
-                          color="error"
-                          sx={{ backgroundColor: "red", alignSelf: "center" }}
-                        />
-                      ) : data.status === "ACHIEVED" ? (
-                        <TimelineDot
-                          color="success"
-                          sx={{ backgroundColor: "green", alignSelf: "center" }}
-                        />
-                      ) : (
-                        <TimelineDot
-                          color="success"
-                          sx={{ backgroundColor: "blue", alignSelf: "center" }}
-                        />
-                      )}
-                    </div>
-                  </div>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography
-                    sx={{ fontSize: 14, mt: 2 }}
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Created Date
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    {moment(data.date).format("dddd, MMMM Do YYYY")} <br />
-                  </Typography>
-
-                  <Typography
-                    sx={{ fontSize: 14, mt: 2 }}
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Goal Review Date
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    {moment(data.goal_review_date).format("dddd, MMMM Do YYYY")}{" "}
-                    <br />
-                  </Typography>
-
-                  <Typography
-                    sx={{ fontSize: 14, mt: 2 }}
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Last Update Date
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    {moment(data.last_update_date).format("dddd, MMMM Do YYYY")}
-                    <br />
-                  </Typography>
-
-                  <Typography
-                    sx={{ fontSize: 14, mt: 2 }}
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Mentee Name
-                  </Typography>
-                  <Typography variant="body2">{data.menteeName}</Typography>
-
-                  <Typography
-                    sx={{ fontSize: 14, mt: 2 }}
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Goal Description
-                  </Typography>
-                  <Typography variant="body2">{data.content}</Typography>
-                </AccordionDetails>
-                {data.status === "IN PROGRESS" && (
-                  <>
-                    <Divider />
-                    <AccordionActions>
-                      <Button
-                        variant="outlined"
-                        startIcon={<EditIcon />}
-                        onClick={() => setToBeUpdatedGoalId(data.id)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="success"
-                        startIcon={<DoneIcon />}
-                        onClick={() => handleGoalComplete(data.id)}
-                      >
-                        Complete
-                      </Button>
-                    </AccordionActions>
-                  </>
-                )}
-              </Accordion>
-            ) : null
-          )}
-        </Grid>
-      </Container>
-    </Grow>
-  );
+    <GoalsList
+      goals={goals.filter(filter)}
+      openDialog={openGoalDialog}
+      afterComplete={refreshGoals} />
+    {open && <GoalDialog open={open} goal={editGoal} handleClose={closeGoalDialog} />}
+  </>
 }
+
+export default Goals;

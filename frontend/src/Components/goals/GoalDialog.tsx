@@ -3,7 +3,6 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { FunctionComponent } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Goal, GoalInput, submitGoal } from "../../api/goals";
 import useMentees from "../../hooks/useMentees";
@@ -35,7 +34,6 @@ type Props = {
 }
 
 const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
-  const navigate = useNavigate();
   const { mentees, loadingMentees } = useMentees();
   const title = goal ? "Edit goal" : "Create new goal";
   const { values, handleSubmit, handleChange, setFieldValue, isSubmitting, setSubmitting } = useFormik({
