@@ -1,6 +1,6 @@
 from django.http import Http404
-from requests import Response
-from rest_framework import generics, mixins
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.pagination import LimitOffsetPagination
 from users.models import MentorUser
 from users.permissions import userIsAdmin, userIsSuperUser
 
@@ -18,9 +18,18 @@ class MentorGoalQuerySetMixin():
 # GET, POST /api/goals/
 class GoalListCreateAPIView(
     MentorGoalQuerySetMixin,
-    generics.ListCreateAPIView):
+    ListCreateAPIView):
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self, *args, **kwargs):
+      qs = super().get_queryset(*args, **kwargs)
+      active = self.request.query_params.get('active')
+      if active is not None: qs = qs.filter(status="IN PROGRESS")
+      completed = self.request.query_params.get('completed')
+      if completed is not None: qs = qs.filter(status="ACHIEVED")
+      return qs
 
     def perform_create(self, serializer):
         mentors = MentorUser.objects.filter(user_id=self.request.user.id)
@@ -30,7 +39,7 @@ class GoalListCreateAPIView(
 # GET, PUT, PATCH, DELETE /api/goals/<id>
 class GoalRetrieveUpdateDestroyAPIView(
     MentorGoalQuerySetMixin,
-    generics.RetrieveUpdateDestroyAPIView):
+    RetrieveUpdateDestroyAPIView):
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
     lookup_field = 'pk'
