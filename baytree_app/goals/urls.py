@@ -7,5 +7,5 @@ from .views import (
 
 urlpatterns = [
     path('', GoalListCreateAPIView.as_view()),
-    path('<int:pk>/', GoalRetrieveUpdateDestroyAPIView.as_view())
+    path('/<int:pk>/', GoalRetrieveUpdateDestroyAPIView.as_view())
 ]

@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { FunctionComponent } from "react";
-import {Goal} from "../../api/goals";
+import { Goal } from "../../api/goals";
 
 type Status = Goal["status"];
 
@@ -50,26 +50,26 @@ type GoalsStats = {
 }
 
 const GoalsStatistics: FunctionComponent<GoalsStats> = (props) => {
-  const {active, completed, all, selected, handleStatus} = props;
+  const { active, completed, all, selected, handleStatus } = props;
   return (
     <Grid container spacing={2}>
-      <GoalStatisticsCell 
-        title="All" 
-        count={all} 
+      <GoalStatisticsCell
+        title="All"
+        count={all}
         color="blue"
         activeColor="rgba(0, 0, 255, 0.2)"
         active={!selected}
         action={() => handleStatus()} />
-      <GoalStatisticsCell 
-        title="Active" 
-        count={active} 
+      <GoalStatisticsCell
+        title="Active"
+        count={active}
         color="secondary"
         active={selected === "IN PROGRESS"}
         activeColor="rgba(255, 30, 137, 0.2)"
         action={() => handleStatus("IN PROGRESS")}
-         />
-      <GoalStatisticsCell 
-        title="Completed" 
+      />
+      <GoalStatisticsCell
+        title="Completed"
         count={completed}
         active={selected === "ACHIEVED"}
         action={() => handleStatus("ACHIEVED")} />
