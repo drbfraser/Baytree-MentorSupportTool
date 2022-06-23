@@ -1,3 +1,6 @@
+# Used for running the server in a local development environment.
+# Automatically overrides values in base `docker-compose.yml` file when 
+# exeucting a `docker-compose up`
 version: "3.9"
 services:
   server:

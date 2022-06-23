@@ -5,13 +5,14 @@ from users.models import MentorUser
 from users.permissions import userIsAdmin, userIsSuperUser
 from views_api.session_groups import get_session_groups
 from views_api.sessions import (get_mentee_from_session_by_id,
-                                get_note_from_session_by_id, get_sessions)
+                                get_note_from_session_by_id, get_session,
+                                get_sessions)
 from views_api.volunteers import get_volunteers
 
 # Query params
 queryKeys = ["sessionGroupId", "limit", "offset", "startDateFrom", "startDateTo"]
 
-# GET /api/records
+# GET /api/records/
 @api_view(("GET", ))
 def get_sessions_by_volunteer(request):
     """
@@ -22,6 +23,7 @@ def get_sessions_by_volunteer(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
     params = { key: request.GET.get(key, None) for key in queryKeys }
     params["personId"] = mentors.first().viewsPersonId
+    params["descending"] = request.GET.get("descending", None) == "1"
     sessions = get_sessions(**params)
     return Response(sessions, status=status.HTTP_200_OK)
 
@@ -34,7 +36,7 @@ def get_session_by_id(request, id=None):
     if id is None: return Response(status=status.HTTP_404_NOT_FOUND)
 
     # Fetch the session by the id
-    session = get_sessions(id)
+    session = get_session(id)
     if session is None: return Response(status=status.HTTP_404_NOT_FOUND)
 
     # Check the ownership

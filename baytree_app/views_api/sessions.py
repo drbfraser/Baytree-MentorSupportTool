@@ -67,7 +67,7 @@ class SessionsApiView(APIView):
         sessionGroupId = request.GET.get("sessionGroupId", None)
         mentor_user = MentorUser.objects.filter(pk=request.user.id)
 
-        if id != None and sessionGroupId != None:
+        if id != None:
             if not userIsAdmin(request.user) and (
                 not mentor_user.exists() or mentor_user.first().viewsPersonId != id
             ):
@@ -75,7 +75,7 @@ class SessionsApiView(APIView):
                     "You do not have permission to access this resource", 401
                 )
 
-            response = get_sessions(id, sessionGroupId=sessionGroupId)
+            response = get_session(id)
 
         elif sessionGroupId != None:
             if not userIsAdmin(request.user) and not mentor_user.exists():
@@ -309,19 +309,36 @@ class SessionsApiView(APIView):
 
         return Response({"sessionId": try_parse_int(session_id)}, status=200)
 
+def get_session(id: str):
+    """
+    Gets a session from Views API by its id.
+    """
+    response = requests.get(
+            f"{sessions_base_url}/{id}",
+            auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+        )
+
+    if response.status_code != 200: return None
+
+    parsed = xmltodict.parse(response.text)
+    session = {
+        session_translated_fields[i]: parsed["session"][field]
+        for i, field in enumerate(session_views_response_fields)
+    }
+    return session
+
 
 def get_sessions(
-    id: str = None,
     sessionGroupId: str = None,
     limit: int = None,
     offset: int = None,
     startDateFrom: str = None,
     startDateTo: str = None,
     personId=None,
+    descending=False
 ):
     """
     Gets sessions from Views API.
-    If an id argument is provided, the session with a matching id will be returned.
     The limit and offset parameters are used to implement pagination.
     The limit parameter determines how many sessions to return from the Views API.
     The offset parameter determines which session to start at when asking for
@@ -329,56 +346,74 @@ def get_sessions(
     So, if limit = 5 and offset = 5, this would say: "give me 5 sessions,
     but skip the first 5 in the total sessions returned by the Views API."
     """
-    
-    if id != None:
-        response = requests.get(
-            f"{sessions_base_url}/{id}",
+    request_url = f"{sessions_base_url}/search" if sessionGroupId is None else sessions_base_url_by_group.format(sessionGroupId)
+    params = {}
+    if limit != None: params["pageFold"] = limit
+    if offset != None: params["offset"] = offset
+    if startDateFrom != None: params["StartDate-from"] = startDateFrom
+    if startDateTo != None: params["StartDate-to"] = startDateTo
+    if personId != None: params["LeadStaff"] = personId
+
+    # In the case of requesting in reversed order with pagination
+    # Process the limit and offset params before sending to Views
+    if descending and limit is not None:
+        # Dummy API call to get the total number of records
+        dummyParams = params.copy()
+        dummyParams["pageFold"] = 1
+        dummyParams["offset"] = 0
+        dummyResponse = requests.get(
+            request_url,
+            params=dummyParams,
             auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
         )
+        if dummyResponse.status_code != 200: return None
+        parsed = xmltodict.parse(dummyResponse.text)
+        count = int(parsed["sessions"]["@count"])
 
-        if response.status_code != 200: return None
+        # Preprocess the API
+        limit = int(limit)
+        if offset is None: offset = 0
+        else: offset = int(offset)
+        offset = count - (offset + limit)
+        if offset < 0:
+            limit = limit + offset
+            offset = 0
+        if limit <= 0:
+            return {"count": count, "results": []}
+        params["pageFold"] = limit
+        params["offset"] = offset
+        print(params)
 
-        parsed = xmltodict.parse(response.text)
-        session = {
-            session_translated_fields[i]: parsed["session"][field]
+    # Real API call to Views
+    response = requests.get(
+        request_url,
+        params=params,
+        auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+    )
+
+    if response.status_code != 200: return None
+
+    parsed = xmltodict.parse(response.text)
+
+    # Handle edge case where no sessions were returned from views
+    if parsed["sessions"]["@count"] == "0":
+        return {"count": parsed["sessions"]["@count"], "results": []}
+
+    parsed_session_list = parsed["sessions"]["session"]
+    if not isinstance(parsed_session_list, list):
+        parsed_session_list = [parsed_session_list]
+
+    sessions = [
+        {
+            session_translated_fields[i]: session[field]
             for i, field in enumerate(session_views_response_fields)
         }
-        return session
-    else:
-        request_url = f"{sessions_base_url}/search" if sessionGroupId is None else sessions_base_url_by_group.format(sessionGroupId)
-        params = {}
-        if limit != None: params["limit"] = limit
-        if offset != None: params["offset"] = offset
-        if startDateFrom != None: params["StartDate-from"] = startDateFrom
-        if startDateTo != None: params["StartDate-to"] = startDateTo
-        if personId != None: params["LeadStaff"] = personId
+        for session in parsed_session_list
+    ]
+    
+    if descending: sessions.reverse()
 
-        response = requests.get(
-            request_url,
-            params=params,
-            auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
-        )
-
-        if response.status_code != 200: return None
-
-        parsed = xmltodict.parse(response.text)
-
-        # Handle edge case where no sessions were returned from views
-        if parsed["sessions"]["@count"] == "0":
-            return {"count": parsed["sessions"]["@count"], "results": []}
-
-        parsed_session_list = parsed["sessions"]["session"]
-        if not isinstance(parsed_session_list, list):
-            parsed_session_list = [parsed_session_list]
-
-        sessions = [
-            {
-                session_translated_fields[i]: session[field]
-                for i, field in enumerate(session_views_response_fields)
-            }
-            for session in parsed_session_list
-        ]
-        return {"count": int(parsed["sessions"]["@count"]), "results": sessions}
+    return {"count": int(parsed["sessions"]["@count"]), "results": sessions}
 
 
 def get_mentee_from_session_by_id(id):
