@@ -7,23 +7,38 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interationPlugin from "@fullcalendar/interaction";
 import rrulePlugin from "@fullcalendar/rrule";
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { Box, LinearProgress, Paper, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useRef } from 'react';
-import { toast } from 'react-toastify';
+import { Box, Checkbox, FormControlLabel, FormGroup, LinearProgress, Paper, useMediaQuery, useTheme } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import useEventDetailPopup from '../../hooks/useEventDetailPopup';
-import useScheduler, { EVENT_TYPE } from '../../hooks/useScheduler';
+import useSessionEvents, { EVENT_TYPE, SessionFilter } from '../../hooks/useSessionEvents';
 import RecordDetail from '../records/RecordDetail';
+import HolidayDetail from '../records/HolidayDetail';
+import useHolidayEvents from '../../hooks/useHolidayEvents';
 
 const Scheduler = () => {
+  // Theme states
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const calendarRef = useRef<FullCalendar | null>(null);
-  const { fetchSessionEvents, holidayEvents, error, loading } = useScheduler();
-  const { open, handleClose, event, handleEventId } = useEventDetailPopup();
 
-  useEffect(() => {
-    if (error) toast.error(error);
-  }, [error])
+  // Checkbox states
+  const [filter, setFilter] = useState<SessionFilter>({
+    attended: true,
+    cancelled: true
+  });
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(prev => ({
+      ...prev,
+      [event.target.name]: event.target.checked,
+    }));
+  };
+
+  // Calandar states
+  const calendarRef = useRef<FullCalendar | null>(null);
+  const {holidays, loadingHoliday, holidayEvents, holidayError} = useHolidayEvents();
+  const { fetchSessionEvents, error, loadingSession } = useSessionEvents(filter);
+
+  // Dialog states
+  const { open, handleClose, event, handleEventId } = useEventDetailPopup();
 
   // Configure toolbar based on the views
   const headerToolbar: ToolbarInput = {
@@ -42,12 +57,13 @@ const Scheduler = () => {
   return (
     <>
       <Paper elevation={4} sx={{ mb: 2 }}>
-        {loading && <LinearProgress />}
-        <Box sx={{ p: 2 }}>
+        {(loadingSession || loadingHoliday) && <LinearProgress />}
+        <Box sx={{ pt: 2, px: 2 }}>
+          {/* Calender */}
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interationPlugin, rrulePlugin]}
-            initialView="timeGridDay"
+            initialView="dayGridMonth"
             headerToolbar={headerToolbar}
             nowIndicator
             lazyFetching
@@ -55,14 +71,24 @@ const Scheduler = () => {
               holidayEvents, // Static holiday events
               fetchSessionEvents // Lazily-fetched holidays
             ]}
-            
-            eventClick={({event}) => {
+            eventClick={({ event }) => {
               handleEventId(event.id);
             }} />
         </Box>
+        {/* Checkbox */}
+        <FormGroup row sx={{px: 2}}>
+            <FormControlLabel
+              label="Attended"
+              control={<Checkbox checked={filter.attended} onChange={handleCheckboxChange} name="attended" />}  />
+            <FormControlLabel 
+              label="Cancelled" 
+              control={<Checkbox checked={filter.cancelled} onChange={handleCheckboxChange} name="cancelled" />} />
+          </FormGroup>
       </Paper>
       {event.type === EVENT_TYPE.SESSION &&
         <RecordDetail sessionId={event.id} open={open} handleClose={handleClose} />}
+      {event.type === EVENT_TYPE.HOLIDAY &&
+        <HolidayDetail holiday={holidays.find(holiday => holiday.id === event.id)} open={open} handleClose={handleClose} />}
     </>
   )
 };

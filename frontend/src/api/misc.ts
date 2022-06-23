@@ -77,7 +77,7 @@ export interface Holiday {
   startDate: string,
   endDate: string,
   isAnnual: boolean,
-  note: string
+  note?: string
 }
 
 export const fetchHolidays = async () => {

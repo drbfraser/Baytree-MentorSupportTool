@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { EVENT_ID_REGEX } from "./useScheduler";
+import { EVENT_ID_REGEX } from "./useSessionEvents";
 
 const useEventDetailPopup = () => {
   const [open, setOpen] = useState(false);
