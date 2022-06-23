@@ -1,6 +1,8 @@
+# Used for deployment to production and staging servers
 version: "3.9"
 services:
   server:
+    image: baytree_server
     restart: always
     command: gunicorn baytree_app.wsgi --bind 0:8000
     environment:
@@ -8,7 +10,8 @@ services:
   database:
     restart: always
   caddy:
-    container_name: baytree_caddy
+    container_name: baytree_revproxy_frontend
+    image: baytree_revproxy_frontend
     build:
       context: .
       dockerfile: caddy/Dockerfile
