@@ -1,10 +1,11 @@
-import axios, { AxiosResponse } from "axios";
+import { Query } from "@testing-library/react";
+import axios from "axios";
 import { format } from "date-fns";
 import { API_BASE_URL } from "./url";
 import { Participant } from "./views";
 
 const goalsApi = axios.create({
-  baseURL: `${API_BASE_URL}/goals/`,
+  baseURL: `${API_BASE_URL}/goals`,
   headers: { "Content-Type": "application/json" },
   withCredentials: true
 });
@@ -27,11 +28,27 @@ export interface GoalInput {
   description: string;
 }
 
-export const fetchAllGoals = async () => {
+export type GoalParams = {
+  limit?: number;
+  offset?: number;
+  active?: boolean;
+  completed?: boolean;
+}
+
+export const fetchAllGoals = async (params: GoalParams = {}) => {
   try {
-    const apiRes = await goalsApi.get<Goal[]>("");
-    if (apiRes.status === 200)
-      return {data: apiRes.data, error: ""}
+    const apiRes = await goalsApi.get("", {
+      params
+    });
+    if (apiRes.status === 200) {
+      // Not nice implementation because of Django REST Framework
+      const data = apiRes.data;
+      if (data.results) {
+        return { data: data.results as Goal[], error: "" };
+      } else {
+        return {data: data as Goal[], error: ""}
+      }
+    }
     if (apiRes.status === 404)
       return {data: undefined, error: "Cannot find users or goals"}
     else throw Error
@@ -39,6 +56,12 @@ export const fetchAllGoals = async () => {
     return {data: undefined, error: "Cannot fetch goals"}
   }
 };
+
+export const fetchGoals = async (limit?: number, offset?: number) => {
+  let params = {} as any;
+  if (limit) params.limit = limit;
+  if (offset) params.offset = offset;
+}
 
 export const submitGoal = async (input: GoalInput, id?: number) => {
   let data: any = {

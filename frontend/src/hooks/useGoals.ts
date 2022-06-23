@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchAllGoals, Goal } from "../api/goals";
+import { fetchAllGoals, Goal, GoalParams } from "../api/goals";
 
-const useGoals = () => {
+const useGoals = (params?: GoalParams) => {
   const [goals, setGoals] = useState([] as Goal[]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -9,7 +9,7 @@ const useGoals = () => {
   const refreshGoals = () => {
     console.log("Refreshing...")
     setLoading(true);
-    fetchAllGoals()
+    fetchAllGoals(params)
     .then(({data, error}) => {
       if (!data || error !== "") {
         setError(error);
