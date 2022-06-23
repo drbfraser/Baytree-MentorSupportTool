@@ -1,31 +1,34 @@
-import { Chip, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
-import { addMinutes, format } from "date-fns";
-import { FunctionComponent, ReactText, useEffect, useState } from "react";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
+import { ReactText, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { SessionRecord } from "../../api/records";
-import useRecords, { PAGNINATE_OPTIONS } from "../../hooks/useRecords";
+import useRecords from "../../hooks/useRecords";
 import Loading from "../shared/Loading";
 import RecordDetail from "./RecordDetail";
+import RecordRow from "./RecordRow";
 
-const RecordRow: FunctionComponent<{ session: SessionRecord, handleClick: () => void }> = ({ session, handleClick }) => {
-  const [startH, startM] = session.startTime.split(":").map(m => +m);
-  const startTime = addMinutes(new Date(session.startDate), startH * 60 + startM);
-
-  return <TableRow hover onClick={handleClick}>
-    <TableCell>{session.name}</TableCell>
-    <TableCell>{format(startTime, "d MMM Y")}</TableCell>
-    <TableCell>{format(startTime, "hh:mm aa")}</TableCell>
-    <TableCell>{session.duration}</TableCell>
-    <TableCell align="center">
-      {+session.cancelled !== 0
-        ? <Chip label="CANCELLED" size="small" color="error" />
-        : <Chip label="ATTENDED" size="small" color="success" />}
-    </TableCell>
-  </TableRow>
-}
+const PAGNINATE_OPTIONS = [2, 5, 10, 20];
 
 export default function Records() {
-  const { sessions, paginate, loading, error, handleChangePage, handleChangeRowsPerPage } = useRecords();
+  // Records and pagniation
+  const [query, setQuery] = useState({
+    page: 0,
+    limit: PAGNINATE_OPTIONS[0]
+  });
+
+  const handleChangePage = (
+    _: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) => {
+    setQuery((prev) => ({ ...prev, page: newPage }));
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setQuery({ page: 0, limit: +event.target.value })
+  };
+
+  const { count, sessions, loading, error } = useRecords(query);
 
   // Record dialog
   const [open, setOpen] = useState(false);
@@ -78,9 +81,9 @@ export default function Records() {
               <TablePagination
                 colSpan={5}
                 rowsPerPageOptions={PAGNINATE_OPTIONS}
-                rowsPerPage={paginate.limit}
-                count={paginate.count}
-                page={paginate.page}
+                rowsPerPage={query.limit}
+                count={count}
+                page={query.page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage} />
             </TableRow>
