@@ -27,6 +27,26 @@ def get_sessions_by_volunteer(request):
     sessions = get_sessions(**params)
     return Response(sessions, status=status.HTTP_200_OK)
 
+# GET /api/records/stats/
+WEEK_PER_YEAR = 52
+
+@api_view(("GET", ))
+def get_sessions_stats(request):
+    mentors = MentorUser.objects.filter(user_id=request.user.id)
+    if not mentors:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    sessions = get_sessions(personId=mentors.first().viewsPersonId)
+    results = sessions["results"]
+
+    data = {
+        "sessions_total": sessions["count"],
+        "sessions_attended": len([s for s in results if s["cancelled"] == "0"]),
+        "sessions_missed": len([s for s in results if s["cancelled"] == "1"]),
+        "sessions_remaining": WEEK_PER_YEAR - sessions["count"]
+    }
+    return Response(data);
+
+
 # GET /api/records/<session_id>/
 @api_view(("GET", ))
 def get_session_by_id(request, id=None):
