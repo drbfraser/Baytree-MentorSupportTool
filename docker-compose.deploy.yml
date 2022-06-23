@@ -1,8 +1,16 @@
-# Used for deployment to production and staging servers
+# Used for deployment to a server where we are getting images from Docker Hub
+# Overlay ontop of base config with:
+#    $ export IMAGE_TEST="latest"
+#    $ docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+# Set IMAGE_TAG to the image desired, such as:
+#     latest
+#     dev
+#     staging
+#     vYYYY-MM-DD.SHA
 version: "3.9"
 services:
   server:
-    image: baytree_server
+    image: drbfraser/baytree_mentor-support-tool_backend:$IMAGE_TAG
     restart: always
     command: gunicorn baytree_app.wsgi --bind 0:8000
     environment:
@@ -11,7 +19,7 @@ services:
     restart: always
   caddy:
     container_name: baytree_revproxy_frontend
-    image: baytree_revproxy_frontend
+    image: drbfraser/baytree_mentor-support-tool_revproxy_frontend:$IMAGE_TAG
     build:
       context: .
       dockerfile: caddy/Dockerfile
