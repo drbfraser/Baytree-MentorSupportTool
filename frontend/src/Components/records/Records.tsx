@@ -1,19 +1,23 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
+import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
 import { ReactText, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useRecords from "../../hooks/useRecords";
 import Loading from "../shared/Loading";
 import RecordDetail from "./RecordDetail";
 import RecordRow from "./RecordRow";
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
-const PAGNINATE_OPTIONS = [2, 5, 10, 20];
+const PAGNINATE_OPTIONS = [5, 10, 20];
 
 export default function Records() {
   // Records and pagniation
   const [query, setQuery] = useState({
     page: 0,
-    limit: PAGNINATE_OPTIONS[0]
+    limit: PAGNINATE_OPTIONS[0],
+    descending: true,
   });
+  const { count, sessions, loading, error } = useRecords(query);
 
   const handleChangePage = (
     _: React.MouseEvent<HTMLButtonElement> | null,
@@ -25,10 +29,12 @@ export default function Records() {
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setQuery({ page: 0, limit: +event.target.value })
+    setQuery((prev) => ({ ...prev, page: 0, limit: +event.target.value }))
   };
 
-  const { count, sessions, loading, error } = useRecords(query);
+  const toggleOrdering = () => {
+    setQuery((prev)=> ({...prev, descending: !prev.descending}))
+  }
 
   // Record dialog
   const [open, setOpen] = useState(false);
@@ -45,9 +51,16 @@ export default function Records() {
 
   return (
     <>
-      <Typography variant="h4" component="h2" sx={{ mb: 2 }}>
-        Records
-      </Typography>
+      <Box sx={{mb: 2, display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+        <Typography variant="h4" component="h2">
+          Records
+        </Typography>
+        <Button 
+          onClick={toggleOrdering}
+          startIcon={query.descending ? <ArrowDownwardIcon/> : <ArrowUpwardIcon />}>
+          {query.descending ? "Newest to oldest" : "Oldest to newest"}
+        </Button>
+      </Box>
       <TableContainer component={Paper} sx={{ overflow: "auto" }}>
         <Table stickyHeader sx={{ minWidth: 650 }}>
           <TableHead>

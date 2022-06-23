@@ -25,9 +25,10 @@ type Params = {
   limit?: number;
   offset?: number;
   sessionGroupId?: number;
+  descending: 0 | 1;
 }
 
-export const fetchSessions = async (params: Params = {}) => {
+export const fetchSessions = async (params: Params = {descending: 0}) => {
   try {
     const response = await recordsApi.get<{count: number, results: SessionRecord[]}>('', { params });
     if (response.status === 200) return {data: response.data, error: ""}

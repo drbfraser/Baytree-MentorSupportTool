@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { fetchSessions, SessionRecord } from "../api/records";
 
 const useRecords = (query: {
-  page: number;
-  limit: number;
+  page: number,
+  limit: number,
+  descending: boolean
 }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -12,8 +13,8 @@ const useRecords = (query: {
 
   useEffect(() => {
     setLoading(true);
-    const { page, limit } = query;
-    fetchSessions({ limit, offset: page * limit })
+    const { page, limit, descending } = query;
+    fetchSessions({ limit, offset: page * limit, descending: descending ? 1 : 0 })
       .then(({ data, error }) => {
         if (data && !error) {
           setCount(data.count);
