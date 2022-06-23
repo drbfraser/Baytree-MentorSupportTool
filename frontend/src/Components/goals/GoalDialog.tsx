@@ -1,6 +1,6 @@
 import { DatePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { FunctionComponent } from "react";
 import { toast } from "react-toastify";
@@ -24,7 +24,7 @@ const initialAnswer = (goal?: Goal) => {
 }
 
 const emptyAnswer = (input: GoalInput) => {
-  return input.title === "" || input.description === ""
+  return !input.title || !input.description || !input.mentee_id
 }
 
 type Props = {
@@ -42,7 +42,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
       setSubmitting(true);
       const success = await submitGoal(answer, goal?.id);
       setSubmitting(false);
-      if (!success) { 
+      if (!success) {
         toast.error("Goal submitted unsuccessfully");
         return;
       }
@@ -57,52 +57,48 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
     {mentees &&
       <form onSubmit={handleSubmit}>
         <DialogContent>
-          <Typography sx={{ fontWeight: "bold" }} color="text.secondary" gutterBottom>
-            Title
-          </Typography>
-          <TextField fullWidth sx={{ mb: 2 }} name="title" value={values.title} onChange={handleChange} />
-
-          <Typography sx={{ fontWeight: "bold" }} color="text.secondary" gutterBottom>
-            Mentee
-          </Typography>
-          <Select
-            fullWidth
-            name="mentee_id"
-            sx={{ mb: 2 }}
-            value={values.mentee_id ? `${values.mentee_id}` : ""}
-            onChange={handleChange}
-            displayEmpty>
-            <MenuItem value="" disabled>
-              Please select a mentee
-            </MenuItem>
-            {mentees.map((mentee) => {
-              const fullName = `${mentee.firstName} ${mentee.lastName}`;
-              return (
-                <MenuItem key={mentee.viewsPersonId} value={mentee.viewsPersonId}>
-                  {fullName}
-                </MenuItem>
-              );
-            })}
-          </Select>
-
-          <Typography sx={{ fontWeight: "bold" }} color="text.secondary" gutterBottom>
-            Review date
-          </Typography>
+          <TextField
+            label="Title"
+            name="title"
+            required
+            fullWidth sx={{ mb: 2 }}
+            value={values.title}
+            onChange={handleChange} />
+          <FormControl fullWidth required>
+            <InputLabel id="mentee-label">Mentee</InputLabel>
+            <Select
+              labelId="mentee-label"
+              label="Mentee"
+              name="mentee_id"
+              sx={{ mb: 2 }}
+              value={values.mentee_id ? `${values.mentee_id}` : ""}
+              onChange={handleChange}>
+              <MenuItem value="" disabled>
+                <em>Please select a mentee</em>
+              </MenuItem>
+              {mentees.map((mentee) => {
+                const fullName = `${mentee.firstName} ${mentee.lastName}`;
+                return (
+                  <MenuItem key={mentee.viewsPersonId} value={mentee.viewsPersonId}>
+                    {fullName}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
+              label="Goal Review Date"
               inputFormat="MM/dd/yyyy"
               value={values.goal_reivew_date}
               onChange={(value) =>
                 setFieldValue("goal_reivew_date", value, true)
               }
-              renderInput={(params) => <TextField fullWidth {...params} sx={{ mb: 2 }} />}
+              renderInput={(params) =>
+                <TextField required fullWidth {...params} sx={{ mb: 2 }} />}
             />
           </LocalizationProvider>
-
-          <Typography sx={{ fontWeight: "bold" }} color="text.secondary" gutterBottom>
-            Description
-          </Typography>
-          <TextField fullWidth sx={{ mb: 2 }} name="description" value={values.description} onChange={handleChange} multiline minRows={3} />
+          <TextField label="Description" required fullWidth sx={{ mb: 2 }} name="description" value={values.description} onChange={handleChange} multiline minRows={3} />
         </DialogContent>
         <DialogActions>
           <Button
