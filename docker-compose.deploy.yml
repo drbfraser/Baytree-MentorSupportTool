@@ -1,7 +1,7 @@
 # Used for deployment to a server where we are getting images from Docker Hub
 # Overlay ontop of base config with:
 #    $ export IMAGE_TEST="latest"
-#    $ docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+#    $ docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 # Set IMAGE_TAG to the image desired, such as:
 #     latest
 #     dev

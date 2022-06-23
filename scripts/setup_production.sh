@@ -24,12 +24,8 @@ fi
 
 echo -e "\n${BLUE}Updating and upgrading currently installed packages...${COLOR_OFF}\n"
 
-
-# TODO: UPDATE TO BETTER INSTALL METHOD
-# https://docs.docker.com/engine/install/ubuntu/
 apt update -y
 apt upgrade -y
-
 
 
 echo -e "\n${BLUE}Installing needed utils...${COLOR_OFF}\n"
@@ -43,7 +39,7 @@ sudo apt-get -y install \
     git
 
 
-echo -e "\n${BLUE}Installing docker and docker-compose...${COLOR_OFF}\n"
+echo -e "\n${BLUE}Installing docker and docker compose...${COLOR_OFF}\n"
 
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
@@ -127,7 +123,7 @@ if [ ! -f .env ]; then
 
     # this is necessary because the MySQL password has now been changed
     echo -e "\n${BLUE}Removing previous Docker containers and volumes...${COLOR_OFF}\n"
-    docker-compose -f docker-compose.yml -f docker-compose.deploy.yml down
+    docker compose -f docker-compose.yml -f docker-compose.deploy.yml down
     docker volume prune -f
 fi
 
@@ -139,8 +135,8 @@ export COMMIT_SHA=`git show -s --format=%H`
 export IMAGE_TAG=v`git show -s --format=%cs $COMMIT_SHA`.`git rev-parse --short=8 $COMMIT_SHA`
 echo "Most recent Git commit SHA:  $COMMIT_SHA"
 echo "               Release tag:  $IMAGE_TAG"
-docker-compose -f docker-compose.yml -f docker-compose.deploy.yml pull
-docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+docker compose -f docker-compose.yml -f docker-compose.deploy.yml pull
+docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 
 
 echo -e "\n${BLUE}Waiting for MySQL to start...${COLOR_OFF}"

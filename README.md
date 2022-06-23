@@ -31,11 +31,11 @@ Replace instances of `something_random` with random strings, and `the_username` 
 3. Install frontend dependencies (if running in Docker - see frontend section if not):
 
 ```
-docker-compose run --rm frontend npm install
-docker-compose run --rm admin-frontend npm install
+docker compose run --rm frontend npm install
+docker compose run --rm admin-frontend npm install
 ```
 
-4. Then, run the application: `docker-compose up`
+4. Then, run the application: `docker compose up`
 
 5. Run migrations and create a superuser (while the application is running):
 
@@ -48,14 +48,14 @@ docker exec -it baytree_server python manage.py createsuperuser
 
 ### Run Locally
 
-- To run the entire application: `docker-compose up`
-- To run only the backend + database: `docker-compose up server`
-- If new backend packages have been installed, run `docker-compose build` prior to running the `up` commands above
+- To run the entire application: `docker compose up`
+- To run only the backend + database: `docker compose up server`
+- If new backend packages have been installed, run `docker compose build` prior to running the `up` commands above
 - If new frontend packages have been installed, run the following prior to running the `up` commands above:
 
 ```
-docker-compose run --rm frontend npm install
-docker-compose run --rm admin-frontend npm install
+docker compose run --rm frontend npm install
+docker compose run --rm admin-frontend npm install
 ```
 
 ### Commands Inside Container
@@ -92,7 +92,7 @@ docker exec -it baytree_server python manage.py createsuperuser
 
 ### Install Package
 
-You can install a new package by adding it to `requirements.txt` and then running `docker-compose build` while the application isn't running.
+You can install a new package by adding it to `requirements.txt` and then running `docker compose build` while the application isn't running.
 
 <br>
 
@@ -111,7 +111,7 @@ The frontends can either be run in Docker (using the instructions above) or outs
 
 1. Install [Node.js](https://nodejs.org/en/)
 2. Run `npm install` in both frontend folders
-3. Use the command `docker-compose up server` to run only the backend + database
+3. Use the command `docker compose up server` to run only the backend + database
 4. Use the following commands to run the frontends:
    - frontend: `npm start`
    - admin-frontend: `npm run dev`

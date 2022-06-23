@@ -144,7 +144,7 @@ build-docker publish-docker-images:
 
     # Build images (tagged by docker-composition*.yml using IMAGE_TAG)
     - *export_image_tag
-    - docker-compose -f docker-compose.yml -f docker-compose.deploy.yml build
+    - docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
     
     # Push images to Docker Hub 
     - docker images
@@ -162,12 +162,14 @@ build-docker publish-docker-images:
 .deploy-script: &deploy-from-dockerhub
   - *export_image_tag
   - cp /var/baytree/.env ./.env
-  - docker-compose -f docker-compose.yml -f docker-compose.deploy.yml pull
-  - docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+  - docker compose -f docker-compose.yml -f docker-compose.deploy.yml pull
+  - docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
   - docker image prune -f      # remove unused images since we just downloaded new ones
   - bash -c 'sleep 15'
   - docker exec baytree_server python manage.py migrate
   - docker images
+  - docker ps -a
+  - docker volume ls
 
 .deploy-script: &retag-and-upload-dockerhub
   # Required environment variables passed into this function:
