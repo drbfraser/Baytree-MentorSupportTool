@@ -20,5 +20,5 @@ export interface Goal {
 }
 
 export const fetchAllGoals = () => {
-  return backendGet<Goal[]>("goals/");
+  return backendGet<Goal[]>("goals");
 }
