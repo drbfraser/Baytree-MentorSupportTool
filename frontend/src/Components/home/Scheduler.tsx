@@ -57,7 +57,7 @@ const Scheduler = () => {
   return (
     <>
       <Paper elevation={4} sx={{ mb: 2 }}>
-        {(loadingSession || loadingHoliday) && <LinearProgress />}
+        {(loadingHoliday || loadingSession) && <LinearProgress sx={{mt: "-4px"}} />}
         <Box sx={{ pt: 2, px: 2 }}>
           {/* Calender */}
           <FullCalendar
@@ -67,13 +67,15 @@ const Scheduler = () => {
             headerToolbar={headerToolbar}
             nowIndicator
             lazyFetching
+            displayEventTime={false}
             eventSources={[
               holidayEvents, // Static holiday events
               fetchSessionEvents // Lazily-fetched holidays
             ]}
             eventClick={({ event }) => {
               handleEventId(event.id);
-            }} />
+            }}
+             />
         </Box>
         {/* Checkbox */}
         <FormGroup row sx={{px: 2}}>
