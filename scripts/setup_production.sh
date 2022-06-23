@@ -24,6 +24,9 @@ fi
 
 echo -e "${BLUE}Updating, upgrading, and installing required packages...${COLOR_OFF}\n"
 
+
+# TODO: UPDATE TO BETTER INSTALL METHOD
+# https://docs.docker.com/engine/install/ubuntu/
 apt update -y
 apt upgrade -y
 apt install git docker.io docker-compose -y
@@ -78,7 +81,6 @@ if [ ! -f .env ]; then
     echo "VIEWS_USERNAME=here_is_the_views_username" >> .env
     echo "VIEWS_PASSWORD=here_is_the_views_password" >> .env
 
-
     # Manual edit for rest of config
     echo -e "\n${BLUE}Next, you must enter a number of additional configuration parameters.${COLOR_OFF}"
     echo -e "${BLUE}In the text editor, change any value that starts with 'here_is_the_'....${COLOR_OFF}"
@@ -100,7 +102,7 @@ export COMMIT_SHA=`git show -s --format=%H`
 export IMAGE_TAG=v`git show -s --format=%cs $COMMIT_SHA`.`git rev-parse --short=8 $COMMIT_SHA`
 echo "Most recent Git commit SHA: $COMMIT_SHA"
 echo "Release tag:                $IMAGE_TAG"
-docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d
+docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 
 
 echo -e "\n${BLUE}Waiting for MySQL to start...${COLOR_OFF}"

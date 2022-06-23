@@ -120,6 +120,8 @@ The frontends can either be run in Docker (using the instructions above) or outs
 
 ## Mobile Application
 
+Development on the mobile application ceased around summer 2021.
+
 ### Technical Requirements
 
 ● Flutter SDK - then run flutter doctor and update your path <br>
@@ -143,3 +145,8 @@ flutter run --no-sound-null-safety
 ## Admin Portal
 
 Navigate to http://localhost:3001/admin in your browser and use your superuser credentials (or any admin user credentials) to log in
+
+
+## Deployment
+
+For information on deployment, see `README.md` in `scripts/` folder.
