@@ -13,22 +13,19 @@ type Props = {
   expanded?: boolean;
   handleClick?: () => void;
   handleEdit?: () => void;
-  afterComplete?: () => void;
+  handleComplete?: () => Promise<boolean>;
   minified?: boolean;
 };
 
-const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick, afterComplete, minified }) => {
+const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick, handleComplete, minified }) => {
   const formatDate = (date: Date) => format(date, "eeee, MMMM do yyyy");
   const menteeName = goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : "N/A";
 
-  const submitComplete = async () => {
-    const success = submitCompleteGoal(goal.id);
-    if (!success) {
-      toast.error("Cannot update the goal");
-      return;
-    }
-    toast.success("Goal marked as completed");
-    afterComplete && afterComplete();
+  const handleCompleteButton = async () => {
+    if (!handleComplete) return;
+    const success = await handleComplete();
+    if (!success) toast.error("Cannot update the goal");
+    else toast.success("Goal marked as completed");
   }
 
   return <Accordion expanded={expanded} onClick={handleClick}>
@@ -78,7 +75,7 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
     <Divider />
     {!minified && goal.status === "IN PROGRESS" && <AccordionActions>
       <Button variant="outlined" startIcon={<EditIcon />} onClick={handleEdit}>Edit</Button>
-      <Button variant="contained" startIcon={<CheckIcon />} onClick={submitComplete}>Complete</Button>
+      <Button variant="contained" startIcon={<CheckIcon />} onClick={handleCompleteButton}>Complete</Button>
     </AccordionActions>}
   </Accordion>
 };

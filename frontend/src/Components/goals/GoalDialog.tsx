@@ -27,27 +27,28 @@ const emptyAnswer = (input: GoalInput) => {
   return !input.title || !input.description || !input.mentee_id
 }
 
-type Props = {
+interface Props {
   goal?: Goal,
   open: boolean,
-  handleClose: (refresh?: boolean) => void
+  handleClose: (refresh?: boolean) => void,
+  handleSubmitGoal: (goal: GoalInput, id?: number) => Promise<boolean>
 }
 
-const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
+const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleSubmitGoal }) => {
   const { mentees, loadingMentees } = useMentees();
   const title = goal ? "Edit goal" : "Create new goal";
   const { values, handleSubmit, handleChange, setFieldValue, isSubmitting, setSubmitting } = useFormik({
     initialValues: initialAnswer(goal),
     onSubmit: async (answer) => {
       setSubmitting(true);
-      const success = await submitGoal(answer, goal?.id);
+      const success = await handleSubmitGoal(answer, goal?.id);
       setSubmitting(false);
       if (!success) {
         toast.error("Goal submitted unsuccessfully");
         return;
       }
       toast.success("Goal submitted successfully");
-      handleClose(true);
+      handleClose();
     }
   });
 

@@ -71,12 +71,12 @@ export const submitGoal = async (input: GoalInput, id?: number) => {
   }
   if (input.mentee_id) data.mentee_id = +input.mentee_id;
   try {
-    const promise = id ? goalsApi.put(`${id}/`, data) : goalsApi.post("", data);
-    await promise;
-    return true;
+    const promise = id ? goalsApi.put<Goal>(`${id}/`, data) : goalsApi.post<Goal>("", data);
+    const response = await promise;
+    return response.data;
   } catch (err) {
     // Anything other than 2xx code
-    return false;
+    return undefined;
   }
 }
 
@@ -87,11 +87,4 @@ export const submitCompleteGoal = async (goalId: number) => {
   } catch (err) {
     return false;
   }
-};
-
-export const updateGoal = (goal: any, goalId?: any) => {
-  if (!goalId) {
-    return goalsApi.post("", goal);
-  }
-  return goalsApi.put(`${goalId}`, goal);
 };

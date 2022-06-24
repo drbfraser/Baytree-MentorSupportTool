@@ -6,10 +6,10 @@ import GoalListItem from "./GoalListItem";
 type Props = {
   goals: Goal[];
   openDialog: (goal?: Goal) => void;
-  afterComplete?: () => void
+  handleComplete: (goal: Goal) => Promise<boolean>
 }
 
-const GoalsList: FunctionComponent<Props> = ({ goals, openDialog, afterComplete }) => {
+const GoalsList: FunctionComponent<Props> = ({ goals, openDialog, handleComplete }) => {
   if (goals.length === 0) {
     return <Typography variant="h6" sx={{ mt: 3, textAlign: "center" }}>No goals found</Typography>
   }
@@ -24,7 +24,7 @@ const GoalsList: FunctionComponent<Props> = ({ goals, openDialog, afterComplete 
         expanded={selected === goal.id}
         handleClick={() => selected === goal.id ? setSelected(undefined) : setSelected(goal.id)}
         handleEdit={() => openDialog(goal)}
-        afterComplete={afterComplete} />
+        handleComplete={() => handleComplete(goal)} />
     })}
   </Box>
 }

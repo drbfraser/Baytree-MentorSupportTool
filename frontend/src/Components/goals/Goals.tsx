@@ -14,7 +14,7 @@ import GoalsStatistics from "./GoalsStatistics";
 
 const Goals = () => {
   // Data state
-  const { loading, goals, refreshGoals } = useGoals();
+  const { loading, goals, handleSubmitGoal, handleCompleteGoal } = useGoals();
   const { mentor, loadingMentor } = useMentor();
   const [status, setStatus] = useState<Goal["status"] | undefined>();
 
@@ -26,10 +26,7 @@ const Goals = () => {
     setOpen(true);
   }
 
-  const closeGoalDialog = (refresh?: boolean) => {
-    setOpen(false);
-    if (refresh) refreshGoals();
-  }
+  const closeGoalDialog = () => setOpen(false);
 
   const filter = (goal: Goal) => {
     if (!status) return true;
@@ -65,8 +62,8 @@ const Goals = () => {
     <GoalsList
       goals={goals.filter(filter)}
       openDialog={openGoalDialog}
-      afterComplete={refreshGoals} />
-    {open && <GoalDialog open={open} goal={editGoal} handleClose={closeGoalDialog} />}
+      handleComplete={handleCompleteGoal} />
+    {open && <GoalDialog open={open} goal={editGoal} handleClose={closeGoalDialog} handleSubmitGoal={handleSubmitGoal} />}
   </>
 }
 
