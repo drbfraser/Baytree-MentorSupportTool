@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_BASE_URL } from "./url";
 
-const notificationApi = axios.create({
+export const notificationApi = axios.create({
   baseURL: `${API_BASE_URL}/notifications`,
   headers: {
     "Content-Type": "application/json"

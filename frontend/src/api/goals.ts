@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_BASE_URL } from "./url";
 
-const goalsApi = axios.create({
+export const goalsApi = axios.create({
   baseURL: `${API_BASE_URL}/goals`,
   headers: { "Content-Type": "application/json" },
   withCredentials: true
