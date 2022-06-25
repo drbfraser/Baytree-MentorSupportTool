@@ -1,7 +1,9 @@
 import { EventInput, EventSourceFunc } from "@fullcalendar/react";
 import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { useCallback, useState } from "react";
 import { fetchSessions, SessionRecord } from "../api/records";
+import { TIMEZONE_ID } from "../Utils/locale";
 import { convertSessionDate } from "../Utils/sessionDate";
 
 export enum EVENT_TYPE {
@@ -38,8 +40,8 @@ const useSessionEvents = (filter: SessionFilter) => {
     }
     setLoadingSession(true);
     fetchSessions({
-      startDateFrom: format(start, "yyyy-MM-dd"),
-      startDateTo: format(end, "yyyy-MM-dd")
+      startDateFrom: formatInTimeZone(start, TIMEZONE_ID, "yyyy-MM-dd"),
+      startDateTo: formatInTimeZone(end, TIMEZONE_ID, "yyyy-MM-dd")
     }).then(({ data, error: sessionError }) => {
       if (data && !sessionError) {
         let result = [] as SessionRecord[];

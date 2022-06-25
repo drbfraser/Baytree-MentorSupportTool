@@ -15,6 +15,7 @@ import RecordDetail from '../records/RecordDetail';
 import HolidayDetail from '../records/HolidayDetail';
 import useHolidayEvents from '../../hooks/useHolidayEvents';
 import { toast } from 'react-toastify';
+import { TIMEZONE_ID } from '../../Utils/locale';
 
 const Scheduler = () => {
   // Theme states
@@ -83,6 +84,7 @@ const Scheduler = () => {
             initialView="dayGridMonth"
             headerToolbar={headerToolbar}
             nowIndicator
+            timeZone={TIMEZONE_ID}
             lazyFetching
             eventSources={[
               holidayEvents, // Static holiday events

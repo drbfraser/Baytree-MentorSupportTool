@@ -100,7 +100,7 @@ const SessionForm = () => {
                     <Grid container spacing={1} sx={{ py: 2 }}>
                       <TimeInputContainer label="Date">
                         <DatePicker
-                          inputFormat="MM/dd/yyyy"
+                          inputFormat="dd/MM/yyyy"
                           value={values.date}
                           onChange={(value) =>
                             setFieldValue("date", value, true)

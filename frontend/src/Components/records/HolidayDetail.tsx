@@ -1,10 +1,10 @@
 import {
   Alert, Button, Chip, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, Grid, Typography
 } from "@mui/material";
-import { format } from "date-fns";
-import { enGB } from "date-fns/locale"
-import { FunctionComponent, useEffect, useState } from "react";
+import { formatInTimeZone } from "date-fns-tz";
+import { FunctionComponent } from "react";
 import { Holiday } from "../../api/misc";
+import { TIMEZONE_ID } from "../../Utils/locale";
 import InfoTextField from "../shared/InfoTextField";
 
 type Props = {
@@ -15,8 +15,7 @@ type Props = {
 const HolidayDetail: FunctionComponent<Props> = ({ holiday, handleClose, ...props }) => {
   const renderHoliday = (holiday: Holiday) => {
     const formatDate = (date: string) => {
-      console.log(new Date(date))
-      return format(new Date(date), "d MMM Y", { locale: enGB });
+      return formatInTimeZone(new Date(date), TIMEZONE_ID, "d MMM Y");
     };
 
 

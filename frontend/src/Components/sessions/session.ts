@@ -14,15 +14,15 @@ export interface SessionFormData {
 }
 
 export const getInitialFormValues = () =>
-  ({
-    cancelled: false,
-    date: new Date(),
-    clockIn: new Date(),
-    clockOut: new Date(),
-    notes: "",
-    viewsVenueId: "",
-    menteeViewsPersonId: ""
-  } as SessionFormData);
+({
+  cancelled: false,
+  date: new Date(),
+  clockIn: new Date(),
+  clockOut: new Date(),
+  notes: "",
+  viewsVenueId: "",
+  menteeViewsPersonId: ""
+} as SessionFormData);
 
 export interface Mentee {
   id: number;
