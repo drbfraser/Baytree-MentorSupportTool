@@ -8,12 +8,13 @@ import interationPlugin from "@fullcalendar/interaction";
 import rrulePlugin from "@fullcalendar/rrule";
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Box, Checkbox, FormControlLabel, FormGroup, LinearProgress, Paper, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { ReactText, useEffect, useRef, useState } from 'react';
 import useEventDetailPopup from '../../hooks/useEventDetailPopup';
 import useSessionEvents, { EVENT_TYPE, SessionFilter } from '../../hooks/useSessionEvents';
 import RecordDetail from '../records/RecordDetail';
 import HolidayDetail from '../records/HolidayDetail';
 import useHolidayEvents from '../../hooks/useHolidayEvents';
+import { toast } from 'react-toastify';
 
 const Scheduler = () => {
   // Theme states
@@ -36,6 +37,22 @@ const Scheduler = () => {
   const calendarRef = useRef<FullCalendar | null>(null);
   const {holidays, loadingHoliday, holidayEvents, holidayError} = useHolidayEvents();
   const { fetchSessionEvents, error, loadingSession } = useSessionEvents(filter);
+
+  useEffect(() => {
+    let id: ReactText;
+    if (error) id = toast.error(error);
+    return () => {
+      if (id) toast.dismiss(id);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    let id: ReactText;
+    if (holidayError) id = toast.error(holidayError);
+    return () => {
+      if (id) toast.dismiss(id);
+    }
+  }, [holidayError]);
 
   // Dialog states
   const { open, handleClose, event, handleEventId } = useEventDetailPopup();
@@ -67,7 +84,6 @@ const Scheduler = () => {
             headerToolbar={headerToolbar}
             nowIndicator
             lazyFetching
-            displayEventTime={false}
             eventSources={[
               holidayEvents, // Static holiday events
               fetchSessionEvents // Lazily-fetched holidays
@@ -80,10 +96,10 @@ const Scheduler = () => {
         {/* Checkbox */}
         <FormGroup row sx={{px: 2}}>
             <FormControlLabel
-              label="Attended"
+              label="Attended sessions"
               control={<Checkbox checked={filter.attended} onChange={handleCheckboxChange} name="attended" />}  />
             <FormControlLabel 
-              label="Cancelled" 
+              label="Cancelled sessions" 
               control={<Checkbox checked={filter.cancelled} onChange={handleCheckboxChange} name="cancelled" />} />
           </FormGroup>
       </Paper>
