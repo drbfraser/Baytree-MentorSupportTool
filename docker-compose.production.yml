@@ -1,0 +1,25 @@
+# Used for deployment to a production server where we are getting images from Docker Hub
+# Overlay over base with:
+#    docker-compose -f docker-compose.yml -f docker-compose.production.yml up --force-recreate -d
+# Set IMAGE_TAG to the image desired, such as:
+#     latest, vYYYY-MM-DD.SHA
+version: "3.9"
+services:
+  server:
+    image: drbfraser/baytree_mentor-support-tool_backend:$IMAGE_TAG
+    restart: always
+    command: gunicorn baytree_app.wsgi --bind 0:8000
+    environment:
+      - DOMAIN=${DOMAIN}
+  database:
+    restart: always
+  caddy:
+    container_name: baytree_revproxy_frontend
+    image: drbfraser/baytree_mentor-support-tool_revproxy_frontend:$IMAGE_TAG
+    restart: always
+    environment:
+      - DOMAIN=${DOMAIN}
+      - API_HOSTNAME=baytree_server
+    ports:
+      - "80:80"
+      - "443:443"
