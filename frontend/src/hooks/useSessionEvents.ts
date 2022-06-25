@@ -43,8 +43,8 @@ const useSessionEvents = (filter: SessionFilter) => {
     }).then(({ data, error: sessionError }) => {
       if (data && !sessionError) {
         let result = [] as SessionRecord[];
-        if (filter.attended) result.push(...data.filter(session => session.cancelled === "0"));
-        if (filter.cancelled) result.push(...data.filter(session => session.cancelled === "1"));
+        if (filter.attended) result.push(...data.results.filter(session => session.cancelled === "0"));
+        if (filter.cancelled) result.push(...data.results.filter(session => session.cancelled === "1"));
         success(result.map(sessionToEvent))
       }
       else {

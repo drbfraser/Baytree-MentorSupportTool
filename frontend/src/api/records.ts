@@ -25,7 +25,7 @@ type Params = {
   limit?: number;
   offset?: number;
   sessionGroupId?: number;
-  descending: 0 | 1;
+  descending?: 0 | 1;
 }
 
 export const fetchSessions = async (params: Params = {descending: 0}) => {
