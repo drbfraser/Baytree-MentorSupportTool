@@ -5,7 +5,7 @@ import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, B
 import { format, formatDistanceToNow } from "date-fns";
 import { FunctionComponent } from "react";
 import { toast } from 'react-toastify';
-import { Goal, submitCompleteGoal } from "../../api/goals";
+import { Goal } from "../../api/goals";
 import GoalStatus from "./GoalStatus";
 
 type Props = {

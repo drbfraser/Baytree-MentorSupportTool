@@ -22,12 +22,13 @@ const useGoals = (params?: GoalParams) => {
     const submittedGoal = await submitGoal(input, id);
     if (!submittedGoal) return false;
 
-    // If not found, add it
-    if (!id) setGoals((goals) => [...goals, submittedGoal]);
+    if (!id)
+      // Add a goal
+      setGoals((goals) => [...goals, submittedGoal]);
+    else
+      // Update a goal
+      setGoals((goals) => goals.map(goal => goal.id === id ? submittedGoal : goal));
 
-    // Otherwise, update it
-    const newGoals = goals.map(goal => goal.id === id ? submittedGoal : goal);
-    setGoals(newGoals);
     return true;
   }
 
