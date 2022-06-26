@@ -4,13 +4,11 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { NextPage } from "next";
 import { SyntheticEvent, useEffect, useState } from "react";
-import { CSVLink } from "react-csv";
 import { backendGet } from "../api/backend/base";
 import { Goal } from "../api/backend/goals";
+import GoalExportButton from "../components/pages/goals/GoalExportButton";
 import GoalListItem from "../components/pages/goals/GoalListItem";
-import Button from "../components/shared/button";
 import OverlaySpinner from "../components/shared/overlaySpinner";
-import extractDataFromGoals from "../util/extractDataFromGoals";
 
 const Goals: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -26,7 +24,7 @@ const Goals: NextPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    backendGet<Goal[]>("goals/").then(data => {
+    backendGet<Goal[]>("goals").then(data => {
       if (data) setGoals(data);
     }).catch(_err => {
       setError("Cannot retrive goals")
@@ -36,8 +34,6 @@ const Goals: NextPage = () => {
   const handleChangeTab = (_event: SyntheticEvent, newValue: Goal["status"] | "") => {
     setGoalType(newValue);
   }
-
-  const extract = extractDataFromGoals(goals);
 
   return (
     <>
@@ -51,14 +47,7 @@ const Goals: NextPage = () => {
           <Tab label="Completed" value="ACHIEVED" />
           <Tab label="All" value="" />
         </Tabs>
-        <CSVLink style={{ textDecoration: "none" }} {...extract} filename="goals.csv">
-          <Button
-            variant="contained"
-            color="success"
-          >
-            Export
-          </Button>
-        </CSVLink>
+        <GoalExportButton />
 
       </Box>
       <Box>

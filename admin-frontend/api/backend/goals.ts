@@ -1,5 +1,3 @@
-import { backendGet } from "./base";
-
 export interface Goal {
   id: number;
   mentor?: {
@@ -17,8 +15,4 @@ export interface Goal {
   last_update_date: string;
   status: "IN PROGRESS" | "RECALIBREATED" | "ACHIEVED";
   description: string;
-}
-
-export const fetchAllGoals = () => {
-  return backendGet<Goal[]>("goals");
 }
