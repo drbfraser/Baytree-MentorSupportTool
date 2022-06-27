@@ -91,9 +91,9 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
             <DatePicker
               label="Goal Review Date"
               inputFormat="MM/dd/yyyy"
-              value={values.goal_reivew_date}
+              value={values.goal_review_date}
               onChange={(value) =>
-                setFieldValue("goal_reivew_date", value, true)
+                setFieldValue("goal_review_date", value, true)
               }
               renderInput={(params) =>
                 <TextField required fullWidth {...params} sx={{ mb: 2 }} />}
