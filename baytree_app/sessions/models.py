@@ -34,4 +34,4 @@ class MentorSession(models.Model):
 class Venue(models.Model):
     """Contains all allowable venues on Views for session submission"""
 
-    viewsVenueId = models.IntegerField(null=True)
+    viewsVenueId = models.IntegerField(primary_key=True)

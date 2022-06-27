@@ -1,6 +1,8 @@
 # Code adapted from https://www.django-rest-framework.org/tutorial/quickstart/
 
 from rest_framework import serializers
+
+from baytree_app.serializers import BatchRestSerializer
 from .models import MentorSession, Venue
 
 
@@ -41,7 +43,10 @@ class SessionSerializer(serializers.ModelSerializer):
         )
 
 
-class SessionSerializer(serializers.ModelSerializer):
+class VenueSerializer(BatchRestSerializer):
+    viewsVenueId = serializers.IntegerField(read_only=False)
+    primary_key = "viewsVenueId"
+
     class Meta:
         model = Venue
         fields = ["viewsVenueId"]

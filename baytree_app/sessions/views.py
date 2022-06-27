@@ -2,6 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from sessions.serializers import VenueSerializer
+from sessions.models import Venue
+from baytree_app.views import BatchRestViewSet
 from users.permissions import AdminPermissions, userIsAdmin, userIsSuperUser
 from users.models import MentorUser
 from sessions.serializers import SessionSerializer
@@ -256,3 +259,22 @@ class ViewsAppSessionView(APIView):
             )
 
         return Response(response, status=200)
+
+
+class VenueViewSet(BatchRestViewSet):
+    queryset = Venue.objects.all()
+    serializer_class = VenueSerializer
+    model_class = Venue
+
+    def get_permissions(self):
+        if (
+            self.action == "create"
+            or self.action == "update"
+            or self.action == "partial_update"
+            or self.action == "destroy"
+        ):
+            permission_classes = [IsAuthenticated & AdminPermissions]
+        elif self.action == "list" or self.action == "retrieve":
+            permission_classes = [IsAuthenticated]
+
+        return [permission() for permission in permission_classes]
