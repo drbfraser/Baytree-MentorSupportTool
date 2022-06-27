@@ -4,7 +4,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl,
 import { useFormik } from "formik";
 import { FunctionComponent } from "react";
 import { toast } from "react-toastify";
-import { Goal, GoalInput, submitGoal } from "../../api/goals";
+import { Goal, GoalInput } from "../../api/goals";
 import useMentees from "../../hooks/useMentees";
 import Loading from "../shared/Loading";
 
@@ -12,13 +12,13 @@ const initialAnswer = (goal?: Goal) => {
   if (!goal) return {
     title: "",
     description: "",
-    goal_reivew_date: new Date(),
+    goal_review_date: new Date(),
     mentee_id: ""
   } as GoalInput;
   return {
     title: goal.title,
     description: goal.description,
-    goal_reivew_date: new Date(goal.goal_review_date),
+    goal_review_date: new Date(goal.goal_review_date),
     mentee_id: goal.mentee?.viewsPersonId || ""
   } as GoalInput
 }

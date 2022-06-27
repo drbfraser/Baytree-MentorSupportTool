@@ -1,4 +1,4 @@
-import { Alert } from "@mui/material";
+import { Alert, AlertTitle } from "@mui/material";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
@@ -27,7 +27,7 @@ const Goals: NextPage = () => {
     backendGet<Goal[]>("goals").then(data => {
       if (data) setGoals(data);
     }).catch(_err => {
-      setError("Cannot retrive goals")
+      setError("Cannot retrieve goals")
     }).finally(() => setLoading(false));
   }, []);
 
@@ -52,7 +52,10 @@ const Goals: NextPage = () => {
       </Box>
       <Box>
         <OverlaySpinner active={loading} />
-        {error && <Alert severity="error">{error}</Alert>}
+        {error && <Alert severity="error">
+          <AlertTitle>{error}</AlertTitle>
+          Please refresh the page or contact IT for assitance.
+          </Alert>}
         {!error && goals.filter(goalFilter).map(goal => {
           const handleExpansion = () => (goal.id === expanded) ? setExpanded(undefined) : setExpanded(goal.id);
           return <GoalListItem
