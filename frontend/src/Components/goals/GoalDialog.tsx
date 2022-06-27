@@ -44,7 +44,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
       const success = await handleSubmitGoal(answer, goal?.id);
       setSubmitting(false);
       if (!success) {
-        toast.error("Goal submitted unsuccessfully");
+        toast.error("Goal submitted unsuccessfully. Please try again");
         return;
       }
       toast.success("Goal submitted successfully");

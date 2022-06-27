@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { useState } from "react";
+import { Alert, AlertTitle, Box, Button, Stack, Typography } from "@mui/material";
+import { ReactText, useEffect, useState } from "react";
 import { Goal } from "../../api/goals";
 import useGoals from "../../hooks/useGoals";
 import useMentor from "../../hooks/useMentor";
@@ -12,8 +12,7 @@ import GoalsStatistics from "./GoalsStatistics";
 
 const Goals = () => {
   // Data state
-  const { loading, goals, handleSubmitGoal, handleCompleteGoal } = useGoals();
-  const { mentor, loadingMentor } = useMentor();
+  const { loading, goals, handleSubmitGoal, handleCompleteGoal, error } = useGoals();
   const [status, setStatus] = useState<Goal["status"] | undefined>();
 
   // Dialog state
@@ -33,7 +32,11 @@ const Goals = () => {
 
   const handleStatus = (status?: Goal["status"]) => setStatus(status);
 
-  if (loading || loadingMentor) return <Loading />;
+  if (loading) return <Loading />;
+  if (error) return <Alert severity="error">
+    <AlertTitle>{error}</AlertTitle>
+    Please refresh the page or contact adminstrator for assitance
+  </Alert>
 
   return <>
     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
