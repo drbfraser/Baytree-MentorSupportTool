@@ -29,3 +29,9 @@ class MentorSession(models.Model):
     def __str__(self):
         result = str(self.id) + ", " + self.mentor.email + ", " + self.mentee.email
         return result
+
+
+class Venue(models.Model):
+    """Contains all allowable venues on Views for session submission"""
+
+    viewsVenueId = models.IntegerField(null=True)

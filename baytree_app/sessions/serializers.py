@@ -1,7 +1,7 @@
 # Code adapted from https://www.django-rest-framework.org/tutorial/quickstart/
 
 from rest_framework import serializers
-from .models import MentorSession
+from .models import MentorSession, Venue
 
 
 class SessionSerializer(serializers.ModelSerializer):
@@ -39,3 +39,9 @@ class SessionSerializer(serializers.ModelSerializer):
             else validated_data.get("cancelled"),
             viewsSessionId=validated_data.get("cancelled"),
         )
+
+
+class SessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Venue
+        fields = ["viewsVenueId"]
