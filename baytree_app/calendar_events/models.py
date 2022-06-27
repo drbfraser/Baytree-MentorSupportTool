@@ -9,4 +9,3 @@ class CalendarEvent(models.Model):
   endDate = models.DateField()
   isAnnual = models.BooleanField()
   note = models.CharField(max_length=120, null=True)
-# TODO: rename HOLIDAY table to Calendar Event table

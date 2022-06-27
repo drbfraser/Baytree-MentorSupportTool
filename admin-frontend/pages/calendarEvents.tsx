@@ -5,7 +5,7 @@ import DataGrid from "../components/shared/datagrid/datagrid";
 import { 
     getCalendarEvents,
     saveCalendarEvents,
-    CalendarEvents,
+    CalendarEvent,
     createCalendarEvent,
     updateCalendarEvent,
     deleteCalendarEvent
@@ -31,7 +31,7 @@ const CalendarEvents: NextPage = () => {
     return calendarEvents;
   };
 
-  const saveCalendarEventData: onSaveDataRowsFunc<CalendarEvents> = async (
+  const saveCalendarEventData: onSaveDataRowsFunc<CalendarEvent> = async (
     createdCalendarEvents,
     updatedCalendarEvents,
     deletedCalendarEvents
