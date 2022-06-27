@@ -23,7 +23,7 @@ def get_sessions_by_volunteer(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
     params = { key: request.GET.get(key, None) for key in queryKeys }
     params["personId"] = mentors.first().viewsPersonId
-    params["descending"] = request.GET.get("descending", None) == "1"
+    params["descendingDate"] = request.GET.get("descendingDate", None) == "1"
     sessions = get_sessions(**params)
     return Response(sessions, status=status.HTTP_200_OK)
 
