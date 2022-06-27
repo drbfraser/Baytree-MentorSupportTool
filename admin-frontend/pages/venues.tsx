@@ -14,20 +14,32 @@ const MentorRoles: NextPage = () => {
     const venuesRes = (await getVenues()) as Venue[];
 
     if (venuesRes) {
-      return venuesRes;
+      return venuesRes.map((venue) => ({
+        id: venue.viewsVenueId, // need a separate id field for the grid primary key
+        viewsVenueId: venue.viewsVenueId,
+      }));
     } else {
       throw "Failed to retrieve venue data. Please refresh the page or contact IT if the issue persists.";
     }
   };
 
-  const saveVenueData: onSaveDataRowsFunc<Venue> = async (
-    createdRows: Venue[],
-    updatedRows: Venue[],
-    deletedRows: Venue[]
+  // Necessary since the venue primary key is editable and the grid won't work
+  type venueWithIdPrimaryKey = { id: number } & Venue;
+  const saveVenueData: onSaveDataRowsFunc<venueWithIdPrimaryKey> = async (
+    createdRows: venueWithIdPrimaryKey[],
+    updatedRows: venueWithIdPrimaryKey[],
+    deletedRows: venueWithIdPrimaryKey[]
   ) => {
     const result = await saveVenues([
       ...createdRows,
-      ...updatedRows,
+      // Updating a row is deleting the updated row and creating a new one
+      // since the primary key in this case for venues is editable
+      ...updatedRows.map((row) => ({ viewsVenueId: row.viewsVenueId })),
+      ...updatedRows.map((row) => ({
+        id: row.id,
+        viewsVenueId: row.id,
+        isDeleted: true,
+      })),
       ...deletedRows.map((row) => ({ ...row, isDeleted: true })),
     ]);
     return !!result;
@@ -49,7 +61,6 @@ const MentorRoles: NextPage = () => {
     <VenuesCard>
       <VenuesTitle variant="h5">Venues</VenuesTitle>
       <DataGrid
-        primaryKeyDataField="viewsVenueId"
         cols={[
           {
             header: "Venue",
