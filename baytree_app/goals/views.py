@@ -21,7 +21,6 @@ class GoalListCreateAPIView(
     ListCreateAPIView):
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
-    pagination_class = LimitOffsetPagination
 
     def get_queryset(self, *args, **kwargs):
       qs = super().get_queryset(*args, **kwargs)
