@@ -74,7 +74,7 @@ export interface Venue {
   name: string;
 }
 
-export const getVenues = async () => {
+export const getViewsVenues = async () => {
   try {
     const apiRes = await viewsApi.get<{ count: number; results: Venue[] }>(
       "/venues"
