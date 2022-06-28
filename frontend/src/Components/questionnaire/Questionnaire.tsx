@@ -23,7 +23,7 @@ const Questionnaire = () => {
     validateAnswerSet,
     mentees,
     errorMessage,
-    handleSubmitAnswerSet
+    handleSubmitAnswerSet,
   } = useQuestionnaire();
   return (
     <TitledContainer title="Monthly Progress Report">
@@ -38,12 +38,41 @@ const Questionnaire = () => {
           initialValues={initialAnswer}
           onSubmit={async (answer, { resetForm, setSubmitting }) => {
             setSubmitting(true);
-            const result = await handleSubmitAnswerSet(answer);
-            if (result) {
-              toast.success("Submitted successfully, thank you");
-              resetForm();
-            } else toast.error("Failed to submit, please try again");
-            setSubmitting(false);
+            const menteeResult = await handleSubmitAnswerSet(answer, "mentee");
+            if (menteeResult) {
+              const mentorResult = await handleSubmitAnswerSet(answer, "mentor");
+              if (mentorResult){
+                toast.success("Submitted successfully, thank you");
+                resetForm();
+              }
+              else {
+                const volunteerQuestionnaireSubmissionError = 
+                "Failed to submit Volunteer questionnaire. \
+                Views Volunteer and Participant questionnaires may now be inconsistent. \
+                Please contact the administrator to manually remove inconsistent \
+                questionnaire from Participant's profile before trying again.";
+                toast.error(volunteerQuestionnaireSubmissionError, {
+                  autoClose: false,
+                  hideProgressBar: true,
+                });
+                console.error(volunteerQuestionnaireSubmissionError)
+                // TODO: implement server logging
+
+                setSubmitting(false);
+              }
+            } else {
+              const questionnaireSubmissionError = 
+              "Failed to submit Participant questionnaire. \
+              Volunteer answer set not submitted.";
+              toast.error(questionnaireSubmissionError + " Please try again.",
+              {
+                autoClose: false,
+                hideProgressBar: true,
+              });
+              console.error(questionnaireSubmissionError)
+              // TODO: Implement server logging
+              setSubmitting(false);
+            }
           }}
         >
           {({ values, isSubmitting, handleChange }) => (

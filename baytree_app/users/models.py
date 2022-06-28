@@ -29,11 +29,17 @@ class MentorRole(models.Model):
     name = models.CharField(max_length=50, null=False)
     viewsSessionGroupId = models.IntegerField(null=True)
     viewsQuestionnaireId = models.IntegerField(null=True)
-    activity = models.CharField(max_length=150, null=False, default="")
     volunteeringType = models.CharField(max_length=150, null=False, default="")
 
     def __str__(self):
         return self.name
+
+
+class MentorRoleActivity(models.Model):
+    """Stores instances of activities from Views associated with mentor roles"""
+
+    mentorRole = models.ForeignKey("MentorRole", on_delete=models.CASCADE)
+    activity = models.CharField(max_length=150, null=False, default="")
 
 
 class MentorUser(models.Model):

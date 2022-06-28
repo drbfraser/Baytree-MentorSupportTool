@@ -6,6 +6,7 @@ import {
   MdAutoGraph,
   MdSupervisorAccount,
   MdEditCalendar,
+  MdLocationOn,
 } from "react-icons/md";
 import { NavbarModalComponent } from "./navbar";
 
@@ -25,6 +26,7 @@ const sidebarLinks: SidebarLink[] = [
   { url: "/notifications", title: "Notifications", icon: MdNotifications },
   { url: "/goals", title: "Goals", icon: MdAutoGraph },
   { url: "/mentorRoles", title: "Mentor Roles", icon: MdSupervisorAccount },
+  { url: "/venues", title: "Venues", icon: MdLocationOn },
   { url: "/calendarEvents", title: "Events", icon: MdEditCalendar },
 ];
 

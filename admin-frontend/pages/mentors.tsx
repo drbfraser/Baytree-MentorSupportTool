@@ -148,7 +148,7 @@ const Mentors: NextPage = () => {
             },
           ]}
           pageSize={PAGE_LIMIT}
-          disableDataRowCreation
+          disableDataRowCreation={true}
           primaryKeyDataField="user_id"
         ></DataGrid>
       </Paper>

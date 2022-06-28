@@ -11,18 +11,20 @@ export interface SessionFormData {
   notes: string;
   viewsVenueId: string | number;
   menteeViewsPersonId: string | number;
+  activity: string;
 }
 
 export const getInitialFormValues = () =>
-({
-  cancelled: false,
-  date: new Date(),
-  clockIn: new Date(),
-  clockOut: new Date(),
-  notes: "",
-  viewsVenueId: "",
-  menteeViewsPersonId: ""
-} as SessionFormData);
+  ({
+    cancelled: false,
+    date: new Date(),
+    clockIn: new Date(),
+    clockOut: new Date(),
+    notes: "",
+    viewsVenueId: "",
+    menteeViewsPersonId: "",
+    activity: ""
+  } as SessionFormData);
 
 export interface Mentee {
   id: number;
@@ -48,7 +50,8 @@ export const submitSession = async (data: SessionFormData) => {
     clockOut,
     notes,
     viewsVenueId,
-    menteeViewsPersonId
+    menteeViewsPersonId,
+    activity
   } = data;
 
   // Preprocess the data
@@ -66,7 +69,8 @@ export const submitSession = async (data: SessionFormData) => {
     duration: formatHM(hoursDuration, minutesDuration),
     notes,
     viewsVenueId,
-    menteeViewsPersonId
+    menteeViewsPersonId,
+    activity
   };
 
   try {
