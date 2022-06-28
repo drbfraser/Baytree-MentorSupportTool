@@ -20,6 +20,7 @@ import useMentees from "../../hooks/useMentees";
 import useVenues from "../../hooks/useVenues";
 import { getInitialFormValues, submitSession } from "./session";
 import { SelectInputContainer, TimeInputContainer } from "./Containers";
+import useActivities from "../../hooks/useActivities";
 
 const SessionForm = () => {
   const { venues, error: venuesLoadError } = useVenues();
@@ -44,16 +45,27 @@ const SessionForm = () => {
     }
   }, [menteesLoadError]);
 
+  const { activities, error: activitiesLoadError } = useActivities();
+  useEffect(() => {
+    if (activitiesLoadError) {
+      toast.error(
+        `Loading activity data failed. Reason: ${activitiesLoadError}. Please try refreshing or contact an administrator.`,
+        { autoClose: false }
+      );
+    }
+  }, [activitiesLoadError]);
+
   return (
     <>
       <TitledContainer title="Create Session">
-        {mentees && venues ? (
+        {mentees && venues && activities ? (
           <Formik
             initialValues={{
               ...getInitialFormValues(),
               menteeViewsPersonId:
                 mentees.length > 0 ? mentees[0].viewsPersonId : "",
-              viewsVenueId: venues.length > 0 ? venues[0].id : ""
+              viewsVenueId: venues.length > 0 ? venues[0].id : "",
+              activity: activities.length > 0 ? activities[0] : ""
             }}
             onSubmit={async (data, { setSubmitting, resetForm }) => {
               setSubmitting(true);
@@ -156,6 +168,8 @@ const SessionForm = () => {
                         labelId="Mentee"
                         name="menteeViewsPersonId"
                         required
+                        disabled={true}
+                        readOnly={true}
                         value={values.menteeViewsPersonId}
                         label="Mentee"
                         onChange={handleChange}
@@ -183,6 +197,22 @@ const SessionForm = () => {
                         ))}
                       </Select>
                     </SelectInputContainer>
+                    <SelectInputContainer label="Activity">
+                      <Select
+                        labelId="activity"
+                        name="activity"
+                        required
+                        value={values.activity}
+                        label="Activity"
+                        onChange={handleChange}
+                      >
+                        {activities.map((activity, i) => (
+                          <MenuItem key={i} value={activity}>
+                            {activity}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </SelectInputContainer>
                   </Grid>
                   <Divider />
                   {/* Submit Session Button */}
@@ -198,12 +228,16 @@ const SessionForm = () => {
               );
             }}
           </Formik>
-        ) : menteesLoadError || venuesLoadError ? (
+        ) : menteesLoadError || venuesLoadError || activitiesLoadError ? (
           <>
             <Typography>
               We're sorry, this page is not working at the moment. Please
               refresh or contact your administrator. Reason for error:{" "}
-              {menteesLoadError ? menteesLoadError : venuesLoadError}
+              {menteesLoadError
+                ? menteesLoadError
+                : venuesLoadError
+                ? venuesLoadError
+                : activitiesLoadError}
             </Typography>
           </>
         ) : (

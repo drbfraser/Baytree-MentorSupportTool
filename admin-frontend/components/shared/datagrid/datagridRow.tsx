@@ -71,6 +71,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                   ]
                 }
                 isSelectCell={col.onLoadValueOptions !== undefined}
+                isMultiSelect={col.isMultiSelect}
                 valueOptions={col.valueOptions}
                 value={
                   props.changedDataRow
@@ -202,6 +203,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                           ]
                         }
                         isSelectCell={col.onLoadValueOptions !== undefined}
+                        isMultiSelect={col.isMultiSelect}
                         valueOptions={col.valueOptions}
                         value={
                           props.changedDataRow

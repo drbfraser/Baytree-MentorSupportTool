@@ -24,7 +24,7 @@ export type AnswerSet = {
 export const submitAnswerSetForQuestionnaire = async (
   answerSet: AnswerSet,
   questionnaireId: number,
-  person: string,
+  person: string
 ) => {
   try {
     const respond = await baseApi.post("questionnaires/questionnaire/submit/", {
@@ -72,6 +72,19 @@ export const fetchSessionListByMentorId = async (id: number) => {
   return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data);
 };
 
+export type Activity = string;
+
+export const getActivitiesForMentor = async () => {
+  try {
+    const apiRes = await baseApi.get<Activity[]>(
+      "users/mentor-roles/activities"
+    );
+    if (apiRes.status === 200) return apiRes.data;
+    else return null;
+  } catch {
+    return null;
+  }
+};
 export interface Venue {
   viewsVenueId: number;
 }

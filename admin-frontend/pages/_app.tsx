@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import Navbar from "../components/shared/Navbar/navbar";
 import { useRouter } from "next/router";
-import { Component, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BODY_BACKGROUND,
   SIDEBAR_WIDTH,
@@ -18,7 +18,6 @@ import { NextComponentType, NextPageContext } from "next";
 import React from "react";
 import { ThemeProvider, Typography } from "@mui/material";
 import { logout, verify } from "../actions/auth/actionCreators";
-import OverlaySpinner from "../components/shared/overlaySpinner";
 import styled from "styled-components";
 import { basePath } from "../next.config";
 import { ToastContainer } from "react-toastify";
@@ -87,9 +86,7 @@ const PageChooser: React.FC<{
     <>
       <HeadTags />
       {router.pathname !== "/" && router.pathname !== "/index" ? (
-        isVerifyInProgress ? (
-          <OverlaySpinner active={isVerifyInProgress} onClick={() => {}} />
-        ) : !isAuthenticated ? (
+        !isVerifyInProgress && !isAuthenticated ? (
           <>
             <Typography variant="h4" padding="4rem">
               You do not have access to this page.

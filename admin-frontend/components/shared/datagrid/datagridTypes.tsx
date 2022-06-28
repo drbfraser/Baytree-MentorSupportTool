@@ -41,6 +41,7 @@ export interface DataGridColumn {
 
   valueOptions?: ValueOption[];
   onLoadValueOptions?: OnLoadColumnValueOptionsFunc;
+  isMultiSelect?: boolean;
   disableEditing?: boolean;
   enableSearching?: boolean;
   keepColumnOnMobile?: boolean;

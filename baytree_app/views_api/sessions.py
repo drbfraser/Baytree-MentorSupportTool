@@ -135,10 +135,17 @@ class SessionsApiView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        if "activity" not in request.data:
+            return Response(
+                {"errors": "activity must be provided."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         start_date = request.data["startDate"]
         start_time = request.data["startTime"]
         duration = request.data["duration"]
         views_venue_id = request.data["viewsVenueId"]
+        activity = request.data["activity"]
 
         # Get mentor's mentor role
         mentor_role = mentor_user.mentorRole
@@ -186,7 +193,7 @@ class SessionsApiView(APIView):
             start_time,
             duration,
             0,
-            mentor_role.activity,
+            activity,
             mentor_user.viewsPersonId,
             views_venue_id,
         )

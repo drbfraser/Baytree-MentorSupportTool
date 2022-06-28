@@ -26,7 +26,7 @@ export const SelectInputContainer: FunctionComponent<{ label: string }> = ({
   children
 }) => {
   return (
-    <Grid container item xs={12} sm={6} alignItems="center">
+    <Grid container item xs={12} sm={4} alignItems="center">
       <Grid item xs={5} sm={12}>
         <Typography sx={{ fontWeight: "bold" }} color="text.secondary">
           {label}

@@ -18,6 +18,7 @@ from .views import (
     MentorRoleViewSet,
     MentorUserViewSet,
     StatisticViews,
+    getActivitiesForMentor,
     postUser,
     resetAccountPassword,
     sendAccountCreationEmail,
@@ -63,4 +64,5 @@ urlpatterns = [
     path("sendResetPasswordEmail", sendResetPasswordEmail),
     path("mentors/createAccount", createMentorAccount),
     path("resetPassword", resetAccountPassword),
+    path("mentor-roles/activities", getActivitiesForMentor),
 ]

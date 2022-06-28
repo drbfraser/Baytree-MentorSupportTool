@@ -14,6 +14,7 @@ from emails.email import generateEmailTemplateHtml
 from .models import (
     AccountCreationLink,
     MentorRole,
+    MentorRoleActivity,
     ResetPasswordLink,
     CustomUser,
     MentorUser,
@@ -644,3 +645,27 @@ def resetAccountPassword(request):
             {"error": "Failed to create mentor account"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
+
+@api_view(["GET"])
+def getActivitiesForMentor(request):
+    mentorUser = MentorUser.objects.all().filter(user_id=request.user.id)
+    if not mentorUser.exists():
+        return Response(
+            {"error": "Mentor does not exist with the given id"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    mentorRole = mentorUser.first().mentorRole
+    if not mentorRole:
+        return Response(
+            {"error": "Mentor does not have mentor role set"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    mentorRoleActivities = MentorRoleActivity.objects.filter(mentorRole=mentorRole)
+
+    return Response(
+        [mentorRoleActivity.activity for mentorRoleActivity in mentorRoleActivities],
+        status=status.HTTP_200_OK,
+    )
