@@ -23,6 +23,7 @@ from xmlrpc.client import DateTime
 from datetime import date, datetime
 from django.utils.timezone import make_aware
 
+
 @api_view(("GET",))
 @permission_classes((AllowAny,))
 def logout_view(request):
@@ -196,9 +197,9 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         else:
             response.data["is_mentor"] = False
 
-        response.data['is_superuser'] = user.is_superuser
+        response.data["is_superuser"] = user.is_superuser
 
-        response.data['last_login'] = user.last_login
+        response.data["last_login"] = user.last_login
         user.last_login = make_aware(datetime.now())
         user.save()
 
@@ -411,21 +412,25 @@ class GenerateCrudEndpointsForModel(APIView):
 
 
 class BatchRestViewSet(viewsets.ModelViewSet):
-    """Custom viewset that allows batch updates (create, update, delete) of multiple
-    objects via a POST endpoint. Inherits from the ModelViewSet
-    which also provides REST functionality.
-    Must provide a 'model_instance' class field which contains a Model instance.
-    Must use a serializer of type BatchRestSerializer."""
+    """Custom viewset that allows batched create, read, and update operations
+    for multiple objects via a single call to a POST endpoint. Inherits from
+    the ModelViewSet which also provides standard REST CRUD endpoints.
+    The Derived class of BatchRestViewSet must set a 'model_class'
+    instance field which contains the model class to create CRUD endpoints
+    for. The Derived class must also use a serializer of type BatchRestSerializer."""
 
     def create(self, request, *args, **kwargs):
-        """Overridden POST Method for batch updating/creating arrays of objects
-        Deleted rows must include an "isDeleted" field
-        Changed rows must include the original row id
-        Created rows must not have an id"""
+        """Overridden POST Method for batch updating/creating/deleting
+        arrays of objects.
+
+        Deleted rows must include an "isDeleted" field set to true.
+        Changed rows must include the original row id.
+        Created rows must not have an id."""
 
         if isinstance(request.data, list):
             for data_row in request.data:
                 if "isDeleted" in data_row:
+                    # Delete objects
                     if "id" not in data_row:
                         Response(
                             "No id was found for deleted row.",
@@ -442,6 +447,7 @@ class BatchRestViewSet(viewsets.ModelViewSet):
 
                     object.delete()
                 else:
+                    # Create and update objects
                     serializer = self.serializer_class(data=data_row, partial=True)
                     if serializer.is_valid():
                         serializer.save()
@@ -452,4 +458,4 @@ class BatchRestViewSet(viewsets.ModelViewSet):
                         )
             return Response("Successfully batch updated.", status=status.HTTP_200_OK)
         else:
-            return super(self.model_instance, self).create(request, *args, **kwargs)
+            return super(viewsets.ModelViewSet, self).create(request, *args, **kwargs)
