@@ -1,19 +1,24 @@
-from users.models import CustomUser
 from rest_framework import serializers
 from .models import Goal
-
-class MentorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['id', 'email']
+from users.serializers import MentorSerializer
 
 class GoalSerializer(serializers.ModelSerializer):
-    mentor = MentorSerializer()
+    mentor = MentorSerializer(read_only=True)
+    mentee = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Goal
-        fields = ['id', 'mentor', 'mentee', 'title', 'date', 'goal_review_date', 'last_update_date', 'content', 'status']
-
-class GoalSerializerPost(serializers.ModelSerializer):
-    class Meta:
-        model = Goal
-        fields = ['id', 'mentor', 'mentee', 'title', 'date', 'goal_review_date', 'last_update_date', 'content', 'status']
+        fields = [
+            'id', 
+            'mentor',
+            'mentee_id',
+            'mentee', 
+            'title', 
+            'creation_date', 
+            'goal_review_date', 
+            'last_update_date', 
+            'description', 
+            'status',
+        ]
+    
+    def get_mentee(self, obj):
+        return obj.get_mentee()

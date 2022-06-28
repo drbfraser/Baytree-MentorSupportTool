@@ -1,102 +1,32 @@
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import TimelineDot from "@mui/lab/TimelineDot";
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { fetchAllGoals } from "../../api/goals";
+import { Box, Typography } from "@mui/material";
+import { FunctionComponent, useState } from "react";
+import { Goal } from "../../api/goals";
+import GoalListItem from "./GoalListItem";
 
-export default function Goals() {
-  const [goals, setGoals] = useState([] as any[]);
-  const [goalType] = useState("IN PROGRESS");
-  const [expanded, setExpanded] = React.useState("");
-
-  const fetchGoals = () => {
-    fetchAllGoals()
-      .then(setGoals)
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
-  useEffect(() => {
-    fetchGoals();
-  }, []);
-
-  const handleChange1 = (panel: any) => (_event: any, isExpanded: any) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
-  return (
-    <>
-      <Typography
-        component="h2"
-        variant="button"
-        sx={{ fontSize: 16 }}
-        color="text.secondary"
-        gutterBottom
-        style={{ marginTop: "24px" }}
-      >
-        Active Goals
-      </Typography>
-      <Grid container style={{ marginTop: "8px" }}>
-        {Object.values(goals).map((data) =>
-          data.status === goalType ? (
-            <Accordion
-              key={data.id}
-              expanded={expanded === data.id}
-              onChange={handleChange1(data.id)}
-              style={{ width: "100%" }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1bh-content"
-                id="panel1bh-header"
-              >
-                <Typography variant="h6" sx={{ width: "65%", flexShrink: 0 }}>
-                  {data.title}
-                </Typography>
-                <Typography sx={{ color: "text.secondary", margin: "6px" }}>
-                  {data.status}
-                </Typography>
-                <TimelineDot color="error" sx={{ backgroundColor: "red" }} />
-              </AccordionSummary>
-              <AccordionDetails>
-                <Card sx={{ minWidth: 275 }}>
-                  <CardContent>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      Goal Review Date
-                    </Typography>
-                    <Typography variant="body2" gutterBottom>
-                      {moment(data.goal_review_date).format(
-                        "dddd, MMMM Do YYYY"
-                      )}{" "}
-                      <br />
-                    </Typography>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      Goal Description
-                    </Typography>
-                    <Typography variant="body2">{data.content}</Typography>
-                  </CardContent>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          ) : null
-        )}
-      </Grid>
-    </>
-  );
+type Props = {
+  goals: Goal[];
+  openDialog: (goal?: Goal) => void;
+  handleComplete: (goal: Goal) => Promise<boolean>
 }
+
+const GoalsList: FunctionComponent<Props> = ({ goals, openDialog, handleComplete }) => {
+  if (goals.length === 0) {
+    return <Typography variant="h6" sx={{ mt: 3, textAlign: "center" }}>No goals found</Typography>
+  }
+
+  const [selected, setSelected] = useState<number | undefined>(undefined);
+
+  return <Box sx={{ mt: 3 }}>
+    {goals.map(goal => {
+      return <GoalListItem
+        goal={goal}
+        key={goal.id}
+        expanded={selected === goal.id}
+        handleClick={() => selected === goal.id ? setSelected(undefined) : setSelected(goal.id)}
+        handleEdit={() => openDialog(goal)}
+        handleComplete={() => handleComplete(goal)} />
+    })}
+  </Box>
+}
+
+export default GoalsList;
