@@ -32,7 +32,7 @@ const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
       // remove any values that don't have a value in props.valueOptions
       // this is typically a cause of a valueOption being removed
       const existingValues = value.filter((val: any) =>
-        props.valueOptions.includes(val)
+        props.valueOptions.some((valOption) => valOption.id === val)
       );
 
       setValue(existingValues);
