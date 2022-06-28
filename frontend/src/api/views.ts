@@ -18,7 +18,7 @@ export const dummyUser: User = {
   email: ""
 };
 
-const viewsApi = axios.create({
+export const viewsApi = axios.create({
   baseURL: `${API_BASE_URL}/views-api`,
   withCredentials: true,
   headers: {

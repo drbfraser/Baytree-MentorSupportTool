@@ -383,7 +383,15 @@ export const createDataRow = (
   primaryKeyDataField: string
 ) => {
   const newDataRow: DataRow = {};
-  columns.forEach((col) => (newDataRow[col.dataField] = ""));
+  columns.forEach((col) => {
+    if (col.dataType === "boolean") {
+      // New data rows should have boolean fields set to false
+      newDataRow[col.dataField] = false;
+    } else {
+      // Every other type of data field for a data row should be empty string
+      newDataRow[col.dataField] = "";
+    }
+  });
   newDataRow[primaryKeyDataField] = `created_${rowId}`;
   setCreatedDataRows([...createdDataRows, newDataRow]);
 };

@@ -99,9 +99,10 @@ def get_participants(ids=None, limit: int = 5, offset: int = 0):
 def get_participant_by_id(id):
     url = f"{participants_base_url}{id}.json"
     response = requests.get(url, auth=(views_username, views_password))
+    if response.status_code != 200: return None
     json = response.json()
     data = { newKey: json[oldKey] for (oldKey, newKey) in zip(participantFields, participantTranslateFields)}
-    return Response(data, status=status.HTTP_200_OK)
+    return data
 
 
 def parse_participants(response):
