@@ -16,7 +16,7 @@ api_patterns = [
     path('users/', include('users.urls')),
     path('questionnaires/', include('questionnaires.urls')),
     path('views-api/', include('views_api.urls')),
-    path('goals/', include('goals.urls')),
+    path('goals', include('goals.urls')),
     path('calendar_events/', include('calendar_events.urls')),
     path('notifications/', include('notifications.urls')),
     path('token/', CookieTokenObtainPairView.as_view()),

@@ -4,7 +4,7 @@ from users.permissions import MentorPermissions
 from users.models import MentorRole
 from users.models import MentorUser
 
-from sessions.permissions import userIsAdmin, userIsSuperUser
+from users.permissions import userIsAdmin, userIsSuperUser
 from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework import status
