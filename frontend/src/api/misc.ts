@@ -71,3 +71,19 @@ export interface Session {
 export const fetchSessionListByMentorId = async (id: number) => {
   return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data);
 };
+
+export interface Venue {
+  viewsVenueId: number;
+}
+
+export const fetchVenues = async () => {
+  try {
+    const venues = await baseApi.get<Venue[]>(`sessions/venues/`);
+    if (venues.status != 200 || !venues.data) {
+      return null;
+    }
+    return venues.data;
+  } catch {
+    return null;
+  }
+};
