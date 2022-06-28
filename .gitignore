@@ -225,3 +225,7 @@ lib/generated_plugin_registrant.dart
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+# Build products from Docker
+admin_frontend_build.tar.gz
+frontend_build.tar.gz

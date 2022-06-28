@@ -53,7 +53,7 @@ export const verifyFetch = async () => {
 
 export const refreshAccessToken = async () => {
   try {
-    const apiRes = await authApi.post("refresh");
+    const apiRes = await authApi.post("refresh/");
     return apiRes.status === 200;
   } catch (err) {
     return false;

@@ -17,7 +17,8 @@
         root * /var/www/admin-frontend
 
         # If there is a 404, serve index.html (required for React)
-        try_files {path} index.html
+        # Match <page>.html files when just <page> is used
+        try_files {path} {path}.html index.html
     }
 
     handle {
