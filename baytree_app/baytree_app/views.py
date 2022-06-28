@@ -437,7 +437,7 @@ class BatchRestViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_400_BAD_REQUEST,
                         )
 
-                    object = self.model_instance.objects.filter(pk=data_row["id"])
+                    object = self.model_class.objects.filter(pk=data_row["id"])
 
                     if not object.exists():
                         return Response(

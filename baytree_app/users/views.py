@@ -45,7 +45,7 @@ class MentorRoleViewSet(BatchRestViewSet):
     queryset = MentorRole.objects.all().order_by("name")
     serializer_class = MentorRoleSerializer
     filterset_fields = {"name": ["icontains", "exact"]}
-    model_instance = MentorRole
+    model_class = MentorRole
 
     def get_permissions(self):
         if (
@@ -67,7 +67,7 @@ class MentorUserViewSet(BatchRestViewSet):
     queryset = MentorUser.objects.all()
     serializer_class = MentorSerializer
     permission_classes = [IsAuthenticated & (AdminPermissions | MentorOwnerPermissions)]
-    model_instance = MentorUser
+    model_class = MentorUser
 
     def list(self, request, *args, **kwargs):
         should_join_views_volunteers = request.GET.get("joinViews", None)
