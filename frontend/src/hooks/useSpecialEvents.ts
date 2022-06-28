@@ -1,9 +1,9 @@
 import { EventInput } from "@fullcalendar/react";
 import { useEffect, useMemo, useState } from "react";
-import { fetchHolidays, Holiday } from "../api/misc";
+import { fetchSpecialEvents, SpecialEvent } from "../api/misc";
 import { EVENT_TYPE } from "./useSessionEvents";
 
-const holidayToEvent = (holiday: Holiday) => {
+export const toCalanderEvent = (holiday: SpecialEvent) => {
   return {
     id: `${EVENT_TYPE.HOLIDAY}-${holiday.id}`,
     title: holiday.title,
@@ -17,26 +17,20 @@ const holidayToEvent = (holiday: Holiday) => {
   } as EventInput;
 };
 
-const useHolidayEvents = () => {
-  const [loadingHoliday, setLoadingHoliday] = useState(true);
-  const [holidays, setHolidays] = useState([] as Holiday[]);
+const useSpecialEvents = () => {
+  const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState([] as SpecialEvent[]);
   const [error, setError] = useState("");
-  
+
   useEffect(() => {
-    fetchHolidays()
+    fetchSpecialEvents()
       .then(({ data, error }) => {
         if (error) setError(error);
-        else setHolidays(data)
-      }).finally(() => setLoadingHoliday(false));
+        else setEvents(data)
+      }).finally(() => setLoading(false));
   }, []);
 
-  const holidayEvents = useMemo(() => {
-    return [
-      ...holidays.map(holidayToEvent)
-    ];
-  }, [holidays]);
-
-  return {loadingHoliday, holidays, holidayEvents, holidayError: error}
+  return { loadingSpecialEvents: loading, specialEvents: events, specialEventError: error }
 };
 
-export default useHolidayEvents;
+export default useSpecialEvents;
