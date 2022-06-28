@@ -1,15 +1,25 @@
 import log from 'loglevel';
-var remote = require('loglevel-plugin-remote');
+import remote from 'loglevel-plugin-remote';
 
-const customJSON = (log: { message: any; level: { label: any; }; stacktrace: any; }) => ({
+const logJsonFormat = (log: { message: any; level: { label: any; }; timestamp: any; stacktrace: any; }) => ({
  msg: log.message,
  level: log.level.label,
+ timetamp: log.timestamp,
  stacktrace: log.stacktrace
 });
 
-remote.apply(log, { format: customJSON, url: '/logger' });
-
 log.enableAll();
 
-log.info('Message one');
-log.warn('Message two');
+const loggingBackendEndpoint = `logging/`;
+
+remote.apply(log, { 
+    format: logJsonFormat,
+    method: 'POST', 
+    url: loggingBackendEndpoint 
+});
+
+export default log;
+
+// log.enableAll();
+
+// TODO: TEST THIS
