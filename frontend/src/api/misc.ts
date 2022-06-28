@@ -23,12 +23,14 @@ export type AnswerSet = {
 
 export const submitAnswerSetForQuestionnaire = async (
   answerSet: AnswerSet,
-  questionnaireId: number
+  questionnaireId: number,
+  person: string,
 ) => {
   try {
     const respond = await baseApi.post("questionnaires/questionnaire/submit/", {
       answerSet,
-      questionnaireId
+      questionnaireId,
+      person
     });
     if (respond.status === 200) return respond;
     else throw Error;
