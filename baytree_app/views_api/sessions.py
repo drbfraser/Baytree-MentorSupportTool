@@ -135,10 +135,17 @@ class SessionsApiView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        if "activity" not in request.data:
+            return Response(
+                {"errors": "activity must be provided."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         start_date = request.data["startDate"]
         start_time = request.data["startTime"]
         duration = request.data["duration"]
         views_venue_id = request.data["viewsVenueId"]
+        activity = request.data["activity"]
 
         # Get mentor's mentor role
         mentor_role = mentor_user.mentorRole
@@ -186,7 +193,7 @@ class SessionsApiView(APIView):
             start_time,
             duration,
             0,
-            mentor_role.activity,
+            activity,
             mentor_user.viewsPersonId,
             views_venue_id,
         )
@@ -335,7 +342,7 @@ def get_sessions(
     startDateFrom: str = None,
     startDateTo: str = None,
     personId=None,
-    descending=False
+    descendingDate=False
 ):
     """
     Gets sessions from Views API.
@@ -356,7 +363,7 @@ def get_sessions(
 
     # In the case of requesting in reversed order with pagination
     # Process the limit and offset params before sending to Views
-    if descending and limit is not None:
+    if descendingDate and limit is not None:
         # Dummy API call to get the total number of records
         dummyParams = params.copy()
         dummyParams["pageFold"] = 1
@@ -370,7 +377,7 @@ def get_sessions(
         parsed = xmltodict.parse(dummyResponse.text)
         count = int(parsed["sessions"]["@count"])
 
-        # Preprocess the API
+        # Process limit and offset before sending to view API
         limit = int(limit)
         if offset is None: offset = 0
         else: offset = int(offset)
@@ -382,9 +389,9 @@ def get_sessions(
             return {"count": count, "results": []}
         params["pageFold"] = limit
         params["offset"] = offset
-        print(params)
 
     # Real API call to Views
+    # The sessions is always sorted by creation date in ascending order
     response = requests.get(
         request_url,
         params=params,
@@ -397,7 +404,7 @@ def get_sessions(
 
     # Handle edge case where no sessions were returned from views
     if parsed["sessions"]["@count"] == "0":
-        return {"count": parsed["sessions"]["@count"], "results": []}
+        return {"count": 0, "results": []}
 
     parsed_session_list = parsed["sessions"]["session"]
     if not isinstance(parsed_session_list, list):
@@ -411,7 +418,7 @@ def get_sessions(
         for session in parsed_session_list
     ]
     
-    if descending: sessions.reverse()
+    if descendingDate: sessions.reverse()
 
     return {"count": int(parsed["sessions"]["@count"]), "results": sessions}
 

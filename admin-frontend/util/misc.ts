@@ -31,3 +31,17 @@ export const padLeftString = (padChar: string, width: number, str: string) => {
   const padding = Array(1 + width - str.length).join(padChar);
   return padding + str;
 };
+
+// Doesn't work for nested arrays, objects, shallow equality is used
+// Side effect: sorts the arrays
+export const arraysEqual = (a1: Array<any>, a2: Array<any>) => {
+  if (a1 === a2) {
+    return true;
+  } else if (a1.length === a2.length) {
+    a1.sort();
+    a2.sort();
+    return a1.every((val, i) => val === a2[i]);
+  } else {
+    return false;
+  }
+};

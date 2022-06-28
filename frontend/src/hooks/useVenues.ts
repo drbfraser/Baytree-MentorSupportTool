@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getVenues, Venue } from "../api/views";
+import { fetchVenues } from "../api/misc";
+import { getViewsVenues, Venue } from "../api/views";
 
 /** Get venue list on views from the backend
  * @returns
@@ -12,13 +13,24 @@ const useVenues = () => {
 
   const getVenueData = async () => {
     try {
-      const venues = await getVenues();
-      if (!venues.data) {
+      const viewsVenues = await getViewsVenues();
+      if (!viewsVenues.data) {
         setError("FAIL_LOAD_VENUES_ENDPOINT");
         return;
       }
 
-      setVenues(venues.data);
+      const venues = await fetchVenues();
+      if (!venues) {
+        setError("FAIL_LOAD_VENUES_ENDPOINT");
+        return;
+      }
+
+      // Only allow mentor selection of venues which are were selected in admin portal
+      const allowedVenues = viewsVenues.data.filter((viewsVenue) =>
+        venues.some((venue) => venue.viewsVenueId === viewsVenue.id)
+      );
+
+      setVenues(allowedVenues);
     } catch {
       setError("FAIL_LOAD_EXCEPTION");
     }

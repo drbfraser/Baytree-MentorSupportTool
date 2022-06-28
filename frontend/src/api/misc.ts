@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_BASE_URL } from "./url";
 
-const baseApi = axios.create({
+export const baseApi = axios.create({
   baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
   withCredentials: true
@@ -23,12 +23,14 @@ export type AnswerSet = {
 
 export const submitAnswerSetForQuestionnaire = async (
   answerSet: AnswerSet,
-  questionnaireId: number
+  questionnaireId: number,
+  person: string
 ) => {
   try {
     const respond = await baseApi.post("questionnaires/questionnaire/submit/", {
       answerSet,
-      questionnaireId
+      questionnaireId,
+      person
     });
     if (respond.status === 200) return respond;
     else throw Error;
@@ -89,3 +91,31 @@ export const fetchHolidays = async () => {
     return {data: [] as Holiday[], error: "Cannot fetch holidays data"}
   }
 }
+export type Activity = string;
+
+export const getActivitiesForMentor = async () => {
+  try {
+    const apiRes = await baseApi.get<Activity[]>(
+      "users/mentor-roles/activities"
+    );
+    if (apiRes.status === 200) return apiRes.data;
+    else return null;
+  } catch {
+    return null;
+  }
+};
+export interface Venue {
+  viewsVenueId: number;
+}
+
+export const fetchVenues = async () => {
+  try {
+    const venues = await baseApi.get<Venue[]>(`sessions/venues/`);
+    if (venues.status != 200 || !venues.data) {
+      return null;
+    }
+    return venues.data;
+  } catch {
+    return null;
+  }
+};

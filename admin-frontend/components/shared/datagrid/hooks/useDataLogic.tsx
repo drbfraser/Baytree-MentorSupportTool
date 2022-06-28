@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, MutableRefObject } from "react";
 import { toast } from "react-toastify";
+import { arraysEqual } from "../../../../util/misc";
 import {
   DataGridColumn,
   ValueOption,
@@ -220,11 +221,13 @@ const validateDataRows = (
 
   for (const dataRow of dataRows) {
     for (const col of cols) {
+      const val = dataRow[col.dataField];
+
       if (
         (col.isRequired || col.isRequired === undefined) &&
         col.dataType !== "boolean" &&
-        !dataRow[col.dataField] &&
-        !col.disableEditing
+        !col.disableEditing &&
+        (!val || (Array.isArray(val) && val.length === 0))
       ) {
         invalidCells.push({
           primaryKey: dataRow[primaryKeyDataField],
@@ -328,7 +331,11 @@ export const setChangedDataRow = (
 
 export const areDataRowsEqual = (dataRow1: DataRow, dataRow2: DataRow) => {
   for (const key in dataRow1) {
-    if (dataRow1[key] !== dataRow2[key]) {
+    const isArray = Array.isArray(dataRow1[key]);
+
+    if (isArray && !arraysEqual(dataRow1[key], dataRow2[key])) {
+      return false;
+    } else if (!isArray && dataRow1[key] !== dataRow2[key]) {
       return false;
     }
   }
@@ -383,7 +390,15 @@ export const createDataRow = (
   primaryKeyDataField: string
 ) => {
   const newDataRow: DataRow = {};
-  columns.forEach((col) => (newDataRow[col.dataField] = ""));
+  columns.forEach((col) => {
+    if (col.dataType === "boolean") {
+      // New data rows should have boolean fields set to false
+      newDataRow[col.dataField] = false;
+    } else {
+      // Every other type of data field for a data row should be empty string
+      newDataRow[col.dataField] = "";
+    }
+  });
   newDataRow[primaryKeyDataField] = `created_${rowId}`;
   setCreatedDataRows([...createdDataRows, newDataRow]);
 };

@@ -1,57 +1,44 @@
-from datetime import datetime
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework import filters
-from rest_framework import generics
+from django.http import Http404
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.pagination import LimitOffsetPagination
+from users.models import MentorUser
+from users.permissions import userIsAdmin, userIsSuperUser
 
-from .serializers import GoalSerializer, GoalSerializerPost
 from .models import Goal
-from .permissions import *
+from .serializers import GoalSerializer
 
-#adapted from https://stackabuse.com/creating-a-rest-api-with-django-rest-framework/
 
-class GoalViews(generics.ListAPIView):
+class MentorGoalQuerySetMixin():  
+  def get_queryset(self, *args, **kwargs):
+    qs = super().get_queryset(*args, **kwargs)
+    user = self.request.user
+    if userIsAdmin(user) or userIsSuperUser(user): return qs
+    return qs.filter(mentor__user_id=user.id)
 
-    permission_classes = [IsOwner]
-
+# GET, POST /api/goals/
+class GoalListCreateAPIView(
+    MentorGoalQuerySetMixin,
+    ListCreateAPIView):
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
-    filter_backends = [filters.OrderingFilter]
-    ordering_fields = ['mentee', 'title', 'date', 'goal_review_date', 'status', 'last_update_date']
 
-    def get(self, request):
-        mentor_id = request.GET.get('mentor_id', None)
+    def get_queryset(self, *args, **kwargs):
+      qs = super().get_queryset(*args, **kwargs)
+      active = self.request.query_params.get('active')
+      if active is not None: qs = qs.filter(status="IN PROGRESS")
+      completed = self.request.query_params.get('completed')
+      if completed is not None: qs = qs.filter(status="ACHIEVED")
+      return qs
 
-        if mentor_id is not None:
-            try:
-                queryset = Goal.objects.prefetch_related('mentor').filter(mentor=mentor_id).order_by('-date')
-            except Goal.DoesNotExist:
-                return Response([], status=200)
-            read_serializer = GoalSerializer(queryset, many=True)
-        else:
-            queryset = Goal.objects.all()
-            read_serializer = GoalSerializer(queryset, many=True)
-        return Response(read_serializer.data)
+    def perform_create(self, serializer):
+        mentors = MentorUser.objects.filter(user_id=self.request.user.id)
+        if mentors is None: raise Http404() 
+        return serializer.save(mentor=mentors.first())
 
-    def post(self, request):
-        print(request.data)
-        serializer = GoalSerializerPost(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
-        else:
-            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-     
-    def patch(self, request, id=None):
-        item = Goal.objects.get(id=id)
-        serializer = GoalSerializerPost(item, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"status": "success", "data": serializer.data})
-        else:
-            return Response({"status": "error", "data": serializer.errors})
-
-    def delete(self, request, id=None):
-        item = Goal.objects.get(id=id)
-        item.delete()
-        return Response({"status": "success", "data": "Item Deleted"})
+# GET, PUT, PATCH, DELETE /api/goals/<id>
+class GoalRetrieveUpdateDestroyAPIView(
+    MentorGoalQuerySetMixin,
+    RetrieveUpdateDestroyAPIView):
+    queryset = Goal.objects.all()
+    serializer_class = GoalSerializer
+    lookup_field = 'pk'

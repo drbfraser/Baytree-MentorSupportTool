@@ -136,6 +136,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
           pageSize={props.pageSize}
           createDataRow={createDataRow}
           invalidCells={invalidCells}
+          disableDataRowCreation={props.disableDataRowCreation}
         ></DataGridBody>
       </Table>
       {props.pageSize && (
