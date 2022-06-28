@@ -1,5 +1,5 @@
 import { Select, MenuItem, Checkbox } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { ValueOption } from "./datagridTypes";
 
 export interface DataGridSelectComponentProps {
@@ -8,7 +8,7 @@ export interface DataGridSelectComponentProps {
   idNumber: number;
   value: any;
   onChangedValue: (newValue: any) => void;
-  valueOptions?: ValueOption[];
+  valueOptions: ValueOption[];
   isMultiSelect?: boolean;
 }
 
@@ -25,14 +25,31 @@ const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
   };
 
   const getOptionName = (id: any) =>
-    props.valueOptions?.find((opt) => opt.id === id)?.name ?? "";
+    props.valueOptions.find((opt) => opt.id === id)?.name ?? id;
+
+  useEffect(() => {
+    if (isMultiSelect) {
+      // remove any values that don't have a value in props.valueOptions
+      // this is typically a cause of a valueOption being removed
+      const existingValues = value.filter((val: any) =>
+        props.valueOptions.includes(val)
+      );
+
+      setValue(existingValues);
+    } else {
+      if (!props.valueOptions.find((opt) => opt.id === value)) {
+        // Field value doesn't correspond to any value option
+        setValue("");
+      }
+    }
+  }, []);
 
   return (
     <Select
       key={`select_datarow_${props.primaryKeyVal}_col_${props.dataField}_selectRef${props.idNumber}`}
       fullWidth
       multiple={isMultiSelect}
-      defaultValue={props.value ?? ""}
+      value={value}
       onChange={(event) => {
         const newValue = event.target.value;
         props.onChangedValue(newValue);
