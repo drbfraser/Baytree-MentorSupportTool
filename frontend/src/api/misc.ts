@@ -69,3 +69,17 @@ export interface Session {
 export const fetchSessionListByMentorId = async (id: number) => {
   return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data);
 };
+
+export type Activity = string;
+
+export const getActivitiesForMentor = async () => {
+  try {
+    const apiRes = await baseApi.get<Activity[]>(
+      "users/mentor-roles/activities"
+    );
+    if (apiRes.status === 200) return apiRes.data;
+    else return null;
+  } catch (err) {
+    return null;
+  }
+};
