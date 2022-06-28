@@ -16,7 +16,7 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { fetchSessionListByMentorId } from "../../api/misc";
 import { useAuth } from "../../context/AuthContext";
-import Holidays from "../../Utils/Holidays";
+import CalendarEvents from "../../Utils/CalendarEvents";
 
 type Props = {
   height: string;
@@ -95,7 +95,7 @@ const Scheduler: React.FC<Props> = ({ height }) => {
       <Card sx={{ boxShadow: 2, p: 3, mb: 3 }} style={{ height: height }}>
         <Calendar
           localizer={localizer}
-          events={[...sessionList, ...Holidays]}
+          events={[...sessionList, ...CalendarEvents]}
           onSelectEvent={handleEventClick}
         />
       </Card>
