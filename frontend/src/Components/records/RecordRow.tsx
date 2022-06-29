@@ -1,4 +1,4 @@
-import { TableRow, TableCell, Chip } from "@mui/material";
+import { Chip, TableCell, TableRow } from "@mui/material";
 import { addMinutes, format } from "date-fns";
 import { FunctionComponent } from "react";
 import { SessionRecord } from "../../api/records";
