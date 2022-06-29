@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_BASE_URL } from "./url";
 
-const recordsApi = axios.create({
+export const recordsApi = axios.create({
   baseURL: `${API_BASE_URL}/records/`,
   withCredentials: true,
   headers: {
