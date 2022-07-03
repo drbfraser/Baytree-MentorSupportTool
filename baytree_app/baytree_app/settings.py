@@ -29,19 +29,28 @@ else:
     CORS_ALLOW_ALL_ORIGINS = False
     USE_X_FORWARDED_HOST = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-    LOGGING = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "handlers": {
-            "console": {
-                "class": "logging.StreamHandler",
-            },
-        },
-        "root": {
-            "handlers": ["console"],
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
             "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/server.log"),
         },
-    }
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file", "console"],
+            "level": "WARNING",
+            "propagate": True,
+        },
+    },
+}
 
 # Application definition
 
@@ -68,7 +77,8 @@ INSTALLED_APPS = [
     "django_filters",
     "views_api",
     "records",
-    "holidays"
+    "holidays",
+    "app_logging"
 ]
 
 
