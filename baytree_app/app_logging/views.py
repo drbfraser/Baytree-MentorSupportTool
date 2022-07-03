@@ -1,5 +1,5 @@
 import logging
-
+import datetime
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import generics
@@ -22,19 +22,27 @@ class LoggingViews(generics.GenericAPIView):
         # Log message
         try:
             # Create log message
-            logMessage = '[{0}] {1}: {2} \n {3}'
-            logMessage.format(data["timeStamp"], data["level"], data["message"], data["stackTrace"])
-            logLevel = data["level"]
-            if logLevel == "debug":
-                logger.debug(logMessage)
-            elif logLevel == "info":
-                logger.info(logMessage)
-            elif logLevel == "warning":
-                logger.warning(logMessage)
-            elif logLevel == "critical":
-                logger.critical(logMessage)
+            date_time = datetime.datetime.fromtimestamp(data["timeStamp"] / 1000)
+            log_level = data["level"].upper()
+            stack_trace = data["stackTrace"]
+            if stack_trace != "":
+                stack_trace = "\n" + stack_trace
+
+            log_message = '[{timeStamp}] {logLevel}: {message} {stackTrace}'
+            formatted_log_message = log_message.format(timeStamp = date_time, logLevel = log_level, 
+                message = data["message"], stackTrace = stack_trace)
+
+            log_level = data["level"]
+            if log_level == "debug":
+                logger.debug(formatted_log_message)
+            elif log_level == "info":
+                logger.info(formatted_log_message)
+            elif log_level == "warning":
+                logger.warning(formatted_log_message)
+            elif log_level == "critical":
+                logger.critical(formatted_log_message)
             else:
-                logger.error(logMessage)
+                logger.error(formatted_log_message)
 
             return Response(status=status.HTTP_200_OK)
         except:
