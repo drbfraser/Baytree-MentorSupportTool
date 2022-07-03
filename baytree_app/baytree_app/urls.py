@@ -19,6 +19,7 @@ api_patterns = [
     path('goals/', include('goals.urls')),
     path('holidays/', include('holidays.urls')),
     path('notifications/', include('notifications.urls')),
+    path('logging/', include('app_logging.urls')),
     path('token/', CookieTokenObtainPairView.as_view()),
     path('token/refresh/', CookieTokenRefreshView.as_view()),
     path('token/verify/', CookieTokenVerifyView.as_view()),
