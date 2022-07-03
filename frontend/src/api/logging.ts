@@ -1,25 +1,68 @@
-import log from 'loglevel';
-import remote from 'loglevel-plugin-remote';
+import axios from 'axios';
+import { API_BASE_URL } from "./url";
 
-const logJsonFormat = (log: { message: any; level: { label: any; }; timestamp: any; stacktrace: any; }) => ({
- msg: log.message,
- level: log.level.label,
- timetamp: log.timestamp,
- stacktrace: log.stacktrace
+// Logging endpoint
+const loggingUrl = `${API_BASE_URL}/logging/`;
+
+// Create axios configuration
+const loggingApi = axios.create({
+  baseURL: loggingUrl,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true
 });
 
-log.enableAll();
+export enum logLevel {
+  info = "info",
+  debug = "debug",
+  warning = "warning",
+  critical = "critical",
+  error = "error",
+}
 
-const loggingBackendEndpoint = `logging/`;
+// Custom Logger class to create logs that will be sent to /logging
+export class Logger {
+  message: string;
+  logLevel: logLevel;
+  displayStackTrace: boolean;
+  stackTrace: any;
+  timeStamp: any;
+  jsonLog: any;
+  plainLog: any;
 
-remote.apply(log, { 
-    format: logJsonFormat,
-    method: 'POST', 
-    url: loggingBackendEndpoint 
-});
+  constructor(message: string, logLevel: logLevel, displayStackTrace: boolean = false) {
+    this.message = message;
+    this.logLevel = logLevel;
+    this.displayStackTrace = displayStackTrace;
+    this.timeStamp = Date.now();
+    this.getStackTrace();
+    this.createJsonLog();
+    try {
+      this.sendLog();
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+  
+  getStackTrace() {
+    try {
+      throw new Error();
+    } catch (trace: any) {
+      this.stackTrace = trace.stack;
+    }
+  }
 
-export default log;
+ createJsonLog () {
+    let jsonLog = {
+      message: this.message, 
+      level: this.logLevel,
+      timeStamp: this.timeStamp,
+      stackTrace: this.displayStackTrace ? this.stackTrace : "",
+    };
+    this.jsonLog = JSON.stringify(jsonLog);
+ }
 
-// log.enableAll();
-
-// TODO: TEST THIS
+  sendLog = () => {
+    return loggingApi.post("", this.jsonLog);
+  };
+}
