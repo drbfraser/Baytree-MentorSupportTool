@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import submit_log
+
+from .views import LoggingViews
 
 # /api/logging/
 urlpatterns = [
-    path('logging/', submit_log)
+    path('', LoggingViews.as_view())
 ]
