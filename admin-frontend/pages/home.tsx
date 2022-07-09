@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { getMentorUsers, MentorUser } from "../api/backend/mentorUsers";
 
 export interface Mentor {
-  id: number;
+  viewsPersonId: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -64,7 +64,7 @@ const Home: NextPage = () => {
               );
 
               return {
-                id: mentor.user.id,
+                viewsPersonId: mentor.viewsPersonId,
                 email: mentor.user.email,
                 firstName: matchingVolunteer ? matchingVolunteer.firstname : "",
                 lastName: matchingVolunteer ? matchingVolunteer.surname : "",

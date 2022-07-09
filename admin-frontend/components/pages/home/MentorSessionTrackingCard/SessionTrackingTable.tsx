@@ -13,18 +13,18 @@ import { Mentor } from "../../../../pages/home";
 import { MdSchedule } from "react-icons/md";
 
 interface MentorSessionCount extends Mentor {
-  numSessionsJanuary: number;
-  numSessionsFebruary: number;
-  numSessionsMarch: number;
-  numSessionsApril: number;
-  numSessionsMay: number;
-  numSessionsJune: number;
-  numSessionsJuly: number;
-  numSessionsAugust: number;
-  numSessionsSeptember: number;
-  numSessionsOctober: number;
-  numSessionsNovember: number;
-  numSessionsDecember: number;
+  januarySessions: number;
+  februarySessions: number;
+  marchSessions: number;
+  aprilSessions: number;
+  maySessions: number;
+  juneSessions: number;
+  julySessions: number;
+  augustSessions: number;
+  septemberSessions: number;
+  octoberSessions: number;
+  novemberSessions: number;
+  decemberSessions: number;
 }
 
 interface SessionTrackingTableProps {
@@ -73,40 +73,53 @@ const SessionTrackingTable: React.FunctionComponent<
     // Initialize the session counts for each mentor to 0 for each month
     mentors.forEach((mentor, i) =>
       aggregatedSessionsByMentor.push({
-        id: mentor.id,
+        viewsPersonId: mentor.viewsPersonId,
         firstName: mentor.firstName,
         lastName: mentor.lastName,
         email: mentor.email,
-        numSessionsJanuary: 0,
-        numSessionsFebruary: 0,
-        numSessionsMarch: 0,
-        numSessionsApril: 0,
-        numSessionsMay: 0,
-        numSessionsJune: 0,
-        numSessionsJuly: 0,
-        numSessionsAugust: 0,
-        numSessionsSeptember: 0,
-        numSessionsOctober: 0,
-        numSessionsNovember: 0,
-        numSessionsDecember: 0,
+        januarySessions: 0,
+        februarySessions: 0,
+        marchSessions: 0,
+        aprilSessions: 0,
+        maySessions: 0,
+        juneSessions: 0,
+        julySessions: 0,
+        augustSessions: 0,
+        septemberSessions: 0,
+        octoberSessions: 0,
+        novemberSessions: 0,
+        decemberSessions: 0,
       })
     );
 
+    const monthNumberToName = [
+      "january",
+      "february",
+      "march",
+      "april",
+      "may",
+      "june",
+      "july",
+      "august",
+      "september",
+      "october",
+      "november",
+      "december",
+    ];
+
     sessionsForYear.forEach((session) => {
-      const sessionMentorId = session.leadStaff;
+      const sessionLeadStaffId = session.leadStaff;
 
       const aggregatedMentor = aggregatedSessionsByMentor.find(
-        (mentor) => mentor.id === sessionMentorId
+        (mentor) => mentor.viewsPersonId === sessionLeadStaffId
       );
 
-      if (aggregatedMentor) {
-        if (session.cancelled) {
-          aggregatedMentor.numSessionsCancelled++;
-        } else if (!session.attended_by_mentee || !session.attended_by_mentor) {
-          aggregatedMentor.numSessionsMissed++;
-        } else {
-          aggregatedMentor.numSessionsCompleted++;
-        }
+      if (aggregatedMentor && !session.cancelled) {
+        const sessionMonthNum = session.startDate.getMonth();
+        const sessionMonthName = monthNumberToName[sessionMonthNum];
+        (aggregatedMentor as Record<string, any>)[
+          `${sessionMonthName}Sessions`
+        ]++;
       }
     });
 
