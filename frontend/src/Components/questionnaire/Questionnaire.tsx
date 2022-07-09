@@ -73,8 +73,13 @@ function extractFromQuestionnaireResult(result: any, type: string) {
                   autoClose: false,
                   hideProgressBar: true,
                 });
-                console.error(volunteerQuestionnaireSubmissionError)
-                // TODO: implement server logging
+                console.error(volunteerQuestionnaireSubmissionError);
+                let mentorName = extractFromQuestionnaireResult(menteeResult.data, "mentor");
+                let menteeName = extractFromQuestionnaireResult(menteeResult.data, "mentee");
+                let questionniareId = extractFromQuestionnaireResult(menteeResult.data, "questionniareId");
+                let submissionId = extractFromQuestionnaireResult(menteeResult.data, "submissionId");
+                new Logger(`${volunteerQuestionnaireSubmissionError}\n Mentor: ${mentorName}, Mentee: ${menteeName},
+                 Questionnaire ID: ${questionniareId}, Submission ID: ${submissionId}`, logLevel.error)
 
                 setSubmitting(false);
               }
@@ -88,7 +93,6 @@ function extractFromQuestionnaireResult(result: any, type: string) {
                 hideProgressBar: true,
               });
               console.error(questionnaireSubmissionError)
-              // TODO: Implement server logging
               setSubmitting(false);
             }
           }}
