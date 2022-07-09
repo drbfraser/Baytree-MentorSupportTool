@@ -4,7 +4,7 @@ from .participants import get_participants
 from .util import try_parse_int
 from users.models import MentorUser
 
-from sessions.permissions import userIsAdmin, userIsSuperUser
+from users.permissions import userIsAdmin, userIsSuperUser
 from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import api_view
 import requests
@@ -104,13 +104,18 @@ def get_mentees_for_mentor(request):
         )
     mentor_user = mentor_user.first()
 
+    menteeIds = get_mentee_ids_from_mentor(mentor_user)
+
+    participants = get_participants(menteeIds)
+
+    return Response(participants["results"], status.HTTP_200_OK)
+
+
+def get_mentee_ids_from_mentor(mentor_user):
     associations = get_associations(mentor_user.viewsPersonId)
 
     menteeIds = []
     for association in associations["results"]:
         if association["association"] == "Mentee":
             menteeIds.append(association["masterId"])
-
-    participants = get_participants(menteeIds)
-
-    return Response(participants["results"], status.HTTP_200_OK)
+    return menteeIds

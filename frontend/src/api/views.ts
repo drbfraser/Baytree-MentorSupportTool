@@ -18,7 +18,7 @@ export const dummyUser: User = {
   email: ""
 };
 
-const viewsApi = axios.create({
+export const viewsApi = axios.create({
   baseURL: `${API_BASE_URL}/views-api`,
   withCredentials: true,
   headers: {
@@ -74,7 +74,7 @@ export interface Venue {
   name: string;
 }
 
-export const getVenues = async () => {
+export const getViewsVenues = async () => {
   try {
     const apiRes = await viewsApi.get<{ count: number; results: Venue[] }>(
       "/venues"

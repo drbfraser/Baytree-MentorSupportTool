@@ -2,7 +2,14 @@ from rest_framework import serializers
 
 from baytree_app.serializers import BatchRestSerializer
 
-from .models import AdminUser, CustomUser, MenteeUser, MentorUser, MentorRole
+from .models import (
+    AdminUser,
+    CustomUser,
+    MenteeUser,
+    MentorRoleActivity,
+    MentorUser,
+    MentorRole,
+)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,6 +28,7 @@ class MenteeSerializer(serializers.ModelSerializer):
 
 class MentorRoleSerializer(BatchRestSerializer):
     id = serializers.IntegerField(read_only=False)
+    activity = serializers.SerializerMethodField()
     primary_key = "id"
 
     class Meta:
@@ -33,6 +41,27 @@ class MentorRoleSerializer(BatchRestSerializer):
             "activity",
             "volunteeringType",
         ]
+
+    def get_activity(self, object):
+        activities = MentorRoleActivity.objects.filter(mentorRole=object)
+        return [activity.activity for activity in activities]
+
+    def create(self, validated_data):
+        activities = self.initial_data.get("activity", None)
+        if activities == None or not isinstance(activities, list):
+            return "activity must be a list of strings"
+
+        answer = BatchRestSerializer.create(self, validated_data)
+
+        mentor_role_id = validated_data.get("id", None)
+        MentorRoleActivity.objects.filter(mentorRole_id=mentor_role_id).delete()
+
+        for activity in activities:
+            MentorRoleActivity.objects.create(
+                mentorRole_id=mentor_role_id, activity=activity
+            )
+
+        return answer
 
 
 class MentorSerializer(BatchRestSerializer):

@@ -120,6 +120,7 @@ const MentorRoles: NextPage = () => {
             header: "Activity",
             dataField: "activity",
             onLoadValueOptions: getActivityOptions,
+            isMultiSelect: true,
           },
           {
             header: "Volunteering",

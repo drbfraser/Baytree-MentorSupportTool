@@ -81,7 +81,6 @@ INSTALLED_APPS = [
     "app_logging"
 ]
 
-
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",

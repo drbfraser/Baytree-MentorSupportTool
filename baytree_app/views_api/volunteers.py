@@ -1,14 +1,16 @@
 from typing import List, Union
-from users.models import MentorUser
-from users.permissions import AdminPermissions
-from .constants import views_base_url, views_username, views_password
-from rest_framework.decorators import permission_classes, api_view
-from rest_framework.response import Response
-from rest_framework import status
+
 import requests
 import xmltodict
+from baytree_app.constants import (VIEWS_BASE_URL, VIEWS_PASSWORD,
+                                   VIEWS_USERNAME)
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from users.models import MentorUser
+from users.permissions import AdminPermissions
 
-volunteers_base_url = views_base_url + "contacts/volunteers/"
+volunteers_base_url = VIEWS_BASE_URL + "contacts/volunteers/"
 
 volunteerFields = [
     "Forename",
@@ -29,6 +31,7 @@ volunteerTranslateFields = [
     "country",
 ]
 
+
 """
 WHAT IS A VOUNTEER:
 For Baytree's use case of the Views API, Volunteers in their Views database are the same as Mentors.
@@ -37,7 +40,7 @@ Mentors are also considered as "Staff", but not all staff are mentors, so we sho
 staff members since we could retrieve members that aren't actually mentors.
 """
 
-
+# GET /api/volunteers
 @api_view(("GET",))
 @permission_classes((AdminPermissions,))
 def get_volunteers_endpoint(request):
@@ -103,7 +106,7 @@ def get_volunteers(
             views_request_url += "&offset=" + str(offset)
 
         response = requests.get(
-            views_request_url, auth=(views_username, views_password)
+            views_request_url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD)
         )
 
         return parse_volunteers(response)
@@ -124,7 +127,7 @@ def get_volunteers(
             views_request_url += "&Surname={}".format(searchLastName)
 
         response = requests.get(
-            views_request_url, auth=(views_username, views_password)
+            views_request_url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD)
         )
 
         return parse_volunteers(response)
@@ -140,7 +143,7 @@ def get_volunteers(
             views_request_url += "&PersonID[]={}".format(id)
 
         response = requests.get(
-            views_request_url, auth=(views_username, views_password)
+            views_request_url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD)
         )
 
         return parse_volunteers(response)
@@ -155,12 +158,12 @@ def get_volunteers(
                 + str(limit)
                 + "&offset="
                 + str(offset),
-                auth=(views_username, views_password),
+                auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
             )
 
         else:
             response = requests.get(
-                volunteers_base_url + "search?q=", auth=(views_username, views_password)
+                volunteers_base_url + "search?q=", auth=(VIEWS_USERNAME, VIEWS_PASSWORD)
             )
 
         return parse_volunteers(response)
@@ -196,6 +199,8 @@ def translate_volunteer_fields(volunteers):
         for volunteer in volunteers
     ]
 
+
+# GET /api/views-api/volunteers/volunteer/
 @api_view(("GET", ))
 def get_volunteer_profile(request):
     """
@@ -206,5 +211,5 @@ def get_volunteer_profile(request):
     if not mentors:
         return Response(status=status.HTTP_404_NOT_FOUND)
     mentorViewsId = mentors.first().viewsPersonId
-    response = get_volunteers(id=f"{mentorViewsId}")
+    response = get_volunteers(id=str(mentorViewsId))
     return Response(response, status=status.HTTP_200_OK)

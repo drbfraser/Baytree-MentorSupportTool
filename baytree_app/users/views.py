@@ -14,6 +14,7 @@ from emails.email import generateEmailTemplateHtml
 from .models import (
     AccountCreationLink,
     MentorRole,
+    MentorRoleActivity,
     ResetPasswordLink,
     CustomUser,
     MentorUser,
@@ -44,7 +45,7 @@ class MentorRoleViewSet(BatchRestViewSet):
     queryset = MentorRole.objects.all().order_by("name")
     serializer_class = MentorRoleSerializer
     filterset_fields = {"name": ["icontains", "exact"]}
-    model_instance = MentorRole
+    model_class = MentorRole
 
     def get_permissions(self):
         if (
@@ -66,7 +67,7 @@ class MentorUserViewSet(BatchRestViewSet):
     queryset = MentorUser.objects.all()
     serializer_class = MentorSerializer
     permission_classes = [IsAuthenticated & (AdminPermissions | MentorOwnerPermissions)]
-    model_instance = MentorUser
+    model_class = MentorUser
 
     def list(self, request, *args, **kwargs):
         should_join_views_volunteers = request.GET.get("joinViews", None)
@@ -348,15 +349,20 @@ def createMentorAccount(request):
 
                 data_privacy_consent = make_aware(datetime.datetime.now())
                 create_object(
-                    {"user": createdUserId,
-                     "status": "Active",
-                    "viewsPersonId": foundAccountCreationLink.views_person_id,
-                    "data_privacy_consent": data_privacy_consent,
-                    }, MentorUser)
+                    {
+                        "user": createdUserId,
+                        "status": "Active",
+                        "viewsPersonId": foundAccountCreationLink.views_person_id,
+                        "data_privacy_consent": data_privacy_consent,
+                    },
+                    MentorUser,
+                )
                 foundAccountCreationLink.delete()
 
-                return Response({"status": "Successfully created mentor account"},
-                        status=status.HTTP_200_OK)
+                return Response(
+                    {"status": "Successfully created mentor account"},
+                    status=status.HTTP_200_OK,
+                )
             else:
                 return Response(
                     {"error": "Link invalid"}, status=status.HTTP_401_UNAUTHORIZED
@@ -639,3 +645,27 @@ def resetAccountPassword(request):
             {"error": "Failed to create mentor account"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
+
+@api_view(["GET"])
+def getActivitiesForMentor(request):
+    mentorUser = MentorUser.objects.all().filter(user_id=request.user.id)
+    if not mentorUser.exists():
+        return Response(
+            {"error": "Mentor does not exist with the given id"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    mentorRole = mentorUser.first().mentorRole
+    if not mentorRole:
+        return Response(
+            {"error": "Mentor does not have mentor role set"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    mentorRoleActivities = MentorRoleActivity.objects.filter(mentorRole=mentorRole)
+
+    return Response(
+        [mentorRoleActivity.activity for mentorRoleActivity in mentorRoleActivities],
+        status=status.HTTP_200_OK,
+    )

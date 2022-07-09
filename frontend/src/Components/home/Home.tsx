@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import Grow from "@mui/material/Grow";
 import IconButton from "@mui/material/IconButton";
 import { useState } from "react";
-import GoalList from "../goals/GoalsList";
+import ActiveGoalsSummary from "./ActiveGoalsSummary";
 import MenteeInfo from "./MenteeInfo";
 import Scheduler from "./Scheduler";
 import Statistics from "./Statistics";
@@ -37,7 +37,7 @@ const Home = () => {
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={4}>
                 <MenteeInfo />
-                <GoalList />
+                <ActiveGoalsSummary />
               </Grid>
             </Grid>
           </Grow>
