@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from .models import Holiday
+from .models import CalendarEvent
 
-class HolidaySerializer(serializers.ModelSerializer):
+class CalendarEventSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Holiday
+    model = CalendarEvent
     fields = [
       "id",
       "title",

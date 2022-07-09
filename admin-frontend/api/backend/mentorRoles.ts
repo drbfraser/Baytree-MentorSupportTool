@@ -6,7 +6,7 @@ export interface MentorRole {
   name: string;
   viewsQuestionnaireId: number;
   viewsSessionGroupId: number;
-  activity: string;
+  activity: string[];
 }
 
 export const mentorRolesBackendEndpoint = `users/mentor-roles/`;

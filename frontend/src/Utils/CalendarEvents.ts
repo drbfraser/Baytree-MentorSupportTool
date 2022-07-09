@@ -1,4 +1,4 @@
-const holidayList: any[] = [
+const calendarEventList: any[] = [
   {
     title: "Good Friday",
     allDay: true,
@@ -49,4 +49,4 @@ const holidayList: any[] = [
   }
 ];
 
-export default holidayList;
+export default calendarEventList;
