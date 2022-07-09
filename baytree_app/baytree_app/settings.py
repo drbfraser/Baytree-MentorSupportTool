@@ -37,7 +37,7 @@ LOGGING = {
         "file": {
             "level": "WARNING",
             "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs/server.log"),
+            "filename": os.path.join(BASE_DIR, "logs/server.log")
         },
         "console": {
             "class": "logging.StreamHandler",
