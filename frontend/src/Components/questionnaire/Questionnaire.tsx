@@ -14,6 +14,7 @@ import InvalidQuestionnaire from "./InvalidQuestionnaire";
 import MenteesNameInput from "./MenteesNameInput";
 import MentorNameInput from "./MentorNameQuestion";
 import TextInput from "./TextInput";
+import { Logger, logLevel} from "../../api/logging";
 
 const Questionnaire = () => {
   const {
@@ -25,6 +26,23 @@ const Questionnaire = () => {
     errorMessage,
     handleSubmitAnswerSet,
   } = useQuestionnaire();
+
+// Extracts mentor, mentee, questionnaire ID, and submission ID data for more
+// informative error submission
+function extractFromQuestionnaireResult(result: any, type: string) {
+  let parser = new DOMParser();
+  let xmlDoc = parser.parseFromString(result,"text/xml");
+  let answerSetTag = xmlDoc.children[0]
+  if (type == "mentor") {
+    return xmlDoc.getElementsByTagName("Answer")[0].childNodes[0].nodeValue;
+  } else if (type == "mentee") {
+    return xmlDoc.getElementsByTagName("Answer")[1].childNodes[0].nodeValue;
+  } else if (type == "id") {
+      return answerSetTag.getAttribute('questionaireid');
+  } else if (type == "questionaireid")
+    return answerSetTag.getAttribute('id');
+}
+
   return (
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
