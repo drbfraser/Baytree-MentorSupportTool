@@ -26,8 +26,6 @@ interface HeaderProps {
   }>;
 
   onSessionGroupSelectOptionChange: (newSessionGroupId: any) => void;
-  onSetMonth: (month: number) => void;
-  curMonth: number;
 
   onSetYear: (year: number) => void;
   curYear: number;
@@ -52,10 +50,6 @@ const Header: React.FunctionComponent<HeaderProps> = (props) => {
             curYear={props.curYear}
             onSetYear={props.onSetYear}
           ></SelectYear>
-          <SelectMonth
-            curMonth={props.curMonth}
-            onSetMonth={props.onSetMonth}
-          ></SelectMonth>
         </SelectDate>
         <SearchBox
           mentorFilter={props.mentorFilter}
@@ -169,7 +163,7 @@ const SelectYear: React.FunctionComponent<SelectYearProps> = (props) => {
         labelId="demo-simple-select-label"
         id="demo-simple-select"
         value={props.curYear.toString()}
-        label="Month"
+        label="Year"
         onChange={(event: SelectChangeEvent) => {
           props.onSetYear(parseInt(event.target.value));
         }}
@@ -187,46 +181,6 @@ const SelectYear: React.FunctionComponent<SelectYearProps> = (props) => {
 const StyledSelectYear = styled.div`
   grid-area: selectYear;
   width: auto;
-`;
-
-interface SelectMonthProps {
-  onSetMonth: (month: number) => void;
-  curMonth: number;
-}
-
-const SelectMonth: React.FunctionComponent<SelectMonthProps> = (props) => {
-  return (
-    <StyledSelectMonth>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        value={props.curMonth.toString()}
-        label="Month"
-        onChange={(event: SelectChangeEvent) => {
-          props.onSetMonth(parseInt(event.target.value));
-        }}
-      >
-        <MenuItem value={0}>January</MenuItem>
-        <MenuItem value={1}>February</MenuItem>
-        <MenuItem value={2}>March</MenuItem>
-        <MenuItem value={3}>April</MenuItem>
-        <MenuItem value={4}>May</MenuItem>
-        <MenuItem value={5}>June</MenuItem>
-        <MenuItem value={6}>July</MenuItem>
-        <MenuItem value={7}>August</MenuItem>
-        <MenuItem value={8}>September</MenuItem>
-        <MenuItem value={9}>October</MenuItem>
-        <MenuItem value={10}>November</MenuItem>
-        <MenuItem value={11}>December</MenuItem>
-      </Select>
-    </StyledSelectMonth>
-  );
-};
-
-const StyledSelectMonth = styled.div`
-  padding-left: 2rem;
-  grid-area: selectMonth;
-  justify-self: flex-start;
 `;
 
 interface SearchBoxProps {

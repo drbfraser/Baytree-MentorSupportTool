@@ -13,16 +13,24 @@ import { Mentor } from "../../../../pages/home";
 import { MdSchedule } from "react-icons/md";
 
 interface MentorSessionCount extends Mentor {
-  numSessionsCompleted: number;
-  numSessionsMissed: number;
-  numSessionsCancelled: number;
+  numSessionsJanuary: number;
+  numSessionsFebruary: number;
+  numSessionsMarch: number;
+  numSessionsApril: number;
+  numSessionsMay: number;
+  numSessionsJune: number;
+  numSessionsJuly: number;
+  numSessionsAugust: number;
+  numSessionsSeptember: number;
+  numSessionsOctober: number;
+  numSessionsNovember: number;
+  numSessionsDecember: number;
 }
 
 interface SessionTrackingTableProps {
-  sessionsForMonth: ((ViewsSession & DjangoSession) | DjangoSession)[];
+  sessionsForCurYear: ViewsSession[];
   mentors: Mentor[];
   isLoading: boolean;
-  month: number;
   year: number;
 }
 
@@ -46,7 +54,7 @@ const SessionTrackingTable: React.FunctionComponent<
   useEffect(() => {
     mentorSessionCountsRef.current = getMentorSessionCounts(
       props.mentors,
-      props.sessionsForMonth
+      props.sessionsForCurYear
     );
 
     setMaxPageNum(Math.ceil(mentorSessionCountsRef.current.length / PAGE_SIZE));
@@ -54,28 +62,38 @@ const SessionTrackingTable: React.FunctionComponent<
     setPagedMentorSessionCounts(
       mentorSessionCountsRef.current.slice(0, PAGE_SIZE)
     );
-  }, [props.mentors, props.sessionsForMonth]);
+  }, [props.mentors, props.sessionsForCurYear]);
 
   const getMentorSessionCounts = (
     mentors: Mentor[],
-    sessionsForMonth: ((ViewsSession & DjangoSession) | DjangoSession)[]
+    sessionsForYear: ViewsSession[]
   ) => {
     let aggregatedSessionsByMentor: MentorSessionCount[] = [];
 
+    // Initialize the session counts for each mentor to 0 for each month
     mentors.forEach((mentor, i) =>
       aggregatedSessionsByMentor.push({
         id: mentor.id,
         firstName: mentor.firstName,
         lastName: mentor.lastName,
         email: mentor.email,
-        numSessionsCompleted: 0,
-        numSessionsCancelled: 0,
-        numSessionsMissed: 0,
+        numSessionsJanuary: 0,
+        numSessionsFebruary: 0,
+        numSessionsMarch: 0,
+        numSessionsApril: 0,
+        numSessionsMay: 0,
+        numSessionsJune: 0,
+        numSessionsJuly: 0,
+        numSessionsAugust: 0,
+        numSessionsSeptember: 0,
+        numSessionsOctober: 0,
+        numSessionsNovember: 0,
+        numSessionsDecember: 0,
       })
     );
 
-    sessionsForMonth.forEach((session) => {
-      const sessionMentorId = session.mentor;
+    sessionsForYear.forEach((session) => {
+      const sessionMentorId = session.leadStaff;
 
       const aggregatedMentor = aggregatedSessionsByMentor.find(
         (mentor) => mentor.id === sessionMentorId
@@ -202,7 +220,7 @@ const SessionTrackingTable: React.FunctionComponent<
         modalComponent={
           <MentorSessionsModal
             mentor={mentorSessionsModalMentor as Mentor}
-            mentorSessions={props.sessionsForMonth.filter(
+            mentorSessions={props.sessionsForCurYear.filter(
               (session) => session.mentor === mentorSessionsModalMentor?.id
             )}
             month={props.month}
