@@ -67,10 +67,7 @@ const Questionnaire = () => {
               }
               else {
                 const volunteerQuestionnaireSubmissionError = 
-                "Failed to submit Volunteer questionnaire. \
-                Views Volunteer and Participant questionnaires may now be inconsistent. \
-                Please contact the administrator to manually remove inconsistent \
-                questionnaire from Participant's profile before trying again.";
+                "Failed to submit Volunteer questionnaire. \nViews Volunteer and Participant questionnaires may now be inconsistent. \nPlease contact the administrator to manually remove inconsistent \nquestionnaire from Participant's profile before trying again.";
                 toast.error(volunteerQuestionnaireSubmissionError, {
                   autoClose: false,
                   hideProgressBar: true,
@@ -80,8 +77,7 @@ const Questionnaire = () => {
                 let menteeName = extractFromQuestionnaireResult(menteeResult.data, "mentee");
                 let questionniareId = extractFromQuestionnaireResult(menteeResult.data, "questionnaireId");
                 let submissionId = extractFromQuestionnaireResult(menteeResult.data, "submissionId");
-                new Logger(`${volunteerQuestionnaireSubmissionError}\n Mentor: ${mentorName}, Mentee: ${menteeName},
-                 Questionnaire ID: ${questionniareId}, Submission ID: ${submissionId}`, logLevel.error)
+                new Logger(`${volunteerQuestionnaireSubmissionError}\n Mentor: ${mentorName}, Mentee: ${menteeName}, Questionnaire ID: ${questionniareId}, Submission ID: ${submissionId}`, logLevel.error)
 
                 setSubmitting(false);
               }
