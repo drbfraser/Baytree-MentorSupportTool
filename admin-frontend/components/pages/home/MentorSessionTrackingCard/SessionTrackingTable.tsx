@@ -144,7 +144,7 @@ const SessionTrackingTable: React.FunctionComponent<
       <ClickableMentorNameText
         onClick={() => {
           const mentor = props.mentors.find(
-            (mentor) => mentor.id === dataRow.id
+            (mentor) => mentor.viewsPersonId === dataRow.viewsPersonId
           );
 
           if (mentor) {
@@ -191,12 +191,13 @@ const SessionTrackingTable: React.FunctionComponent<
               dataField: "numSessionsMissed",
             },
           ]}
+          primaryKeyDataField="viewsPersonId"
           data={pagedMentorSessionCounts}
           dataRowActions={[
             {
               actionFunction: (dataRow) => {
                 const mentor = props.mentors.find(
-                  (mentor) => mentor.id === dataRow.id
+                  (mentor) => mentor.viewsPersonId === dataRow.viewsPersonId
                 );
 
                 if (mentor) {
@@ -234,9 +235,9 @@ const SessionTrackingTable: React.FunctionComponent<
           <MentorSessionsModal
             mentor={mentorSessionsModalMentor as Mentor}
             mentorSessions={props.sessionsForCurYear.filter(
-              (session) => session.mentor === mentorSessionsModalMentor?.id
+              (session) =>
+                session.leadStaff === mentorSessionsModalMentor?.viewsPersonId
             )}
-            month={props.month}
             year={props.year}
           ></MentorSessionsModal>
         }

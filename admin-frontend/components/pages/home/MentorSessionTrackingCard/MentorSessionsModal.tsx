@@ -1,20 +1,17 @@
 import { Typography } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
-import { SessionResponse as DjangoSession } from "../../../../api/backend/sessions";
 import { Session as ViewsSession } from "../../../../api/backend/views/sessions";
 import {
   BAYTREE_PRIMARY_COLOR,
   MOBILE_BREAKPOINT,
 } from "../../../../constants/constants";
 import { Mentor } from "../../../../pages/home";
-import { MONTH_NAMES } from "../../../../util/misc";
 import DataGrid from "../../../shared/datagrid/datagrid";
 
 export interface MentorSessionsModalProps {
   mentor: Mentor;
-  mentorSessions: (DjangoSession | (ViewsSession & DjangoSession))[];
-  month: number;
+  mentorSessions: ViewsSession[];
   year: number;
 }
 
@@ -24,12 +21,10 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
   return (
     <MentorSessionsModalLayout>
       <Name>
-        <Typography variant="h5">{`${props.mentor.firstName} ${props.mentor.lastName}'s Sessions`}</Typography>
+        <Typography variant="h5">{`${props.mentor.fullName}'s Sessions`}</Typography>
       </Name>
       <Date>
-        <Typography variant="h5">{`${props.year} / ${
-          MONTH_NAMES[props.month - 1]
-        }`}</Typography>
+        <Typography variant="h5">{`${props.year}`}</Typography>
       </Date>
       <Email>
         <EmailText href={`mailto:${props.mentor.email}`}>
@@ -43,26 +38,7 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
             { header: "Activity", dataField: "activity" },
             { header: "Notes", dataField: "notes" },
           ]}
-          onLoadDataRows={async () => {
-            return props.mentorSessions.map((mentorSession) => {
-              // If the Django backend session has a corresponding views session
-              const sessionHasAViewsSession = (
-                mentorSession: any
-              ): mentorSession is ViewsSession & DjangoSession => {
-                return mentorSession.leadStaff !== undefined;
-              };
-
-              if (sessionHasAViewsSession(mentorSession)) {
-                return mentorSession;
-              } else {
-                return {
-                  ...mentorSession,
-                  startDate: mentorSession.clock_in,
-                  activity: "Mentoring",
-                };
-              }
-            });
-          }}
+          onLoadDataRows={async () => props.mentorSessions}
         ></DataGrid>
       </SessionsGrid>
     </MentorSessionsModalLayout>
