@@ -15,6 +15,7 @@ export interface Mentor {
   firstName: string;
   lastName: string;
   email: string;
+  fullName: string;
 }
 
 const Home: NextPage = () => {
@@ -68,6 +69,9 @@ const Home: NextPage = () => {
                 email: mentor.user.email,
                 firstName: matchingVolunteer ? matchingVolunteer.firstname : "",
                 lastName: matchingVolunteer ? matchingVolunteer.surname : "",
+                fullName: matchingVolunteer
+                  ? matchingVolunteer.firstname + matchingVolunteer.surname
+                  : "",
               };
             })
           );

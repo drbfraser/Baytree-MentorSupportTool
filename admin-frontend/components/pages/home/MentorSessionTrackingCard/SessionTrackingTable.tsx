@@ -77,6 +77,7 @@ const SessionTrackingTable: React.FunctionComponent<
         firstName: mentor.firstName,
         lastName: mentor.lastName,
         email: mentor.email,
+        fullName: mentor.fullName,
         januarySessions: 0,
         februarySessions: 0,
         marchSessions: 0,
@@ -92,21 +93,6 @@ const SessionTrackingTable: React.FunctionComponent<
       })
     );
 
-    const monthNumberToName = [
-      "january",
-      "february",
-      "march",
-      "april",
-      "may",
-      "june",
-      "july",
-      "august",
-      "september",
-      "october",
-      "november",
-      "december",
-    ];
-
     sessionsForYear.forEach((session) => {
       const sessionLeadStaffId = session.leadStaff;
 
@@ -116,24 +102,38 @@ const SessionTrackingTable: React.FunctionComponent<
 
       if (aggregatedMentor && !session.cancelled) {
         const sessionMonthNum = session.startDate.getMonth();
-        const sessionMonthName = monthNumberToName[sessionMonthNum];
-        (aggregatedMentor as Record<string, any>)[
-          `${sessionMonthName}Sessions`
-        ]++;
+        switch (sessionMonthNum) {
+          case 0:
+            aggregatedMentor.januarySessions++;
+          case 1:
+            aggregatedMentor.februarySessions++;
+          case 2:
+            aggregatedMentor.marchSessions++;
+          case 3:
+            aggregatedMentor.aprilSessions++;
+          case 4:
+            aggregatedMentor.maySessions++;
+          case 5:
+            aggregatedMentor.juneSessions++;
+          case 6:
+            aggregatedMentor.julySessions++;
+          case 7:
+            aggregatedMentor.augustSessions++;
+          case 8:
+            aggregatedMentor.septemberSessions++;
+          case 9:
+            aggregatedMentor.octoberSessions++;
+          case 10:
+            aggregatedMentor.novemberSessions++;
+          case 11:
+            aggregatedMentor.decemberSessions++;
+        }
       }
     });
 
-    // Show mentors with least completed sessions first
+    // Show mentors in alphabetical order by name
     aggregatedSessionsByMentor.sort((mentor1, mentor2) => {
-      return mentor1.numSessionsCompleted - mentor2.numSessionsCompleted;
-    });
-
-    // Add / total and get full name
-    aggregatedSessionsByMentor = aggregatedSessionsByMentor.map((mentor) => {
-      return {
-        ...mentor,
-        fullName: `${mentor.firstName} ${mentor.lastName}`,
-      };
+      return mentor1.fullName.localeCompare(mentor2.fullName);
     });
 
     return aggregatedSessionsByMentor;
