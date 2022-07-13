@@ -1,13 +1,17 @@
 import axios from "axios";
 import { format } from "date-fns";
 import { API_BASE_URL } from "./url";
-import { Participant } from "./views";
 
 export const goalsApi = axios.create({
   baseURL: `${API_BASE_URL}/goals`,
   headers: { "Content-Type": "application/json" },
   withCredentials: true
 });
+
+export interface GoalCategory {
+  id: number;
+  name: string;
+}
 
 export interface Goal {
   id: number;
@@ -17,12 +21,14 @@ export interface Goal {
   last_update_date: string;
   status: "IN PROGRESS" | "RECALIBRATED" | "ACHIEVED";
   description: string;
+  options: GoalCategory[];
 }
 
 export interface GoalInput {
   title: string;
   goal_review_date: Date;
   description: string;
+  categories: GoalCategory[];
 }
 
 export type GoalParams = {
@@ -55,17 +61,23 @@ export const fetchAllGoals = async (params: GoalParams = {}) => {
   }
 };
 
-export const fetchGoals = async (limit?: number, offset?: number) => {
-  let params = {} as any;
-  if (limit) params.limit = limit;
-  if (offset) params.offset = offset;
+export const fetchAllGoalCategories = async () => {
+  try {
+    const apiRes = await goalsApi.get<GoalCategory[]>("options/");
+    if (apiRes.status === 200) {
+      return { data: apiRes.data, error: "" };
+    } else throw Error;
+  } catch (_err) {
+    return { data: undefined, error: "Cannot fetch goal categories" };
+  }
 }
 
 export const submitGoal = async (input: GoalInput, id?: number) => {
   let data: any = {
     title: input.title,
     goal_review_date: format(input.goal_review_date, "yyyy-MM-dd"),
-    description: input.description
+    description: input.description,
+    options: input.categories.map(item => item.id)
   }
   try {
     const promise = id ? goalsApi.put<Goal>(`${id}/`, data) : goalsApi.post<Goal>("", data);

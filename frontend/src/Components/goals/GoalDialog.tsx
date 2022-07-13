@@ -1,11 +1,25 @@
 import { DatePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Alert, 
+  AlertTitle, 
+  Button, 
+  Checkbox, 
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogTitle, 
+  FormControl, 
+  FormControlLabel, 
+  FormGroup, 
+  FormLabel, 
+  TextField
+} from "@mui/material";
 import { useFormik } from "formik";
 import { FunctionComponent } from "react";
 import { toast } from "react-toastify";
 import { Goal, GoalInput } from "../../api/goals";
-import useMentees from "../../hooks/useMentees";
+import { useGoalCategories } from "../../hooks/useGoals";
 import Loading from "../shared/Loading";
 
 const initialAnswer = (goal?: Goal) => {
@@ -13,11 +27,13 @@ const initialAnswer = (goal?: Goal) => {
     title: "",
     description: "",
     goal_review_date: new Date(),
+    categories: []
   } as GoalInput;
   return {
     title: goal.title,
     description: goal.description,
     goal_review_date: new Date(goal.goal_review_date),
+    categories: goal.options
   } as GoalInput
 }
 
@@ -33,8 +49,9 @@ interface Props {
 }
 
 const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleSubmitGoal }) => {
-  const { mentees, loadingMentees } = useMentees();
+  const { categories, loading, error } = useGoalCategories();
   const title = goal ? "Edit goal" : "Create new goal";
+
   const { values, handleSubmit, handleChange, setFieldValue, isSubmitting, setSubmitting } = useFormik({
     initialValues: initialAnswer(goal),
     onSubmit: async (answer) => {
@@ -50,12 +67,30 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
     }
   });
 
+  const handleCategoriesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {checked, value} = event.target;
+    if (checked) {
+      setFieldValue("categories", [
+        ...values.categories,
+        ...categories.filter(item => item.id === +value)
+      ])
+    } else {
+      setFieldValue("categories", values.categories.filter(item => item.id !== +value));
+    }
+  };
+
   return <Dialog open={open} fullWidth maxWidth="sm">
     <DialogTitle>{title}</DialogTitle>
-    {(!mentees || loadingMentees) && <Loading />}
-    {mentees &&
+    {loading && <Loading />}
+    {!loading && error &&
+      <Alert severity="error">
+        <AlertTitle>{error}</AlertTitle>
+        Please try again later
+      </Alert>}
+    {!loading && !error &&
       <form onSubmit={handleSubmit}>
         <DialogContent>
+          {/* Title */}
           <TextField
             label="Title"
             name="title"
@@ -63,6 +98,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
             fullWidth sx={{ mb: 2 }}
             value={values.title}
             onChange={handleChange} />
+          {/* Date selection */}
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               label="Goal Review Date"
@@ -75,8 +111,36 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
                 <TextField required fullWidth {...params} sx={{ mb: 2 }} />}
             />
           </LocalizationProvider>
-          <TextField label="Description" required fullWidth sx={{ mb: 2 }} name="description" value={values.description} onChange={handleChange} multiline minRows={3} />
+          {/* Description */}
+          <TextField
+            label="Description"
+            name="description"
+            required fullWidth sx={{ mb: 2 }}
+            value={values.description}
+            onChange={handleChange}
+            multiline minRows={3} />
+          {/* Goal category */}
+          <FormControl sx={{ mb: 2 }} fullWidth>
+            <FormLabel component="legend">Categories</FormLabel>
+            <FormGroup>
+              {
+                categories.map(category => (
+                  <FormControlLabel
+                    key={category.id}
+                    label={category.name}
+                    control={
+                      <Checkbox
+                        checked={values.categories.findIndex(item => item.id === category.id) >= 0}
+                        onChange={handleCategoriesChange}
+                        value={category.id}
+                       />
+                    } />
+                ))
+              }
+            </FormGroup>
+          </FormControl>
         </DialogContent>
+        {/* Buttons */}
         <DialogActions>
           <Button
             onClick={() => handleClose()}
@@ -90,8 +154,6 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
         </DialogActions>
       </form>
     }
-
-
   </Dialog >
 }
 
