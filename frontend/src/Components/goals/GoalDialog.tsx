@@ -1,18 +1,18 @@
 import { DatePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import {
-  Alert, 
-  AlertTitle, 
-  Button, 
-  Checkbox, 
-  Dialog, 
-  DialogActions, 
-  DialogContent, 
-  DialogTitle, 
-  FormControl, 
-  FormControlLabel, 
-  FormGroup, 
-  FormLabel, 
+  Alert,
+  AlertTitle,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
   TextField
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -33,7 +33,7 @@ const initialAnswer = (goal?: Goal) => {
     title: goal.title,
     description: goal.description,
     goal_review_date: new Date(goal.goal_review_date),
-    categories: goal.options
+    categories: goal.categories
   } as GoalInput
 }
 
@@ -68,7 +68,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
   });
 
   const handleCategoriesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {checked, value} = event.target;
+    const { checked, value } = event.target;
     if (checked) {
       setFieldValue("categories", [
         ...values.categories,
@@ -133,7 +133,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
                         checked={values.categories.findIndex(item => item.id === category.id) >= 0}
                         onChange={handleCategoriesChange}
                         value={category.id}
-                       />
+                      />
                     } />
                 ))
               }

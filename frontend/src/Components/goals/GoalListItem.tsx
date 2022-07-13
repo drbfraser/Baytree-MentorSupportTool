@@ -1,7 +1,7 @@
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import { format, formatDistanceToNow } from "date-fns";
 import { FunctionComponent } from "react";
 import { toast } from 'react-toastify';
@@ -25,6 +25,21 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
     const success = await handleComplete();
     if (!success) toast.error("Cannot update the goal");
     else toast.success("Goal marked as completed");
+  }
+
+  const renderCategories = () => {
+    let categories = goal.categories;
+    const length = categories.length;
+    if (length === 0)
+      return <Typography variant="subtitle1">No categories assigned</Typography>
+    if (length > 2 && minified)
+      categories = categories.slice(0, 2);
+    return <Box>
+      {categories.map(category => (
+        <Chip label={category.name} sx={{ mt: 1, mr: 1 }} />
+      ))}
+      {minified && length > 2 && <Chip variant="outlined" label={`+${length - 2} more`} sx={{ mt: 1, mr: 1 }} />}
+    </Box>
   }
 
   return <Accordion expanded={expanded} onClick={handleClick}>
@@ -64,6 +79,10 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
         <div>
           <Typography variant="body1"><strong>Description</strong></Typography>
           <Typography variant="subtitle1">{goal.description}</Typography>
+        </div>
+        <div>
+          <Typography variant="body1"><strong>Categories</strong></Typography>
+          {renderCategories()}
         </div>
       </Stack>
     </AccordionDetails>

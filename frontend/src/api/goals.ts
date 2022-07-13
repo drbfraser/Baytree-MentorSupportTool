@@ -21,7 +21,7 @@ export interface Goal {
   last_update_date: string;
   status: "IN PROGRESS" | "RECALIBRATED" | "ACHIEVED";
   description: string;
-  options: GoalCategory[];
+  categories: GoalCategory[];
 }
 
 export interface GoalInput {
@@ -63,7 +63,7 @@ export const fetchAllGoals = async (params: GoalParams = {}) => {
 
 export const fetchAllGoalCategories = async () => {
   try {
-    const apiRes = await goalsApi.get<GoalCategory[]>("options/");
+    const apiRes = await goalsApi.get<GoalCategory[]>("categories/");
     if (apiRes.status === 200) {
       return { data: apiRes.data, error: "" };
     } else throw Error;
@@ -77,7 +77,7 @@ export const submitGoal = async (input: GoalInput, id?: number) => {
     title: input.title,
     goal_review_date: format(input.goal_review_date, "yyyy-MM-dd"),
     description: input.description,
-    options: input.categories.map(item => item.id)
+    categories: input.categories.map(item => item.id)
   }
   try {
     const promise = id ? goalsApi.put<Goal>(`${id}/`, data) : goalsApi.post<Goal>("", data);
