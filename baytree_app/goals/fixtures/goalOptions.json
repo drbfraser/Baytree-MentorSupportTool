@@ -1,0 +1,44 @@
+[
+  {
+    "model": "goals.goalOption",
+    "pk": 1,
+    "fields": {
+      "name": "Personal Development"
+    }
+  },
+  {
+    "model": "goals.goalOption",
+    "pk": 2,
+    "fields": {
+      "name": "Academic Engagement"
+    }
+  },
+  {
+    "model": "goals.goalOption",
+    "pk": 3,
+    "fields": {
+      "name": "Improve Employability"
+    }
+  },
+  {
+    "model": "goals.goalOption",
+    "pk": 4,
+    "fields": {
+      "name": "Wellbeing"
+    }
+  },
+  {
+    "model": "goals.goalOption",
+    "pk": 5,
+    "fields": {
+      "name": "Family & Replationships"
+    }
+  },
+  {
+    "model": "goals.goalOption",
+    "pk": 6,
+    "fields": {
+      "name": "Financial Stability"
+    }
+  }
+]

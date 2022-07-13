@@ -1,6 +1,11 @@
 from django.db import models
-from views_api.participants import get_participant_by_id
 from users.models import MentorUser
+
+class GoalOption(models.Model):
+    name = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.name
 
 class Goal(models.Model):
     class Status(models.TextChoices):
@@ -18,6 +23,7 @@ class Goal(models.Model):
         max_length = 12,
         choices=Status.choices,
         default=Status.IN_PROGRESS)
+    options = models.ManyToManyField(GoalOption)
 
     def __str__(self):
         return self.title
