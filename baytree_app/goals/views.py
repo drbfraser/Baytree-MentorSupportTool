@@ -1,6 +1,5 @@
 from django.http import Http404
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.pagination import LimitOffsetPagination
 from users.models import MentorUser
 from users.permissions import userIsAdmin, userIsSuperUser
 

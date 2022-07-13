@@ -10,8 +10,6 @@ class GoalSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'mentor',
-            'mentee_id',
-            'mentee', 
             'title', 
             'creation_date', 
             'goal_review_date', 

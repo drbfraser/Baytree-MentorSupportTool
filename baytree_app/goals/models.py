@@ -9,7 +9,6 @@ class Goal(models.Model):
         RECALIBRATED = 'RECALIBRATED', "RECALIBRATED"
 
     mentor = models.ForeignKey(MentorUser, related_name="goal_mentor", on_delete=models.SET_NULL, null=True)
-    mentee_id = models.IntegerField(null=True)
     title = models.CharField(max_length=100)
     creation_date = models.DateField(auto_now_add=True)
     goal_review_date = models.DateField()
@@ -22,7 +21,3 @@ class Goal(models.Model):
 
     def __str__(self):
         return self.title
-
-    def get_mentee(self):
-        if self.mentee_id is None: return None
-        return get_participant_by_id(self.mentee_id)
