@@ -11,7 +11,6 @@ export const goalsApi = axios.create({
 
 export interface Goal {
   id: number;
-  mentee?: Participant;
   title: string;
   creation_date: string;
   goal_review_date: string;
@@ -23,7 +22,6 @@ export interface Goal {
 export interface GoalInput {
   title: string;
   goal_review_date: Date;
-  mentee_id?: number | string;
   description: string;
 }
 
@@ -69,7 +67,6 @@ export const submitGoal = async (input: GoalInput, id?: number) => {
     goal_review_date: format(input.goal_review_date, "yyyy-MM-dd"),
     description: input.description
   }
-  if (input.mentee_id) data.mentee_id = +input.mentee_id;
   try {
     const promise = id ? goalsApi.put<Goal>(`${id}/`, data) : goalsApi.post<Goal>("", data);
     const response = await promise;

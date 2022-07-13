@@ -13,18 +13,16 @@ const initialAnswer = (goal?: Goal) => {
     title: "",
     description: "",
     goal_review_date: new Date(),
-    mentee_id: ""
   } as GoalInput;
   return {
     title: goal.title,
     description: goal.description,
     goal_review_date: new Date(goal.goal_review_date),
-    mentee_id: goal.mentee?.viewsPersonId || ""
   } as GoalInput
 }
 
 const emptyAnswer = (input: GoalInput) => {
-  return !input.title || !input.description || !input.mentee_id
+  return !input.title || !input.description;
 }
 
 interface Props {
@@ -65,28 +63,6 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
             fullWidth sx={{ mb: 2 }}
             value={values.title}
             onChange={handleChange} />
-          <FormControl fullWidth required>
-            <InputLabel id="mentee-label">Mentee</InputLabel>
-            <Select
-              labelId="mentee-label"
-              label="Mentee"
-              name="mentee_id"
-              sx={{ mb: 2 }}
-              value={values.mentee_id ? `${values.mentee_id}` : ""}
-              onChange={handleChange}>
-              <MenuItem value="" disabled>
-                <em>Please select a mentee</em>
-              </MenuItem>
-              {mentees.map((mentee) => {
-                const fullName = `${mentee.firstName} ${mentee.lastName}`;
-                return (
-                  <MenuItem key={mentee.viewsPersonId} value={mentee.viewsPersonId}>
-                    {fullName}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               label="Goal Review Date"

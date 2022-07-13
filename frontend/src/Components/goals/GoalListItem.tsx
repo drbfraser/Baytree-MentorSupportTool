@@ -19,7 +19,6 @@ type Props = {
 
 const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick, handleComplete, minified }) => {
   const formatDate = (date: Date) => format(date, "eeee, MMMM do yyyy");
-  const menteeName = goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : "N/A";
 
   const handleCompleteButton = async () => {
     if (!handleComplete) return;
@@ -61,10 +60,6 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
         {!minified && <div>
           <Typography variant="body1"><strong>Last Update</strong></Typography>
           <Typography variant="subtitle1">{formatDate(new Date(goal.last_update_date))}</Typography>
-        </div>}
-        {!minified && <div>
-          <Typography variant="body1"><strong>Mentee</strong></Typography>
-          <Typography variant="subtitle1">{menteeName}</Typography>
         </div>}
         <div>
           <Typography variant="body1"><strong>Description</strong></Typography>

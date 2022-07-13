@@ -8,7 +8,6 @@ import useMentor from "../../hooks/useMentor";
 
 const headers = [
   { label: "Mentor Name", key: "mentor" },
-  { label: "Mentee Name", key: "mentee" },
   { label: "Goal Creation Date", key: "creation_date" },
   { label: "Goal Review Date", key: "goal_review_date" },
   { label: "Title", key: "title" },
@@ -30,10 +29,9 @@ const GoalExportButton = () => {
   const { loadingMentor, mentor } = useMentor();
 
   const goalToRow = (goal: Goal) => {
-    const { mentee, creation_date, goal_review_date, title, description, last_update_date, status } = goal;
+    const { creation_date, goal_review_date, title, description, last_update_date, status } = goal;
     return {
       mentor: `${mentor.firstname} ${mentor.surname}`,
-      mentee: mentee ? `${mentee.firstName} ${mentee.lastName}` : "",
       creation_date,
       goal_review_date,
       title,
