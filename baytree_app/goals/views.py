@@ -1,10 +1,11 @@
 from django.http import Http404
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (ListAPIView, ListCreateAPIView,
+                                     RetrieveUpdateDestroyAPIView)
 from users.models import MentorUser
 from users.permissions import userIsAdmin, userIsSuperUser
 
-from .models import Goal
-from .serializers import GoalSerializer
+from .models import Goal, GoalOption
+from .serializers import GoalOptionSerializer, GoalSerializer
 
 
 class MentorGoalQuerySetMixin():  
@@ -41,3 +42,8 @@ class GoalRetrieveUpdateDestroyAPIView(
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
     lookup_field = 'pk'
+
+# GET /api/goals/options/
+class GoalOPtionsListView(ListAPIView):
+  queryset = GoalOption.objects.all()
+  serializer_class = GoalOptionSerializer
