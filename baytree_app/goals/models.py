@@ -1,7 +1,7 @@
 from django.db import models
 from users.models import MentorUser
 
-class GoalOption(models.Model):
+class GoalCategory(models.Model):
     name = models.CharField(max_length=1000)
 
     def __str__(self):
@@ -23,7 +23,7 @@ class Goal(models.Model):
         max_length = 12,
         choices=Status.choices,
         default=Status.IN_PROGRESS)
-    options = models.ManyToManyField(GoalOption)
+    categories = models.ManyToManyField(GoalCategory)
 
     def __str__(self):
         return self.title

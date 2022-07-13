@@ -1,16 +1,18 @@
 from rest_framework import serializers
-from .models import Goal, GoalOption
 from users.serializers import MentorSerializer
 
-class GoalOptionSerializer(serializers.ModelSerializer):
+from .models import Goal, GoalCategory
+
+
+class GoalCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = GoalOption
-        fields = ['id', 'name']
+        model = GoalCategory
+        fields = "__all__"
 
 
 class GoalSerializer(serializers.ModelSerializer):
     mentor = MentorSerializer(read_only=True)
-    options = GoalOptionSerializer(many=True, read_only=True)
+    categories = GoalCategorySerializer(many=True, read_only=True)
     class Meta:
         model = Goal
         fields = [
@@ -22,5 +24,5 @@ class GoalSerializer(serializers.ModelSerializer):
             'last_update_date', 
             'description', 
             'status',
-            'options'
+            'categories'
         ]

@@ -2,12 +2,12 @@ from django.urls import path
 
 from .views import (
     GoalListCreateAPIView,
-    GoalOPtionsListView,
+    GoalCategoryListView,
     GoalRetrieveUpdateDestroyAPIView
 )
 
 urlpatterns = [
     path('', GoalListCreateAPIView.as_view()),
     path('/<int:pk>/', GoalRetrieveUpdateDestroyAPIView.as_view()),
-    path('/options/', GoalOPtionsListView.as_view())
+    path('/categories/', GoalCategoryListView.as_view())
 ]

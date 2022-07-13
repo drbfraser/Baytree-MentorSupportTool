@@ -4,8 +4,8 @@ from rest_framework.generics import (ListAPIView, ListCreateAPIView,
 from users.models import MentorUser
 from users.permissions import userIsAdmin, userIsSuperUser
 
-from .models import Goal, GoalOption
-from .serializers import GoalOptionSerializer, GoalSerializer
+from .models import Goal, GoalCategory
+from .serializers import GoalCategorySerializer, GoalSerializer
 
 
 class MentorGoalQuerySetMixin():  
@@ -33,7 +33,7 @@ class GoalListCreateAPIView(
   def perform_create(self, serializer):
       mentors = MentorUser.objects.filter(user_id=self.request.user.id)
       if mentors is None: raise Http404() 
-      return serializer.save(mentor=mentors.first(), options=self.request.data["options"])
+      return serializer.save(mentor=mentors.first(), categories=self.request.data["categories"])
 
 # GET, PUT, PATCH, DELETE /api/goals/<id>
 class GoalRetrieveUpdateDestroyAPIView(
@@ -44,9 +44,9 @@ class GoalRetrieveUpdateDestroyAPIView(
   lookup_field = 'pk'
 
   def perform_update(self, serializer):
-    return serializer.save(options=self.request.data["options"])
+    return serializer.save(categories=self.request.data["categories"])
 
-# GET /api/goals/options/
-class GoalOPtionsListView(ListAPIView):
-  queryset = GoalOption.objects.all()
-  serializer_class = GoalOptionSerializer
+# GET /api/goals/categories/
+class GoalCategoryListView(ListAPIView):
+  queryset = GoalCategory.objects.all()
+  serializer_class = GoalCategorySerializer
