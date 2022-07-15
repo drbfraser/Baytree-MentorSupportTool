@@ -2,14 +2,14 @@ import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import { resetPassword, sendPasswordResetEmail } from "../api/mentorAccount";
-import BaytreeLogo from "../Assets/baytree-logo.png";
-import BaytreePhoto from "../Assets/baytree-photo.jpg";
-import { MOBILE_BREAKPOINT } from "../constants/constants";
-import { checkPassword } from "../Utils/password";
-import OverlaySpinner from "./shared/overlaySpinner";
+import { resetPassword, sendPasswordResetEmail } from "../../api/mentorAccount";
+import BaytreeLogo from "../../Assets/baytree-logo.png";
+import BaytreePhoto from "../../Assets/baytree-photo.jpg";
+import { MOBILE_BREAKPOINT } from "../../constants/constants";
+import { checkPassword } from "../../Utils/password";
+import OverlaySpinner from "../shared/overlaySpinner";
 
-const ResetPassword = (props: any) => {
+const ResetPassword = () => {
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");

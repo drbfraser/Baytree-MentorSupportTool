@@ -1,15 +1,15 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
-import CreateAccount from "./Components/CreateAccount";
+import CreateAccount from "./Components/forms/CreateAccount";
 import Dashboard from "./Components/dashboard/Dashboard";
 import Goals from "./Components/goals/Goals";
 import Home from "./Components/home/Home";
-import Login from "./Components/Login";
+import Login from "./Components/forms/Login";
 import Notification from "./Components/Notification";
 import Profile from "./Components/Profile";
 import Questionnaire from "./Components/questionnaire/Questionnaire";
 import Records from "./Components/records/Records";
-import ResetPassword from "./Components/ResetPassword";
+import ResetPassword from "./Components/forms/ResetPassword";
 import Sessions from "./Components/sessions/Sessions";
 import PublicLayout from "./Components/shared/PublicLayout";
 import PrivateRoute from "./Utils/PrivateRoute";

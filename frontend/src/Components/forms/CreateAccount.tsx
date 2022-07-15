@@ -9,7 +9,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { FunctionComponent, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
-import { createMentorAccount } from "../api/mentorAccount";
+import { createMentorAccount } from "../../api/mentorAccount";
 
 const ValidationMessage: FunctionComponent<{ label: string, validated: boolean }> = ({ label, validated }) => {
   return <Box display="flex" alignItems="center">
