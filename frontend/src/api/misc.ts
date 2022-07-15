@@ -72,6 +72,25 @@ export const fetchSessionListByMentorId = async (id: number) => {
   return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data);
 };
 
+// Holidays
+export interface Holiday {
+  title: string,
+  startDate: string,
+  endDate: string,
+  isAnnual: boolean,
+  note: string
+}
+
+export const fetchHolidays = async () => {
+  try {
+  const apiRes = await baseApi.get<Holiday[]>("holidays/");
+  if (apiRes.status === 200)
+    return {data: apiRes.data, error: ""}
+  throw Error
+  } catch (err) {
+    return {data: [] as Holiday[], error: "Cannot fetch holidays data"}
+  }
+}
 export type Activity = string;
 
 export const getActivitiesForMentor = async () => {

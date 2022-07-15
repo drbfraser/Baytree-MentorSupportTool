@@ -8,7 +8,7 @@ import Login from "./Components/Login";
 import Notification from "./Components/Notification";
 import Profile from "./Components/Profile";
 import Questionnaire from "./Components/questionnaire/Questionnaire";
-import Records from "./Components/Records";
+import Records from "./Components/records/Records";
 import ResetPassword from "./Components/ResetPassword";
 import Sessions from "./Components/sessions/Sessions";
 import PrivateRoute from "./Utils/PrivateRoute";
