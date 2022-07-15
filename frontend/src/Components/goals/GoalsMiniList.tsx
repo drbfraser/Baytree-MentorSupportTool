@@ -1,11 +1,25 @@
 import { Alert, Box } from "@mui/material";
-import { useState } from "react";
-import useGoals from "../../hooks/useGoals";
+import { useEffect, useState } from "react";
+import { fetchAllGoals, Goal } from "../../api/goals";
 import Loading from "../shared/Loading";
 import GoalListItem from "./GoalListItem";
 
 const GoalsMiniList = () => {
-  const { goals, loading, error } = useGoals({ limit: 3, active: true });
+  const [goals, setGoals] = useState([] as Goal[]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setLoading(true);
+    fetchAllGoals({limit: 3, offset: 0, active: true})
+      .then(({ data, error }) => {
+        if (!data || error !== "") {
+          setError(error);
+        } else setGoals(data);
+      }).finally(() => setLoading(false));
+    return () => setLoading(false);
+  }, []);
+
   const [id, setId] = useState<number | undefined>();
 
   if (loading) return <Loading />;

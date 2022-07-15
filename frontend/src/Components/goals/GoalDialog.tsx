@@ -23,7 +23,7 @@ import { FunctionComponent } from "react";
 import { toast } from "react-toastify";
 import { Goal, GoalInput } from "../../api/goals";
 import { useGoals } from "../../context/GoalContext";
-import { useGoalCategories } from "../../hooks/useGoals";
+import { useGoalCategories } from "../../hooks/useGoalCategories";
 import useMentees from "../../hooks/useMentees";
 import Loading from "../shared/Loading";
 

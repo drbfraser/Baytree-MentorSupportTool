@@ -59,7 +59,7 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
               sm: "block"
             }
           }}>{formatDistanceToNow(new Date(goal.creation_date), { addSuffix: true })}</Typography>}
-          <GoalStatus status={goal.status} />
+          {!minified && <GoalStatus status={goal.status} />}
         </Stack>
       </Box>
     </AccordionSummary>
