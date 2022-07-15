@@ -6,6 +6,7 @@ import { goalsApi } from "../api/goals";
 import { userApi } from "../api/mentorAccount";
 import { baseApi } from "../api/misc";
 import { notificationApi } from "../api/notification";
+import { recordsApi } from "../api/records";
 import { viewsApi } from "../api/views";
 import Loading from "../Components/shared/Loading";
 import { useAuth } from "../context/AuthContext";
@@ -27,6 +28,7 @@ const PrivateRoute = () => {
   useRefreshToken(viewsApi);
   useRefreshToken(goalsApi);
   useRefreshToken(notificationApi);
+  useRefreshToken(recordsApi);
 
   useEffect(() => {
     verifyClient();
