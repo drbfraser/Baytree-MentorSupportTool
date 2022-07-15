@@ -1,7 +1,9 @@
 import { Chip, TableCell, TableRow } from "@mui/material";
-import { addMinutes, format } from "date-fns";
+import { addMinutes } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { FunctionComponent } from "react";
 import { SessionRecord } from "../../api/records";
+import { TIMEZONE_ID } from "../../Utils/locale";
 
 const RecordRow: FunctionComponent<{ session: SessionRecord, handleClick: () => void }> = ({ session, handleClick }) => {
   const [startH, startM] = session.startTime.split(":").map(m => +m);
@@ -9,8 +11,8 @@ const RecordRow: FunctionComponent<{ session: SessionRecord, handleClick: () => 
 
   return <TableRow hover onClick={handleClick}>
     <TableCell>{session.name}</TableCell>
-    <TableCell>{format(startTime, "d MMM Y")}</TableCell>
-    <TableCell>{format(startTime, "hh:mm aa")}</TableCell>
+    <TableCell>{formatInTimeZone(startTime, TIMEZONE_ID, "do MMMM Y")}</TableCell>
+    <TableCell>{formatInTimeZone(startTime, TIMEZONE_ID, "hh:mm aa")}</TableCell>
     <TableCell>{session.duration}</TableCell>
     <TableCell align="center">
       {+session.cancelled !== 0

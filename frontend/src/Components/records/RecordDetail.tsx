@@ -13,9 +13,11 @@ import {
 } from "@mui/material";
 import { AxiosError } from "axios";
 import { addMinutes, format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { FunctionComponent } from "react";
 import { useQuery } from "react-query";
 import { fetchSessionById, SessionDetail } from "../../api/records";
+import { TIMEZONE_ID } from "../../Utils/locale";
 import InfoTextField from "../shared/InfoTextField";
 import Loading from "../shared/Loading";
 
@@ -59,11 +61,11 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...pro
         <Grid container sx={{ mt: 2 }} spacing={2}>
           <Grid item xs={12} sm={12} md={4}>
             <Typography sx={{ mb: 1 }}><strong>Start Date</strong></Typography>
-            <InfoTextField value={format(startTime, "d MMM Y")} />
+            <InfoTextField value={formatInTimeZone(startTime, TIMEZONE_ID, "do MMMM Y")} />
           </Grid>
           <Grid item xs={12} sm={12} md={4}>
             <Typography sx={{ mb: 1 }}><strong>Start Time</strong></Typography>
-            <InfoTextField value={format(startTime, "hh:mm aa")} />
+            <InfoTextField value={formatInTimeZone(startTime, TIMEZONE_ID, "hh:mm aa")} />
           </Grid>
           <Grid item xs={12} sm={12} md={4}>
             <Typography sx={{ mb: 1 }}><strong>Duration</strong></Typography>
