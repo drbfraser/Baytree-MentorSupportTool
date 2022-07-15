@@ -1,18 +1,25 @@
-import { Box, Typography } from "@mui/material";
+import { Alert, AlertTitle, Box, Typography } from "@mui/material";
 import { FunctionComponent, useState } from "react";
 import { Goal } from "../../api/goals";
+import { useGoals } from "../../context/GoalContext";
+import Loading from "../shared/Loading";
 import GoalListItem from "./GoalListItem";
 
 type Props = {
-  goals: Goal[];
   openDialog: (goal?: Goal) => void;
-  handleComplete: (goal: Goal) => Promise<boolean>
 }
 
-const GoalsList: FunctionComponent<Props> = ({ goals, openDialog, handleComplete }) => {
-  if (goals.length === 0) {
+const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
+  const {loadingGoals, error, goals} = useGoals();
+
+  if (loadingGoals) return <Loading />;
+  if (error) return <Alert>
+    <AlertTitle>{error}</AlertTitle>
+    Please refresh the page or contact the adminstrators.
+  </Alert>
+  
+  if (goals.length === 0)
     return <Typography variant="h6" sx={{ mt: 3, textAlign: "center" }}>No goals found</Typography>
-  }
 
   const [selected, setSelected] = useState<number | undefined>(undefined);
 
@@ -22,9 +29,8 @@ const GoalsList: FunctionComponent<Props> = ({ goals, openDialog, handleComplete
         goal={goal}
         key={goal.id}
         expanded={selected === goal.id}
-        handleClick={() => selected === goal.id ? setSelected(undefined) : setSelected(goal.id)}
-        handleEdit={() => openDialog(goal)}
-        handleComplete={() => handleComplete(goal)} />
+        handleClick={() => setSelected(selected === goal.id ? undefined : goal.id)}
+        handleEdit={() => openDialog(goal)} />
     })}
   </Box>
 }

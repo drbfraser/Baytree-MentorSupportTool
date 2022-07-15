@@ -22,6 +22,7 @@ import { useFormik } from "formik";
 import { FunctionComponent } from "react";
 import { toast } from "react-toastify";
 import { Goal, GoalInput } from "../../api/goals";
+import { useGoals } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoals";
 import useMentees from "../../hooks/useMentees";
 import Loading from "../shared/Loading";
@@ -50,12 +51,12 @@ const emptyAnswer = (input: GoalInput) => {
 interface Props {
   goal?: Goal,
   open: boolean,
-  handleClose: (refresh?: boolean) => void,
-  handleSubmitGoal: (goal: GoalInput, id?: number) => Promise<boolean>
+  handleClose: () => void
 }
 
-const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleSubmitGoal }) => {
+const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
   const { mentees, loadingMentees } = useMentees();
+  const { handleSubmitGoal } = useGoals();
   const { categories, loading: loadingCategories, error: categoriesError } = useGoalCategories();
   const title = goal ? "Edit goal" : "Create new goal";
 
@@ -89,7 +90,6 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
   const loading = loadingCategories || loadingMentees;
   let errorMessage = categoriesError;
   if (!errorMessage && !mentees) errorMessage = "Cannot load mentees";
-  const shouldRender = !loading && mentees;
 
   return <Dialog open={open} fullWidth maxWidth="sm">
     <DialogTitle>{title}</DialogTitle>

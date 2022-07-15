@@ -58,11 +58,22 @@ export const fetchAllGoals = async (params: GoalParams = {}) => {
     }
     if (apiRes.status === 404)
       return { data: undefined, error: "Cannot find users or goals" }
-    else throw Error
+    else throw Error;
   } catch (err) {
     return { data: undefined, error: "Cannot fetch goals" }
   }
 };
+
+export const fetchGoalStatistics = async () => {
+  try {
+    const apiRes = await goalsApi.get<{ active: number, complete: number }>("statistics/")
+    if (apiRes.status === 200) {
+      return { data: apiRes.data, error: "" }
+    } else throw Error;
+  } catch (error) {
+    return { data: undefined, error: "Cannot fetch goal satistics" };
+  }
+}
 
 export const fetchAllGoalCategories = async () => {
   try {
