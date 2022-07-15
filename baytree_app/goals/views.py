@@ -1,6 +1,6 @@
 from django.http import Http404
-from rest_framework.generics import (ListAPIView, ListCreateAPIView,
-                                     RetrieveUpdateDestroyAPIView)
+from rest_framework import generics
+from rest_framework.response import Response
 from users.models import MentorUser
 from users.permissions import userIsAdmin, userIsSuperUser
 
@@ -18,7 +18,7 @@ class MentorGoalQuerySetMixin():
 # GET, POST /api/goals/
 class GoalListCreateAPIView(
   MentorGoalQuerySetMixin,
-  ListCreateAPIView):
+  generics.ListCreateAPIView):
   queryset = Goal.objects.all()
   serializer_class = GoalSerializer
 
@@ -38,7 +38,7 @@ class GoalListCreateAPIView(
 # GET, PUT, PATCH, DELETE /api/goals/<id>
 class GoalRetrieveUpdateDestroyAPIView(
   MentorGoalQuerySetMixin,
-  RetrieveUpdateDestroyAPIView):
+  generics.RetrieveUpdateDestroyAPIView):
   queryset = Goal.objects.all()
   serializer_class = GoalSerializer
   lookup_field = 'pk'
@@ -47,6 +47,20 @@ class GoalRetrieveUpdateDestroyAPIView(
     return serializer.save(categories=self.request.data["categories"])
 
 # GET /api/goals/categories/
-class GoalCategoryListView(ListAPIView):
+class GoalCategoryListView(generics.ListAPIView):
   queryset = GoalCategory.objects.all()
   serializer_class = GoalCategorySerializer
+
+# GET /api/goals/statistics/
+class GoalStatisticsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
+  queryset = Goal.objects.all()
+
+  def get(self, request):
+    all = self.get_queryset()
+    active = all.filter(status="IN PROGRESS")
+    complete = all.filter(status="ACHIEVED")
+    result = {
+      "active": len(active),
+      "complete": len(complete)
+    }
+    return Response(result)
