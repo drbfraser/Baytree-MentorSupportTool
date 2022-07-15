@@ -11,10 +11,8 @@ type Props = {
 
 const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
   const {loadingGoals, error, goals, params, statistics, handleChangeParams} = useGoals();
-  const {active, complete} = statistics;
-  const count = params.active ? active
-    : params.completed ? complete : (active + complete);
-
+  const [selected, setSelected] = useState<number | undefined>(undefined);
+  
   if (loadingGoals) return <Loading />;
   if (error) return <Alert>
     <AlertTitle>{error}</AlertTitle>
@@ -22,9 +20,10 @@ const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
   </Alert>
   
   if (goals.length === 0)
-    return <Typography variant="h6" sx={{ mt: 3, textAlign: "center" }}>No goals found</Typography>
-
-  const [selected, setSelected] = useState<number | undefined>(undefined);
+  return <Typography variant="h6" sx={{ mt: 3, textAlign: "center" }}>No goals found</Typography>
+  
+  const {active, complete} = statistics;
+  const count = params.active ? active : params.completed ? complete : (active + complete);
 
   return <Box sx={{ mt: 3 }}>
     {goals.map(goal => {

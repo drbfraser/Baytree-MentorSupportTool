@@ -1,76 +1,76 @@
 import DownloadIcon from '@mui/icons-material/Download';
 import { LoadingButton } from '@mui/lab';
-import { useEffect, useRef, useState } from "react";
-import { CSVLink } from "react-csv";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { fetchAllGoals, Goal } from "../../api/goals";
+import { Goal, goalsApi } from "../../api/goals";
 import useMentor from "../../hooks/useMentor";
+import { unparse } from "papaparse";
+import {formatInTimeZone} from "date-fns-tz";
+import { TIMEZONE_ID } from '../../Utils/locale';
 
-const headers = [
-  { label: "Mentor Name", key: "mentor" },
-  { label: "Goal Creation Date", key: "creation_date" },
-  { label: "Goal Review Date", key: "goal_review_date" },
-  { label: "Title", key: "title" },
-  { label: "Description", key: "description" },
-  { label: "Last Update", key: "last_update_date" },
-  { label: "Status", key: "status" },
-];
+const goal2CSVRow = (goal: Goal) => ({
+  "Mentee Name": goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : "",
+  "Goal Creation Date": formatInTimeZone(goal.creation_date, TIMEZONE_ID, "yyyy-MM-dd"),
+  "Goal Review Date": formatInTimeZone(goal.goal_review_date, TIMEZONE_ID, "yyyy-MM-dd"),
+  "Last Update": formatInTimeZone(goal.last_update_date, TIMEZONE_ID, "yyyy-MM-dd"),
+  "Title": goal.title,
+  "Description": goal.description,
+  "Status": goal.status,
+  "Categories": goal.categories.map(c => c.name).join(", ")
+})
 
-type Row = {
-  [key: string]: any;
-}
-
-// Lazily loading data and export to CSV
-// https://github.com/react-csv/react-csv/issues/189
 const GoalExportButton = () => {
   const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState([] as Row[]);
-  const csvInstance = useRef<any | null>(null);
-  const { loadingMentor, mentor } = useMentor();
-
-  const goalToRow = (goal: Goal) => {
-    const { creation_date, goal_review_date, title, description, last_update_date, status } = goal;
-    return {
-      mentor: `${mentor.firstname} ${mentor.surname}`,
-      creation_date,
-      goal_review_date,
-      title,
-      description,
-      last_update_date,
-      status
-    } as Row;
-  }
-
-  const loadData = async () => {
-    setLoading(true);
-    const { data, error } = await fetchAllGoals();
-    if (error || !data)
-      toast.error(error);
-    else
-      setRows(data.map(goalToRow));
-    setLoading(false);
-  }
+  const { loadingMentor, mentor, error: mentorError } = useMentor();
 
   useEffect(() => {
-    if (rows && csvInstance.current && csvInstance.current.link) {
-      setTimeout(() => {
-        csvInstance.current.link.click();
-        setRows([]);
-      })
+    if (mentorError) {
+      toast.error("Cannot fetch mentor detail for CSV export. Please refresh the page");
     }
-  }, [rows]);
+    return () => toast.dismiss();
+  }, [mentorError])
+
+  const download = async () => {
+    try {
+      setLoading(true);
+      // Load the data
+      const apiRes = await goalsApi.get<Goal[]>('');
+      if (apiRes.status !== 200) throw new Error();
+
+      // Transform to CSV
+      const rows = apiRes.data.map(goal => ({
+        "Mentor Name": `${mentor.firstname} ${mentor.surname}`,
+        ...goal2CSVRow(goal)
+      }));
+      const csv = unparse(rows, {
+        quotes: true
+      });
+
+      // Download
+      const a = document.createElement('a');
+      const file = new Blob([csv], {type: 'text/plain'});
+      a.href = URL.createObjectURL(file);
+      a.download = "goals.csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (_err) {
+      toast.error("Cannot export goals. Please try again later");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return <>
-    <LoadingButton 
-      onClick={loadData} 
-      disabled={loadingMentor || loading} 
-      startIcon={<DownloadIcon />} 
-      variant="outlined" 
+    <LoadingButton
+      onClick={download}
+      disabled={loadingMentor || loading || !!mentorError}
+      startIcon={<DownloadIcon />}
+      variant="outlined"
       loading={loading}
       loadingPosition="start">
       Export
     </LoadingButton>
-    {rows.length > 0 && <CSVLink headers={headers} data={rows} filename="goals.csv" ref={csvInstance}/>}
   </>
 };
 
