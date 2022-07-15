@@ -98,7 +98,7 @@ const MentorRoles: NextPage = () => {
 
   return (
     <MentorRolesCard>
-      <MentorRolesTitle variant="h5">Mentor Roles</MentorRolesTitle>
+      <MentorRolesTitle variant="h5">Settings</MentorRolesTitle>
       <DataGrid
         cols={[
           {
