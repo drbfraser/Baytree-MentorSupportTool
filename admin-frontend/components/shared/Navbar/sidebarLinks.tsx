@@ -25,9 +25,9 @@ const sidebarLinks: SidebarLink[] = [
   { url: "/mentors", title: "Mentors", icon: MdPerson },
   { url: "/notifications", title: "Notifications", icon: MdNotifications },
   { url: "/goals", title: "Goals", icon: MdAutoGraph },
-  { url: "/mentorRoles", title: "Mentor Roles", icon: MdSupervisorAccount },
+  { url: "/mentorRoles", title: "Settings", icon: MdSupervisorAccount },
   { url: "/venues", title: "Venues", icon: MdLocationOn },
-  { url: "/calendarEvents", title: "Events", icon: MdEditCalendar },
+  { url: "/calendarEvents", title: "Calendar", icon: MdEditCalendar },
 ];
 
 export default sidebarLinks;
