@@ -24,6 +24,8 @@ from .views import (
     sendAccountCreationEmail,
     createMentorAccount,
     sendResetPasswordEmail,
+    verifyCreationLink,
+    verifyResetLink,
 )
 
 from rest_framework import routers
@@ -65,4 +67,6 @@ urlpatterns = [
     path("mentors/createAccount", createMentorAccount),
     path("resetPassword", resetAccountPassword),
     path("mentor-roles/activities", getActivitiesForMentor),
+    path("verifyResetPasswordLink", verifyResetLink),
+    path("verifyAccountCreationLink", verifyCreationLink)
 ]
