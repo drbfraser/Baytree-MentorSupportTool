@@ -13,27 +13,28 @@ interface GoalContextType {
   handleChangeParams: (arg: GoalParams | ((params: GoalParams) => GoalParams)) => void;
 }
 
+export const PAGINATION_OPTIONS = [5, 10];
+export const DEFAULT_PAGINATION = {
+  limit: PAGINATION_OPTIONS[0],
+  offset: 0
+} as GoalParams;
+
 export const GoalContext = createContext<GoalContextType>({
   goals: [],
   statistics: { active: 0, complete: 0 },
   loadingGoals: false,
   loadingStatistics: false,
   error: "",
-  params: {},
+  params: DEFAULT_PAGINATION,
   handleSubmitGoal: async (_input, _id) => true,
   handleCompleteGoal: async (_goal) => true,
   handleChangeParams: (_arg) => {}
 });
 
-export const DEFAULT_PAGINATION = {
-  limit: 5,
-  offset: 0
-};
-
 export const GoalProvider: FunctionComponent<{}> = (props) => {
   const [loadingGoals, setLoadingGoals] = useState(false);
   const [loadingStatistics, setLoadingStatistics] = useState(false);
-  const [params, setParams] = useState(DEFAULT_PAGINATION as GoalParams);
+  const [params, setParams] = useState(DEFAULT_PAGINATION);
   const [statistics, setStatistics] = useState({ active: 0, complete: 0 });
   const [goals, setGoals] = useState([] as Goal[]);
   const [error, setError] = useState("");

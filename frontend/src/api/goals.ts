@@ -35,13 +35,13 @@ export interface GoalInput {
 }
 
 export type GoalParams = {
-  limit?: number;
-  offset?: number;
+  limit: number;
+  offset: number;
   active?: boolean;
   completed?: boolean;
 }
 
-export const fetchAllGoals = async (params: GoalParams = {}) => {
+export const fetchAllGoals = async (params: GoalParams = {limit: 5, offset: 0}) => {
   try {
     const apiRes = await goalsApi.get("", {
       params

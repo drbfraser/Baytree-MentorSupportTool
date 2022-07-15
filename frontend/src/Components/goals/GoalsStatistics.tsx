@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { FunctionComponent } from "react";
-import { useGoals, DEFAULT_PAGINATION } from "../../context/GoalContext";
+import { useGoals } from "../../context/GoalContext";
 
 type GoalStatisticsCellType = {
   active?: boolean;
@@ -15,7 +15,7 @@ type GoalStatisticsCellType = {
 }
 
 const GoalStatisticsCell: FunctionComponent<GoalStatisticsCellType> = (props) => {
-  const {loadingStatistics} = useGoals();
+  const { loadingStatistics } = useGoals();
   const activeColor = props.activeColor || "rgba(90, 176, 49, 0.2)";
   const bgColor = props.active ? activeColor : undefined;
 
@@ -41,7 +41,7 @@ const GoalStatisticsCell: FunctionComponent<GoalStatisticsCellType> = (props) =>
 };
 
 const GoalsStatistics = () => {
-  const {statistics: {active, complete}, params, handleChangeParams} = useGoals();
+  const { statistics: { active, complete }, params, handleChangeParams } = useGoals();
   return (
     <Grid container spacing={2}>
       <GoalStatisticsCell
@@ -50,19 +50,30 @@ const GoalsStatistics = () => {
         color="blue"
         activeColor="rgba(0, 0, 255, 0.2)"
         active={!params.active && !params.completed}
-        action={() => handleChangeParams({...DEFAULT_PAGINATION})} />
+        action={() => handleChangeParams(prev => ({
+          limit: prev.limit,
+          offset: 0
+        }))} />
       <GoalStatisticsCell
         title="Active"
         count={active}
         color="secondary"
         active={params.active}
         activeColor="rgba(255, 30, 137, 0.2)"
-        action={() => handleChangeParams({...DEFAULT_PAGINATION, active: true})} />
+        action={() => handleChangeParams(prev => ({
+          active: true,
+          limit: prev.limit,
+          offset: 0
+        }))} />
       <GoalStatisticsCell
         title="Completed"
         count={complete}
         active={params.completed}
-        action={() => handleChangeParams({...DEFAULT_PAGINATION, completed: true})} />
+        action={() => handleChangeParams(prev => ({
+          completed: true,
+          limit: prev.limit,
+          offset: 0
+        }))} />
     </Grid>
   );
 }
