@@ -1,40 +1,33 @@
-import { Button, TextField, Typography } from "@mui/material";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import styled from "styled-components";
-import { createMentorAccount } from "../api/mentorAccount";
-import BaytreeLogo from "../Assets/baytree-logo.png";
-import BaytreePhoto from "../Assets/baytree-photo.jpg";
-import { MOBILE_BREAKPOINT } from "../constants/constants";
-import { checkPassword } from "../Utils/password";
-import OverlaySpinner from "./shared/overlaySpinner";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
+import { Box, Button, TextField, Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { FunctionComponent, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
+import { createMentorAccount } from "../api/mentorAccount";
 
-const CreateAccount = (props: any) => {
+const ValidationMessage: FunctionComponent<{ label: string, validated: boolean }> = ({ label, validated }) => {
+  return <Box display="flex" alignItems="center">
+    {validated ? <CheckCircleIcon color="primary" fontSize="small" sx={{ m: 0.5 }} /> : <ErrorIcon color="error" fontSize="small" sx={{ m: 0.5 }} />}
+    <Typography variant="subtitle2" color={validated ? "primary" : "error"}>{label}</Typography>
+  </Box>
+}
+
+const CreateAccount = () => {
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
-  const [passwordsDontMatch, setPasswordsDontMatch] = useState(false);
   const [passwordAgain, setPasswordAgain] = useState("");
-  const [accountCreationSuccessful, setAccountCreationSuccessful] =
-    useState(false);
-  const [passwordInvalid, setPasswordInvalid] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const handleCreateAccount = () => {
-    if (password !== passwordAgain) {
-      setPasswordsDontMatch(true);
-      setPasswordInvalid(false);
-    } else if (checkPassword(password)) {
-      setIsPageLoading(true);
-      setShowModal(true);
-    } else {
-      setPasswordInvalid(true);
-      setPasswordsDontMatch(false);
-    }
+  const openModal = () => {
+    setIsPageLoading(true);
+    setShowModal(true);
   };
 
   async function createAccount() {
@@ -44,36 +37,29 @@ const CreateAccount = (props: any) => {
     if (accountCreationLinkId) {
       try {
         setShowModal(false);
-        console.log("clicked agree");
-        console.log("creating a mentor account");
-
         const apiRes = await createMentorAccount(
           password,
           accountCreationLinkId
         );
 
         if (apiRes.status === 200) {
-          setIsPageLoading(false);
-          setAccountCreationSuccessful(true);
+          toast.success("Account created successfully!");
+          navigate("/login");
         } else if (apiRes.status === 410) {
-          setIsPageLoading(false);
           toast.error(
             "Link expired. Please contact an administrator for further assistance."
           );
         } else {
-          setIsPageLoading(false);
           toast.error(
             "Invalid link. Please contact an administrator for further assistance."
           );
         }
       } catch {
-        console.log(
-          "Failed to create mentor account. Please contact an administrator for further assistance."
-        );
-        setIsPageLoading(false);
         toast.error(
           "Failed to create mentor account. Please contact an administrator for further assistance."
         );
+      } finally {
+        setIsPageLoading(false);
       }
     }
   }
@@ -89,106 +75,65 @@ const CreateAccount = (props: any) => {
     setIsPageLoading(false);
   }
 
+  const hasValidLength = password.length >= 8 && password.length <= 30;
+  const containsNumber = /\d/.test(password);
+  const containsLowercase = /[a-z]/.test(password);
+  const containsUppercase = /[A-Z]/.test(password);
+  const containsSpecial = /\W/.test(password);
+  const isMatch = password === passwordAgain;
+  const valid = hasValidLength && containsNumber && containsLowercase && containsUppercase && containsSpecial && isMatch;
+
   return (
     <>
-      <PageLayout>
-        <CardLayout>
-          <Logo>
-            <img
-              src={BaytreeLogo}
-              style={{
-                height: "auto",
-                width: "11rem"
-              }}
-              alt="Logo"
-            />
-          </Logo>
-          <PasswordEntry>
-            {accountCreationSuccessful ? (
-              <Typography variant="h4">
-                Successfully created account!
-              </Typography>
-            ) : (
-              <>
-                <Typography variant="h4">
-                  Create your account password:
-                </Typography>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password (again)"
-                  label="Password (again)"
-                  type="password"
-                  id="password-again"
-                  value={passwordAgain}
-                  onChange={(e) => setPasswordAgain(e.target.value)}
-                />
-                {passwordInvalid && (
-                  <Typography variant="body1" color="red">
-                    Error: password should be at least 8 characters, no more
-                    than 30 characters, and contain at least one number, symbol,
-                    lowercase letter, and uppercase letter
-                  </Typography>
-                )}
-                {passwordsDontMatch && (
-                  <Typography variant="body1" color="red">
-                    Error: both password fields should match
-                  </Typography>
-                )}
-              </>
-            )}
-          </PasswordEntry>
-          <CreateAccountButton>
-            {accountCreationSuccessful ? (
-              <Button
-                variant="contained"
-                onClick={() => {
-                  window.location.replace("/login");
-                }}
-                size="large"
-                color="success"
-              >
-                Login
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                onClick={handleCreateAccount}
-                size="large"
-                color="success"
-              >
-                Create Account!
-              </Button>
-            )}
-          </CreateAccountButton>
-          <Photo>
-            <img
-              src={BaytreePhoto}
-              alt="BaytreeBackground"
-              style={{
-                objectFit: "cover",
-                maxHeight: "95vh",
-                height: "auto",
-                width: "100%",
-                boxShadow: "0 0 0.3rem grey"
-              }}
-            />
-          </Photo>
-        </CardLayout>
-        <OverlaySpinner active={isPageLoading}></OverlaySpinner>
-      </PageLayout>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        openModal();
+      }}>
+        <Typography width="100%" variant="h6">Create your account password</Typography>
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          value={password}
+          autoComplete="current-password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          name="passwordAgain"
+          label="Password (again)"
+          type="password"
+          id="password"
+          value={passwordAgain}
+          autoComplete="current-password"
+          onChange={(e) => setPasswordAgain(e.target.value)}
+        />
+        {/* Validation fields */}
+        <Box padding={1} sx={{ backgroundColor: "rgba(0, 0, 0, 0.05)", my: 2 }}>
+          <ValidationMessage validated={hasValidLength} label="Contains 8 - 30 characters" />
+          <ValidationMessage validated={containsNumber} label="Contains at least one number" />
+          <ValidationMessage validated={containsLowercase} label="Contains at least one lowercase letter" />
+          <ValidationMessage validated={containsUppercase} label="Contains at least one uppercase letter" />
+          <ValidationMessage validated={containsSpecial} label="Contains at least one special character" />
+          <ValidationMessage validated={isMatch} label="Passwords match" />
+        </Box>
+        <Button
+          type="submit"
+          value="Login"
+          disabled={!valid || isPageLoading}
+          fullWidth
+          variant="contained"
+          color="primary"
+        >
+          Create Account
+        </Button>
+      </form>
       <Dialog
         open={showModal}
         onClose={modalDisagreeClick}
@@ -196,7 +141,7 @@ const CreateAccount = (props: any) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Data Protection Privacy"}
+          Data Protection Privacy
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
@@ -212,15 +157,15 @@ const CreateAccount = (props: any) => {
             your data.
           </DialogContentText>
         </DialogContent>
-        <DialogActions style={diaplogActionsStyle}>
+        <DialogActions sx={{ p: 1 }}>
           <Button
-            style={disagreeDialogButtonStyle}
+            color="error"
             onClick={modalDisagreeClick}
           >
             Disagree
           </Button>
           <Button
-            style={agreeDialogButtonStyle}
+            variant='contained'
             onClick={modalAgreeClick}
             autoFocus
           >
@@ -231,106 +176,5 @@ const CreateAccount = (props: any) => {
     </>
   );
 };
-
-const disagreeDialogButtonStyle = {
-  color: "white",
-  backgroundColor: "red",
-  marginRight: "20px"
-};
-
-const agreeDialogButtonStyle = {
-  color: "white",
-  backgroundColor: "green",
-  marginRight: "20px"
-};
-
-const diaplogActionsStyle = {
-  marginBottom: "15px"
-};
-
-const PageLayout = styled.div`
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  height: auto;
-  justify-content: center;
-  align-items: center;
-  background: #f3f5f9;
-`;
-
-const CardLayout = styled.div`
-  display: grid;
-  width: 85vw;
-  height: auto;
-  box-shadow: 0 0 0.7rem 0.3rem lightgrey;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 5rem;
-  grid-gap: 2rem;
-  background: white;
-
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: auto auto auto;
-  grid-template-areas:
-    "Logo Photo"
-    "PasswordEntry Photo"
-    "CreateAccountButton Photo";
-
-  @media all and (max-width: ${MOBILE_BREAKPOINT}) {
-    width: 100vw;
-    min-height: 100vh;
-    padding: 0 0 2rem 0;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto;
-    grid-template-areas:
-      "Photo"
-      "Logo"
-      "PasswordEntry"
-      "CreateAccountButton";
-  }
-`;
-
-const Photo = styled.div`
-  width: 100%;
-  height: 100%;
-  grid-area: Photo;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @media all and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
-  }
-`;
-
-const Logo = styled.div`
-  width: 100%;
-  height: 100%;
-  grid-area: Logo;
-  display: flex;
-  justify-content: center;
-`;
-
-const PasswordEntry = styled.div`
-  width: 100%;
-  height: 100%;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 2rem;
-  grid-area: PasswordEntry;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-`;
-
-const CreateAccountButton = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  grid-area: CreateAccountButton;
-`;
 
 export default CreateAccount;

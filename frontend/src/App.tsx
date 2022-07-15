@@ -11,6 +11,7 @@ import Questionnaire from "./Components/questionnaire/Questionnaire";
 import Records from "./Components/records/Records";
 import ResetPassword from "./Components/ResetPassword";
 import Sessions from "./Components/sessions/Sessions";
+import PublicLayout from "./Components/shared/PublicLayout";
 import PrivateRoute from "./Utils/PrivateRoute";
 import PublicRoute from "./Utils/PublicRoute";
 
@@ -23,9 +24,11 @@ function App() {
           - /resetPassword/{id} -> Reset Password
         */}
         <Route path="/resetPassword" element={<ResetPassword />} />
-        <Route path="/createAccount" element={<CreateAccount />} />
-        <Route element={<PublicRoute />}>
-          <Route path="/login" element={<Login />} />
+        <Route element={<PublicLayout />}>
+          <Route path="/createAccount" element={<CreateAccount />} />
+          <Route element={<PublicRoute />}>
+            <Route path="/login" element={<Login />} />
+          </Route>
         </Route>
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />}>

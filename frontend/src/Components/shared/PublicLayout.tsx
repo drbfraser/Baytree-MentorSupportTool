@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
-import { FunctionComponent } from "react";
+import { Outlet } from "react-router-dom";
 import Logo from "../../Assets/baytree-logo.png";
 import Photo from "../../Assets/baytree-photo.jpg";
 
-const PublicLayout: FunctionComponent<{}> = ({children}) => {
+const PublicLayout = () => {
   return (<Box display="flex" alignItems="stretch" justifyContent="center" component="main" minHeight="100vh">
     <Box
       flexGrow={1}
@@ -21,7 +21,7 @@ const PublicLayout: FunctionComponent<{}> = ({children}) => {
       }
     }}>
       <img src={Logo} alt="Logo" width="null" height="200" style={{ marginBottom: "30px" }} />
-      {children}
+      <Outlet />
     </Box>
   </Box>)
 };
