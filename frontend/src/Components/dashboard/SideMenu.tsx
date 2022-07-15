@@ -99,7 +99,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
                 to={path}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <ListItem button onClick={closeDrawer} sx={{backgroundColor: active && "rgba(90, 184, 1, 0.15)"}}>
+                <ListItem button onClick={closeDrawer} sx={{backgroundColor: active ? "rgba(90, 184, 1, 0.15)" : "transparent"}}>
                   <ListItemIcon>
                     <Icon color={active ? "secondary" : "primary"} />
                   </ListItemIcon>
