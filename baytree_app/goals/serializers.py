@@ -12,12 +12,15 @@ class GoalCategorySerializer(serializers.ModelSerializer):
 
 class GoalSerializer(serializers.ModelSerializer):
     mentor = MentorSerializer(read_only=True)
+    mentee = serializers.SerializerMethodField(read_only=True)
     categories = GoalCategorySerializer(many=True, read_only=True)
     class Meta:
         model = Goal
         fields = [
             'id', 
             'mentor',
+            'mentee_id',
+            'mentee',
             'title', 
             'creation_date', 
             'goal_review_date', 
@@ -26,3 +29,6 @@ class GoalSerializer(serializers.ModelSerializer):
             'status',
             'categories'
         ]
+
+    def get_mentee(self, obj):
+        return obj.get_mentee()
