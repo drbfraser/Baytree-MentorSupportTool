@@ -13,6 +13,9 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -20,18 +23,21 @@ import { FunctionComponent } from "react";
 import { toast } from "react-toastify";
 import { Goal, GoalInput } from "../../api/goals";
 import { useGoalCategories } from "../../hooks/useGoals";
+import useMentees from "../../hooks/useMentees";
 import Loading from "../shared/Loading";
 
 const initialAnswer = (goal?: Goal) => {
   if (!goal) return {
     title: "",
     description: "",
+    mentee_id: "",
     goal_review_date: new Date(),
     categories: []
   } as GoalInput;
   return {
     title: goal.title,
     description: goal.description,
+    mentee_id: goal.mentee?.viewsPersonId || "",
     goal_review_date: new Date(goal.goal_review_date),
     categories: goal.categories
   } as GoalInput
@@ -49,7 +55,8 @@ interface Props {
 }
 
 const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleSubmitGoal }) => {
-  const { categories, loading, error } = useGoalCategories();
+  const { mentees, loadingMentees } = useMentees();
+  const { categories, loading: loadingCategories, error: categoriesError } = useGoalCategories();
   const title = goal ? "Edit goal" : "Create new goal";
 
   const { values, handleSubmit, handleChange, setFieldValue, isSubmitting, setSubmitting } = useFormik({
@@ -79,15 +86,20 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
     }
   };
 
+  const loading = loadingCategories || loadingMentees;
+  let errorMessage = categoriesError;
+  if (!errorMessage && !mentees) errorMessage = "Cannot load mentees";
+  const shouldRender = !loading && mentees;
+
   return <Dialog open={open} fullWidth maxWidth="sm">
     <DialogTitle>{title}</DialogTitle>
     {loading && <Loading />}
-    {!loading && error &&
+    {!loading && errorMessage &&
       <Alert severity="error">
-        <AlertTitle>{error}</AlertTitle>
+        <AlertTitle>{errorMessage}</AlertTitle>
         Please try again later
       </Alert>}
-    {!loading && !error &&
+    {!loading && !errorMessage && mentees &&
       <form onSubmit={handleSubmit}>
         <DialogContent>
           {/* Title */}
@@ -98,6 +110,29 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
             fullWidth sx={{ mb: 2 }}
             value={values.title}
             onChange={handleChange} />
+          {/* Mentee */}
+          <FormControl fullWidth required>
+            <InputLabel id="mentee-label">Mentee</InputLabel>
+            <Select
+              labelId="mentee-label"
+              label="Mentee"
+              name="mentee_id"
+              sx={{ mb: 2 }}
+              value={values.mentee_id ? `${values.mentee_id}` : ""}
+              onChange={handleChange}>
+              <MenuItem value="" disabled>
+                <em>Please select a mentee</em>
+              </MenuItem>
+              {mentees.map((mentee) => {
+                const fullName = `${mentee.firstName} ${mentee.lastName}`;
+                return (
+                  <MenuItem key={mentee.viewsPersonId} value={mentee.viewsPersonId}>
+                    {fullName}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
           {/* Date selection */}
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker

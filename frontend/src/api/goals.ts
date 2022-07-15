@@ -1,6 +1,7 @@
 import axios from "axios";
 import { format } from "date-fns";
 import { API_BASE_URL } from "./url";
+import { Participant } from "./views";
 
 export const goalsApi = axios.create({
   baseURL: `${API_BASE_URL}/goals`,
@@ -16,6 +17,7 @@ export interface GoalCategory {
 export interface Goal {
   id: number;
   title: string;
+  mentee?: Participant;
   creation_date: string;
   goal_review_date: string;
   last_update_date: string;
@@ -27,6 +29,7 @@ export interface Goal {
 export interface GoalInput {
   title: string;
   goal_review_date: Date;
+  mentee_id?: number | string;
   description: string;
   categories: GoalCategory[];
 }
@@ -79,6 +82,8 @@ export const submitGoal = async (input: GoalInput, id?: number) => {
     description: input.description,
     categories: input.categories.map(item => item.id)
   }
+  if (input.mentee_id) data.mentee_id = +input.mentee_id;
+  console.log(data);
   try {
     const promise = id ? goalsApi.put<Goal>(`${id}/`, data) : goalsApi.post<Goal>("", data);
     const response = await promise;
