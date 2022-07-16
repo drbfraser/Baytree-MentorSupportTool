@@ -153,6 +153,9 @@ sleep 10;
 echo -e "${BLUE}Upgrading database schema...${COLOR_OFF}\n"
 docker exec baytree_server python manage.py migrate
 
+echo -e "${BLUE}Seeding database...${COLOR_OFF}\n"
+docker exec baytree_server python manage.py loaddata goalCategories
+
 echo -e "\n${BLUE}"
 echo -e "Data seeding options:"
 echo -e "   0: No data seeding"
