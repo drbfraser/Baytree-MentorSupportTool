@@ -1,5 +1,6 @@
 import { Button, FormControl, Typography } from "@mui/material";
 import { Form, Formik } from "formik";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useQuestionnaire, {
@@ -16,6 +17,8 @@ import MentorNameInput from "./MentorNameQuestion";
 import TextInput from "./TextInput";
 
 const Questionnaire = () => {
+  const [bottomErrorMessage, setBottomErrorMessage] = useState("");
+
   const {
     loading,
     questions,
@@ -47,15 +50,9 @@ const Questionnaire = () => {
               }
               else {
                 const volunteerQuestionnaireSubmissionError = 
-                "Failed to submit Volunteer questionnaire. \
-                Views Volunteer and Participant questionnaires may now be inconsistent. \
-                Please contact the administrator to manually remove inconsistent \
-                questionnaire from Participant's profile before trying again.";
-                toast.error(volunteerQuestionnaireSubmissionError, {
-                  autoClose: false,
-                  hideProgressBar: true,
-                });
-                console.error(volunteerQuestionnaireSubmissionError)
+                "Failed to submit Volunteer questionnaire. \nViews Volunteer and Participant questionnaires may now be inconsistent. \nPlease contact the administrator to manually remove inconsistent \nquestionnaire from Participant's profile before trying again.";
+                setBottomErrorMessage(volunteerQuestionnaireSubmissionError);
+                console.error(volunteerQuestionnaireSubmissionError);
                 // TODO: implement server logging
 
                 setSubmitting(false);
@@ -112,7 +109,10 @@ const Questionnaire = () => {
                   </FormControl>
                 );
               })}
-
+              {/* Error Message */}
+              <div style={{textAlign: "center", color: "red", fontWeight: "bold", fontSize: "18px",}}>
+                <p>{bottomErrorMessage}</p>
+              </div>
               {/* Submit button */}
               <Button
                 disabled={isSubmitting || !validateAnswerSet(values)}
