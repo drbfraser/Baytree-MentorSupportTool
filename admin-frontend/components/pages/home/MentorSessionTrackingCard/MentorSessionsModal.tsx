@@ -47,7 +47,7 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
       </Email>
       <SessionsGrid>
         <DataGrid
-          primaryKeyDataField="viewsPersonId"
+          primaryKeyDataField="viewsSessionId"
           cols={[
             {
               header: "Date",
@@ -59,10 +59,12 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
             {
               icon: <MdNote />,
               name: "See Notes",
-              actionFunction: (dataRow) => {},
+              actionFunction: (dataRow) => {
+                setOpenedSession(dataRow as ViewsSession);
+              },
             },
           ]}
-          onLoadDataRows={async () => props.mentorSessions}
+          onLoadDataRows={async () => mentorSessions}
         ></DataGrid>
       </SessionsGrid>
     </MentorSessionsModalLayout>
