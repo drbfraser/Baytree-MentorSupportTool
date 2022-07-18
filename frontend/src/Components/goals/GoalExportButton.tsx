@@ -8,7 +8,7 @@ import { unparse } from "papaparse";
 import {formatInTimeZone} from "date-fns-tz";
 import { TIMEZONE_ID } from '../../Utils/locale';
 
-const goal2CSVRow = (goal: Goal) => ({
+const goalToCSVRow = (goal: Goal) => ({
   "Mentee Name": goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : "",
   "Goal Creation Date": formatInTimeZone(goal.creation_date, TIMEZONE_ID, "yyyy-MM-dd"),
   "Goal Review Date": formatInTimeZone(goal.goal_review_date, TIMEZONE_ID, "yyyy-MM-dd"),
@@ -40,7 +40,7 @@ const GoalExportButton = () => {
       // Transform to CSV
       const rows = apiRes.data.map(goal => ({
         "Mentor Name": `${mentor.firstname} ${mentor.surname}`,
-        ...goal2CSVRow(goal)
+        ...goalToCSVRow(goal)
       }));
       const csv = unparse(rows, {
         quotes: true
