@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import { MdNote } from "react-icons/md";
 import styled from "styled-components";
 import { Session as ViewsSession } from "../../../../api/backend/views/sessions";
 import {
@@ -8,6 +9,8 @@ import {
 } from "../../../../constants/constants";
 import { Mentor } from "../../../../pages/home";
 import DataGrid from "../../../shared/datagrid/datagrid";
+import Modal from "../../../shared/Modal";
+import MentorSessionsNotesModal from "./MentorSessionsNotesModal";
 
 export interface MentorSessionsModalProps {
   mentor: Mentor;
@@ -18,8 +21,19 @@ export interface MentorSessionsModalProps {
 const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
   props
 ) => {
+  const [openedSession, setOpenedSession] = useState<ViewsSession | null>(null);
+  const mentorSessions = props.mentorSessions.map((session) => ({
+    ...session,
+    startDate: session.startDate.toDateString(),
+  }));
+
   return (
     <MentorSessionsModalLayout>
+      <Modal
+        isOpen={openedSession !== null}
+        onOutsideClick={() => setOpenedSession(null)}
+        modalComponent={<MentorSessionsNotesModal session={openedSession!} />}
+      />
       <Name>
         <Typography variant="h5">{`${props.mentor.fullName}'s Sessions`}</Typography>
       </Name>
@@ -40,8 +54,13 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
               dataType: "date",
               dataField: "startDate",
             },
-            { header: "Activity", dataField: "activity" },
-            { header: "Notes", dataField: "notes" },
+          ]}
+          dataRowActions={[
+            {
+              icon: <MdNote />,
+              name: "See Notes",
+              actionFunction: (dataRow) => {},
+            },
           ]}
           onLoadDataRows={async () => props.mentorSessions}
         ></DataGrid>

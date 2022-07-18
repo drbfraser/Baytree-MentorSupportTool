@@ -281,15 +281,10 @@ const SessionTrackingTable: React.FunctionComponent<
         modalComponent={
           <MentorSessionsModal
             mentor={mentorSessionsModalMentor as Mentor}
-            mentorSessions={props.sessionsForCurYear
-              .filter(
-                (session) =>
-                  session.leadStaff === mentorSessionsModalMentor?.viewsPersonId
-              )
-              .map((session) => ({
-                ...session,
-                startDate: session.startDate.toDateString(),
-              }))}
+            mentorSessions={props.sessionsForCurYear.filter(
+              (session) =>
+                session.leadStaff === mentorSessionsModalMentor?.viewsPersonId
+            )}
             year={props.year}
           ></MentorSessionsModal>
         }
