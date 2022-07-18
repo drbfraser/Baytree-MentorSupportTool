@@ -160,9 +160,9 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
             setIsRowExpanded={setIsRowExpanded}
             isRowExpanded={isRowExpanded}
           ></ExpandButtonCell>
-        ) : (
+        ) : props.isDataGridSaveable ? (
           <TableCell />
-        )}
+        ) : null}
       </TableRow>
       {isRowExpanded &&
         (isOnMobileDevice || someExpandableColumnExists(props.cols)) && (

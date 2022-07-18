@@ -3,7 +3,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Session as ViewsSession } from "../../../../api/backend/views/sessions";
-import { SessionResponse as DjangoSession } from "../../../../api/backend/sessions";
+import {
+  SessionResponse as DjangoSession,
+  sessionsBackendEndpoint,
+} from "../../../../api/backend/sessions";
 import { BAYTREE_PRIMARY_COLOR } from "../../../../constants/constants";
 import DataGrid from "../../../shared/datagrid/datagrid";
 import Modal from "../../../shared/Modal";
@@ -105,28 +108,40 @@ const SessionTrackingTable: React.FunctionComponent<
         switch (sessionMonthNum) {
           case 0:
             aggregatedMentor.januarySessions++;
+            break;
           case 1:
             aggregatedMentor.februarySessions++;
+            break;
           case 2:
             aggregatedMentor.marchSessions++;
+            break;
           case 3:
             aggregatedMentor.aprilSessions++;
+            break;
           case 4:
             aggregatedMentor.maySessions++;
+            break;
           case 5:
             aggregatedMentor.juneSessions++;
+            break;
           case 6:
             aggregatedMentor.julySessions++;
+            break;
           case 7:
             aggregatedMentor.augustSessions++;
+            break;
           case 8:
             aggregatedMentor.septemberSessions++;
+            break;
           case 9:
             aggregatedMentor.octoberSessions++;
+            break;
           case 10:
             aggregatedMentor.novemberSessions++;
+            break;
           case 11:
             aggregatedMentor.decemberSessions++;
+            break;
         }
       }
     });
@@ -175,20 +190,52 @@ const SessionTrackingTable: React.FunctionComponent<
               keepColumnOnMobile: true,
             },
             {
-              header: "Email",
-              dataField: "email",
+              header: "Jan",
+              dataField: "januarySessions",
             },
             {
-              header: "Completed",
-              dataField: "numSessionsCompleted",
+              header: "Feb",
+              dataField: "februarySessions",
             },
             {
-              header: "Cancelled",
-              dataField: "numSessionsCancelled",
+              header: "Mar",
+              dataField: "marchSessions",
             },
             {
-              header: "Missed",
-              dataField: "numSessionsMissed",
+              header: "Apr",
+              dataField: "aprilSessions",
+            },
+            {
+              header: "May",
+              dataField: "maySessions",
+            },
+            {
+              header: "Jun",
+              dataField: "juneSessions",
+            },
+            {
+              header: "Jul",
+              dataField: "julySessions",
+            },
+            {
+              header: "Aug",
+              dataField: "augustSessions",
+            },
+            {
+              header: "Sep",
+              dataField: "septemberSessions",
+            },
+            {
+              header: "Oct",
+              dataField: "octoberSessions",
+            },
+            {
+              header: "Nov",
+              dataField: "novemberSessions",
+            },
+            {
+              header: "Dec",
+              dataField: "decemberSessions",
             },
           ]}
           primaryKeyDataField="viewsPersonId"
@@ -234,10 +281,15 @@ const SessionTrackingTable: React.FunctionComponent<
         modalComponent={
           <MentorSessionsModal
             mentor={mentorSessionsModalMentor as Mentor}
-            mentorSessions={props.sessionsForCurYear.filter(
-              (session) =>
-                session.leadStaff === mentorSessionsModalMentor?.viewsPersonId
-            )}
+            mentorSessions={props.sessionsForCurYear
+              .filter(
+                (session) =>
+                  session.leadStaff === mentorSessionsModalMentor?.viewsPersonId
+              )
+              .map((session) => ({
+                ...session,
+                startDate: session.startDate.toDateString(),
+              }))}
             year={props.year}
           ></MentorSessionsModal>
         }

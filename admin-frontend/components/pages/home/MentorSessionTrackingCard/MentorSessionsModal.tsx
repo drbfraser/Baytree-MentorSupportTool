@@ -33,8 +33,13 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
       </Email>
       <SessionsGrid>
         <DataGrid
+          primaryKeyDataField="viewsPersonId"
           cols={[
-            { header: "Date", dataField: "startDate", expandableColumn: true },
+            {
+              header: "Date",
+              dataType: "date",
+              dataField: "startDate",
+            },
             { header: "Activity", dataField: "activity" },
             { header: "Notes", dataField: "notes" },
           ]}
@@ -88,14 +93,5 @@ const EmailText = styled.a`
   color: ${BAYTREE_PRIMARY_COLOR};
   text-decoration: underline;
 `;
-
-const ExpandRowComponentLayout = styled.div`
-  width: 100%;
-  height: 100%;
-`;
-
-const NotesTitle = styled(Typography)``;
-
-const NotesText = styled(Typography)``;
 
 export default MentorSessionsModal;
