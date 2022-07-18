@@ -145,6 +145,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
             dataRow={props.dataRow}
             actions={getDataRowActions(
               props.dataRowActions,
+              !!props.isDataGridSaveable,
               !!props.isDataGridDeleteable,
               props.setDeletedDataRow,
               !!props.isDataRowDeleted,
@@ -265,6 +266,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                   dataRow={props.dataRow}
                   actions={getDataRowActions(
                     props.dataRowActions,
+                    !!props.isDataGridSaveable,
                     !!props.isDataGridDeleteable,
                     props.setDeletedDataRow,
                     !!props.isDataRowDeleted,
