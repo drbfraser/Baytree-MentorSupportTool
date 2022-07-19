@@ -257,13 +257,13 @@ def sendAccountCreationEmail(request):
             email_account_creation_link = (
                 "https://"
                 + os.environ["DOMAIN"]
-                + "/createAccount?id="
+                + "/createAccount/"
                 + str(account_creation_link.link_id)
             )
         else:
             email_account_creation_link = (
                 "http://localhost:3000"
-                + "/createAccount?id="
+                + "/createAccount/"
                 + str(account_creation_link.link_id)
             )
 
@@ -548,13 +548,13 @@ def sendResetPasswordEmail(request):
             reset_password_link = (
                 "https://"
                 + os.environ["DOMAIN"]
-                + "/resetPassword?id="
+                + "/resetPassword/"
                 + str(password_reset_link.link_id)
             )
         else:
             reset_password_link = (
                 "http://localhost:3000"
-                + "/resetPassword?id="
+                + "/resetPassword/"
                 + str(password_reset_link.link_id)
             )
 
@@ -669,3 +669,27 @@ def getActivitiesForMentor(request):
         [mentorRoleActivity.activity for mentorRoleActivity in mentorRoleActivities],
         status=status.HTTP_200_OK,
     )
+
+@api_view(["POST"])
+@authentication_classes([])
+@permission_classes([])
+def verifyCreationLink(request):
+    id = request.data["id"]
+    accountCreationLinkId = AccountCreationLink.objects.filter(link_id=id)
+    if not accountCreationLinkId.exists():
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    if isLinkExpired(accountCreationLinkId):
+        return Response()
+
+
+@api_view(["POST"])
+@authentication_classes([])
+@permission_classes([])
+def verifyResetLink(request):
+    id = request.data["id"]
+    resetPasswordLinkId = ResetPasswordLink.objects.filter(link_id=id)
+    if not resetPasswordLinkId.exists():
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    if isLinkExpired(resetPasswordLinkId.first()):
+        return Response(status=status.HTTP_410_GONE)
+    return Response()
