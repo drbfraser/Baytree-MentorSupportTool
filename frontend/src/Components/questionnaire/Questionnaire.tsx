@@ -67,6 +67,7 @@ const Questionnaire = () => {
                 setSubmitting(false);
               }
             } else {
+              const questionnaireSubmissionError =
               <strong>Failed to submit Participant questionnaire, consequently, Volunteer answer set not submitted. Please try again.</strong>;
               setSubmissionErrorTitle("Error: Questionnaire Not Submitted");
               setSubmissionErrorMessage(questionnaireSubmissionError);
