@@ -1,20 +1,10 @@
-from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from users.permissions import AdminPermissions, userIsAdmin, userIsSuperUser
-from rest_framework import status
-from users.models import MentorUser
-from .constants import base_url
-from .permissions import *
-import json
 
-class ResourceView(APIView):
-    permission_classes = [IsAuthenticated & (AdminPermissions | IsUserAMentor)]
+base_url = 'https://thebaytreecentre.sharepoint.com/:f:/g/Ej7DxK0KjzNBuTwQ_lU-0bMBdMNHOWzHi2bzGJB86G4Bjg'
 
-    def get(self, request):   
-        resource = []
-        resource.append({"Resource": base_url})
-        jsonResource = json.dumps(resource)
-        return Response(jsonResource,status=200)
+@api_view(("GET",))
+def get_resource(request):   
+    return Response(base_url)
 
 

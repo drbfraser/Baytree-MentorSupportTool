@@ -52,8 +52,8 @@ export const fetchQuestions = () => {
 
 // Resources
 export const fetchResourcesURL = async () => {
-  const { data } = await baseApi.get("resources/");
-  return JSON.parse(data)[0].Resource as string;
+  const { data } = await baseApi.get<string>("resources/");
+  return data;
 };
 
 // Sessions

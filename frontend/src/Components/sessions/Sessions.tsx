@@ -1,6 +1,8 @@
 import { DatePicker, LocalizationProvider, TimePicker } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import {
+  Alert,
+  AlertTitle,
   Button,
   Checkbox,
   Divider,
@@ -8,7 +10,6 @@ import {
   Grid,
   MenuItem,
   Select,
-  Skeleton,
   TextField,
   Typography
 } from "@mui/material";
@@ -21,6 +22,7 @@ import useVenues from "../../hooks/useVenues";
 import { getInitialFormValues, submitSession } from "./session";
 import { SelectInputContainer, TimeInputContainer } from "./Containers";
 import useActivities from "../../hooks/useActivities";
+import Loading from "../shared/Loading";
 
 const SessionForm = () => {
   const { venues, error: venuesLoadError } = useVenues();
@@ -54,6 +56,8 @@ const SessionForm = () => {
       );
     }
   }, [activitiesLoadError]);
+
+  useEffect(() => () => toast.dismiss(), []);
 
   return (
     <>
@@ -168,14 +172,12 @@ const SessionForm = () => {
                         labelId="Mentee"
                         name="menteeViewsPersonId"
                         required
-                        disabled={true}
-                        readOnly={true}
                         value={values.menteeViewsPersonId}
-                        label="Mentee"
                         onChange={handleChange}
                       >
-                        {mentees.map((mentee, i) => (
-                          <MenuItem key={i} value={mentee.viewsPersonId}>
+                        {mentees.map((mentee) => (
+                          <MenuItem key={mentee.viewsPersonId}
+                           value={mentee.viewsPersonId}>
                             {`${mentee.firstName} ${mentee.lastName}`}
                           </MenuItem>
                         ))}
@@ -190,8 +192,8 @@ const SessionForm = () => {
                         label="Venue"
                         onChange={handleChange}
                       >
-                        {venues.map((venue, i) => (
-                          <MenuItem key={i} value={venue.id}>
+                        {venues.map((venue) => (
+                          <MenuItem key={venue.id} value={venue.id}>
                             {venue.name}
                           </MenuItem>
                         ))}
@@ -229,25 +231,14 @@ const SessionForm = () => {
             }}
           </Formik>
         ) : menteesLoadError || venuesLoadError || activitiesLoadError ? (
-          <>
-            <Typography>
-              We're sorry, this page is not working at the moment. Please
-              refresh or contact your administrator. Reason for error:{" "}
-              {menteesLoadError
-                ? menteesLoadError
-                : venuesLoadError
-                ? venuesLoadError
-                : activitiesLoadError}
-            </Typography>
-          </>
+          <Alert severity="error">
+            <AlertTitle>We're sorry, this page is not working at the moment.</AlertTitle>
+              Please refresh or contact your administrator. <br />
+              Reason for error:
+              {menteesLoadError || venuesLoadError || activitiesLoadError}
+          </Alert>
         ) : (
-          <>
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-          </>
+          <Loading />
         )}
       </TitledContainer>
     </>
