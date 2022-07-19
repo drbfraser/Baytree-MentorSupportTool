@@ -10,6 +10,10 @@ import Pager from "../../../shared/pager";
 import MentorSessionsModal from "./MentorSessionsModal";
 import { Mentor } from "../../../../pages/home";
 import { MdSchedule } from "react-icons/md";
+import {
+  getMentorSessionCounts,
+  MentorSessionCount,
+} from "./MentorSessionTrackingCard/Logic";
 
 interface SessionTrackingTableProps {
   sessionsForCurYear: ViewsSession[];

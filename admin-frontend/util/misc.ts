@@ -48,17 +48,17 @@ export const arraysEqual = (a1: Array<any>, a2: Array<any>) => {
 
 export const objectsToCsv = (
   objects: Record<string, any>[],
-  fieldsToKeep: string[]
+  fieldsToKeep: { title: string; field: string }[]
 ) => {
   let firstCsvRow = "";
   fieldsToKeep.forEach((fieldToKeep) => {
-    firstCsvRow = firstCsvRow + fieldToKeep + "," + "\r\n";
+    firstCsvRow = firstCsvRow + fieldToKeep.title + "," + "\r\n";
   });
 
   let csvContents = firstCsvRow;
   objects.forEach((object) => {
     fieldsToKeep.forEach((fieldToKeep) => {
-      csvContents = csvContents + object[fieldToKeep] + "," + "\r\n";
+      csvContents = csvContents + object[fieldToKeep.field] + "," + "\r\n";
     });
   });
 
@@ -68,7 +68,11 @@ export const objectsToCsv = (
 /** Download contents as a file
  * Source: https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
  */
-function downloadBlob(content: string, filename: string, contentType: string) {
+export const downloadBlob = (
+  content: string,
+  filename: string,
+  contentType: string
+) => {
   // Create a blob
   var blob = new Blob([content], { type: contentType });
   var url = URL.createObjectURL(blob);
@@ -78,4 +82,9 @@ function downloadBlob(content: string, filename: string, contentType: string) {
   pom.href = url;
   pom.setAttribute("download", filename);
   pom.click();
-}
+};
+
+/** Filename is without extension */
+export const downloadCsv = (content: string, fileName: string) => {
+  downloadBlob(content, `${fileName}.csv`, "text/csv;charset=utf-8;");
+};

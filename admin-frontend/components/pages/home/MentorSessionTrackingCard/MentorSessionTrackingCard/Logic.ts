@@ -1,7 +1,8 @@
 import { Mentor } from "../../../../../pages/home";
 import { Session } from "../../../../../api/backend/views/sessions";
+import { downloadCsv, objectsToCsv } from "../../../../../util/misc";
 
-interface MentorSessionCount extends Mentor {
+export interface MentorSessionCount extends Mentor {
   januarySessions: number;
   februarySessions: number;
   marchSessions: number;
@@ -113,4 +114,32 @@ export const getCurYearStartDate = (curYear: number): string => {
 export const getCurYearEndDate = (curYear: number): string => {
   const lastDayOfYear = new Date(curYear + 1, 8, 1);
   return lastDayOfYear.toISOString().split("T")[0];
+};
+
+export const onExportButtonClick = (
+  mentorSessionCounts: MentorSessionCount[],
+  year: number,
+  sessionGroup: string
+) => {
+  const exportedFields = [
+    { title: "Name", field: "fullName" },
+    { title: "Jan", field: "januarySessions" },
+    { title: "Feb", field: "februarySessions" },
+    { title: "Mar", field: "marchSessions" },
+    { title: "Apr", field: "aprilSessions" },
+    { title: "May", field: "maySessions" },
+    { title: "Jun", field: "juneSessions" },
+    { title: "Jul", field: "julySessions" },
+    { title: "Aug", field: "aprilSessions" },
+    { title: "Sep", field: "septemberSessions" },
+    { title: "Oct", field: "octoberSessions" },
+    { title: "Nov", field: "novemberSessions" },
+    { title: "Dec", field: "decemberSessions" },
+  ];
+
+  const csvFileContent = objectsToCsv(mentorSessionCounts, exportedFields);
+  downloadCsv(
+    csvFileContent,
+    `Session Statistics ${year}/${year + 1} ${sessionGroup}`
+  );
 };

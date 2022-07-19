@@ -11,7 +11,12 @@ import { Mentor } from "../../../../../pages/home";
 import { PaginatedSelectOption } from "../../../../shared/paginatedSelect";
 import Header from "../Header";
 import SessionTrackingTable from "../SessionTrackingTable";
-import { getCurYearEndDate, getCurYearStartDate } from "./Logic";
+import {
+  getCurYearEndDate,
+  getCurYearStartDate,
+  getMentorSessionCounts,
+  onExportButtonClick,
+} from "./Logic";
 
 interface MentorSessionTrackingCardProps {
   mentors: Mentor[];
@@ -104,10 +109,6 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     setSelectedSessionGroupId(selectedSessionGroup.value);
   };
 
-  const onExportButtonClick = () => {
-    const exportedFields = [""];
-  };
-
   return (
     <CardLayout>
       <Header
@@ -115,7 +116,11 @@ const MentorSessionTrackingCard: React.FunctionComponent<
         onSessionGroupSelectOptionChange={onSessionGroupSelectOptionChange}
         onSetYear={setCurYear}
         curYear={curYear}
-        onExportButtonClick={onExportButtonClick}
+        onExportButtonClick={() =>
+          onExportButtonClick(
+            getMentorSessionCounts(props.mentors, sessionsForCurYear)
+          )
+        }
         mentorFilter={props.mentorFilter}
         setMentorFilter={props.setMentorFilter}
       ></Header>
