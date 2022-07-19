@@ -6,9 +6,10 @@ import {
   TextField,
   InputAdornment,
   IconButton,
+  Button,
 } from "@mui/material";
 import React from "react";
-import { MdSearch } from "react-icons/md";
+import { MdOutlineFileDownload, MdSearch } from "react-icons/md";
 import styled from "styled-components";
 import { MOBILE_BREAKPOINT } from "../../../../constants/constants";
 import PaginatedSelect from "../../../shared/paginatedSelect";
@@ -34,6 +35,8 @@ interface HeaderProps {
 
   mentorFilter: string;
   setMentorFilter: (newMentorFilter: string) => void;
+
+  onExportButtonClick: () => void;
 }
 
 const Header: React.FunctionComponent<HeaderProps> = (props) => {
@@ -61,6 +64,13 @@ const Header: React.FunctionComponent<HeaderProps> = (props) => {
           mentorFilter={props.mentorFilter}
           setMentorFilter={props.setMentorFilter}
         ></SearchBox>
+        <Button
+          variant="contained"
+          onClick={props.onExportButtonClick}
+          endIcon={<MdOutlineFileDownload />}
+        >
+          Export
+        </Button>
       </HeaderLayout>
     </>
   );
@@ -75,7 +85,7 @@ const HeaderLayout = styled.div`
   grid-row-gap: 1rem;
   grid-template-areas:
     "title selectSessionGroup settingsButton"
-    "selectDate searchBox searchBox";
+    "selectDate searchBox exportButton";
 
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     grid-template-columns: auto auto;
@@ -84,7 +94,8 @@ const HeaderLayout = styled.div`
       "title settingsButton"
       "selectSessionGroup selectSessionGroup"
       "selectDate selectDate"
-      "searchBox searchBox";
+      "searchBox searchBox"
+      "exportButton exportButton";
   }
 `;
 
