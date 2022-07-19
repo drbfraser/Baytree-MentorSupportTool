@@ -18,8 +18,9 @@ const ResetPasswordRequest = () => {
   };
 
   if (success) {
-    return <Alert severity="success">
-      An email with passwor reset has been sent to that specific address.
+    return <Alert severity="success" sx={{width: "100%"}}>
+      <AlertTitle>Password reset email has been sent</AlertTitle>
+      Please check your inbox for further instruction
     </Alert>
   }
 
