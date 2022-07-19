@@ -15,6 +15,7 @@ import InvalidQuestionnaire from "./InvalidQuestionnaire";
 import MenteesNameInput from "./MenteesNameInput";
 import MentorNameInput from "./MentorNameQuestion";
 import TextInput from "./TextInput";
+import { Logger, logLevel} from "../../api/logging";
 
 const Questionnaire = () => {
   const [canSeeAlert, setcanSeeAlert] = useState("none");
@@ -30,6 +31,7 @@ const Questionnaire = () => {
     errorMessage,
     handleSubmitAnswerSet,
   } = useQuestionnaire();
+
   return (
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
@@ -51,6 +53,10 @@ const Questionnaire = () => {
                 resetForm();
               }
               else {
+                const volunteerQuestionnaireSubmissionLoggerError = 
+                "Failed to submit Volunteer questionnaire. \nViews Volunteer and Participant questionnaires may now be inconsistent. \nPlease contact the administrator to manually remove inconsistent \nquestionnaire from Participant's profile before trying again.";
+                let menteeResultData = menteeResult.data
+                new Logger(`${volunteerQuestionnaireSubmissionLoggerError}\n Mentor: ${menteeResultData["mentor"]}, Mentee: ${menteeResultData["mentee"]}, Questionnaire ID: ${menteeResultData["questionnaireId"]}, Submission ID: ${menteeResultData["submissionId"]}`, logLevel.error)
                 const volunteerQuestionnaireSubmissionError = 
                 <strong>Views Volunteer and Participant questionnaires may now be inconsistent. 
                   <br/>Please contact the administrator to manually remove inconsistent questionnaire from Participant's profile before trying again.</strong>;
@@ -58,11 +64,10 @@ const Questionnaire = () => {
                 setSubmissionErrorMessage(volunteerQuestionnaireSubmissionError);
                 setcanSeeAlert("block");
                 // TODO: implement server logging
-
                 setSubmitting(false);
               }
             } else {
-              const questionnaireSubmissionError = 
+              const questionnaireSubmissionError =
               <strong>Failed to submit Participant questionnaire, consequently, Volunteer answer set not submitted. Please try again.</strong>;
               setSubmissionErrorTitle("Error: Questionnaire Not Submitted");
               setSubmissionErrorMessage(questionnaireSubmissionError);
