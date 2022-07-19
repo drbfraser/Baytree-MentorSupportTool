@@ -72,15 +72,15 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     }
   };
 
-  // get current year start date like: '2022-01-01'
+  // get current year start date for academic year (sep-aug) like: '2022-09-01'
   const getCurYearStartDate = (): string => {
-    const firstDayOfYear = new Date(curYear, 0, 1);
+    const firstDayOfYear = new Date(curYear, 8, 1);
     return firstDayOfYear.toISOString().split("T")[0];
   };
 
-  // get current year end date like: '2022-12-31'
+  // get current year end date for academic year (sep-aug) like: '2023-08-31'
   const getCurYearEndDate = (): string => {
-    const lastDayOfYear = new Date(curYear + 1, 0, 0);
+    const lastDayOfYear = new Date(curYear + 1, 8, 0);
     return lastDayOfYear.toISOString().split("T")[0];
   };
 

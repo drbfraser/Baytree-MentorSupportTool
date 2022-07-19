@@ -3,10 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Session as ViewsSession } from "../../../../api/backend/views/sessions";
-import {
-  SessionResponse as DjangoSession,
-  sessionsBackendEndpoint,
-} from "../../../../api/backend/sessions";
 import { BAYTREE_PRIMARY_COLOR } from "../../../../constants/constants";
 import DataGrid from "../../../shared/datagrid/datagrid";
 import Modal from "../../../shared/Modal";
@@ -190,6 +186,22 @@ const SessionTrackingTable: React.FunctionComponent<
               keepColumnOnMobile: true,
             },
             {
+              header: "Sep",
+              dataField: "septemberSessions",
+            },
+            {
+              header: "Oct",
+              dataField: "octoberSessions",
+            },
+            {
+              header: "Nov",
+              dataField: "novemberSessions",
+            },
+            {
+              header: "Dec",
+              dataField: "decemberSessions",
+            },
+            {
               header: "Jan",
               dataField: "januarySessions",
             },
@@ -220,22 +232,6 @@ const SessionTrackingTable: React.FunctionComponent<
             {
               header: "Aug",
               dataField: "augustSessions",
-            },
-            {
-              header: "Sep",
-              dataField: "septemberSessions",
-            },
-            {
-              header: "Oct",
-              dataField: "octoberSessions",
-            },
-            {
-              header: "Nov",
-              dataField: "novemberSessions",
-            },
-            {
-              header: "Dec",
-              dataField: "decemberSessions",
             },
           ]}
           primaryKeyDataField="viewsPersonId"

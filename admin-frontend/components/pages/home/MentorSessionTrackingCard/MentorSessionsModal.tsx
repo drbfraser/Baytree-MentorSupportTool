@@ -22,10 +22,16 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
   props
 ) => {
   const [openedSession, setOpenedSession] = useState<ViewsSession | null>(null);
-  const mentorSessions = props.mentorSessions.map((session) => ({
-    ...session,
-    startDate: session.startDate.toDateString(),
-  }));
+  const mentorSessions = props.mentorSessions
+    .map((session) => ({
+      ...session,
+      startDate: session.startDate.toDateString(),
+    }))
+    .sort((s1, s2) => {
+      return (
+        new Date(s2.startDate).getTime() - new Date(s1.startDate).getTime()
+      );
+    });
 
   return (
     <MentorSessionsModalLayout>
@@ -37,9 +43,11 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
       <Name>
         <Typography variant="h5">{`${props.mentor.fullName}'s Sessions`}</Typography>
       </Name>
-      <Date>
-        <Typography variant="h5">{`${props.year}`}</Typography>
-      </Date>
+      <DateField>
+        <Typography variant="h5">{`${props.year}/${
+          props.year + 1
+        }`}</Typography>
+      </DateField>
       <Email>
         <EmailText href={`mailto:${props.mentor.email}`}>
           {props.mentor.email}
@@ -54,6 +62,7 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
               dataType: "date",
               dataField: "startDate",
             },
+            { header: "Minutes", dataField: "durationInMinutes" },
           ]}
           dataRowActions={[
             {
@@ -102,7 +111,7 @@ const Name = styled.div`
   grid-area: name;
 `;
 
-const Date = styled.div`
+const DateField = styled.div`
   grid-area: date;
 `;
 

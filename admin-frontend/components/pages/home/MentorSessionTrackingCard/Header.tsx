@@ -170,7 +170,7 @@ const SelectYear: React.FunctionComponent<SelectYearProps> = (props) => {
       >
         {getPastYears().map((year, i) => (
           <MenuItem key={i} value={year}>
-            {year.toString()}
+            {`${year}/${year + 1}`}
           </MenuItem>
         ))}
       </Select>
