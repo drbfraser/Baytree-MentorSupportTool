@@ -46,7 +46,7 @@ const SessionTrackingTable: React.FunctionComponent<
   const [mentorSessionsModalMentor, setMentorSessionsModalMentor] =
     useState<Mentor | null>(null);
 
-  const PAGE_SIZE = 5;
+  const PAGE_SIZE = 20;
   const [pageNum, setPageNum] = useState(1);
   const [maxPageNum, setMaxPageNum] = useState(1);
 
