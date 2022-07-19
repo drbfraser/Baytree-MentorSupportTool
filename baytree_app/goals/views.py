@@ -23,12 +23,12 @@ class GoalListCreateAPIView(
   queryset = Goal.objects.all()
   serializer_class = GoalSerializer
   filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
-  ordering_fields = ['creation_date', 'review_date', 'last_update_date']
+  ordering_fields = ['creation_date', 'goal_review_date', 'last_update_date']
   filterset_fields = ['status']
 
   def get_queryset(self, *args, **kwargs):
     qs = super().get_queryset(*args, **kwargs)
-    categoryParams = self.request.query_params['categories']
+    categoryParams = self.request.GET.get('categories', None)
     if categoryParams is not None:
       ids = [int(x) for x in categoryParams.split(',')]
       qs = qs.filter(categories__in=ids)

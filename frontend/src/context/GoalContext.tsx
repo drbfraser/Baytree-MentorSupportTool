@@ -1,23 +1,23 @@
 import { createContext, FunctionComponent, useContext, useEffect, useState } from "react";
-import { fetchAllGoals, fetchGoalStatistics, Goal, GoalInput, GoalParams, submitCompleteGoal, submitGoal } from "../api/goals";
+import { fetchAllGoals, fetchGoalStatistics, Goal, GoalInput, GoalQuery, submitCompleteGoal, submitGoal } from "../api/goals";
 
 interface GoalContextType {
   goals: Goal[];
   error: string;
-  params: GoalParams;
+  query: GoalQuery;
   statistics: { active: number, complete: number };
   loadingGoals: boolean;
   loadingStatistics: boolean;
   handleSubmitGoal: (input: GoalInput, id?: number) => Promise<boolean>;
   handleCompleteGoal: (goal: Goal) => Promise<boolean>;
-  handleChangeParams: (arg: GoalParams | ((params: GoalParams) => GoalParams)) => void;
+  handleChangeParams: (arg: GoalQuery | ((prev: GoalQuery) => GoalQuery)) => void;
 }
 
 export const PAGINATION_OPTIONS = [5, 10];
 export const DEFAULT_PAGINATION = {
   limit: PAGINATION_OPTIONS[0],
   offset: 0
-} as GoalParams;
+} as GoalQuery;
 
 export const GoalContext = createContext<GoalContextType>({
   goals: [],
@@ -25,23 +25,23 @@ export const GoalContext = createContext<GoalContextType>({
   loadingGoals: false,
   loadingStatistics: false,
   error: "",
-  params: DEFAULT_PAGINATION,
+  query: DEFAULT_PAGINATION,
   handleSubmitGoal: async (_input, _id) => true,
   handleCompleteGoal: async (_goal) => true,
-  handleChangeParams: (_arg) => {}
+  handleChangeParams: (_arg) => { }
 });
 
 export const GoalProvider: FunctionComponent<{}> = (props) => {
   const [loadingGoals, setLoadingGoals] = useState(false);
   const [loadingStatistics, setLoadingStatistics] = useState(false);
-  const [params, setParams] = useState(DEFAULT_PAGINATION);
+  const [query, setQuery] = useState(DEFAULT_PAGINATION);
   const [statistics, setStatistics] = useState({ active: 0, complete: 0 });
   const [goals, setGoals] = useState([] as Goal[]);
   const [error, setError] = useState("");
 
   const loadGoals = () => {
     setLoadingGoals(true);
-    fetchAllGoals(params)
+    fetchAllGoals(query)
       .then(({ data, error }) => {
         if (!data || error !== "") {
           setError(error);
@@ -58,7 +58,7 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
   useEffect(() => {
     loadGoals();
     return cleanup;
-  }, [params]);
+  }, [query]);
 
   // Loading statistics
   useEffect(() => {
@@ -95,18 +95,18 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
     return true;
   }
 
-  const handleChangeParams = (arg: GoalParams | ((params: GoalParams) => GoalParams)) => {
-    setParams(arg);
+  const handleChangeParams = (arg: GoalQuery | ((prev: GoalQuery) => GoalQuery)) => {
+    setQuery(arg);
   }
 
   return <GoalContext.Provider
     value={{
-      loadingGoals, 
+      loadingGoals,
       loadingStatistics,
       statistics,
       goals,
       error,
-      params,
+      query,
       handleSubmitGoal,
       handleCompleteGoal,
       handleChangeParams

@@ -11,7 +11,7 @@ const GoalsMiniList = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetchAllGoals({limit: 3, offset: 0, active: true})
+    fetchAllGoals({limit: 3, offset: 0, status: "IN PROGRESS"})
       .then(({ data, error }) => {
         if (!data || error !== "") {
           setError(error);

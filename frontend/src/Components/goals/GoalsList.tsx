@@ -10,20 +10,20 @@ type Props = {
 }
 
 const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
-  const {loadingGoals, error, goals, params, statistics, handleChangeParams} = useGoals();
+  const { loadingGoals, error, goals, query, statistics, handleChangeParams } = useGoals();
   const [selected, setSelected] = useState<number | undefined>(undefined);
-  
+
   if (loadingGoals) return <Loading />;
-  if (error) return <Alert>
+  if (error) return <Alert sx={{ mt: 3 }} severity="error">
     <AlertTitle>{error}</AlertTitle>
     Please refresh the page or contact the adminstrators.
   </Alert>
-  
+
   if (goals.length === 0)
-  return <Typography variant="h6" sx={{ mt: 3, textAlign: "center" }}>No goals found</Typography>
-  
-  const {active, complete} = statistics;
-  const count = params.active ? active : params.completed ? complete : (active + complete);
+    return <Typography variant="h6" sx={{ mt: 3, textAlign: "center" }}>No goals found</Typography>
+
+  const { active, complete } = statistics;
+  const count = query.status === 'IN PROGRESS' ? active : query.status === 'ACHIEVED' ? complete : (active + complete);
 
   return <Box sx={{ mt: 3 }}>
     {goals.map(goal => {
@@ -34,11 +34,11 @@ const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
         handleClick={() => setSelected(selected === goal.id ? undefined : goal.id)}
         handleEdit={() => openDialog(goal)} />
     })}
-    <TablePagination 
-      count={count} 
-      rowsPerPage={params.limit}
+    <TablePagination
+      count={count}
+      rowsPerPage={query.limit}
       rowsPerPageOptions={PAGINATION_OPTIONS}
-      page={params.offset / params.limit} 
+      page={query.offset / query.limit}
       component="div"
       onRowsPerPageChange={(e) => {
         handleChangeParams(prev => ({
@@ -50,7 +50,7 @@ const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
       onPageChange={(_, page) => handleChangeParams(prev => ({
         ...prev,
         offset: prev.limit * page
-      }))}  />
+      }))} />
   </Box>
 }
 

@@ -34,14 +34,25 @@ export interface GoalInput {
   categories: GoalCategory[];
 }
 
-export type GoalParams = {
+export type GoalQuery = {
   limit: number;
   offset: number;
-  active?: boolean;
-  completed?: boolean;
+  status?: Goal["status"];
+  categories?: number[];
+  orderBy?: 'creation_date' | 'goal_review_date' | 'last_update_date';
+  ascending?: boolean
 }
 
-export const fetchAllGoals = async (params: GoalParams = {limit: 5, offset: 0}) => {
+export const fetchAllGoals = async (query: GoalQuery = { limit: 5, offset: 0 }) => {
+  let params: any = {
+    limit: query.limit,
+    offset: query.offset,
+  }
+
+  if (query.status) params.status = query.status;
+  if (query.categories && query.categories.length > 0) params.categories = query.categories.join(',')
+  if (query.orderBy) params.ordering = (!query.ascending ? '-' : '') + query.orderBy
+
   try {
     const apiRes = await goalsApi.get("", {
       params
