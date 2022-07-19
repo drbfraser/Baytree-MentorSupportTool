@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Session as ViewsSession } from "../../../../api/backend/views/sessions";
-import { SessionResponse as DjangoSession } from "../../../../api/backend/sessions";
 import { BAYTREE_PRIMARY_COLOR } from "../../../../constants/constants";
 import DataGrid from "../../../shared/datagrid/datagrid";
 import Modal from "../../../shared/Modal";
@@ -13,16 +12,24 @@ import { Mentor } from "../../../../pages/home";
 import { MdSchedule } from "react-icons/md";
 
 interface MentorSessionCount extends Mentor {
-  numSessionsCompleted: number;
-  numSessionsMissed: number;
-  numSessionsCancelled: number;
+  januarySessions: number;
+  februarySessions: number;
+  marchSessions: number;
+  aprilSessions: number;
+  maySessions: number;
+  juneSessions: number;
+  julySessions: number;
+  augustSessions: number;
+  septemberSessions: number;
+  octoberSessions: number;
+  novemberSessions: number;
+  decemberSessions: number;
 }
 
 interface SessionTrackingTableProps {
-  sessionsForMonth: ((ViewsSession & DjangoSession) | DjangoSession)[];
+  sessionsForCurYear: ViewsSession[];
   mentors: Mentor[];
   isLoading: boolean;
-  month: number;
   year: number;
 }
 
@@ -39,14 +46,14 @@ const SessionTrackingTable: React.FunctionComponent<
   const [mentorSessionsModalMentor, setMentorSessionsModalMentor] =
     useState<Mentor | null>(null);
 
-  const PAGE_SIZE = 5;
+  const PAGE_SIZE = 20;
   const [pageNum, setPageNum] = useState(1);
   const [maxPageNum, setMaxPageNum] = useState(1);
 
   useEffect(() => {
     mentorSessionCountsRef.current = getMentorSessionCounts(
       props.mentors,
-      props.sessionsForMonth
+      props.sessionsForCurYear
     );
 
     setMaxPageNum(Math.ceil(mentorSessionCountsRef.current.length / PAGE_SIZE));
@@ -54,55 +61,90 @@ const SessionTrackingTable: React.FunctionComponent<
     setPagedMentorSessionCounts(
       mentorSessionCountsRef.current.slice(0, PAGE_SIZE)
     );
-  }, [props.mentors, props.sessionsForMonth]);
+  }, [props.mentors, props.sessionsForCurYear]);
 
   const getMentorSessionCounts = (
     mentors: Mentor[],
-    sessionsForMonth: ((ViewsSession & DjangoSession) | DjangoSession)[]
+    sessionsForYear: ViewsSession[]
   ) => {
     let aggregatedSessionsByMentor: MentorSessionCount[] = [];
 
+    // Initialize the session counts for each mentor to 0 for each month
     mentors.forEach((mentor, i) =>
       aggregatedSessionsByMentor.push({
-        id: mentor.id,
+        viewsPersonId: mentor.viewsPersonId,
         firstName: mentor.firstName,
         lastName: mentor.lastName,
         email: mentor.email,
-        numSessionsCompleted: 0,
-        numSessionsCancelled: 0,
-        numSessionsMissed: 0,
+        fullName: mentor.fullName,
+        januarySessions: 0,
+        februarySessions: 0,
+        marchSessions: 0,
+        aprilSessions: 0,
+        maySessions: 0,
+        juneSessions: 0,
+        julySessions: 0,
+        augustSessions: 0,
+        septemberSessions: 0,
+        octoberSessions: 0,
+        novemberSessions: 0,
+        decemberSessions: 0,
       })
     );
 
-    sessionsForMonth.forEach((session) => {
-      const sessionMentorId = session.mentor;
+    sessionsForYear.forEach((session) => {
+      const sessionLeadStaffId = session.leadStaff;
 
       const aggregatedMentor = aggregatedSessionsByMentor.find(
-        (mentor) => mentor.id === sessionMentorId
+        (mentor) => mentor.viewsPersonId === sessionLeadStaffId
       );
 
-      if (aggregatedMentor) {
-        if (session.cancelled) {
-          aggregatedMentor.numSessionsCancelled++;
-        } else if (!session.attended_by_mentee || !session.attended_by_mentor) {
-          aggregatedMentor.numSessionsMissed++;
-        } else {
-          aggregatedMentor.numSessionsCompleted++;
+      if (aggregatedMentor && !session.cancelled) {
+        const sessionMonthNum = session.startDate.getMonth();
+        switch (sessionMonthNum) {
+          case 0:
+            aggregatedMentor.januarySessions++;
+            break;
+          case 1:
+            aggregatedMentor.februarySessions++;
+            break;
+          case 2:
+            aggregatedMentor.marchSessions++;
+            break;
+          case 3:
+            aggregatedMentor.aprilSessions++;
+            break;
+          case 4:
+            aggregatedMentor.maySessions++;
+            break;
+          case 5:
+            aggregatedMentor.juneSessions++;
+            break;
+          case 6:
+            aggregatedMentor.julySessions++;
+            break;
+          case 7:
+            aggregatedMentor.augustSessions++;
+            break;
+          case 8:
+            aggregatedMentor.septemberSessions++;
+            break;
+          case 9:
+            aggregatedMentor.octoberSessions++;
+            break;
+          case 10:
+            aggregatedMentor.novemberSessions++;
+            break;
+          case 11:
+            aggregatedMentor.decemberSessions++;
+            break;
         }
       }
     });
 
-    // Show mentors with least completed sessions first
+    // Show mentors in alphabetical order by name
     aggregatedSessionsByMentor.sort((mentor1, mentor2) => {
-      return mentor1.numSessionsCompleted - mentor2.numSessionsCompleted;
-    });
-
-    // Add / total and get full name
-    aggregatedSessionsByMentor = aggregatedSessionsByMentor.map((mentor) => {
-      return {
-        ...mentor,
-        fullName: `${mentor.firstName} ${mentor.lastName}`,
-      };
+      return mentor1.fullName.localeCompare(mentor2.fullName);
     });
 
     return aggregatedSessionsByMentor;
@@ -113,7 +155,7 @@ const SessionTrackingTable: React.FunctionComponent<
       <ClickableMentorNameText
         onClick={() => {
           const mentor = props.mentors.find(
-            (mentor) => mentor.id === dataRow.id
+            (mentor) => mentor.viewsPersonId === dataRow.viewsPersonId
           );
 
           if (mentor) {
@@ -144,28 +186,61 @@ const SessionTrackingTable: React.FunctionComponent<
               keepColumnOnMobile: true,
             },
             {
-              header: "Email",
-              dataField: "email",
+              header: "Sep",
+              dataField: "septemberSessions",
             },
             {
-              header: "Completed",
-              dataField: "numSessionsCompleted",
+              header: "Oct",
+              dataField: "octoberSessions",
             },
             {
-              header: "Cancelled",
-              dataField: "numSessionsCancelled",
+              header: "Nov",
+              dataField: "novemberSessions",
             },
             {
-              header: "Missed",
-              dataField: "numSessionsMissed",
+              header: "Dec",
+              dataField: "decemberSessions",
+            },
+            {
+              header: "Jan",
+              dataField: "januarySessions",
+            },
+            {
+              header: "Feb",
+              dataField: "februarySessions",
+            },
+            {
+              header: "Mar",
+              dataField: "marchSessions",
+            },
+            {
+              header: "Apr",
+              dataField: "aprilSessions",
+            },
+            {
+              header: "May",
+              dataField: "maySessions",
+            },
+            {
+              header: "Jun",
+              dataField: "juneSessions",
+            },
+            {
+              header: "Jul",
+              dataField: "julySessions",
+            },
+            {
+              header: "Aug",
+              dataField: "augustSessions",
             },
           ]}
+          primaryKeyDataField="viewsPersonId"
           data={pagedMentorSessionCounts}
           dataRowActions={[
             {
               actionFunction: (dataRow) => {
                 const mentor = props.mentors.find(
-                  (mentor) => mentor.id === dataRow.id
+                  (mentor) => mentor.viewsPersonId === dataRow.viewsPersonId
                 );
 
                 if (mentor) {
@@ -202,10 +277,10 @@ const SessionTrackingTable: React.FunctionComponent<
         modalComponent={
           <MentorSessionsModal
             mentor={mentorSessionsModalMentor as Mentor}
-            mentorSessions={props.sessionsForMonth.filter(
-              (session) => session.mentor === mentorSessionsModalMentor?.id
+            mentorSessions={props.sessionsForCurYear.filter(
+              (session) =>
+                session.leadStaff === mentorSessionsModalMentor?.viewsPersonId
             )}
-            month={props.month}
             year={props.year}
           ></MentorSessionsModal>
         }

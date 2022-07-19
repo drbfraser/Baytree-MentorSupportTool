@@ -145,6 +145,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
             dataRow={props.dataRow}
             actions={getDataRowActions(
               props.dataRowActions,
+              !!props.isDataGridSaveable,
               !!props.isDataGridDeleteable,
               props.setDeletedDataRow,
               !!props.isDataRowDeleted,
@@ -160,9 +161,9 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
             setIsRowExpanded={setIsRowExpanded}
             isRowExpanded={isRowExpanded}
           ></ExpandButtonCell>
-        ) : (
+        ) : props.isDataGridSaveable ? (
           <TableCell />
-        )}
+        ) : null}
       </TableRow>
       {isRowExpanded &&
         (isOnMobileDevice || someExpandableColumnExists(props.cols)) && (
@@ -265,6 +266,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                   dataRow={props.dataRow}
                   actions={getDataRowActions(
                     props.dataRowActions,
+                    !!props.isDataGridSaveable,
                     !!props.isDataGridDeleteable,
                     props.setDeletedDataRow,
                     !!props.isDataRowDeleted,

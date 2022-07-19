@@ -37,6 +37,8 @@ export type onSaveDataRowsFunc<DataRowType> = (
 export interface DataGridColumn {
   header: string;
   dataField: string;
+
+  // If column is "date" dataType, value format must be a string in "yyyy-mm-dd" (Javascript Date not working for now)
   dataType?: ColumnDataTypes;
 
   valueOptions?: ValueOption[];
@@ -50,6 +52,7 @@ export interface DataGridColumn {
 }
 
 export type ColumnDataTypes = "date" | "boolean";
+// If column is "date" dataType, value format must be a string in "yyyy-mm-dd" (Javascript Date not working for now)
 
 export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
 
