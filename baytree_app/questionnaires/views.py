@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from views_api.associations import get_mentee_ids_from_mentor
+import xml.etree.ElementTree as ET
 
 from users.models import MentorUser
 
@@ -138,7 +139,17 @@ def submit_answer_set(request):
 
     # Send the answer set to View database
     response = requests.post(url, answerSetXML, auth=(VIEWS_USERNAME, VIEWS_PASSWORD), headers = {"content-type": "text/xml"})
+    response.status_code
 
-    # Construct Views API request
-    return HttpResponse(response)
+    # Construct dictionary response data
+    responseData = {}
+    responseData["questionnaireId"] = qid
+    answerSet = data["answerSet"]
+    responseData["mentor"] = list(answerSet.values())[0]
+    responseData["mentee"] = list(answerSet.values())[1]
+    parsedXMLRoot = ET.fromstring(response.text)
+    responseData["submissionId"] = parsedXMLRoot.get("id")
+    responseData["viewsResponse"] = response.text
+
+    return Response(responseData, response.status_code)
     
