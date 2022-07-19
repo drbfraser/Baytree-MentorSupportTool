@@ -1,4 +1,5 @@
 from django.http import Http404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, filters
 from rest_framework.response import Response
 from users.models import MentorUser
@@ -21,15 +22,16 @@ class GoalListCreateAPIView(
   generics.ListCreateAPIView):
   queryset = Goal.objects.all()
   serializer_class = GoalSerializer
-  filter_backends = [filters.OrderingFilter]
+  filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
   ordering_fields = ['creation_date', 'review_date', 'last_update_date']
+  filterset_fields = ['status']
 
   def get_queryset(self, *args, **kwargs):
     qs = super().get_queryset(*args, **kwargs)
-    active = self.request.query_params.get('active')
-    if active is not None: qs = qs.filter(status="IN PROGRESS")
-    completed = self.request.query_params.get('completed')
-    if completed is not None: qs = qs.filter(status="ACHIEVED")
+    categoryParams = self.request.query_params['categories']
+    if categoryParams is not None:
+      ids = [int(x) for x in categoryParams.split(',')]
+      qs = qs.filter(categories__in=ids)
     return qs
 
   def perform_create(self, serializer):
