@@ -1,4 +1,4 @@
-import { Button, FormControl, Typography } from "@mui/material";
+import { Alert, AlertTitle, Button, fabClasses, FormControl, Typography } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -17,7 +17,9 @@ import MentorNameInput from "./MentorNameQuestion";
 import TextInput from "./TextInput";
 
 const Questionnaire = () => {
-  const [bottomErrorMessage, setBottomErrorMessage] = useState("");
+  const [canSeeAlert, setcanSeeAlert] = useState("none");
+  const [submissionErrorMessage, setSubmissionErrorMessage] = useState(<></>);
+  const [submissionErrorTitle, setSubmissionErrorTitle] = useState("Error");
 
   const {
     loading,
@@ -110,8 +112,11 @@ const Questionnaire = () => {
                 );
               })}
               {/* Error Message */}
-              <div style={{textAlign: "center", color: "red", fontWeight: "bold", fontSize: "18px",}}>
-                <p>{bottomErrorMessage}</p>
+              <div style={{display: canSeeAlert}}>
+                <Alert style={{display: "flex"}} variant="outlined" severity="error">
+                  <AlertTitle>{submissionErrorTitle}</AlertTitle>
+                  {submissionErrorMessage}
+                </Alert>
               </div>
               {/* Submit button */}
               <Button
