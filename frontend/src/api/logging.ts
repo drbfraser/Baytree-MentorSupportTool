@@ -21,48 +21,26 @@ export enum logLevel {
 
 // Custom Logger class to create logs that will be sent to /logging
 export class Logger {
-  message: string;
-  logLevel: logLevel;
-  displayStackTrace: boolean;
-  stackTrace: any;
-  timeStamp: any;
-  jsonLog: any;
-  plainLog: any;
 
-  constructor(message: string, logLevel: logLevel, displayStackTrace: boolean = false) {
-    this.message = message;
-    this.logLevel = logLevel;
-    this.displayStackTrace = displayStackTrace;
-    this.timeStamp = Date.now();
-    this.getStackTrace();
-    this.createJsonLog();
-    try {
-      this.sendLog();
-    }
-    catch (error) {
-      console.log(error)
-    }
-  }
-  
-  getStackTrace() {
+  private getStackTrace() {
     try {
       throw new Error();
     } catch (trace: any) {
-      this.stackTrace = trace.stack;
+      return trace.stack;
     }
   }
 
- createJsonLog () {
-    let jsonLog = {
-      message: this.message, 
-      level: this.logLevel,
-      timeStamp: this.timeStamp,
-      stackTrace: this.displayStackTrace ? this.stackTrace : "",
+  private createJsonLog (message: string, logLevel: logLevel, displayStackTrace: boolean = false) {
+    return {
+      message: message, 
+      level: logLevel,
+      timeStamp: Date.now(),
+      stackTrace: displayStackTrace ? this.getStackTrace() : "",
     };
-    this.jsonLog = JSON.stringify(jsonLog);
- }
+  }
 
-  sendLog = () => {
-    return loggingApi.post("", this.jsonLog);
+  sendLog = async (message: string, logLevel: logLevel, displayStackTrace: boolean = false) => {
+    let jsonLog = this.createJsonLog(message, logLevel, displayStackTrace)
+    return await loggingApi.post("", jsonLog).catch(error => alert(error.message));
   };
 }
