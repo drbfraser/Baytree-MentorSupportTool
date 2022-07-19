@@ -80,9 +80,11 @@ export const downloadBlob = (
 
   // Create a link to download it
   var pom = document.createElement("a");
+  document.body.appendChild(pom);
   pom.href = url;
   pom.setAttribute("download", filename);
   pom.click();
+  document.body.removeChild(pom);
 };
 
 /** Filename is without extension */
