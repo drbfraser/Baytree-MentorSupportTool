@@ -1,123 +1,116 @@
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import format from "date-fns/format";
-import getDay from "date-fns/getDay";
-import enUS from "date-fns/locale/en-US";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
-import moment from "moment";
-import { useEffect, useState } from "react";
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import { fetchSessionListByMentorId } from "../../api/misc";
-import { useAuth } from "../../context/AuthContext";
-import CalendarEvents from "../../Utils/CalendarEvents";
+// fullcalendar bug in react-vite
+// https://github.com/fullcalendar/fullcalendar/issues/6371
+// Beware of formatter
+import '@fullcalendar/react/dist/vdom'; // This must comes first
+import FullCalendar, { ToolbarInput } from '@fullcalendar/react'; // this must comes second
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interationPlugin from "@fullcalendar/interaction";
+import rrulePlugin from "@fullcalendar/rrule";
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { Box, Checkbox, FormControlLabel, FormGroup, LinearProgress, Paper, useMediaQuery, useTheme } from '@mui/material';
+import { ReactText, useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import useEventDetailPopup from '../../hooks/useEventDetailPopup';
+import useSessionEvents, { EVENT_TYPE, SessionFilter } from '../../hooks/useSessionEvents';
+import useSpecialEvents, { toCalanderEvent } from '../../hooks/useSpecialEvents';
+import { TIMEZONE_ID } from '../../Utils/locale';
+import RecordDetail from '../records/RecordDetail';
+import SpecialEventDetail from '../records/SpecialEventDetail';
 
-type Props = {
-  height: string;
-};
+const Scheduler = () => {
+  // Theme states
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-type Event = {
-  title: string;
-  start: Date;
-  end: Date;
-  allDay: boolean;
-  note: string;
-  status: string;
-};
-
-const Scheduler: React.FC<Props> = ({ height }) => {
-  const { user } = useAuth();
-  const locales = {
-    "en-US": enUS
-  };
-  const localizer = dateFnsLocalizer({
-    format,
-    parse,
-    startOfWeek,
-    getDay,
-    locales
+  // Checkbox states
+  const [filter, setFilter] = useState<SessionFilter>({
+    attended: true,
+    cancelled: true
   });
-  const [sessionList, setSessionList] = useState([] as any[]);
-  const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [attended, setAttended] = useState("");
-  const [note, setNote] = useState("");
-
-  const handleEventClick = (session: any) => {
-    setOpen(true);
-    setTitle(session.title);
-    setStartDate(session.start);
-    setEndDate(session.end);
-    setAttended(session.status);
-    setNote(session.note);
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(prev => ({
+      ...prev,
+      [event.target.name]: event.target.checked,
+    }));
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const DurationToEndDate = (startDate: Date, duration: string) => {
-    const durationHourMinute: any[] = duration.split(":");
-    const endDate: Date = new Date(startDate);
-    endDate.setHours(startDate.getHours() + parseInt(durationHourMinute[0]));
-    endDate.setMinutes(
-      startDate.getMinutes() + parseInt(durationHourMinute[1])
-    );
-    return endDate;
-  };
+  // Calandar states
+  const calendarRef = useRef<FullCalendar | null>(null);
+  const { loadingSpecialEvents, specialEventError, specialEvents } = useSpecialEvents();
+  const { fetchSessionEvents, error, loadingSession } = useSessionEvents(filter);
 
   useEffect(() => {
-    fetchSessionListByMentorId(user!.userId)
-      .then((sessions) =>
-        sessions.map<Event>((session, index) => ({
-          title: `${session.Title} ${index + 1}`,
-          start: new Date(session.StartDate),
-          end: DurationToEndDate(new Date(session.StartDate), session.Duration),
-          allDay: false,
-          note: session.Note,
-          status: session.Status
-        }))
-      )
-      .then(setSessionList)
-      .catch((error) => console.error("Error:", error));
-  }, []);
+    let id: ReactText;
+    if (error) id = toast.error(error);
+    return () => {
+      if (id) toast.dismiss(id);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    let id: ReactText;
+    if (specialEventError) id = toast.error(specialEventError);
+    return () => {
+      if (id) toast.dismiss(id);
+    }
+  }, [specialEventError]);
+
+  // Dialog states
+  const { open, handleClose, event, handleEventId } = useEventDetailPopup();
+
+  // Configure toolbar based on the views
+  const headerToolbar: ToolbarInput = {
+    left: 'prev,next today',
+    center: !isMobile ? 'title' : undefined,
+    right: isMobile ? 'title' : 'dayGridMonth,timeGridWeek,timeGridDay'
+  }
+
+  // Change the calender into day views when user enter the mobile mode
+  useEffect(() => {
+    if (isMobile) {
+      calendarRef.current?.getApi().changeView("timeGridDay");
+    }
+  }, [isMobile]);
 
   return (
-    <div>
-      <Card sx={{ boxShadow: 2, p: 3, mb: 3 }} style={{ height: height }}>
-        <Calendar
-          localizer={localizer}
-          events={[...sessionList, ...CalendarEvents]}
-          onSelectEvent={handleEventClick}
-        />
-      </Card>
-      <Dialog open={open} onClose={handleClose} scroll="paper">
-        <DialogTitle>{title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Status: {attended}</DialogContentText>
-          <DialogContentText>
-            Start Date and Time:{" "}
-            {moment(startDate).format("YYYY/DD/MM hh:mm a")}
-          </DialogContentText>
-          <DialogContentText>
-            End Date and Time: {moment(endDate).format("YYYY/DD/MM hh:mm a")}
-          </DialogContentText>
-          <DialogContentText>Note: {note}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
+    <>
+      <Paper elevation={4} sx={{ mb: 2 }}>
+        {(loadingSpecialEvents || loadingSession) && <LinearProgress sx={{ mt: "-4px" }} />}
+        <Box sx={{ pt: 2, px: 2 }}>
+          {/* Calender */}
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[dayGridPlugin, timeGridPlugin, interationPlugin, rrulePlugin]}
+            initialView="dayGridMonth"
+            headerToolbar={headerToolbar}
+            nowIndicator
+            timeZone={TIMEZONE_ID}
+            lazyFetching
+            eventSources={[
+              specialEvents.map(toCalanderEvent), // Static special events
+              fetchSessionEvents // Lazily-fetched holidays
+            ]}
+            eventClick={({ event }) => {
+              handleEventId(event.id);
+            }}
+          />
+        </Box>
+        {/* Checkbox */}
+        <FormGroup row sx={{ px: 2 }}>
+          <FormControlLabel
+            label="Attended sessions"
+            control={<Checkbox checked={filter.attended} onChange={handleCheckboxChange} name="attended" />} />
+          <FormControlLabel
+            label="Cancelled sessions"
+            control={<Checkbox checked={filter.cancelled} onChange={handleCheckboxChange} name="cancelled" />} />
+        </FormGroup>
+      </Paper>
+      {event.type === EVENT_TYPE.SESSION &&
+        <RecordDetail sessionId={event.id} open={open} handleClose={handleClose} />}
+      {event.type === EVENT_TYPE.HOLIDAY &&
+        <SpecialEventDetail specialEvent={specialEvents.find(selected => selected.id === event.id)} open={open} handleClose={handleClose} />}
+    </>
+  )
 };
 
 export default Scheduler;

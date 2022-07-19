@@ -135,6 +135,7 @@ build-docker publish-docker-images:
     - deploy-dockerhub-shell
   rules:
     - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH"
+    - if: $CI_PIPELINE_SOURCE == "web"
   script:
     # Required environment variables defined by GitLab's settings:
     #   HUB_USER:           Docker Hub user
@@ -167,6 +168,7 @@ build-docker publish-docker-images:
   - docker image prune -f      # remove unused images since we just downloaded new ones
   - bash -c 'sleep 15'
   - docker exec baytree_server python manage.py migrate
+  - docker exec baytree_server python manage.py loaddata goalCategories
   - docker images
   - docker ps -a
   - docker volume ls

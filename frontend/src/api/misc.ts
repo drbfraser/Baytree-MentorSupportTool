@@ -72,6 +72,26 @@ export const fetchSessionListByMentorId = async (id: number) => {
   return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data);
 };
 
+// Holidays
+export interface SpecialEvent {
+  id: number,
+  title: string,
+  startDate: string,
+  endDate: string,
+  isAnnual: boolean,
+  note?: string
+}
+
+export const fetchSpecialEvents = async () => {
+  try {
+    const apiRes = await baseApi.get<SpecialEvent[]>("calendar_events/");
+    if (apiRes.status === 200)
+      return { data: apiRes.data, error: "" }
+    throw Error
+  } catch (err) {
+    return { data: [] as SpecialEvent[], error: "Cannot fetch holidays data" }
+  }
+}
 export type Activity = string;
 
 export const getActivitiesForMentor = async () => {
