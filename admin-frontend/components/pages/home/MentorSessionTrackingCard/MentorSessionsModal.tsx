@@ -62,7 +62,7 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
               dataType: "date",
               dataField: "startDate",
             },
-            { header: "Minutes", dataField: "durationInMinutes" },
+            { header: "Duration", dataField: "duration" },
           ]}
           dataRowActions={[
             {

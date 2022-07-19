@@ -1,3 +1,4 @@
+import { MentorSessionsModalProps } from "../../../components/pages/home/MentorSessionTrackingCard/MentorSessionsModal";
 import { PagedDataRows } from "../../../components/shared/datagrid/datagridTypes";
 import { backendGet } from "../base";
 
@@ -81,9 +82,10 @@ export const getSessionsFromViews = async (
         startDate: new Date(
           Date.parse(`${session.startDate} ${session.startTime}:00`)
         ),
+        duration: session.duration,
         durationInMinutes:
           parseInt(session.duration.split(":")[0]) * 60 +
-          parseInt(session.duration.split(":")[0]),
+          parseInt(session.duration.split(":")[1]),
         cancelled: session.cancelled === "1",
         venueId: parseInt(session.venueId),
         createdDate: new Date(Date.parse(`${session.created}`)),
@@ -110,7 +112,7 @@ export interface SessionDetails {
   updated: string;
   venueName: string;
   sessionGroup: SessionGroup;
-  mentor: any | null;
+  mentor: Mentor | null;
   mentee: Mentee | null;
   note: string | null;
 }
@@ -121,6 +123,16 @@ interface SessionGroup {
   description: string;
   leadStaff: string;
   otherStaff: string;
+}
+
+interface Mentor {
+  firstname: string;
+  surname: string;
+  viewsPersonId: string;
+  email: string;
+  dateOfBirth: string;
+  ethnicity: string;
+  country: string;
 }
 
 interface Mentee {
