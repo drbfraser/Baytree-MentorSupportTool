@@ -78,9 +78,9 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     return firstDayOfYear.toISOString().split("T")[0];
   };
 
-  // get current year end date for academic year (sep-aug) like: '2023-08-31'
+  // get current year end date for academic year (sep-aug) like: '2023-09-01'
   const getCurYearEndDate = (): string => {
-    const lastDayOfYear = new Date(curYear + 1, 8, 0);
+    const lastDayOfYear = new Date(curYear + 1, 8, 1);
     return lastDayOfYear.toISOString().split("T")[0];
   };
 
