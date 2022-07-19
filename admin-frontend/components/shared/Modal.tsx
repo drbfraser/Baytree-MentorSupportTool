@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { MdClose } from "react-icons/md";
 import styled from "styled-components";
@@ -24,21 +24,22 @@ const Modal: React.FC<ModalProps> = (props) => {
   const onMobileDeviceRef = useRef(false);
 
   useEffect(() => {
+    const isOnMobileDevice = onMobileDeviceRef.current;
+
     function handleClickOutside(event: MouseEvent) {
-      if (
-        (!onMobileDeviceRef.current &&
-          modalElementRef.current &&
-          !modalElementRef.current.contains(event.target as Node) &&
-          (document.getElementsByClassName("Toastify").length == 0 ||
-            !document
-              .getElementsByClassName("Toastify")[0]
-              .contains(event.target as Node)) &&
-          (document.getElementsByClassName("MuiPopover-root").length == 0 ||
-            !document
-              .getElementsByClassName("MuiPopover-root")[0]
-              .contains(event.target as Node))) ||
-        (event.target as any).id === "ModalOverlay"
-      ) {
+      const clickedTargetElementNotInsideModal =
+        modalElementRef.current &&
+        !modalElementRef.current.contains(event.target as Node);
+
+      const didClickOutsideModal =
+        (!isOnMobileDevice &&
+          clickedTargetElementNotInsideModal &&
+          notClickedOnToastifyMessage(event) &&
+          notClickedOnPopoverOptionInModal(event) &&
+          !clickedOnAnotherModal(modalElementRef.current, event)) ||
+        clickedOnOverlay(event);
+
+      if (didClickOutsideModal) {
         props.onOutsideClick();
       }
     }
@@ -66,6 +67,7 @@ const Modal: React.FC<ModalProps> = (props) => {
         <Overlay id="ModalOverlay">
           <div></div>
           <StyledModal
+            id={"Modal"}
             ref={modalElementRef}
             width={props.width}
             height={props.height}
@@ -140,3 +142,36 @@ const StyledModal = styled.div<StyledModalProps>`
 `;
 
 export default Modal;
+
+function notClickedOnToastifyMessage(event: MouseEvent) {
+  return (
+    document.getElementsByClassName("Toastify").length == 0 ||
+    !document
+      .getElementsByClassName("Toastify")[0]
+      .contains(event.target as Node)
+  );
+}
+
+function notClickedOnPopoverOptionInModal(event: MouseEvent) {
+  return (
+    document.getElementsByClassName("MuiPopover-root").length == 0 ||
+    !document
+      .getElementsByClassName("MuiPopover-root")[0]
+      .contains(event.target as Node)
+  );
+}
+
+function clickedOnOverlay(event: MouseEvent): boolean | null {
+  return (event.target as any).id === "ModalOverlay";
+}
+
+function clickedOnAnotherModal(
+  modalElement: HTMLDivElement,
+  event: MouseEvent
+): boolean {
+  let currentPar = event.target as any;
+  while (currentPar && !currentPar.id.includes("Modal")) {
+    currentPar = currentPar.parentElement;
+  }
+  return currentPar && currentPar !== modalElement;
+}

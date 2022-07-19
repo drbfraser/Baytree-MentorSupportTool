@@ -8,6 +8,7 @@ interface VolunteerUnparsed {
   email: string;
   ethnicity: string;
   country: string;
+  firstLanguage: string;
 }
 
 interface VolunteerResponse extends VolunteerUnparsed {

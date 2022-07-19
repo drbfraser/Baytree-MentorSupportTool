@@ -99,7 +99,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
                 to={path}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <ListItem button onClick={closeDrawer}>
+                <ListItem button onClick={closeDrawer} sx={{backgroundColor: active ? "rgba(90, 184, 1, 0.15)" : "transparent"}}>
                   <ListItemIcon>
                     <Icon color={active ? "secondary" : "primary"} />
                   </ListItemIcon>
@@ -120,7 +120,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
         <ListItem
           button
           component="a"
-          href="mailto: federica@baytreecentre.org.uk"
+          href="mailto: volunteering@baytreecentre.org.uk"
           target="_blank"
         >
           <ListItemIcon>

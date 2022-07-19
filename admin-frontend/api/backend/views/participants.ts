@@ -5,6 +5,7 @@ interface ParticipantUnparsed {
   email: string;
   ethnicity: string;
   country: string;
+  firstLanguage: string;
 }
 
 interface ParticipantResponse extends ParticipantUnparsed {

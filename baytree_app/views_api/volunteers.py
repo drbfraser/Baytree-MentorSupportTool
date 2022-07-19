@@ -20,6 +20,7 @@ volunteerFields = [
     "DateOfBirth",
     "Ethnicity_V_15",
     "County",
+    "Whatisyourfirstlanguage_V_19",
 ]
 volunteerTranslateFields = [
     "firstname",
@@ -29,6 +30,7 @@ volunteerTranslateFields = [
     "dateOfBirth",
     "ethnicity",
     "country",
+    "firstLanguage",
 ]
 
 

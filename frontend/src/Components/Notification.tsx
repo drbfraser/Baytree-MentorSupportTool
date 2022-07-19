@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Grow from "@mui/material/Grow";
 import Typography from "@mui/material/Typography";
-import moment from "moment";
+import { formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -77,7 +77,7 @@ export default function Notification() {
                   {data.notification_type.title}
                 </Typography>
                 <Typography sx={{ color: "text.secondary", margin: "6px" }}>
-                  {moment(data.creation_date).fromNow()}
+                  {formatDistanceToNow(new Date(data.creation_date), {addSuffix: true})}
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>

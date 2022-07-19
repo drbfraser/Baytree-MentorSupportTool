@@ -1,10 +1,29 @@
 import { DatePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField
+} from "@mui/material";
 import { useFormik } from "formik";
 import { FunctionComponent } from "react";
 import { toast } from "react-toastify";
 import { Goal, GoalInput } from "../../api/goals";
+import { useGoals } from "../../context/GoalContext";
+import { useGoalCategories } from "../../hooks/useGoalCategories";
 import useMentees from "../../hooks/useMentees";
 import Loading from "../shared/Loading";
 
@@ -12,31 +31,35 @@ const initialAnswer = (goal?: Goal) => {
   if (!goal) return {
     title: "",
     description: "",
+    mentee_id: "",
     goal_review_date: new Date(),
-    mentee_id: ""
+    categories: []
   } as GoalInput;
   return {
     title: goal.title,
     description: goal.description,
+    mentee_id: goal.mentee?.viewsPersonId || "",
     goal_review_date: new Date(goal.goal_review_date),
-    mentee_id: goal.mentee?.viewsPersonId || ""
+    categories: goal.categories
   } as GoalInput
 }
 
 const emptyAnswer = (input: GoalInput) => {
-  return !input.title || !input.description || !input.mentee_id
+  return !input.title || !input.description;
 }
 
 interface Props {
   goal?: Goal,
   open: boolean,
-  handleClose: (refresh?: boolean) => void,
-  handleSubmitGoal: (goal: GoalInput, id?: number) => Promise<boolean>
+  handleClose: () => void
 }
 
-const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleSubmitGoal }) => {
+const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
   const { mentees, loadingMentees } = useMentees();
+  const { handleSubmitGoal } = useGoals();
+  const { categories, loading: loadingCategories, error: categoriesError } = useGoalCategories();
   const title = goal ? "Edit goal" : "Create new goal";
+
   const { values, handleSubmit, handleChange, setFieldValue, isSubmitting, setSubmitting } = useFormik({
     initialValues: initialAnswer(goal),
     onSubmit: async (answer) => {
@@ -52,12 +75,34 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
     }
   });
 
+  const handleCategoriesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked, value } = event.target;
+    if (checked) {
+      setFieldValue("categories", [
+        ...values.categories,
+        ...categories.filter(item => item.id === +value)
+      ])
+    } else {
+      setFieldValue("categories", values.categories.filter(item => item.id !== +value));
+    }
+  };
+
+  const loading = loadingCategories || loadingMentees;
+  let errorMessage = categoriesError;
+  if (!errorMessage && !mentees) errorMessage = "Cannot load mentees";
+
   return <Dialog open={open} fullWidth maxWidth="sm">
     <DialogTitle>{title}</DialogTitle>
-    {(!mentees || loadingMentees) && <Loading />}
-    {mentees &&
+    {loading && <Loading />}
+    {!loading && errorMessage &&
+      <Alert severity="error">
+        <AlertTitle>{errorMessage}</AlertTitle>
+        Please try again later
+      </Alert>}
+    {!loading && !errorMessage && mentees &&
       <form onSubmit={handleSubmit}>
         <DialogContent>
+          {/* Title */}
           <TextField
             label="Title"
             name="title"
@@ -65,6 +110,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
             fullWidth sx={{ mb: 2 }}
             value={values.title}
             onChange={handleChange} />
+          {/* Mentee */}
           <FormControl fullWidth required>
             <InputLabel id="mentee-label">Mentee</InputLabel>
             <Select
@@ -87,6 +133,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
               })}
             </Select>
           </FormControl>
+          {/* Date selection */}
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               label="Goal Review Date"
@@ -99,8 +146,36 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
                 <TextField required fullWidth {...params} sx={{ mb: 2 }} />}
             />
           </LocalizationProvider>
-          <TextField label="Description" required fullWidth sx={{ mb: 2 }} name="description" value={values.description} onChange={handleChange} multiline minRows={3} />
+          {/* Description */}
+          <TextField
+            label="Description"
+            name="description"
+            required fullWidth sx={{ mb: 2 }}
+            value={values.description}
+            onChange={handleChange}
+            multiline minRows={3} />
+          {/* Goal category */}
+          <FormControl sx={{ mb: 2 }} fullWidth>
+            <FormLabel component="legend">Categories</FormLabel>
+            <FormGroup>
+              {
+                categories.map(category => (
+                  <FormControlLabel
+                    key={category.id}
+                    label={category.name}
+                    control={
+                      <Checkbox
+                        checked={values.categories.findIndex(item => item.id === category.id) >= 0}
+                        onChange={handleCategoriesChange}
+                        value={category.id}
+                      />
+                    } />
+                ))
+              }
+            </FormGroup>
+          </FormControl>
         </DialogContent>
+        {/* Buttons */}
         <DialogActions>
           <Button
             onClick={() => handleClose()}
@@ -114,8 +189,6 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose, handleS
         </DialogActions>
       </form>
     }
-
-
   </Dialog >
 }
 

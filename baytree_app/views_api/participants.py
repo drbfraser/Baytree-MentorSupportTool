@@ -18,6 +18,7 @@ participantFields = [
     "DateOfBirth",
     "Ethnicity",
     "County",
+    "FirstLanguage_P_88",
 ]
 participantTranslateFields = [
     "firstName",
@@ -27,6 +28,7 @@ participantTranslateFields = [
     "dateOfBirth",
     "ethnicity",
     "country",
+    "firstLanguage",
 ]
 
 """

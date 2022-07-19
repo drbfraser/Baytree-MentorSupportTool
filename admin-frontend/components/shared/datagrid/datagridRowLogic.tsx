@@ -65,12 +65,13 @@ export const isCellChanged = (
 
 export const getDataRowActions = (
   dataRowActions: DataRowAction[],
+  isDataGridSaveable: boolean,
   isDataGridDeleteable: boolean,
   setDeletedDataRow: setDeletedDataRowFunc,
   isDeleted: boolean,
   createdDataRow?: DataRow
 ): DataRowAction[] =>
-  isDataGridDeleteable
+  isDataGridSaveable && isDataGridDeleteable
     ? [
         ...dataRowActions,
         {

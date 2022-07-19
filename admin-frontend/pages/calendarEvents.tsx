@@ -59,7 +59,7 @@ const CalendarEvents: NextPage = () => {
 
   return (
     <CalendarEventsCard>
-      <CalendarEventsTitle variant="h5">Events</CalendarEventsTitle>
+      <CalendarEventsTitle variant="h5">Calendar Events</CalendarEventsTitle>
       <DataGrid
         cols={[
           {
