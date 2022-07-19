@@ -1,5 +1,4 @@
 export const stringToBool = (str: string) => {
-  const strLower = str.toLowerCase();
   return str === "true" || str === "t" || str === "y" || str === "yes";
 };
 
@@ -52,14 +51,16 @@ export const objectsToCsv = (
 ) => {
   let firstCsvRow = "";
   fieldsToKeep.forEach((fieldToKeep) => {
-    firstCsvRow = firstCsvRow + fieldToKeep.title + "," + "\r\n";
+    firstCsvRow = firstCsvRow + fieldToKeep.title + ",";
   });
+  firstCsvRow += "\r\n";
 
   let csvContents = firstCsvRow;
   objects.forEach((object) => {
     fieldsToKeep.forEach((fieldToKeep) => {
-      csvContents = csvContents + object[fieldToKeep.field] + "," + "\r\n";
+      csvContents = csvContents + object[fieldToKeep.field] + ",";
     });
+    csvContents += "\r\n";
   });
 
   return csvContents;

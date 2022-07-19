@@ -123,6 +123,10 @@ export const onExportButtonClick = (
 ) => {
   const exportedFields = [
     { title: "Name", field: "fullName" },
+    { title: "Sep", field: "septemberSessions" },
+    { title: "Oct", field: "octoberSessions" },
+    { title: "Nov", field: "novemberSessions" },
+    { title: "Dec", field: "decemberSessions" },
     { title: "Jan", field: "januarySessions" },
     { title: "Feb", field: "februarySessions" },
     { title: "Mar", field: "marchSessions" },
@@ -130,11 +134,7 @@ export const onExportButtonClick = (
     { title: "May", field: "maySessions" },
     { title: "Jun", field: "juneSessions" },
     { title: "Jul", field: "julySessions" },
-    { title: "Aug", field: "aprilSessions" },
-    { title: "Sep", field: "septemberSessions" },
-    { title: "Oct", field: "octoberSessions" },
-    { title: "Nov", field: "novemberSessions" },
-    { title: "Dec", field: "decemberSessions" },
+    { title: "Aug", field: "augustSessions" },
   ];
 
   const csvFileContent = objectsToCsv(mentorSessionCounts, exportedFields);

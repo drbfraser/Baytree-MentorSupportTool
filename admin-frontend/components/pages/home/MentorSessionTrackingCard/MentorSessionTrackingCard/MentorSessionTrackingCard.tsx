@@ -38,6 +38,9 @@ const MentorSessionTrackingCard: React.FunctionComponent<
   const [selectedSessionGroupId, setSelectedSessionGroupId] = useState<
     string | null
   >(null);
+  const [selectedSessionGroupName, setSelectedSessionGroupName] = useState<
+    string | null
+  >(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [key, setKey] = useState(0);
@@ -107,6 +110,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
       newSessionGroup as PaginatedSelectOption<string>;
 
     setSelectedSessionGroupId(selectedSessionGroup.value);
+    setSelectedSessionGroupName(selectedSessionGroup.label);
   };
 
   return (
@@ -116,11 +120,19 @@ const MentorSessionTrackingCard: React.FunctionComponent<
         onSessionGroupSelectOptionChange={onSessionGroupSelectOptionChange}
         onSetYear={setCurYear}
         curYear={curYear}
-        onExportButtonClick={() =>
+        onExportButtonClick={() => {
+          if (selectedSessionGroupName === null) {
+            toast.error(
+              "Please select a session group first before exporting!"
+            );
+            return;
+          }
           onExportButtonClick(
-            getMentorSessionCounts(props.mentors, sessionsForCurYear)
-          )
-        }
+            getMentorSessionCounts(props.mentors, sessionsForCurYear),
+            curYear,
+            selectedSessionGroupName
+          );
+        }}
         mentorFilter={props.mentorFilter}
         setMentorFilter={props.setMentorFilter}
       ></Header>
