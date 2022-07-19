@@ -63,14 +63,10 @@ const Questionnaire = () => {
               }
             } else {
               const questionnaireSubmissionError = 
-              "Failed to submit Participant questionnaire. \
-              Volunteer answer set not submitted.";
-              toast.error(questionnaireSubmissionError + " Please try again.",
-              {
-                autoClose: false,
-                hideProgressBar: true,
-              });
-              console.error(questionnaireSubmissionError)
+              <strong>Failed to submit Participant questionnaire, consequently, Volunteer answer set not submitted. Please try again.</strong>;
+              setSubmissionErrorTitle("Error: Questionnaire Not Submitted");
+              setSubmissionErrorMessage(questionnaireSubmissionError);
+              setcanSeeAlert("block");
               // TODO: Implement server logging
               setSubmitting(false);
             }
