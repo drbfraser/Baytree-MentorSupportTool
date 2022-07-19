@@ -52,9 +52,11 @@ const Questionnaire = () => {
               }
               else {
                 const volunteerQuestionnaireSubmissionError = 
-                "Failed to submit Volunteer questionnaire. \nViews Volunteer and Participant questionnaires may now be inconsistent. \nPlease contact the administrator to manually remove inconsistent \nquestionnaire from Participant's profile before trying again.";
-                setBottomErrorMessage(volunteerQuestionnaireSubmissionError);
-                console.error(volunteerQuestionnaireSubmissionError);
+                <strong>Views Volunteer and Participant questionnaires may now be inconsistent. 
+                  <br/>Please contact the administrator to manually remove inconsistent questionnaire from Participant's profile before trying again.</strong>;
+                setSubmissionErrorTitle("Error: Failed to Submit Volunteer Questionnaire");
+                setSubmissionErrorMessage(volunteerQuestionnaireSubmissionError);
+                setcanSeeAlert("block");
                 // TODO: implement server logging
 
                 setSubmitting(false);
