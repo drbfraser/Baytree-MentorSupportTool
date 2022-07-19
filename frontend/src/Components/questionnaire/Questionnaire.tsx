@@ -27,24 +27,6 @@ const Questionnaire = () => {
     handleSubmitAnswerSet,
   } = useQuestionnaire();
 
-  // Extracts mentor, mentee, questionnaire ID, and submission ID data for more
-  // informative error submission
-  function extractFromQuestionnaireResult(result: any, type: string) {
-    let parser = new DOMParser();
-    let xmlDoc = parser.parseFromString(result,"text/xml");
-    let docChildren = xmlDoc.children
-    let answerSetTag = docChildren[0];
-    if (type == "mentor") {
-      return xmlDoc.getElementsByTagName("Answer")[0].childNodes[0].nodeValue;
-    } else if (type == "mentee") {
-      return xmlDoc.getElementsByTagName("Answer")[1].childNodes[0].nodeValue;
-    } else if (type == "questionnaireId") { 
-        return answerSetTag.getAttribute('questionaireid') // Note: mispelling of questionnaire is intentional and due to Views API response
-    } else if (type == "submissionId") {
-      return answerSetTag.getAttribute('id')
-  }
-}
-
   return (
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
@@ -73,11 +55,8 @@ const Questionnaire = () => {
                   hideProgressBar: true,
                 });
                 console.error(volunteerQuestionnaireSubmissionError);
-                let mentorName = extractFromQuestionnaireResult(menteeResult.data, "mentor");
-                let menteeName = extractFromQuestionnaireResult(menteeResult.data, "mentee");
-                let questionniareId = extractFromQuestionnaireResult(menteeResult.data, "questionnaireId");
-                let submissionId = extractFromQuestionnaireResult(menteeResult.data, "submissionId");
-                new Logger(`${volunteerQuestionnaireSubmissionError}\n Mentor: ${mentorName}, Mentee: ${menteeName}, Questionnaire ID: ${questionniareId}, Submission ID: ${submissionId}`, logLevel.error)
+                let menteeResultData = menteeResult.data
+                new Logger(`${volunteerQuestionnaireSubmissionError}\n Mentor: ${menteeResultData["mentor"]}, Mentee: ${menteeResultData["mentee"]}, Questionnaire ID: ${menteeResultData["questionnaireId"]}, Submission ID: ${menteeResultData["submissionId"]}`, logLevel.error)
 
                 setSubmitting(false);
               }
