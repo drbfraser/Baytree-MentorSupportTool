@@ -20,10 +20,10 @@ interface MenteeDemographicsData {
     notEntered: number;
   };
   ethnicity: Record<string, number>;
-  birthLocation: Record<string, number>;
+  firstLanguage: Record<string, number>;
 }
 
-type DemographicCategory = "age" | "ethnicity" | "birthLocation";
+type DemographicCategory = "age" | "ethnicity" | "firstLanguage";
 
 const MenteeDemographicsCard: React.FC<{}> = () => {
   const [loadingData, setLoadingData] = useState(false);
@@ -71,18 +71,18 @@ const MenteeDemographicsCard: React.FC<{}> = () => {
     return ethnicityCounts;
   };
 
-  const getParticipantBirthCountryCounts = (participants: Participant[]) => {
-    let birthCountryCounts: Record<string, number> = {};
+  const getParticipantFirstLanguageCounts = (participants: Participant[]) => {
+    let firstLanguageCounts: Record<string, number> = {};
     for (const participant of participants) {
-      const birthCountry = participant.country ?? "Not Entered";
-      if (birthCountry in birthCountryCounts) {
-        birthCountryCounts[birthCountry] += 1;
+      const firstLanguage = participant.firstLanguage ?? "Not Entered";
+      if (firstLanguage in firstLanguageCounts) {
+        firstLanguageCounts[firstLanguage] += 1;
       } else {
-        birthCountryCounts[birthCountry] = 1;
+        firstLanguageCounts[firstLanguage] = 1;
       }
     }
 
-    return birthCountryCounts;
+    return firstLanguageCounts;
   };
 
   useEffect(() => {
@@ -104,7 +104,7 @@ const MenteeDemographicsCard: React.FC<{}> = () => {
               .length,
           },
           ethnicity: getParticipantEthnicityCounts(participants.results),
-          birthLocation: getParticipantBirthCountryCounts(participants.results),
+          firstLanguage: getParticipantFirstLanguageCounts(participants.results),
         };
 
         setData(menteeDemographicsData);
@@ -262,15 +262,15 @@ const Options: React.FC<{
         </Button>
         <Button
           variant={
-            props.selectedDemographicCategory === "birthLocation"
+            props.selectedDemographicCategory === "firstLanguage"
               ? "contained"
               : "outlined"
           }
           onClick={() => {
-            props.setSelectedDemographicCategory("birthLocation");
+            props.setSelectedDemographicCategory("firstLanguage");
           }}
         >
-          Birth Location
+          First Language
         </Button>
       </ButtonGroup>
     </StyledOptions>
@@ -305,16 +305,16 @@ const Chart: React.FC<{
           { name: "Age20Plus", value: demographicData.age.age20Plus },
           { name: "AgeNotEntered", value: demographicData.age.notEntered },
         ];
-      case "birthLocation":
-        let birthLocationData: { name: string; value: number }[] = [];
+      case "firstLanguage":
+        let firstLanguageData: { name: string; value: number }[] = [];
 
-        for (const birthLocation in demographicData.birthLocation) {
-          birthLocationData.push({
-            name: birthLocation,
-            value: demographicData.birthLocation[birthLocation],
+        for (const firstLanguage in demographicData.firstLanguage) {
+          firstLanguageData.push({
+            name: firstLanguage,
+            value: demographicData.firstLanguage[firstLanguage],
           });
         }
-        return birthLocationData;
+        return firstLanguageData;
       case "ethnicity":
         let ethnicityData: { name: string; value: number }[] = [];
 
@@ -460,16 +460,16 @@ const Legend: React.FC<{
           return legendListItems;
         })()}
       {props.data &&
-        props.selectedCategory === "birthLocation" &&
+        props.selectedCategory === "firstLanguage" &&
         (() => {
           let legendListItems: React.ReactElement[] = [];
 
           let i = 0;
-          for (const birthLocation in props.data.birthLocation) {
+          for (const firstLanguage in props.data.firstLanguage) {
             legendListItems.push(
               <LegendListItem
                 key={`MenteeLegendListItem_${i}`}
-                legendEntry={{ title: birthLocation, color: getUniqueColor(i) }}
+                legendEntry={{ title: firstLanguage, color: getUniqueColor(i) }}
               ></LegendListItem>
             );
             ++i;

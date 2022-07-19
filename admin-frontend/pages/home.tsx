@@ -11,10 +11,11 @@ import { toast } from "react-toastify";
 import { getMentorUsers, MentorUser } from "../api/backend/mentorUsers";
 
 export interface Mentor {
-  id: number;
+  viewsPersonId: string;
   firstName: string;
   lastName: string;
   email: string;
+  fullName: string;
 }
 
 const Home: NextPage = () => {
@@ -32,7 +33,7 @@ const Home: NextPage = () => {
         mentors.filter((mentor) => {
           return (
             mentorFilter === "" ||
-            (mentor.firstName + mentor.lastName)
+            mentor.fullName
               .toLowerCase()
               .includes(mentorFilter.toLowerCase()) ||
             mentor.email.toLowerCase().includes(mentorFilter.toLowerCase())
@@ -64,10 +65,13 @@ const Home: NextPage = () => {
               );
 
               return {
-                id: mentor.user.id,
+                viewsPersonId: mentor.viewsPersonId,
                 email: mentor.user.email,
                 firstName: matchingVolunteer ? matchingVolunteer.firstname : "",
                 lastName: matchingVolunteer ? matchingVolunteer.surname : "",
+                fullName: matchingVolunteer
+                  ? `${matchingVolunteer.firstname} ${matchingVolunteer.surname}`
+                  : "",
               };
             })
           );

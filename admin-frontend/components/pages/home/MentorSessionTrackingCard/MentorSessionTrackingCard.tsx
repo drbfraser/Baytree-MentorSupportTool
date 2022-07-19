@@ -28,11 +28,10 @@ const ERROR_MESSAGE =
 const MentorSessionTrackingCard: React.FunctionComponent<
   MentorSessionTrackingCardProps
 > = (props) => {
-  const [curMonth, setCurMonth] = useState<number>(new Date().getMonth());
   const [curYear, setCurYear] = useState<number>(new Date().getFullYear());
-  const [sessionsForCurMonth, setSessionsForCurMonth] = useState<
-    ((ViewsSession & DjangoSession) | DjangoSession)[]
-  >([]);
+  const [sessionsForCurYear, setSessionsForCurYear] = useState<ViewsSession[]>(
+    []
+  );
   const [selectedSessionGroupId, setSelectedSessionGroupId] = useState<
     string | null
   >(null);
@@ -49,59 +48,40 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     if (selectedSessionGroupId !== null) {
       getInitialSessionsData();
     }
-  }, [selectedSessionGroupId, curMonth, curYear]);
+  }, [selectedSessionGroupId, curYear]);
 
   const getSessionsForCurMonth = async () => {
-    const curMonthStartDate = getCurMonthStartDate();
-    const curMonthEndDate = getCurMonthEndDate();
+    const curYearStartDate = getCurYearStartDate();
+    const curYearEndDate = getCurYearEndDate();
     const viewsSessionRes = await getSessionsFromViews(
       selectedSessionGroupId as string,
-      { startDateFrom: curMonthStartDate, startDateTo: curMonthEndDate }
+      { startDateFrom: curYearStartDate, startDateTo: curYearEndDate }
     );
 
     if (viewsSessionRes) {
-      const sessionRes = await getSessions();
-      if (sessionRes !== null) {
-        const sessionsInCurMonth = sessionRes.filter(
-          (session) =>
-            new Date(session.clock_in) >= new Date(curMonthStartDate) &&
-            new Date(session.clock_in) <= new Date(curMonthEndDate)
-        );
+      const sessionsInCurYear = viewsSessionRes.results.filter(
+        (session) =>
+          new Date(session.startDate) >= new Date(curYearStartDate) &&
+          new Date(session.startDate) <= new Date(curYearEndDate)
+      );
 
-        // Combine Sessions from django backend with views session
-        const combinedViewsAndDjangoSessions = sessionsInCurMonth.map(
-          (djangoSession) => {
-            const matchingViewsSession = viewsSessionRes.results.find(
-              (viewsSession) =>
-                viewsSession.viewsSessionId === djangoSession.viewsSessionId
-            );
-
-            if (matchingViewsSession) {
-              return { ...djangoSession, ...matchingViewsSession };
-            } else {
-              return djangoSession;
-            }
-          }
-        );
-
-        setSessionsForCurMonth(combinedViewsAndDjangoSessions);
-      }
+      setSessionsForCurYear(sessionsInCurYear);
       setKey(key + 1); // Force re-render of table
     } else {
       toast.error(ERROR_MESSAGE);
     }
   };
 
-  // get current month end date like: '2022-03-01'
-  const getCurMonthStartDate = (): string => {
-    const firstDayOfMonth = new Date(curYear, curMonth, 1);
-    return firstDayOfMonth.toISOString().split("T")[0];
+  // get current year start date for academic year (sep-aug) like: '2022-09-01'
+  const getCurYearStartDate = (): string => {
+    const firstDayOfYear = new Date(curYear, 8, 1);
+    return firstDayOfYear.toISOString().split("T")[0];
   };
 
-  // get current month end date like: '2022-03-31'
-  const getCurMonthEndDate = (): string => {
-    const lastDayOfMonth = new Date(curYear, curMonth + 1, 0);
-    return lastDayOfMonth.toISOString().split("T")[0];
+  // get current year end date for academic year (sep-aug) like: '2023-09-01'
+  const getCurYearEndDate = (): string => {
+    const lastDayOfYear = new Date(curYear + 1, 8, 1);
+    return lastDayOfYear.toISOString().split("T")[0];
   };
 
   const loadSessionGroupOptions = async (search: any, prevOptions: any) => {
@@ -142,8 +122,6 @@ const MentorSessionTrackingCard: React.FunctionComponent<
       <Header
         loadSessionGroupOptions={loadSessionGroupOptions}
         onSessionGroupSelectOptionChange={onSessionGroupSelectOptionChange}
-        onSetMonth={setCurMonth}
-        curMonth={curMonth}
         onSetYear={setCurYear}
         curYear={curYear}
         mentorFilter={props.mentorFilter}
@@ -154,8 +132,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
           key={`body_${key}`}
           isLoading={isLoading}
           mentors={props.mentors}
-          sessionsForMonth={sessionsForCurMonth}
-          month={curMonth + 1}
+          sessionsForCurYear={sessionsForCurYear}
           year={curYear}
         ></SessionTrackingTable>
       )}
