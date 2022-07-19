@@ -1,5 +1,5 @@
 from django.http import Http404
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.response import Response
 from users.models import MentorUser
 from users.permissions import userIsAdmin, userIsSuperUser
@@ -21,6 +21,8 @@ class GoalListCreateAPIView(
   generics.ListCreateAPIView):
   queryset = Goal.objects.all()
   serializer_class = GoalSerializer
+  filter_backends = [filters.OrderingFilter]
+  ordering_fields = ['creation_date', 'review_date', 'last_update_date']
 
   def get_queryset(self, *args, **kwargs):
     qs = super().get_queryset(*args, **kwargs)
