@@ -1,3 +1,4 @@
+import { LoadingButton } from "@mui/lab";
 import { Alert, AlertTitle, Box, Button, TextField, Typography } from "@mui/material";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
@@ -83,6 +84,7 @@ const ResetPasswordRequest = () => {
       value={password}
       autoComplete="current-password"
       onChange={(e) => setPassword(e.target.value)}
+      disabled={loading}
     />
     <TextField
       margin="normal"
@@ -94,17 +96,19 @@ const ResetPasswordRequest = () => {
       value={passwordAgain}
       autoComplete="current-password"
       onChange={(e) => setPasswordAgain(e.target.value)}
+      disabled={loading}
     />
     <PasswordValidation password={password} passwordAgain={passwordAgain} />
-    <Button
+    <LoadingButton
       type="submit"
+      loading={loading}
       disabled={loading || !isValid(password, passwordAgain)}
       fullWidth
       variant="contained"
       color="primary"
     >
       Reset Password
-    </Button>
+    </LoadingButton>
   </form>
 };
 
