@@ -48,15 +48,10 @@ const Questionnaire = () => {
                 resetForm();
               }
               else {
-                const volunteerQuestionnaireSubmissionError = 
+                const volunteerQuestionnaireSubmissionLoggerError = 
                 "Failed to submit Volunteer questionnaire. \nViews Volunteer and Participant questionnaires may now be inconsistent. \nPlease contact the administrator to manually remove inconsistent \nquestionnaire from Participant's profile before trying again.";
-                toast.error(volunteerQuestionnaireSubmissionError, {
-                  autoClose: false,
-                  hideProgressBar: true,
-                });
-                console.error(volunteerQuestionnaireSubmissionError);
                 let menteeResultData = menteeResult.data
-                new Logger(`${volunteerQuestionnaireSubmissionError}\n Mentor: ${menteeResultData["mentor"]}, Mentee: ${menteeResultData["mentee"]}, Questionnaire ID: ${menteeResultData["questionnaireId"]}, Submission ID: ${menteeResultData["submissionId"]}`, logLevel.error)
+                new Logger(`${volunteerQuestionnaireSubmissionLoggerError}\n Mentor: ${menteeResultData["mentor"]}, Mentee: ${menteeResultData["mentee"]}, Questionnaire ID: ${menteeResultData["questionnaireId"]}, Submission ID: ${menteeResultData["submissionId"]}`, logLevel.error)
 
                 setSubmitting(false);
               }
@@ -64,12 +59,7 @@ const Questionnaire = () => {
               const questionnaireSubmissionError = 
               "Failed to submit Participant questionnaire. \
               Volunteer answer set not submitted.";
-              toast.error(questionnaireSubmissionError + " Please try again.",
-              {
-                autoClose: false,
-                hideProgressBar: true,
-              });
-              console.error(questionnaireSubmissionError)
+
               setSubmitting(false);
             }
           }}
