@@ -83,11 +83,7 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
 
   def get(self, request):
     all = self.get_queryset()
-    result = []
     cache = {}
-
-    def get_mentor_detail(goal):
-      pass
 
     def get_mentee_name(goal):
       id = goal.mentee_id
@@ -107,12 +103,14 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
       row["Review Date"] = goal.goal_review_date.strftime("%Y-%m-%d")
       row["Last Update"] = goal.last_update_date.strftime("%Y-%m-%d")
       row["Status"] = goal.status
+      row["Description"] = goal.description
+      row["Categories"] = ", ".join([category.name for category in goal.categories.iterator()])
       mentee = get_mentee_name(goal)
       row["Mentee"] = "" if mentee is None else mentee
       return row
 
     with io.StringIO() as csvFile:
-      fieldsname = ["Mentor", "Mentee", "Title", "Creation Date", "Review Date", "Last Update", "Status"]
+      fieldsname = ["Mentor", "Mentee", "Title", "Creation Date", "Review Date", "Last Update", "Status", "Description", "Categories"]
       writer = csv.DictWriter(csvFile, fieldnames=fieldsname, quoting=csv.QUOTE_ALL)
 
       writer.writeheader()

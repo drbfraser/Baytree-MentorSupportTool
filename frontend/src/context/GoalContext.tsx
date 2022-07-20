@@ -1,5 +1,5 @@
 import { createContext, FunctionComponent, useContext, useEffect, useState } from "react";
-import { fetchAllGoals, fetchGoalStatistics, Goal, GoalInput, GoalQuery, submitCompleteGoal, submitGoal } from "../api/goals";
+import { fetchGoals, fetchGoalStatistics, Goal, GoalInput, GoalQuery, submitCompleteGoal, submitGoal } from "../api/goals";
 
 interface GoalContextType {
   goals: Goal[];
@@ -45,7 +45,7 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
 
   const loadGoals = () => {
     setLoadingGoals(true);
-    fetchAllGoals(query)
+    fetchGoals(query)
       .then(({ data, error }) => {
         if (!data || error !== "") {
           setError(error);

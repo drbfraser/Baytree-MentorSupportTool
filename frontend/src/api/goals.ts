@@ -48,7 +48,7 @@ export type GoalQuery = {
   ascending?: boolean
 }
 
-export const fetchAllGoals = async (query: GoalQuery = { limit: 5, offset: 0, orderBy: "creation_date" }) => {
+export const fetchGoals = async (query: GoalQuery = { limit: 5, offset: 0, orderBy: "creation_date" }) => {
   let params: any = {
     limit: query.limit,
     offset: query.offset,
@@ -116,3 +116,8 @@ export const submitCompleteGoal = async (goalId: number) => {
     return false;
   }
 };
+
+export const exportGoals = async () => {
+  const apiRes = await goalsApi.get<string>("export/");
+  return apiRes.data
+}

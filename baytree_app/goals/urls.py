@@ -13,5 +13,5 @@ urlpatterns = [
     path('/<int:pk>/', GoalRetrieveUpdateDestroyAPIView.as_view()),
     path('/categories/', GoalCategoryListView.as_view()),
     path('/statistics/', GoalStatisticsAPIView.as_view()),
-    path('/exports/', GoalExportsAPIView.as_view())
+    path('/export/', GoalExportsAPIView.as_view())
 ]

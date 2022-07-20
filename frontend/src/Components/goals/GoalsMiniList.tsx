@@ -1,6 +1,6 @@
 import { Alert, Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import { fetchAllGoals, Goal } from "../../api/goals";
+import { fetchGoals, Goal } from "../../api/goals";
 import Loading from "../shared/Loading";
 import GoalListItem from "./GoalListItem";
 
@@ -11,7 +11,7 @@ const GoalsMiniList = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetchAllGoals({limit: 3, offset: 0, status: "IN PROGRESS"})
+    fetchGoals({ limit: 3, offset: 0, status: "IN PROGRESS" })
       .then(({ data, error }) => {
         if (!data || error !== "") {
           setError(error);
@@ -30,11 +30,11 @@ const GoalsMiniList = () => {
     {goals.map((goal) => {
       const expanded = id === goal.id;
       const handleClick = () => expanded ? setId(undefined) : setId(goal.id)
-      return <GoalListItem 
-        key={goal.id} 
+      return <GoalListItem
+        key={goal.id}
         expanded={expanded}
         handleClick={handleClick}
-        goal={goal} 
+        goal={goal}
         minified />
     })}
   </Box>
