@@ -77,7 +77,7 @@ class GoalStatisticsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
 
 
 
-# GET /api/goals/exports/
+# GET /api/goals/export/
 class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
   queryset = Goal.objects.all()
 
@@ -97,7 +97,8 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
 
     def goal_to_csv_row(goal):
       row = {}
-      row["Mentor"] = goal.mentor.user.email
+      mentor = goal.mentor
+      row["Mentor"] = mentor.user.email if mentor is not None else ""
       row["Title"] = goal.title
       row["Creation Date"] = goal.creation_date.strftime("%Y-%m-%d")
       row["Review Date"] = goal.goal_review_date.strftime("%Y-%m-%d")
