@@ -1,5 +1,5 @@
 import TimelineDot from '@mui/lab/TimelineDot';
-import { Accordion, AccordionDetails, AccordionSummary, Alert, CircularProgress, Stack, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Chip, CircularProgress, Stack, Typography } from "@mui/material";
 import { format, formatDistanceToNow } from "date-fns";
 import { FunctionComponent, useEffect, useState } from "react";
 import { MdExpandMore } from "react-icons/md";
@@ -27,6 +27,18 @@ const GoalItemDetail: FunctionComponent<{ goalId: number }> = ({ goalId }) => {
       .then(setGoal).catch(() => setError(true))
       .finally(() => setLoading(false));
   }, [goalId]);
+
+  const renderCategories = (goal: Goal) => {
+    let categories = goal.categories;
+    const length = categories.length;
+    if (length === 0)
+      return <Typography variant="body2">No categories assigned</Typography>
+    return <div>
+      {categories.map(category => (
+        <Chip size="small" key={category.id} label={category.name} sx={{ mt: 1, mr: 1 }} />
+      ))}
+    </div>
+  }
 
   const renderDetails = () => {
     if (loading) return <div style={{display: "flex", width: "100%", justifyContent: "center"}}>
@@ -58,6 +70,10 @@ const GoalItemDetail: FunctionComponent<{ goalId: number }> = ({ goalId }) => {
       <div>
         <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Goal Description</Typography>
         <Typography variant="body2">{goal.description}</Typography>
+      </div>
+      <div>
+      <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Categories</Typography>
+        {renderCategories(goal)}
       </div>
     </Stack>
   }

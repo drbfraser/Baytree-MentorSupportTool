@@ -18,6 +18,7 @@ export interface Goal {
   last_update_date: string;
   status: "IN PROGRESS" | "RECALIBREATED" | "ACHIEVED";
   description: string;
+  categories: GoalCategory[]
 }
 
 export type OrderingDate = "creation_date" | "goal_review_date" | "last_update_date";
