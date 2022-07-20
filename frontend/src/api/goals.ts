@@ -17,13 +17,16 @@ export interface GoalCategory {
 export interface Goal {
   id: number;
   title: string;
-  mentee?: Participant;
   creation_date: string;
   goal_review_date: string;
   last_update_date: string;
   status: "IN PROGRESS" | "RECALIBRATED" | "ACHIEVED";
   description: string;
   categories: GoalCategory[];
+}
+
+export interface GoalDetail extends Goal {
+  mentee?: Participant;
 }
 
 export interface GoalInput {
@@ -34,23 +37,25 @@ export interface GoalInput {
   categories: GoalCategory[];
 }
 
+export type OrderBy = "creation_date" | "goal_review_date" | "last_update_date";
+
 export type GoalQuery = {
   limit: number;
   offset: number;
   status?: Goal["status"];
-  categories?: number[];
-  orderBy?: 'creation_date' | 'goal_review_date' | 'last_update_date';
+  categories?: GoalCategory[];
+  orderBy: OrderBy;
   ascending?: boolean
 }
 
-export const fetchAllGoals = async (query: GoalQuery = { limit: 5, offset: 0 }) => {
+export const fetchAllGoals = async (query: GoalQuery = { limit: 5, offset: 0, orderBy: "creation_date" }) => {
   let params: any = {
     limit: query.limit,
     offset: query.offset,
   }
 
   if (query.status) params.status = query.status;
-  if (query.categories && query.categories.length > 0) params.categories = query.categories.join(',')
+  if (query.categories && query.categories.length > 0) params.categories = query.categories.map(c => c.id).join(',')
   if (query.orderBy) params.ordering = (!query.ascending ? '-' : '') + query.orderBy
 
   try {
@@ -87,15 +92,14 @@ export const fetchGoalStatistics = async () => {
 }
 
 export const fetchAllGoalCategories = async () => {
-  try {
-    const apiRes = await goalsApi.get<GoalCategory[]>("categories/");
-    if (apiRes.status === 200) {
-      return { data: apiRes.data, error: "" };
-    } else throw Error;
-  } catch (_err) {
-    return { data: undefined, error: "Cannot fetch goal categories" };
-  }
+  const apiRes = await goalsApi.get<GoalCategory[]>("categories/");
+  return apiRes.data;
 }
+
+export const fetchGoalById = async (id: number) => {
+  const apiRes = await goalsApi.get<GoalDetail>(`${id}/`);
+  return apiRes.data;
+} 
 
 export const submitGoal = async (input: GoalInput, id?: number) => {
   let data: any = {

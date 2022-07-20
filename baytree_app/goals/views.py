@@ -6,7 +6,7 @@ from users.models import MentorUser
 from users.permissions import userIsAdmin, userIsSuperUser
 
 from .models import Goal, GoalCategory
-from .serializers import GoalCategorySerializer, GoalSerializer
+from .serializers import GoalCategorySerializer, GoalDetailSerializer, GoalSerializer
 
 
 class MentorGoalQuerySetMixin():  
@@ -44,7 +44,7 @@ class GoalRetrieveUpdateDestroyAPIView(
   MentorGoalQuerySetMixin,
   generics.RetrieveUpdateDestroyAPIView):
   queryset = Goal.objects.all()
-  serializer_class = GoalSerializer
+  serializer_class = GoalDetailSerializer
   lookup_field = 'pk'
 
   def perform_update(self, serializer):
