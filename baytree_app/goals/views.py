@@ -31,7 +31,8 @@ class GoalListCreateAPIView(
     categoryParams = self.request.GET.get('categories', None)
     if categoryParams is not None:
       ids = [int(x) for x in categoryParams.split(',')]
-      qs = qs.filter(categories__in=ids)
+      for id in ids:
+        qs = qs.filter(categories__id=id)
     return qs
 
   def perform_create(self, serializer):

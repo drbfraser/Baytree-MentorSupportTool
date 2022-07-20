@@ -10,7 +10,7 @@ type Props = {
 }
 
 const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
-  const { loadingGoals, error, goals, query, statistics, handleChangeQuery, count } = useGoals();
+  const { loadingGoals, error, goals, query, handleChangeQuery, count } = useGoals();
   const [selected, setSelected] = useState<number | undefined>(undefined);
 
   if (loadingGoals) return <Loading />;

@@ -12,11 +12,11 @@ const GoalCateogoryFilter = () => {
   if (error || categories.length === 0)
     return <Alert severity="error" sx={{ width: "100%" }}>Please try again later</Alert>;
 
-  const selectedIds = query.categoryIds || categories.map(c => c.id);
+  const selectedIds = query.categoryIds || [];
 
-  return <Select fullWidth multiple value={selectedIds}
+  return <Select fullWidth multiple value={selectedIds} displayEmpty
     renderValue={(values) => {
-      if (values.length === 0) return "None selected";
+      if (values.length === 0) return "No categories selected";
       if (values.length === 1) return "1 categories selected";
       if (values.length === categories.length) return "All categories selected";
       return `${values.length} categories selected`;
@@ -67,11 +67,11 @@ const GoalDateOrdering = () => {
 const GoalQuerying = () => {
   return <Grid container spacing={2} sx={{ mt: 2 }}>
     <Grid item xs={12} lg={7}>
-      <Typography variant="subtitle1" component="div">Categories</Typography>
+      <Typography variant="subtitle1" component="div" gutterBottom>Filter by categories</Typography>
       <GoalCateogoryFilter />
     </Grid>
     <Grid item xs={12} lg={5}>
-      <Typography variant="subtitle1" component="div">Sort by</Typography>
+      <Typography variant="subtitle1" component="div" gutterBottom>Sort by</Typography>
       <GoalDateOrdering />
     </Grid>
   </Grid>
