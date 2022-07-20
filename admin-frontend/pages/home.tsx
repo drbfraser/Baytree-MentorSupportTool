@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { MOBILE_BREAKPOINT } from "../constants/constants";
 import MentorDemographicsCard from "../components/pages/home/mentorDemographicsCard";
 import MenteeDemographicsCard from "../components/pages/home/menteeDemographicsCard";
-import MentorSessionTrackingCard from "../components/pages/home/MentorSessionTrackingCard/MentorSessionTrackingCard";
+import MentorSessionTrackingCard from "../components/pages/home/MentorSessionTrackingCard/MentorSessionTrackingCard/MentorSessionTrackingCard";
 import MentorQuestionnaireTrackingCard from "../components/pages/home/MentorQuestionnaireTrackingCard";
 import { getVolunteersFromViews } from "../api/backend/views/volunteers";
 import { toast } from "react-toastify";

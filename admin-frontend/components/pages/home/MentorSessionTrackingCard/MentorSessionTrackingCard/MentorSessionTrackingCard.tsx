@@ -2,19 +2,21 @@ import { Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import {
-  getSessions,
-  SessionResponse as DjangoSession,
-} from "../../../../api/backend/sessions";
-import { getSessionGroupsFromViews } from "../../../../api/backend/views/sessionGroups";
+import { getSessionGroupsFromViews } from "../../../../../api/backend/views/sessionGroups";
 import {
   getSessionsFromViews,
   Session as ViewsSession,
-} from "../../../../api/backend/views/sessions";
-import { Mentor } from "../../../../pages/home";
-import { PaginatedSelectOption } from "../../../shared/paginatedSelect";
-import Header from "./Header";
-import SessionTrackingTable from "./SessionTrackingTable";
+} from "../../../../../api/backend/views/sessions";
+import { Mentor } from "../../../../../pages/home";
+import { PaginatedSelectOption } from "../../../../shared/paginatedSelect";
+import Header from "../Header";
+import SessionTrackingTable from "../SessionTrackingTable";
+import {
+  getCurYearEndDate,
+  getCurYearStartDate,
+  getMentorSessionCounts,
+  onExportButtonClick,
+} from "./Logic";
 
 interface MentorSessionTrackingCardProps {
   mentors: Mentor[];
@@ -32,9 +34,14 @@ const MentorSessionTrackingCard: React.FunctionComponent<
   const [sessionsForCurYear, setSessionsForCurYear] = useState<ViewsSession[]>(
     []
   );
+
   const [selectedSessionGroupId, setSelectedSessionGroupId] = useState<
     string | null
   >(null);
+  const [selectedSessionGroupName, setSelectedSessionGroupName] = useState<
+    string | null
+  >(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [key, setKey] = useState(0);
 
@@ -51,8 +58,8 @@ const MentorSessionTrackingCard: React.FunctionComponent<
   }, [selectedSessionGroupId, curYear]);
 
   const getSessionsForCurMonth = async () => {
-    const curYearStartDate = getCurYearStartDate();
-    const curYearEndDate = getCurYearEndDate();
+    const curYearStartDate = getCurYearStartDate(curYear);
+    const curYearEndDate = getCurYearEndDate(curYear);
     const viewsSessionRes = await getSessionsFromViews(
       selectedSessionGroupId as string,
       { startDateFrom: curYearStartDate, startDateTo: curYearEndDate }
@@ -70,18 +77,6 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     } else {
       toast.error(ERROR_MESSAGE);
     }
-  };
-
-  // get current year start date for academic year (sep-aug) like: '2022-09-01'
-  const getCurYearStartDate = (): string => {
-    const firstDayOfYear = new Date(curYear, 8, 1);
-    return firstDayOfYear.toISOString().split("T")[0];
-  };
-
-  // get current year end date for academic year (sep-aug) like: '2023-09-01'
-  const getCurYearEndDate = (): string => {
-    const lastDayOfYear = new Date(curYear + 1, 8, 1);
-    return lastDayOfYear.toISOString().split("T")[0];
   };
 
   const loadSessionGroupOptions = async (search: any, prevOptions: any) => {
@@ -115,6 +110,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
       newSessionGroup as PaginatedSelectOption<string>;
 
     setSelectedSessionGroupId(selectedSessionGroup.value);
+    setSelectedSessionGroupName(selectedSessionGroup.label);
   };
 
   return (
@@ -124,6 +120,19 @@ const MentorSessionTrackingCard: React.FunctionComponent<
         onSessionGroupSelectOptionChange={onSessionGroupSelectOptionChange}
         onSetYear={setCurYear}
         curYear={curYear}
+        onExportButtonClick={() => {
+          if (selectedSessionGroupName === null) {
+            toast.error(
+              "Please select a session group first before exporting!"
+            );
+            return;
+          }
+          onExportButtonClick(
+            getMentorSessionCounts(props.mentors, sessionsForCurYear),
+            curYear,
+            selectedSessionGroupName
+          );
+        }}
         mentorFilter={props.mentorFilter}
         setMentorFilter={props.setMentorFilter}
       ></Header>

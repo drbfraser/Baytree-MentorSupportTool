@@ -10,21 +10,10 @@ import Pager from "../../../shared/pager";
 import MentorSessionsModal from "./MentorSessionsModal";
 import { Mentor } from "../../../../pages/home";
 import { MdSchedule } from "react-icons/md";
-
-interface MentorSessionCount extends Mentor {
-  januarySessions: number;
-  februarySessions: number;
-  marchSessions: number;
-  aprilSessions: number;
-  maySessions: number;
-  juneSessions: number;
-  julySessions: number;
-  augustSessions: number;
-  septemberSessions: number;
-  octoberSessions: number;
-  novemberSessions: number;
-  decemberSessions: number;
-}
+import {
+  getMentorSessionCounts,
+  MentorSessionCount,
+} from "./MentorSessionTrackingCard/Logic";
 
 interface SessionTrackingTableProps {
   sessionsForCurYear: ViewsSession[];
@@ -62,116 +51,6 @@ const SessionTrackingTable: React.FunctionComponent<
       mentorSessionCountsRef.current.slice(0, PAGE_SIZE)
     );
   }, [props.mentors, props.sessionsForCurYear]);
-
-  const getMentorSessionCounts = (
-    mentors: Mentor[],
-    sessionsForYear: ViewsSession[]
-  ) => {
-    let aggregatedSessionsByMentor: MentorSessionCount[] = [];
-
-    // Initialize the session counts for each mentor to 0 for each month
-    mentors.forEach((mentor, i) =>
-      aggregatedSessionsByMentor.push({
-        viewsPersonId: mentor.viewsPersonId,
-        firstName: mentor.firstName,
-        lastName: mentor.lastName,
-        email: mentor.email,
-        fullName: mentor.fullName,
-        januarySessions: 0,
-        februarySessions: 0,
-        marchSessions: 0,
-        aprilSessions: 0,
-        maySessions: 0,
-        juneSessions: 0,
-        julySessions: 0,
-        augustSessions: 0,
-        septemberSessions: 0,
-        octoberSessions: 0,
-        novemberSessions: 0,
-        decemberSessions: 0,
-      })
-    );
-
-    sessionsForYear.forEach((session) => {
-      const sessionLeadStaffId = session.leadStaff;
-
-      const aggregatedMentor = aggregatedSessionsByMentor.find(
-        (mentor) => mentor.viewsPersonId === sessionLeadStaffId
-      );
-
-      if (aggregatedMentor && !session.cancelled) {
-        const sessionMonthNum = session.startDate.getMonth();
-        switch (sessionMonthNum) {
-          case 0:
-            aggregatedMentor.januarySessions++;
-            break;
-          case 1:
-            aggregatedMentor.februarySessions++;
-            break;
-          case 2:
-            aggregatedMentor.marchSessions++;
-            break;
-          case 3:
-            aggregatedMentor.aprilSessions++;
-            break;
-          case 4:
-            aggregatedMentor.maySessions++;
-            break;
-          case 5:
-            aggregatedMentor.juneSessions++;
-            break;
-          case 6:
-            aggregatedMentor.julySessions++;
-            break;
-          case 7:
-            aggregatedMentor.augustSessions++;
-            break;
-          case 8:
-            aggregatedMentor.septemberSessions++;
-            break;
-          case 9:
-            aggregatedMentor.octoberSessions++;
-            break;
-          case 10:
-            aggregatedMentor.novemberSessions++;
-            break;
-          case 11:
-            aggregatedMentor.decemberSessions++;
-            break;
-        }
-      }
-    });
-
-    // Show mentors in alphabetical order by name
-    aggregatedSessionsByMentor.sort((mentor1, mentor2) => {
-      return mentor1.fullName.localeCompare(mentor2.fullName);
-    });
-
-    return aggregatedSessionsByMentor;
-  };
-
-  const clickableMentorNameText = (dataRow: any) => {
-    return (
-      <ClickableMentorNameText
-        onClick={() => {
-          const mentor = props.mentors.find(
-            (mentor) => mentor.viewsPersonId === dataRow.viewsPersonId
-          );
-
-          if (mentor) {
-            setMentorSessionsModalMentor(mentor);
-            setIsMentorSessionsModalOpen(true);
-          } else {
-            toast.error(
-              "Something went wrong! Please contact technical support for further assistance."
-            );
-          }
-        }}
-      >
-        {dataRow.fullName}
-      </ClickableMentorNameText>
-    );
-  };
 
   return props.isLoading ? (
     <LoadingSessionTrackingTable></LoadingSessionTrackingTable>
