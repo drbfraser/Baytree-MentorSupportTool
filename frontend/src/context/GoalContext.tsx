@@ -18,7 +18,7 @@ export const PAGINATION_OPTIONS = [5, 10];
 export const DEFAULT_QUERY = {
   limit: PAGINATION_OPTIONS[0],
   offset: 0,
-  orderBy: "creation_date"
+  orderingDate: "creation_date"
 } as GoalQuery;
 
 export const GoalContext = createContext<GoalContextType>({

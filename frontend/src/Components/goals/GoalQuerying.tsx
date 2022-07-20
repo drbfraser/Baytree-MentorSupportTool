@@ -1,7 +1,7 @@
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Alert, Button, Checkbox, Grid, ListItemText, MenuItem, Select, Skeleton, Stack, Typography } from "@mui/material";
-import { OrderBy } from "../../api/goals";
+import { OrderingDate } from "../../api/goals";
 import { useGoals } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoalCategories";
 
@@ -42,10 +42,10 @@ const GoalCateogoryFilter = () => {
 const GoalDateOrdering = () => {
   const { query, handleChangeQuery } = useGoals();
   return <Stack direction="row" spacing={2}>
-    <Select sx={{ flexGrow: 1 }} value={query.orderBy || "creation_date"} onChange={(ev) => {
+    <Select sx={{ flexGrow: 1 }} value={query.orderingDate || "creation_date"} onChange={(ev) => {
       handleChangeQuery(prev => ({
         ...prev,
-        orderBy: ev.target.value as OrderBy
+        orderingDate: ev.target.value as OrderingDate
       }))
     }}>
       <MenuItem value="creation_date">Creation Date</MenuItem>

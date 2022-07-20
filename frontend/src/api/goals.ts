@@ -37,18 +37,18 @@ export interface GoalInput {
   categories: GoalCategory[];
 }
 
-export type OrderBy = "creation_date" | "goal_review_date" | "last_update_date";
+export type OrderingDate = "creation_date" | "goal_review_date" | "last_update_date";
 
 export type GoalQuery = {
   limit: number;
   offset: number;
   status?: Goal["status"];
   categoryIds?: number[];
-  orderBy: OrderBy;
+  orderingDate: OrderingDate;
   ascending?: boolean
 }
 
-export const fetchGoals = async (query: GoalQuery = { limit: 5, offset: 0, orderBy: "creation_date" }) => {
+export const fetchGoals = async (query: GoalQuery = { limit: 5, offset: 0, orderingDate: "creation_date" }) => {
   let params: any = {
     limit: query.limit,
     offset: query.offset,
@@ -56,7 +56,7 @@ export const fetchGoals = async (query: GoalQuery = { limit: 5, offset: 0, order
 
   if (query.status) params.status = query.status;
   if (query.categoryIds && query.categoryIds.length > 0) params.categories = query.categoryIds.join(',')
-  if (query.orderBy) params.ordering = (!query.ascending ? '-' : '') + query.orderBy
+  if (query.orderingDate) params.ordering = (!query.ascending ? '-' : '') + query.orderingDate
 
   try {
     const apiRes = await goalsApi.get<{ count: number, results: Goal[] }>("", {

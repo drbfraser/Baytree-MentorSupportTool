@@ -88,7 +88,7 @@ const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified, setL
 };
 
 const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick, minified }) => {
-  const { query: { orderBy }, handleCompleteGoal } = useGoals();
+  const { query: { orderingDate }, handleCompleteGoal } = useGoals();
   const [loading, setLoading] = useState(false);
 
   const handleCompleteButton = async () => {
@@ -112,7 +112,7 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
               xs: "none",
               sm: "block"
             }
-          }}>{formatDistanceToNow(new Date(goal[orderBy]), { addSuffix: true })}</Typography>}
+          }}>{formatDistanceToNow(new Date(goal[orderingDate]), { addSuffix: true })}</Typography>}
           {!minified && <GoalStatus status={goal.status} />}
         </Stack>
       </Box>
