@@ -16,7 +16,6 @@ type Props = {
   expanded?: boolean;
   handleClick?: () => void;
   handleEdit?: () => void;
-  handleComplete?: () => Promise<boolean>;
   minified?: boolean;
 };
 
@@ -88,13 +87,12 @@ const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified, setL
   </AccordionDetails>
 };
 
-const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick, handleComplete, minified }) => {
-  const { query: { orderBy } } = useGoals();
+const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick, minified }) => {
+  const { query: { orderBy }, handleCompleteGoal } = useGoals();
   const [loading, setLoading] = useState(false);
 
   const handleCompleteButton = async () => {
-    if (!handleComplete) return;
-    const success = await handleComplete();
+    const success = await handleCompleteGoal(goal);
     if (!success) toast.error("Cannot update the goal");
     else toast.success("Goal marked as completed");
   }

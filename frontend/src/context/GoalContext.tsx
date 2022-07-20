@@ -5,18 +5,20 @@ interface GoalContextType {
   goals: Goal[];
   error: string;
   query: GoalQuery;
+  count: number;
   statistics: { active: number, complete: number };
   loadingGoals: boolean;
   loadingStatistics: boolean;
   handleSubmitGoal: (input: GoalInput, id?: number) => Promise<boolean>;
   handleCompleteGoal: (goal: Goal) => Promise<boolean>;
-  handleChangeParams: (arg: GoalQuery | ((prev: GoalQuery) => GoalQuery)) => void;
+  handleChangeQuery: (arg: GoalQuery | ((prev: GoalQuery) => GoalQuery)) => void;
 }
 
 export const PAGINATION_OPTIONS = [5, 10];
-export const DEFAULT_PAGINATION = {
+export const DEFAULT_QUERY = {
   limit: PAGINATION_OPTIONS[0],
-  offset: 0
+  offset: 0,
+  orderBy: "creation_date"
 } as GoalQuery;
 
 export const GoalContext = createContext<GoalContextType>({
@@ -25,19 +27,21 @@ export const GoalContext = createContext<GoalContextType>({
   loadingGoals: false,
   loadingStatistics: false,
   error: "",
-  query: DEFAULT_PAGINATION,
+  query: DEFAULT_QUERY,
+  count: 0,
   handleSubmitGoal: async (_input, _id) => true,
   handleCompleteGoal: async (_goal) => true,
-  handleChangeParams: (_arg) => { }
+  handleChangeQuery: (_arg) => { }
 });
 
 export const GoalProvider: FunctionComponent<{}> = (props) => {
   const [loadingGoals, setLoadingGoals] = useState(false);
   const [loadingStatistics, setLoadingStatistics] = useState(false);
-  const [query, setQuery] = useState(DEFAULT_PAGINATION);
+  const [query, setQuery] = useState(DEFAULT_QUERY);
   const [statistics, setStatistics] = useState({ active: 0, complete: 0 });
   const [goals, setGoals] = useState([] as Goal[]);
   const [error, setError] = useState("");
+  const [count, setCount] = useState(0);
 
   const loadGoals = () => {
     setLoadingGoals(true);
@@ -45,7 +49,10 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
       .then(({ data, error }) => {
         if (!data || error !== "") {
           setError(error);
-        } else setGoals(data);
+        } else {
+          setGoals(data.results);
+          setCount(data.count);
+        }
       }).finally(() => setLoadingGoals(false));
   };
 
@@ -95,7 +102,7 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
     return true;
   }
 
-  const handleChangeParams = (arg: GoalQuery | ((prev: GoalQuery) => GoalQuery)) => {
+  const handleChangeQuery = (arg: GoalQuery | ((prev: GoalQuery) => GoalQuery)) => {
     setQuery(arg);
   }
 
@@ -105,11 +112,12 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
       loadingStatistics,
       statistics,
       goals,
+      count,
       error,
       query,
       handleSubmitGoal,
       handleCompleteGoal,
-      handleChangeParams
+      handleChangeQuery
     }} {...props} />
 };
 

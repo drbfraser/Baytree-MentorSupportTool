@@ -10,7 +10,7 @@ type Props = {
 }
 
 const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
-  const { loadingGoals, error, goals, query, statistics, handleChangeParams } = useGoals();
+  const { loadingGoals, error, goals, query, statistics, handleChangeQuery, count } = useGoals();
   const [selected, setSelected] = useState<number | undefined>(undefined);
 
   if (loadingGoals) return <Loading />;
@@ -22,11 +22,8 @@ const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
   if (goals.length === 0)
     return <Typography variant="h6" sx={{ mt: 3, textAlign: "center" }}>No goals found</Typography>
 
-  const { active, complete } = statistics;
-  const count = query.status === 'IN PROGRESS' ? active : query.status === 'ACHIEVED' ? complete : (active + complete);
-
   return <Box sx={{ mt: 3 }}>
-    {goals.map(goal => {
+    {goals.map((goal) => {
       return <GoalListItem
         goal={goal}
         key={goal.id}
@@ -41,13 +38,13 @@ const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
       page={query.offset / query.limit}
       component="div"
       onRowsPerPageChange={(e) => {
-        handleChangeParams(prev => ({
+        handleChangeQuery(prev => ({
           ...prev,
           limit: +e.target.value,
           offset: 0
         }))
       }}
-      onPageChange={(_, page) => handleChangeParams(prev => ({
+      onPageChange={(_, page) => handleChangeQuery(prev => ({
         ...prev,
         offset: prev.limit * page
       }))} />

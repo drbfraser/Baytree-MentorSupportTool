@@ -43,7 +43,7 @@ export type GoalQuery = {
   limit: number;
   offset: number;
   status?: Goal["status"];
-  categories?: GoalCategory[];
+  categoryIds?: number[];
   orderBy: OrderBy;
   ascending?: boolean
 }
@@ -55,26 +55,14 @@ export const fetchAllGoals = async (query: GoalQuery = { limit: 5, offset: 0, or
   }
 
   if (query.status) params.status = query.status;
-  if (query.categories && query.categories.length > 0) params.categories = query.categories.map(c => c.id).join(',')
+  if (query.categoryIds && query.categoryIds.length > 0) params.categories = query.categoryIds.join(',')
   if (query.orderBy) params.ordering = (!query.ascending ? '-' : '') + query.orderBy
 
   try {
-    const apiRes = await goalsApi.get("", {
+    const apiRes = await goalsApi.get<{ count: number, results: Goal[] }>("", {
       params
     });
-    if (apiRes.status === 200) {
-      // Not nice implementation because of Django REST Framework
-      // with built-in pagination
-      const data = apiRes.data;
-      if (data.results) {
-        return { data: data.results as Goal[], error: "" };
-      } else {
-        return { data: data as Goal[], error: "" }
-      }
-    }
-    if (apiRes.status === 404)
-      return { data: undefined, error: "Cannot find users or goals" }
-    else throw Error;
+    return { data: apiRes.data, error: "" }
   } catch (err) {
     return { data: undefined, error: "Cannot fetch goals" }
   }
@@ -99,7 +87,7 @@ export const fetchAllGoalCategories = async () => {
 export const fetchGoalById = async (id: number) => {
   const apiRes = await goalsApi.get<GoalDetail>(`${id}/`);
   return apiRes.data;
-} 
+}
 
 export const submitGoal = async (input: GoalInput, id?: number) => {
   let data: any = {

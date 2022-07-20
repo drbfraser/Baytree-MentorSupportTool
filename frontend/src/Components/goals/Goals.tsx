@@ -5,6 +5,7 @@ import { Goal } from "../../api/goals";
 import { GoalProvider } from '../../context/GoalContext';
 import GoalDialog from './GoalDialog';
 import GoalExportButton from './GoalExportButton';
+import GoalQuerying from './GoalQuerying';
 import GoalsList from './GoalsList';
 import GoalsStatistics from "./GoalsStatistics";
 
@@ -31,6 +32,7 @@ const Goals = () => {
     <GoalsStatistics />
 
     {/* Goal list */}
+    <GoalQuerying />
     <GoalsList openDialog={openGoalDialog} />
     {open && <GoalDialog open={open} goal={editGoal} handleClose={closeGoalDialog} />}
   </GoalProvider>

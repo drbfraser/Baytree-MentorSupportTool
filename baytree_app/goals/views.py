@@ -48,7 +48,10 @@ class GoalRetrieveUpdateDestroyAPIView(
   lookup_field = 'pk'
 
   def perform_update(self, serializer):
-    return serializer.save(categories=self.request.data["categories"])
+    if self.request.method != "PATCH":
+      return serializer.save(categories=self.request.data["categories"])
+    else:
+      return serializer.save()
 
 # GET /api/goals/categories/
 class GoalCategoryListView(generics.ListAPIView):

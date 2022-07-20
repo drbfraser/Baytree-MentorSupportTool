@@ -42,11 +42,11 @@ const GoalStatisticsCell: FunctionComponent<GoalStatisticsCellType> = (props) =>
 };
 
 const GoalsStatistics = () => {
-  const { statistics: { active, complete }, query, handleChangeParams } = useGoals();
+  const { statistics: { active, complete }, query, handleChangeQuery } = useGoals();
   const isActive = query.status === 'IN PROGRESS';
   const isComplete = query.status === 'ACHIEVED';
 
-  const setStatus = (status?: Goal["status"]) => () => handleChangeParams(prev => ({
+  const setStatus = (status?: Goal["status"]) => () => handleChangeQuery(prev => ({
     ...prev,
     status,
     offset: 0

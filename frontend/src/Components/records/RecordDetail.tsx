@@ -12,7 +12,7 @@ import {
   Typography
 } from "@mui/material";
 import { AxiosError } from "axios";
-import { addMinutes, format } from "date-fns";
+import { addMinutes } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { FunctionComponent } from "react";
 import { useQuery } from "react-query";

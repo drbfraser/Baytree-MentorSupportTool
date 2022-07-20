@@ -9,7 +9,7 @@ const Loading = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "10rem 0"
+        padding: "2rem 0"
       }}
     >
       <CircularProgress />
