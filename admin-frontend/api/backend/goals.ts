@@ -28,7 +28,8 @@ export type GoalQuery = {
   status?: Goal["status"];
   categoryIds?: number[];
   orderingDate: OrderingDate;
-  ascending?: boolean
+  ascending?: boolean;
+  search?: string;
 }
 
 export const fetchGoals = (query: GoalQuery = { limit: 5, offset: 0, orderingDate: "creation_date" }) => {
@@ -38,8 +39,9 @@ export const fetchGoals = (query: GoalQuery = { limit: 5, offset: 0, orderingDat
   }
 
   if (query.status) params.status = query.status;
-  if (query.categoryIds && query.categoryIds.length > 0) params.categories = query.categoryIds.join(',')
-  if (query.orderingDate) params.ordering = (!query.ascending ? '-' : '') + query.orderingDate
+  if (query.categoryIds && query.categoryIds.length > 0) params.categories = query.categoryIds.join(',');
+  if (query.orderingDate) params.ordering = (!query.ascending ? '-' : '') + query.orderingDate;
+  if (query.search) params.search = query.search;
 
   return backendGet<{ count: number, results: Goal[] }>("goals", params);
 };

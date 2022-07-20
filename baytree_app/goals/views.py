@@ -1,15 +1,17 @@
+import csv
+import io
+
 from django.http import Http404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, filters
+from rest_framework import filters, generics
 from rest_framework.response import Response
 from users.models import MentorUser
 from users.permissions import userIsAdmin, userIsSuperUser
 
 from .models import Goal, GoalCategory
-from .serializers import GoalCategorySerializer, GoalDetailSerializer, GoalSerializer
+from .serializers import (GoalCategorySerializer, GoalDetailSerializer,
+                          GoalSerializer)
 
-import csv
-import io
 
 class MentorGoalQuerySetMixin():  
   def get_queryset(self, *args, **kwargs):
@@ -24,9 +26,10 @@ class GoalListCreateAPIView(
   generics.ListCreateAPIView):
   queryset = Goal.objects.all()
   serializer_class = GoalSerializer
-  filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
+  filter_backends = [filters.OrderingFilter, DjangoFilterBackend, filters.SearchFilter]
   ordering_fields = ['creation_date', 'goal_review_date', 'last_update_date']
   filterset_fields = ['status']
+  search_fields = ['title', '^mentor__user__email']
 
   def get_queryset(self, *args, **kwargs):
     qs = super().get_queryset(*args, **kwargs)

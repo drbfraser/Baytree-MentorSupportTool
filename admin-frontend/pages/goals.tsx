@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Grid, TablePagination, Typography } from "@mui/material";
+import { Alert, AlertTitle, Grid, TablePagination, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
@@ -7,7 +7,7 @@ import { SyntheticEvent, useState } from "react";
 import { Goal } from "../api/backend/goals";
 import GoalExportButton from "../components/pages/goals/GoalExportButton";
 import GoalListItem from "../components/pages/goals/GoalListItem";
-import { GoalCateogoryFilter, GoalDateOrdering } from "../components/pages/goals/GoalQuerying";
+import { GoalCateogoryFilter, GoalDateOrdering, GoalSearch } from "../components/pages/goals/GoalQuerying";
 import OverlaySpinner from "../components/shared/overlaySpinner";
 import { DEFAULT_QUERY, PAGINATION_OPTIONS, useGoals } from "../hooks/useGoals";
 
@@ -41,11 +41,15 @@ const Goals: NextPage = () => {
 
       {/* Querying */}
       <Grid container sx={{ my: 2 }} spacing={2}>
-        <Grid item xs={12} lg={7}>
+        <Grid item xs={12} lg={4}>
+          <Typography gutterBottom variant="subtitle1">Search by title or email</Typography>
+          <GoalSearch query={query} handleChangeQuery={setQuery} />
+        </Grid>
+        <Grid item xs={12} md={6} lg={4}>
           <Typography gutterBottom variant="subtitle1">Filter by categories</Typography>
           <GoalCateogoryFilter query={query} handleChangeQuery={setQuery} />
         </Grid>
-        <Grid item xs={12} lg={5}>
+        <Grid item xs={12} md={6} lg={4}>
           <Typography gutterBottom variant="subtitle1">Sort by</Typography>
           <GoalDateOrdering query={query} handleChangeQuery={setQuery} />
         </Grid>

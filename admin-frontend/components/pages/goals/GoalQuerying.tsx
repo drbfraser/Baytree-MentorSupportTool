@@ -1,9 +1,10 @@
-import { Button, Checkbox, ListItemText, MenuItem, Select, Skeleton, Stack } from "@mui/material";
-import { FunctionComponent, useEffect, useState } from "react";
+import { Button, Checkbox, ListItemText, MenuItem, Select, Skeleton, Stack, TextField } from "@mui/material";
+import { ChangeEvent, FunctionComponent, useCallback, useEffect, useMemo, useState } from "react";
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 import { toast } from "react-toastify";
 import { backendGet } from "../../../api/backend/base";
 import { GoalCategory, GoalQuery, OrderingDate } from "../../../api/backend/goals";
+import debounce from "lodash.debounce";
 
 type Props = {
   query: GoalQuery;
@@ -74,4 +75,19 @@ export const GoalDateOrdering: FunctionComponent<Props> = ({ query, handleChange
       {query.ascending ? "Ascending" : "Descending"}
     </Button>
   </Stack>
+}
+
+export const GoalSearch: FunctionComponent<Props> = ({query, handleChangeQuery}) => {
+  const updateSearch = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    handleChangeQuery(prev => ({
+      ...prev,
+      offset: 0,
+      search: e.target.value
+    }))
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSearch = useCallback(debounce(updateSearch, 500), []);
+
+  return <TextField fullWidth defaultValue={query.search || ""} onChange={debouncedSearch} />
 }
