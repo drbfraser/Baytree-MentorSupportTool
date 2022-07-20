@@ -8,6 +8,8 @@ from users.permissions import userIsAdmin, userIsSuperUser
 from .models import Goal, GoalCategory
 from .serializers import GoalCategorySerializer, GoalDetailSerializer, GoalSerializer
 
+import csv
+import io
 
 class MentorGoalQuerySetMixin():  
   def get_queryset(self, *args, **kwargs):
@@ -72,3 +74,50 @@ class GoalStatisticsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
       "complete": len(complete)
     }
     return Response(result)
+
+
+
+# GET /api/goals/exports/
+class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
+  queryset = Goal.objects.all()
+
+  def get(self, request):
+    all = self.get_queryset()
+    result = []
+    cache = {}
+
+    def get_mentor_detail(goal):
+      pass
+
+    def get_mentee_name(goal):
+      id = goal.mentee_id
+      if id is None: return None
+      key = f"mentee-{id}"
+      if key not in cache:
+        mentee = goal.get_mentee()
+        if mentee is None: cache[key] = None
+        cache[key] = f"{mentee['firstName']} {mentee['lastName']}"
+      return cache[f"mentee-{id}"]
+
+    def goal_to_csv_row(goal):
+      row = {}
+      row["Mentor"] = goal.mentor.user.email
+      row["Title"] = goal.title
+      row["Creation Date"] = goal.creation_date.strftime("%Y-%m-%d")
+      row["Review Date"] = goal.goal_review_date.strftime("%Y-%m-%d")
+      row["Last Update"] = goal.last_update_date.strftime("%Y-%m-%d")
+      row["Status"] = goal.status
+      mentee = get_mentee_name(goal)
+      row["Mentee"] = "" if mentee is None else mentee
+      return row
+
+    with io.StringIO() as csvFile:
+      fieldsname = ["Mentor", "Mentee", "Title", "Creation Date", "Review Date", "Last Update", "Status"]
+      writer = csv.DictWriter(csvFile, fieldnames=fieldsname, quoting=csv.QUOTE_ALL)
+
+      writer.writeheader()
+      for goal in all.iterator():
+        row = goal_to_csv_row(goal)
+        writer.writerow(row)
+
+      return Response(csvFile.getvalue())
