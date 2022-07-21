@@ -7,9 +7,22 @@ export default defineConfig({
   build: {
     sourcemap: false,
     outDir: "./build",
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes("node_modules")) {
+            if (id.includes("@mui"))
+              return "mui";
+            if (id.includes("@fullcalendar"))
+              return "calendar";
+            return "vendor";
+          }
+        }
+      }
+    }
   },
   server: {
     host: "0.0.0.0"
   },
-  plugins: [react()]
+  plugins: [react()],
 })
