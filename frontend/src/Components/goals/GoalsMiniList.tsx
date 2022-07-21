@@ -11,11 +11,11 @@ const GoalsMiniList = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetchGoals({ limit: 3, offset: 0, status: "IN PROGRESS" })
+    fetchGoals({ limit: 3, offset: 0, status: "IN PROGRESS", orderingDate: "goal_review_date" })
       .then(({ data, error }) => {
         if (!data || error !== "") {
           setError(error);
-        } else setGoals(data);
+        } else setGoals(data.results);
       }).finally(() => setLoading(false));
     return () => setLoading(false);
   }, []);
