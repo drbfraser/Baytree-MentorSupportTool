@@ -20,16 +20,22 @@ class MentorGoalQuerySetMixin():
     if userIsAdmin(user) or userIsSuperUser(user): return qs
     return qs.filter(mentor__user_id=user.id)
 
+class GoalSearchFilter(filters.SearchFilter):
+  def get_search_fields(self, view, request):
+    fields = ["title"]
+    user = request.user
+    if userIsAdmin(user) or userIsSuperUser(user): fields.append("^mentor__user__email")
+    return fields
+
 # GET, POST /api/goals/
 class GoalListCreateAPIView(
   MentorGoalQuerySetMixin,
   generics.ListCreateAPIView):
   queryset = Goal.objects.all()
   serializer_class = GoalSerializer
-  filter_backends = [filters.OrderingFilter, DjangoFilterBackend, filters.SearchFilter]
+  filter_backends = (GoalSearchFilter, filters.OrderingFilter, DjangoFilterBackend)
   ordering_fields = ['creation_date', 'goal_review_date', 'last_update_date']
   filterset_fields = ['status']
-  search_fields = ['title', '^mentor__user__email']
 
   def get_queryset(self, *args, **kwargs):
     qs = super().get_queryset(*args, **kwargs)
@@ -41,9 +47,9 @@ class GoalListCreateAPIView(
     return qs
 
   def perform_create(self, serializer):
-      mentors = MentorUser.objects.filter(user_id=self.request.user.id)
-      if mentors is None: raise Http404() 
-      return serializer.save(mentor=mentors.first(), categories=self.request.data["categories"])
+    mentors = MentorUser.objects.filter(user_id=self.request.user.id)
+    if mentors is None: raise Http404() 
+    return serializer.save(mentor=mentors.first(), categories=self.request.data["categories"])
 
 # GET, PUT, PATCH, DELETE /api/goals/<id>
 class GoalRetrieveUpdateDestroyAPIView(
