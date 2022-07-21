@@ -1,6 +1,7 @@
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import { Alert, Button, Checkbox, Grid, ListItemText, MenuItem, Select, Skeleton, Stack, Typography } from "@mui/material";
+import { Alert, Button, Checkbox, debounce, Grid, ListItemText, MenuItem, Select, Skeleton, Stack, TextField, Typography } from "@mui/material";
+import { ChangeEvent, useCallback } from 'react';
 import { OrderingDate } from "../../api/goals";
 import { useGoals } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoalCategories";
@@ -64,13 +65,33 @@ const GoalDateOrdering = () => {
   </Stack>
 }
 
+export const GoalSearch = () => {
+  const {query, handleChangeQuery} = useGoals();
+  const updateSearch = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    handleChangeQuery(prev => ({
+      ...prev,
+      offset: 0,
+      search: e.target.value
+    }))
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSearch = useCallback(debounce(updateSearch, 500), []);
+
+  return <TextField fullWidth defaultValue={query.search || ""} onChange={debouncedSearch} />
+}
+
 const GoalQuerying = () => {
   return <Grid container spacing={2} sx={{ mt: 2 }}>
-    <Grid item xs={12} lg={7}>
+    <Grid item xs={12} lg={4}>
+      <Typography variant="subtitle1" component="div" gutterBottom>Search by title</Typography>
+      <GoalSearch />
+    </Grid>
+    <Grid item xs={12} md={6} lg={4}>
       <Typography variant="subtitle1" component="div" gutterBottom>Filter by categories</Typography>
       <GoalCateogoryFilter />
     </Grid>
-    <Grid item xs={12} lg={5}>
+    <Grid item xs={12} md={6} lg={4}>
       <Typography variant="subtitle1" component="div" gutterBottom>Sort by</Typography>
       <GoalDateOrdering />
     </Grid>
