@@ -15,23 +15,20 @@ type Props = {
   goal: Goal;
   expanded?: boolean;
   handleClick?: () => void;
-  handleEdit?: () => void;
   minified?: boolean;
 };
 
 type DetailProps = {
   goalId: number;
   minified?: boolean;
-  setLoading: (loading: boolean) => void;
 }
 
-const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified, setLoading }) => {
+const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified }) => {
+  const {handleCompleteGoal, openEdit} = useGoals();
   const { data: goal, isLoading, error } = useQuery(`goal-${goalId}`, async () => fetchGoalById(goalId));
   const formatDate = (date: Date) => format(date, "eeee, MMMM do yyyy");
 
-  useEffect(() => {
-    setLoading(isLoading)
-  }, [isLoading]);
+  useEffect(() => () => toast.dismiss(), []);
 
   if (isLoading) return <Loading />;
   if (error || !goal) return <Alert severity="error">
@@ -40,6 +37,12 @@ const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified, setL
   </Alert>
 
   const menteeName = goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : "N/A";
+
+  const handleCompleteButton = async () => {
+    const success = await handleCompleteGoal(goal);
+    if (!success) toast.error("Cannot update the goal");
+    else toast.success("Goal marked as completed");
+  }
 
 
   const renderCategories = () => {
@@ -57,7 +60,8 @@ const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified, setL
     </Box>
   }
 
-  return <AccordionDetails>
+  return <>
+  <AccordionDetails>
     <Stack spacing={1}>
       {!minified && <div>
         <Typography variant="body1"><strong>Creation Date</strong></Typography>
@@ -85,17 +89,16 @@ const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified, setL
       </div>
     </Stack>
   </AccordionDetails>
+  <Divider />
+  {!minified && goal.status === "IN PROGRESS" && <AccordionActions>
+    <Button variant="outlined" disabled={isLoading} startIcon={<EditIcon />} onClick={() => openEdit(goal)}>Edit</Button>
+    <Button variant="contained" disabled={isLoading} startIcon={<CheckIcon />} onClick={handleCompleteButton}>Complete</Button>
+  </AccordionActions>}
+  </>
 };
 
-const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick, minified }) => {
-  const { query: { orderingDate }, handleCompleteGoal } = useGoals();
-  const [loading, setLoading] = useState(false);
-
-  const handleCompleteButton = async () => {
-    const success = await handleCompleteGoal(goal);
-    if (!success) toast.error("Cannot update the goal");
-    else toast.success("Goal marked as completed");
-  }
+const GoalListItem: FunctionComponent<Props> = ({ goal, expanded, handleClick, minified }) => {
+  const { query: { orderingDate } } = useGoals();
 
   return <Accordion expanded={expanded} onClick={handleClick}>
     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -117,12 +120,7 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
         </Stack>
       </Box>
     </AccordionSummary>
-    {expanded && <GoalItemDetail goalId={goal.id} minified={minified} setLoading={setLoading} />}
-    <Divider />
-    {!minified && goal.status === "IN PROGRESS" && <AccordionActions>
-      <Button variant="outlined" disabled={loading} startIcon={<EditIcon />} onClick={handleEdit}>Edit</Button>
-      <Button variant="contained" disabled={loading} startIcon={<CheckIcon />} onClick={handleCompleteButton}>Complete</Button>
-    </AccordionActions>}
+    {expanded && <GoalItemDetail goalId={goal.id} minified={minified} />}
   </Accordion>
 };
 

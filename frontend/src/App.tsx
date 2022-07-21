@@ -13,6 +13,7 @@ import Questionnaire from "./Components/questionnaire/Questionnaire";
 import Records from "./Components/records/Records";
 import Sessions from "./Components/sessions/Sessions";
 import PublicLayout from "./Components/shared/PublicLayout";
+import { GoalProvider } from "./context/GoalContext";
 import PrivateRoute from "./Utils/PrivateRoute";
 import PublicRoute from "./Utils/PublicRoute";
 

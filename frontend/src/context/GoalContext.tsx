@@ -1,8 +1,15 @@
 import { createContext, FunctionComponent, useContext, useEffect, useState } from "react";
-import { fetchGoals, fetchGoalStatistics, Goal, GoalInput, GoalQuery, submitCompleteGoal, submitGoal } from "../api/goals";
+import { fetchGoals, fetchGoalStatistics, Goal, GoalDetail, GoalInput, GoalQuery, submitCompleteGoal, submitGoal } from "../api/goals";
 
+type GoalEdit = {
+  goal?: GoalDetail
+  open: boolean
+}
 interface GoalContextType {
   goals: Goal[];
+  edit: GoalEdit;
+  openEdit: (goal?: GoalDetail) => void;
+  closeEdit: () => void;
   error: string;
   query: GoalQuery;
   count: number;
@@ -23,6 +30,9 @@ export const DEFAULT_QUERY = {
 
 export const GoalContext = createContext<GoalContextType>({
   goals: [],
+  edit: { open: false },
+  openEdit: (_) => { },
+  closeEdit: () => { },
   statistics: { active: 0, complete: 0 },
   loadingGoals: false,
   loadingStatistics: false,
@@ -42,6 +52,7 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
   const [goals, setGoals] = useState([] as Goal[]);
   const [error, setError] = useState("");
   const [count, setCount] = useState(0);
+  const [edit, setEdit] = useState<GoalEdit>({ open: false });
 
   const loadGoals = () => {
     setLoadingGoals(true);
@@ -112,6 +123,12 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
       loadingStatistics,
       statistics,
       goals,
+      edit,
+      openEdit: (goal) => {
+        console.log("Open dialog...");
+        setEdit({ goal, open: true });
+      },
+      closeEdit: () => setEdit({ open: false }),
       count,
       error,
       query,

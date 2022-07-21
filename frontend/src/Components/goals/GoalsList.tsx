@@ -1,15 +1,11 @@
 import { Alert, AlertTitle, Box, TablePagination, Typography } from "@mui/material";
 import { FunctionComponent, useState } from "react";
-import { Goal } from "../../api/goals";
+import { Goal, GoalDetail } from "../../api/goals";
 import { PAGINATION_OPTIONS, useGoals } from "../../context/GoalContext";
 import Loading from "../shared/Loading";
 import GoalListItem from "./GoalListItem";
 
-type Props = {
-  openDialog: (goal?: Goal) => void;
-}
-
-const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
+const GoalsList = () => {
   const { loadingGoals, error, goals, query, handleChangeQuery, count } = useGoals();
   const [selected, setSelected] = useState<number | undefined>(undefined);
 
@@ -28,8 +24,7 @@ const GoalsList: FunctionComponent<Props> = ({ openDialog }) => {
         goal={goal}
         key={goal.id}
         expanded={selected === goal.id}
-        handleClick={() => setSelected(selected === goal.id ? undefined : goal.id)}
-        handleEdit={() => openDialog(goal)} />
+        handleClick={() => setSelected(selected === goal.id ? undefined : goal.id)} />
     })}
     <TablePagination
       count={count}

@@ -19,15 +19,14 @@ import {
   TextField
 } from "@mui/material";
 import { useFormik } from "formik";
-import { FunctionComponent } from "react";
 import { toast } from "react-toastify";
-import { Goal, GoalInput } from "../../api/goals";
+import { GoalDetail, GoalInput } from "../../api/goals";
 import { useGoals } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoalCategories";
 import useMentees from "../../hooks/useMentees";
 import Loading from "../shared/Loading";
 
-const initialAnswer = (goal?: Goal) => {
+const initialAnswer = (goal?: GoalDetail) => {
   if (!goal) return {
     title: "",
     description: "",
@@ -48,13 +47,10 @@ const emptyAnswer = (input: GoalInput) => {
   return !input.title || !input.description;
 }
 
-interface Props {
-  goal?: Goal,
-  open: boolean,
-  handleClose: () => void
-}
 
-const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
+
+const GoalDialog = () => {
+  const {edit: {goal, open}, closeEdit} = useGoals();
   const { mentees, loadingMentees } = useMentees();
   const { handleSubmitGoal } = useGoals();
   const { categories, loading: loadingCategories, error: categoriesError } = useGoalCategories();
@@ -71,7 +67,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
         return;
       }
       toast.success("Goal submitted successfully");
-      handleClose();
+      closeEdit();
     }
   });
 
@@ -178,7 +174,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
         {/* Buttons */}
         <DialogActions>
           <Button
-            onClick={() => handleClose()}
+            onClick={closeEdit}
             disabled={isSubmitting}>Cancel</Button>
           <LoadingButton
             variant="contained"
