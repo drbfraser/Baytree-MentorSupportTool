@@ -3,12 +3,12 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Alert, Button, Checkbox, debounce, Grid, ListItemText, MenuItem, Select, Skeleton, Stack, TextField, Typography } from "@mui/material";
 import { ChangeEvent, useCallback } from 'react';
 import { OrderingDate } from "../../api/goals";
-import { useGoals } from "../../context/GoalContext";
+import { useGoalContext } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoalCategories";
 
 const GoalCateogoryFilter = () => {
   const { categories, loading, error } = useGoalCategories();
-  const { query, handleChangeQuery } = useGoals();
+  const { query, handleChangeQuery } = useGoalContext();
   if (loading) return <Skeleton />;
   if (error || categories.length === 0)
     return <Alert severity="error" sx={{ width: "100%" }}>Please try again later</Alert>;
@@ -41,7 +41,7 @@ const GoalCateogoryFilter = () => {
 }
 
 const GoalDateOrdering = () => {
-  const { query, handleChangeQuery } = useGoals();
+  const { query, handleChangeQuery } = useGoalContext();
   return <Stack direction="row" spacing={2}>
     <Select sx={{ flexGrow: 1 }} value={query.orderingDate || "creation_date"} onChange={(ev) => {
       handleChangeQuery(prev => ({
@@ -66,7 +66,7 @@ const GoalDateOrdering = () => {
 }
 
 export const GoalSearch = () => {
-  const {query, handleChangeQuery} = useGoals();
+  const {query, handleChangeQuery} = useGoalContext();
   const updateSearch = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     handleChangeQuery(prev => ({
       ...prev,

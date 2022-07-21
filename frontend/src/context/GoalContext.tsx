@@ -1,5 +1,7 @@
-import { createContext, FunctionComponent, useContext, useEffect, useState } from "react";
-import { fetchGoals, fetchGoalStatistics, Goal, GoalDetail, GoalInput, GoalQuery, submitCompleteGoal, submitGoal } from "../api/goals";
+import { createContext, FunctionComponent, useContext, useState } from "react";
+import { Goal, GoalDetail, GoalInput, GoalQuery, submitCompleteGoal, submitGoal } from "../api/goals";
+import useGoals from "../hooks/useGoals";
+import useGoalStatistics from "../hooks/useGoalStatistics";
 
 type GoalEdit = {
   goal?: GoalDetail
@@ -45,59 +47,17 @@ export const GoalContext = createContext<GoalContextType>({
 });
 
 export const GoalProvider: FunctionComponent<{}> = (props) => {
-  const [loadingGoals, setLoadingGoals] = useState(false);
-  const [loadingStatistics, setLoadingStatistics] = useState(false);
   const [query, setQuery] = useState(DEFAULT_QUERY);
-  const [statistics, setStatistics] = useState({ active: 0, complete: 0 });
-  const [goals, setGoals] = useState([] as Goal[]);
-  const [error, setError] = useState("");
-  const [count, setCount] = useState(0);
+  const { goals, loadingGoals, goalError, count, refreshGoals } = useGoals(query);
+  const { statistics, loadingStatistics, refreshStatistics, statisticsError } = useGoalStatistics();
   const [edit, setEdit] = useState<GoalEdit>({ open: false });
-
-  const loadGoals = () => {
-    setLoadingGoals(true);
-    fetchGoals(query)
-      .then(({ data, error }) => {
-        if (!data || error !== "") {
-          setError(error);
-        } else {
-          setGoals(data.results);
-          setCount(data.count);
-        }
-      }).finally(() => setLoadingGoals(false));
-  };
-
-  const cleanup = () => {
-    setLoadingGoals(false);
-    setError("");
-  };
-
-  // Load goals by params
-  useEffect(() => {
-    loadGoals();
-    return cleanup;
-  }, [query]);
-
-  // Loading statistics
-  useEffect(() => {
-    setLoadingStatistics(true);
-    fetchGoalStatistics().then(({ data, error }) => {
-      if (!data || error !== "") {
-        setError(error);
-      } else setStatistics(data);
-    }).finally(() => setLoadingStatistics(false));
-  }, []);
 
   // Submit a goal
   const handleSubmitGoal = async (input: GoalInput, id?: number) => {
     const submittedGoal = await submitGoal(input, id);
     if (!submittedGoal) return false;
-    if (!id)
-      setStatistics(prev => ({
-        ...prev,
-        active: prev.active + 1,
-      }));
-    loadGoals();
+    refreshGoals();
+    refreshStatistics();
     return true;
   };
 
@@ -105,18 +65,11 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
   const handleCompleteGoal = async (goal: Goal) => {
     const success = await submitCompleteGoal(goal.id);
     if (!success) return false;
-    setStatistics(prev => ({
-      active: prev.active - 1,
-      complete: prev.complete + 1
-    }));
-    loadGoals();
+    refreshGoals();
+    refreshStatistics();
     return true;
   }
-
-  const handleChangeQuery = (arg: GoalQuery | ((prev: GoalQuery) => GoalQuery)) => {
-    setQuery(arg);
-  }
-
+  
   return <GoalContext.Provider
     value={{
       loadingGoals,
@@ -130,14 +83,14 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
       },
       closeEdit: () => setEdit({ open: false }),
       count,
-      error,
+      error: statisticsError || goalError || "",
       query,
       handleSubmitGoal,
       handleCompleteGoal,
-      handleChangeQuery
+      handleChangeQuery: setQuery
     }} {...props} />
 };
 
-export const useGoals = () => {
+export const useGoalContext = () => {
   return useContext(GoalContext);
 }

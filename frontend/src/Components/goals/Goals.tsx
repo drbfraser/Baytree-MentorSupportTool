@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { Goal, GoalDetail } from "../../api/goals";
-import { GoalProvider, useGoals } from '../../context/GoalContext';
+import { GoalProvider, useGoalContext } from '../../context/GoalContext';
 import GoalDialog from './GoalDialog';
 import GoalExportButton from './GoalExportButton';
 import GoalQuerying from './GoalQuerying';
@@ -10,7 +10,7 @@ import GoalsList from './GoalsList';
 import GoalsStatistics from "./GoalsStatistics";
 
 const Goals = () => {
-  const {edit: {open}, openEdit} = useGoals();
+  const {edit: {open}, openEdit} = useGoalContext();
 
   return <>
     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>

@@ -7,7 +7,7 @@ import { FunctionComponent, useEffect, useState } from "react";
 import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 import { fetchGoalById, Goal } from "../../api/goals";
-import { useGoals } from '../../context/GoalContext';
+import { useGoalContext } from '../../context/GoalContext';
 import Loading from '../shared/Loading';
 import GoalStatus from "./GoalStatus";
 
@@ -24,7 +24,7 @@ type DetailProps = {
 }
 
 const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified }) => {
-  const {handleCompleteGoal, openEdit} = useGoals();
+  const {handleCompleteGoal, openEdit} = useGoalContext();
   const { data: goal, isLoading, error } = useQuery(`goal-${goalId}`, async () => fetchGoalById(goalId));
   const formatDate = (date: Date) => format(date, "eeee, MMMM do yyyy");
 
@@ -98,7 +98,7 @@ const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified }) =>
 };
 
 const GoalListItem: FunctionComponent<Props> = ({ goal, expanded, handleClick, minified }) => {
-  const { query: { orderingDate } } = useGoals();
+  const { query: { orderingDate } } = useGoalContext();
 
   return <Accordion expanded={expanded} onClick={handleClick}>
     <AccordionSummary expandIcon={<ExpandMoreIcon />}>

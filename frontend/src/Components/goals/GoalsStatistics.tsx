@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { FunctionComponent } from "react";
 import { Goal } from "../../api/goals";
-import { useGoals } from "../../context/GoalContext";
+import { useGoalContext } from "../../context/GoalContext";
 
 type GoalStatisticsCellType = {
   active?: boolean;
@@ -16,7 +16,7 @@ type GoalStatisticsCellType = {
 }
 
 const GoalStatisticsCell: FunctionComponent<GoalStatisticsCellType> = (props) => {
-  const { loadingStatistics } = useGoals();
+  const { loadingStatistics } = useGoalContext();
   const activeColor = props.activeColor || "rgba(90, 176, 49, 0.2)";
   const bgColor = props.active ? activeColor : undefined;
 
@@ -42,7 +42,7 @@ const GoalStatisticsCell: FunctionComponent<GoalStatisticsCellType> = (props) =>
 };
 
 const GoalsStatistics = () => {
-  const { statistics: { active, complete }, query, handleChangeQuery } = useGoals();
+  const { statistics: { active, complete }, query, handleChangeQuery } = useGoalContext();
   const isActive = query.status === 'IN PROGRESS';
   const isComplete = query.status === 'ACHIEVED';
 

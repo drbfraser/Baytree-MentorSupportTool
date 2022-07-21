@@ -21,7 +21,7 @@ import {
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { GoalDetail, GoalInput } from "../../api/goals";
-import { useGoals } from "../../context/GoalContext";
+import { useGoalContext } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoalCategories";
 import useMentees from "../../hooks/useMentees";
 import Loading from "../shared/Loading";
@@ -50,9 +50,9 @@ const emptyAnswer = (input: GoalInput) => {
 
 
 const GoalDialog = () => {
-  const {edit: {goal, open}, closeEdit} = useGoals();
+  const {edit: {goal, open}, closeEdit} = useGoalContext();
   const { mentees, loadingMentees } = useMentees();
-  const { handleSubmitGoal } = useGoals();
+  const { handleSubmitGoal } = useGoalContext();
   const { categories, loading: loadingCategories, error: categoriesError } = useGoalCategories();
   const title = goal ? "Edit goal" : "Create new goal";
 
