@@ -56,18 +56,15 @@ export const fetchGoals = async (query: GoalQuery = { limit: 5, offset: 0, order
   }
 
   if (query.status) params.status = query.status;
-  if (query.categoryIds && query.categoryIds.length > 0) params.categories = query.categoryIds.join(',')
-  if (query.orderingDate) params.ordering = (!query.ascending ? '-' : '') + query.orderingDate
-  if (query.search) params.search = query.search
+  if (query.categoryIds && query.categoryIds.length > 0) params.categories = query.categoryIds.join(',');
+  if (query.orderingDate) params.ordering = (!query.ascending ? '-' : '') + query.orderingDate;
+  if (query.search) params.search = query.search;
 
-  try {
-    const apiRes = await goalsApi.get<{ count: number, results: Goal[] }>("", {
-      params
-    });
-    return { data: apiRes.data, error: "" }
-  } catch (err) {
-    return { data: undefined, error: "Cannot fetch goals" }
-  }
+  const apiRes = await goalsApi.get<{ count: number, results: Goal[] }>("", {
+    params
+  });
+
+  return apiRes.data;
 };
 
 export const fetchGoalStatistics = async () => {

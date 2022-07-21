@@ -77,17 +77,16 @@ export const GoalProvider: FunctionComponent<{}> = (props) => {
       statistics,
       goals,
       edit,
-      openEdit: (goal) => {
-        console.log("Open dialog...");
-        setEdit({ goal, open: true });
-      },
+      openEdit: (goal) => setEdit({ goal, open: true }),
       closeEdit: () => setEdit({ open: false }),
       count,
       error: statisticsError || goalError || "",
       query,
       handleSubmitGoal,
       handleCompleteGoal,
-      handleChangeQuery: setQuery
+      handleChangeQuery: (fn) => {
+        setQuery(fn);
+      }
     }} {...props} />
 };
 
