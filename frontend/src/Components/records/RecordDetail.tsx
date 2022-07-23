@@ -48,8 +48,10 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...pro
 
   useEffect(() => {
     setNote(data?.note || "");
-    setTouched(false);
   }, [data?.note]);
+
+  // Clean up the toast
+  useEffect(() => () => toast.dismiss(), []);
 
   const handleUpdateNote = async () => {
     setSubmitting(true);
@@ -96,10 +98,7 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...pro
         <TextField
           name="note"
           value={note}
-          onChange={(ev) => {
-            setNote(ev.target.value);
-            setTouched(true);
-          }}
+          onChange={(ev) => setNote(ev.target.value)}
           multiline
           minRows={3}
           fullWidth />
@@ -110,14 +109,14 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...pro
           loading={isSubmitting}
           type="submit"
           onClick={handleUpdateNote}
-          disabled={!note || !touched}
+          disabled={!note || note === data?.note}
           variant="contained"
           color="primary">Save changes</LoadingButton>
       </DialogActions>
     </>
   }
 
-  return <Dialog fullWidth maxWidth="md" onClose={handleClose} {...props}>
+  return <Dialog fullWidth maxWidth="md" {...props}>
     {isLoading ? <Loading />
       : errorMessage && <Alert severity="error">
         <AlertTitle>{errorMessage}</AlertTitle>
