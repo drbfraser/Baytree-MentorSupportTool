@@ -6,8 +6,17 @@ from users.permissions import userIsAdmin, userIsSuperUser
 from views_api.session_groups import get_session_groups
 from views_api.sessions import (get_mentee_from_session_by_id,
                                 get_note_from_session_by_id, get_session,
-                                get_sessions)
+                                get_sessions,
+                                update_session_note_by_session_id)
 from views_api.volunteers import get_volunteers
+
+# Check the ownership of a session
+def is_owner(session, user):
+    mentors = MentorUser.objects.filter(viewsPersonId=str(session["leadStaff"]))
+    if not userIsAdmin(user) and not userIsSuperUser(user):
+        mentors = mentors.filter(user_id=user.id)
+        if not mentors: return False
+    return True
 
 # Query params
 queryKeys = ["sessionGroupId", "limit", "offset", "startDateFrom", "startDateTo"]
@@ -59,12 +68,8 @@ def get_session_by_id(request, id=None):
     session = get_session(id)
     if session is None: return Response(status=status.HTTP_404_NOT_FOUND)
 
-    # Check the ownership
-    user = request.user
-    mentors = MentorUser.objects.filter(viewsPersonId=str(session["leadStaff"]))
-    if not userIsAdmin(user) and not userIsSuperUser(user):
-        mentors = mentors.filter(user_id=user.id)
-        if not mentors: return Response(status=status.HTTP_403_FORBIDDEN)
+    if not is_owner(session, request.user):
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
     # Fetch the detailed session group
     session["sessionGroup"] = get_session_groups(session["viewsSessionGroupId"])
@@ -78,3 +83,27 @@ def get_session_by_id(request, id=None):
         session["mentor"] = mentors["data"][0]
 
     return Response(session, status=status.HTTP_200_OK)
+
+# PUT /api/records/<session_id>/notes/
+@api_view(("PUT", ))
+def update_session_note(request, id=None):
+    """
+    Fetch all detail of a session by its id
+    """
+    if id is None: return Response(status=status.HTTP_404_NOT_FOUND)
+
+    # Fetch the session by the id
+    session = get_session(id)
+    if session is None: return Response(status=status.HTTP_404_NOT_FOUND)
+
+    # Check the ownership
+    if not is_owner(session, request.user):
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    # Update the note
+    note = request.data.get("note", "")
+    if not note.strip(): return Response(status=status.HTTP_400_BAD_REQUEST)
+    success = update_session_note_by_session_id(id, note)
+    statusCode = status.HTTP_200_OK if success else status.HTTP_500_INTERNAL_SERVER_ERROR
+    return Response(status=statusCode)
+    
