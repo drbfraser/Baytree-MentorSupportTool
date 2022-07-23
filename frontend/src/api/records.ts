@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { API_BASE_URL } from "./url";
 
 export const recordsApi = axios.create({
@@ -57,4 +57,19 @@ export interface SessionDetail extends SessionRecord {
 export const fetchSessionById = async (sessionId: number | string, signal?: AbortSignal) => {
   const response = await recordsApi.get<SessionDetail>(`${sessionId}/`, { signal });
   return response.data;
-} 
+}
+
+export const updateNoteBySeesionId = async (sessionId: number | string, note: string) => {
+  try {
+    await recordsApi.put(`${sessionId}/notes/`, {note});
+    return {error: undefined}
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status == 404) return {error: "No records found"};
+      if (error.response.status == 403) return {error: "You do have access to this session"};
+      return {error: "Internal server error"};
+    }
+    return {error: "An error has occurs"}
+  }
+  
+}
