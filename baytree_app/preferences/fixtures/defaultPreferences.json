@@ -1,8 +1,18 @@
-[{
-  "model": "preferences.Preference",
-  "pk": 1,
-  "fields": {
-    "key": "searchingDurationInDays",
-    "json_value": "30"
+[
+  {
+    "model": "preferences.Preference",
+    "pk": 1,
+    "fields": {
+      "key": "searchingDurationInDays",
+      "json_value": "30"
+    }
+  },
+  {
+    "model": "preferences.Preference",
+    "pk": 2,
+    "fields": {
+      "key": "minimumActiveDays",
+      "json_value": "5"
+    }
   }
-}]
+]
