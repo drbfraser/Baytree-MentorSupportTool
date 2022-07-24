@@ -103,7 +103,7 @@ export default function Records() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage} />
       </Paper>
-      {sessionId && <RecordDetail sessionId={sessionId} open={open} handleClose={() => setOpen(false)} />}
+      <RecordDetail sessionId={sessionId} open={open} handleClose={() => setOpen(false)} />
     </>
   );
 }

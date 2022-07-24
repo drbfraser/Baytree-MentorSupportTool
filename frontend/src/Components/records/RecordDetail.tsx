@@ -14,31 +14,26 @@ import {
 import { addMinutes } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { FunctionComponent, useEffect, useState } from "react";
+import { SessionDetail } from "../../api/records";
 import useSessionDetail from "../../hooks/useSessionDetail";
 import { TIMEZONE_ID } from "../../Utils/locale";
 import InfoTextField from "../shared/InfoTextField";
 import Loading from "../shared/Loading";
 
 type Props = {
-  sessionId: string | number;
+  sessionId?: string | number;
   handleClose: () => void;
 } & DialogProps;
 
 const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...props }) => {
   const [note, setNote] = useState("");
-  const { session, isLoading, sessionError, isSubmitting, updateNote } = useSessionDetail(sessionId);
+  const { session, isFetching, isLoading, isSubmitting, sessionError, updateNote } = useSessionDetail(sessionId);
 
   useEffect(() => {
     setNote(session?.note || "");
   }, [session?.note]);
 
-  const renderDialogContent = () => {
-    if (isLoading) return <Loading />
-    if (!session || sessionError) return <Alert severity="error">
-      <AlertTitle>{sessionError}</AlertTitle>
-      Please refresh the page or contact the adminstrator
-    </Alert>
-
+  const renderSession = (session: SessionDetail) => {
     const [startH, startM] = session.startTime.split(":").map(m => +m);
     const startTime = addMinutes(new Date(session.startDate), startH * 60 + startM);
     const isAttended = session.cancelled === "0";
@@ -73,9 +68,9 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...pro
           name="note"
           value={note}
           onChange={(ev) => {
-            ev.preventDefault();
             setNote(ev.target.value);
           }}
+          disabled={isFetching || isSubmitting}
           multiline
           minRows={3}
           fullWidth />
@@ -84,17 +79,24 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...pro
         <Button variant="outlined" color="secondary" onClick={handleClose}>Close</Button>
         <LoadingButton
           onClick={() => updateNote(note)}
-          loading={isSubmitting}
-          disabled={!note || note === (session.note || "")}
+          loading={isSubmitting || isFetching}
+          disabled={!note || note === (session.note || "") || isFetching}
           variant="contained"
           color="primary">Update note</LoadingButton>
       </DialogActions>
     </>
   }
 
-  return <Dialog {...props} fullWidth maxWidth="md">
-    {renderDialogContent()}
+  return <Dialog fullWidth maxWidth="md" onClose={handleClose} {...props}>
+    {isLoading && <Loading />}
+    {!isLoading && (!session || sessionError) && <Alert severity="error"><AlertTitle>Someting gone wrong</AlertTitle>
+      {sessionError} <br />
+      Please refresh the page or contact the adminstrator
+    </Alert>
+    }
+    {session && renderSession(session)}
   </Dialog>
+
 }
 
 export default RecordDetail;

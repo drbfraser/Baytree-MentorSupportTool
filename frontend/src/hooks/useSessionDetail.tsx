@@ -14,12 +14,13 @@ const generateMessage = (error: AxiosError, defaultMessage: string) => {
     return defaultMessage;
 };
 
-export const useSessionDetail = (sessionId: number | string) => {
+export const useSessionDetail = (sessionId: number | string = -1) => {
   // State for notes fields
   const queryClient = useQueryClient();
   const [sessionError, setSessionError] = useState("");
 
-  const { data, isFetching } = useQuery<SessionDetail | undefined, AxiosError>(["sessionDetail", sessionId], async ({ signal }) => {
+  const { data: session, isFetching, isLoading } = useQuery<SessionDetail | undefined, AxiosError>(["sessionDetail", sessionId], async ({ signal }) => {
+    if (!sessionId) return undefined;
     const response = await recordsApi.get<SessionDetail>(`${sessionId}/`, { signal });
     return response.data;
   }, {
@@ -33,7 +34,7 @@ export const useSessionDetail = (sessionId: number | string) => {
     return () => toast.dismiss();
   }, []);
 
-  const { mutateAsync: updateNote, isLoading: isSubmitting } = useMutation<any, AxiosError, string>((note) => recordsApi.put(`${sessionId}/notes/`, {note}), {
+  const { mutateAsync: updateNote, isLoading: isSubmitting } = useMutation<any, AxiosError, string>((note) => recordsApi.put(`${sessionId}/notes/`, { note }), {
     onSuccess: () => {
       toast.success("Note updated successfully");
       queryClient.invalidateQueries(["sessionDetail", sessionId]);
@@ -45,9 +46,10 @@ export const useSessionDetail = (sessionId: number | string) => {
   });
 
   return {
-    session: data,
+    session,
     sessionError,
-    isLoading: isFetching,
+    isLoading,
+    isFetching,
     isSubmitting,
     updateNote
   };
