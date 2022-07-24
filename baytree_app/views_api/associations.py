@@ -120,7 +120,7 @@ def get_mentee_ids_from_mentor(mentor_user, active = False):
     minimumDays = preferences.filter(key="minimumActiveDays").first().get_value()
     today = date.today()
     startSearch = date(today.year, today.month, 1) - timedelta(days=searchWindow)
-    endSearch = date(today.year + today.month // 12, today.month + 1 if today.month == 12 else 1, 1)
+    endSearch = date(today.year + today.month // 12, today.month + 1 if today.month < 12 else 1, 1)
 
     def isActiveMentee(association):
         startActive = parse_date_string(association["startDate"])
