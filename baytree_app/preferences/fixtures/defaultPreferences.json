@@ -1,0 +1,8 @@
+[{
+  "model": "preferences.Preference",
+  "pk": 1,
+  "fields": {
+    "key": "searchingDurationInDays",
+    "json_value": "30"
+  }
+}]
