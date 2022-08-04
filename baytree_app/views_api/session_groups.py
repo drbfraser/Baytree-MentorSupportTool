@@ -13,14 +13,14 @@ session_group_fields = [
     "Title",
     "Description",
     "LeadStaff",
-    "OtherStaff"
+    "OtherStaff",
 ]
 session_group_translated_fields = [
     "viewsSessionGroupId",
     "name",
     "description",
     "leadStaff",
-    "otherStaff"
+    "otherStaff",
 ]
 
 """
@@ -30,6 +30,7 @@ all the sessions for a specific mentor role group such as "YS: Youth Mentoring 2
 Thus, this group would contain all the recorded sessions for Youth Mentors in the 2021/2022
 academic year.
 """
+
 
 def get_session_groups(id: str = None, limit: int = None, offset: int = None):
     """
@@ -41,48 +42,88 @@ def get_session_groups(id: str = None, limit: int = None, offset: int = None):
     a number of session groups from Views when using the limit parameter.
     So, if limit = 5 and offset = 5, this would say: "give me 5 session groups,
     but skip the first 5 in the total session groups returned by the Views API."
+
+    NOTE: if too many session groups are requested from Views, it will return an out of memory
+    error, so make sure to use pagination in your client browser requests!
+
+    Example request/response:
+    http://localhost:8000/api/views-api/session-groups?limit=5&offset=2
+
+    {
+    "total": "1867",
+    "data": [
+        {
+            "viewsSessionGroupId": "153",
+            "name": "Into School 2014-2015",
+            "description": "Immigrant girls aged 12-19 without a school place can access ESOL and one to one mentoring support to help find a school place.",
+            "leadStaff": "16",
+            "otherStaff": null
+        },
+        {
+            "viewsSessionGroupId": "208",
+            "name": "PEACH mentors Tuesday",
+            "description": "mentoring on Tuesday",
+            "leadStaff": "1",
+            "otherStaff": "762|772|764|768|770|769|406|763|407|765|766|774|771"
+        },
+        ...]
+    }
     """
 
     if id != None:
-        response = requests.get(session_groups_base_url + id, auth=(views_username, views_password))
+        response = requests.get(
+            session_groups_base_url + id, auth=(views_username, views_password)
+        )
         parsed = xmltodict.parse(response.text)
-        session_group = {session_group_translated_fields[i]: parsed["sessiongroup"][field]
-                     for i, field in enumerate(session_group_fields)}
+        session_group = {
+            session_group_translated_fields[i]: parsed["sessiongroup"][field]
+            for i, field in enumerate(session_group_fields)
+        }
         return session_group
     else:
-        if limit != None and offset != None:
-            response = requests.get(
-                session_groups_base_url + "search?q=&pageFold=" +
-                str(limit) + "&offset=" + str(offset),
-                auth=(views_username, views_password))
-        else:
-            response = requests.get(
-                session_groups_base_url + "search?q=",
-                auth=(views_username, views_password))
+        request_url = f"{session_groups_base_url}search?q="
+
+        if limit != None:
+            request_url += f"&pageFold={limit}"
+        if offset != None:
+            request_url += f"&offset={offset}"
+
+        response = requests.get(request_url, auth=(views_username, views_password))
+
         parsed = xmltodict.parse(response.text)
         if "sessiongroup" in parsed["work"]["sessiongroups"]:
             parsed_session_group_list = parsed["work"]["sessiongroups"]["sessiongroup"]
             if not isinstance(parsed_session_group_list, list):
                 parsed_session_group_list = [parsed_session_group_list]
-            session_groups = [{session_group_translated_fields[i]: sessionGroup[field] for i, field in enumerate(session_group_fields)}
-                        for sessionGroup in parsed_session_group_list]
-            return {"total": parsed["work"]["sessiongroups"]["@count"], "data": session_groups}
+            session_groups = [
+                {
+                    session_group_translated_fields[i]: sessionGroup[field]
+                    for i, field in enumerate(session_group_fields)
+                }
+                for sessionGroup in parsed_session_group_list
+            ]
+            return {
+                "total": parsed["work"]["sessiongroups"]["@count"],
+                "data": session_groups,
+            }
         else:
             return {"total": parsed["work"]["sessiongroups"]["@count"], "data": []}
 
-@api_view(('GET',))
-@permission_classes((AdminPermissions, ))
+
+@api_view(("GET",))
+@permission_classes((AdminPermissions,))
 def get_session_groups_endpoint(request):
     """
     Handles a request from the client browser and calls get_session_groups
     to return its response to the client.
     """
-    id = request.GET.get('id', None)
+    id = request.GET.get("id", None)
 
     if id != None:
         response = get_session_groups(id)
     else:
-        response = get_session_groups(limit=request.GET.get(
-            'limit', None), offset=request.GET.get('offset', None))
+        response = get_session_groups(
+            limit=request.GET.get("limit", None), offset=request.GET.get("offset", None)
+        )
 
     return Response(response, status=status.HTTP_200_OK)
