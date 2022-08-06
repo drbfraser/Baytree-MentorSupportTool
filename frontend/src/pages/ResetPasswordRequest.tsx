@@ -1,7 +1,7 @@
 import { LoadingButton } from "@mui/lab";
 import { Alert, AlertTitle, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { sendPasswordResetEmail } from "../../api/mentorAccount";
+import { sendPasswordResetEmail } from "../api/mentorAccount";
 
 const ResetPasswordRequest = () => {
   const [email, setEmail] = useState("");

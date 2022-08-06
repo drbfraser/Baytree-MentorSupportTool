@@ -7,15 +7,15 @@ import useQuestionnaire, {
   isMenteeQuestion,
   isMentorQuestion,
   isRequired
-} from "../../hooks/useQuestionnaire";
-import Loading from "../shared/Loading";
-import TitledContainer from "../shared/TitledContainer";
-import ChoiceInput, { isChoiceQuestion } from "./ChoiceInput";
-import InvalidQuestionnaire from "./InvalidQuestionnaire";
-import MenteesNameInput from "./MenteesNameInput";
-import MentorNameInput from "./MentorNameQuestion";
-import TextInput from "./TextInput";
-import { Logger, logLevel} from "../../api/logging";
+} from "../hooks/useQuestionnaire";
+import Loading from "../Components/shared/Loading";
+import TitledContainer from "../Components/shared/TitledContainer";
+import ChoiceInput, { isChoiceQuestion } from "../Components/questionnaire/ChoiceInput";
+import InvalidQuestionnaire from "../Components/questionnaire/InvalidQuestionnaire";
+import MenteesNameInput from "../Components/questionnaire/MenteesNameInput";
+import MentorNameInput from "../Components/questionnaire/MentorNameQuestion";
+import TextInput from "../Components/questionnaire/TextInput";
+import { Logger, logLevel} from "../api/logging";
 
 const Questionnaire = () => {
   const [canSeeAlert, setcanSeeAlert] = useState("none");

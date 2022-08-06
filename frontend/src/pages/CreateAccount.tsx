@@ -9,8 +9,8 @@ import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from "react-toastify";
-import { createMentorAccount, userApi } from "../../api/mentorAccount";
-import PasswordValidation, { isValid } from "../shared/PasswordValidation";
+import { createMentorAccount, userApi } from "../api/mentorAccount";
+import PasswordValidation, { isValid } from "../Components/shared/PasswordValidation";
 
 const useAccountCreationLink = () => {
   const params = useParams();

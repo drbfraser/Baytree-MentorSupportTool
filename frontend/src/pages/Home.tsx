@@ -1,10 +1,10 @@
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import GoalList from "../goals/GoalsList";
-import ActiveGoalsSummary from "./ActiveGoalsSummary";
-import MenteeInfo from "./MenteeInfo";
-import Scheduler from "./Scheduler";
-import Statistics from "./Statistics";
+import GoalList from "../Components/goals/GoalsList";
+import ActiveGoalsSummary from "../Components/home/ActiveGoalsSummary";
+import MenteeInfo from "../Components/home/MenteeInfo";
+import Scheduler from "../Components/home/Scheduler";
+import Statistics from "../Components/home/Statistics";
 
 const Home = () => {
   return (

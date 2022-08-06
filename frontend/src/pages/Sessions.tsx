@@ -16,13 +16,13 @@ import {
 import { Field, Form, Formik } from "formik";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import TitledContainer from "../shared/TitledContainer";
-import useMentees from "../../hooks/useMentees";
-import useVenues from "../../hooks/useVenues";
-import { getInitialFormValues, submitSession } from "./session";
-import { SelectInputContainer, TimeInputContainer } from "./Containers";
-import useActivities from "../../hooks/useActivities";
-import Loading from "../shared/Loading";
+import TitledContainer from "../Components/shared/TitledContainer";
+import useMentees from "../hooks/useMentees";
+import useVenues from "../hooks/useVenues";
+import { getInitialFormValues, submitSession } from "../Components/sessions/session";
+import { SelectInputContainer, TimeInputContainer } from "../Components/sessions/Containers";
+import useActivities from "../hooks/useActivities";
+import Loading from "../Components/shared/Loading";
 
 const SessionForm = () => {
   const { venues, error: venuesLoadError } = useVenues();

@@ -3,10 +3,10 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
 import { ReactText, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import useRecords from "../../hooks/useRecords";
-import Loading from "../shared/Loading";
-import RecordDetail from "./RecordDetail";
-import RecordRow from "./RecordRow";
+import useRecords from "../hooks/useRecords";
+import Loading from "../Components/shared/Loading";
+import RecordDetail from "../Components/records/RecordDetail";
+import RecordRow from "../Components/records/RecordRow";
 
 const PAGNINATE_OPTIONS = [5, 10, 20];
 
