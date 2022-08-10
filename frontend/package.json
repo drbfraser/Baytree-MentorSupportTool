@@ -28,7 +28,10 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
-    "format": "prettier --write src/**/*.ts{,x}"
+    "format": "prettier --write src/**/*.ts{,x}",
+    "test": "cypress open",
+    "test:component": "cypress run --component --headless",
+    "test:e2e": "cypress run --browser chrome --headless"
   },
   "eslintConfig": {
     "extends": [
