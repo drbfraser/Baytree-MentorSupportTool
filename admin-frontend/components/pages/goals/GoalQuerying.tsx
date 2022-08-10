@@ -10,7 +10,7 @@ type Props = {
   handleChangeQuery: (fn: (prev: GoalQuery) => GoalQuery) => void;
 }
 
-export const GoalCateogoryFilter: FunctionComponent<Props> = ({ query, handleChangeQuery }) => {
+export const GoalCategoryFilter: FunctionComponent<Props> = ({ query, handleChangeQuery }) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([] as GoalCategory[]);
 
@@ -18,7 +18,7 @@ export const GoalCateogoryFilter: FunctionComponent<Props> = ({ query, handleCha
     backendGet<GoalCategory[]>("goals/categories/").then(data => {
       if (data) setCategories(data);
     }).catch(() => {
-      toast.error("Cannot fetch the goal cateogies. Please refresh the page");
+      toast.error("Cannot fetch the goal categories. Please refresh the page");
     }).finally(() => setLoading(false));
 
     return () => toast.dismiss();
