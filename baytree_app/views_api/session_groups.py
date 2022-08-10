@@ -77,6 +77,10 @@ def get_session_groups(
         response = requests.get(
             session_groups_base_url + id, auth=(views_username, views_password)
         )
+
+        if response.status_code != 200:
+            return None
+
         parsed = xmltodict.parse(response.text)
         session_group = {
             session_group_translated_fields[i]: parsed["sessiongroup"][field]
@@ -126,6 +130,8 @@ def get_session_groups_endpoint(request):
 
     if id != None:
         response = get_session_groups(id)
+        if not response:
+            return Response("Not Found", status=status.HTTP_404_NOT_FOUND)
     else:
         response = get_session_groups(
             limit=request.GET.get("limit", None),

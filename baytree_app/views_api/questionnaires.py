@@ -6,7 +6,8 @@ from users.permissions import AdminPermissions
 import requests
 import json
 
-questionnaires_base_url = views_base_url + "evidence/questionnaires/search.json"
+questionnaires_search_url = views_base_url + "evidence/questionnaires/search.json"
+questionnaires_id_url = views_base_url + "evidence/questionnaires/{}.json"
 
 questionnaire_views_response_fields = [
     "QuestionnaireID",
@@ -39,6 +40,8 @@ def get_questionnaires_endpoint(request):
 
     if id != None:
         response = get_questionnaires(id)
+        if not response:
+            return Response("Not Found", status=status.HTTP_404_NOT_FOUND)
     else:
         response = get_questionnaires(
             limit=request.GET.get("limit", None),
@@ -54,12 +57,26 @@ def get_questionnaires(
 ):
     if id != None:
         views_response = requests.get(
-            f"{questionnaires_base_url}?QuestionnaireID={id}",
+            questionnaires_id_url.format(id),
             auth=(views_username, views_password),
         )
 
+        if views_response.status_code != 200:
+            return None
+
+        parsed_questionnaire = json.loads(views_response.text)
+
+        translated_questionnaire = {
+            questionnaire_translated_fields[i]: int(parsed_questionnaire[field])
+            if field == "QuestionnaireID"
+            else parsed_questionnaire[field]
+            for i, field in enumerate(questionnaire_views_response_fields)
+        }
+
+        return translated_questionnaire
+
     else:
-        request_url = f"{questionnaires_base_url}?"
+        request_url = f"{questionnaires_search_url}?"
 
         if limit != None:
             request_url += f"&pageFold={limit}"
