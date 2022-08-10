@@ -1,39 +1,40 @@
-import AutoGraphIcon from "@mui/icons-material/AutoGraph";
-import BookIcon from "@mui/icons-material/Book";
-import CreateIcon from "@mui/icons-material/Create";
-import HomeIcon from "@mui/icons-material/Home";
-import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import PermDeviceInformationIcon from "@mui/icons-material/PermDeviceInformation";
-import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
-import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Toolbar from "@mui/material/Toolbar";
-import { useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Drawer, Icon, List,
+  ListItem,
+  ListItemIcon,
+  ListItemText, Toolbar, useMediaQuery
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { FunctionComponent, useEffect, useState } from "react";
+import {
+  MdAutoGraph,
+  MdBook,
+  MdCreate,
+  MdHome,
+  MdLibraryBooks,
+  MdNotifications,
+  MdPermDeviceInformation,
+  MdQuestionAnswer
+} from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
 import { fetchResourcesURL } from "../../api/misc";
 import BaytreeLogoHorizontal from "../../Assets/baytree-logo-horizontal.png";
 
 const navigationLinkItems = [
-  { title: "Home", Icon: HomeIcon, path: "/dashboard/home" },
-  { title: "Create Session", Icon: CreateIcon, path: "/dashboard/sessions" },
+  { title: "Home", icon: MdHome, path: "/dashboard/home" },
+  { title: "Create Session", icon: MdCreate, path: "/dashboard/sessions" },
   {
     title: "Questionnaires",
-    Icon: QuestionAnswerIcon,
+    icon: MdQuestionAnswer,
     path: "/dashboard/questionnaires"
   },
-  { title: "Goals", Icon: AutoGraphIcon, path: "/dashboard/goals" },
-  { title: "Records", Icon: BookIcon, path: "/dashboard/records" },
+  { title: "Goals", icon: MdAutoGraph, path: "/dashboard/goals" },
+  { title: "Records", icon: MdBook, path: "/dashboard/records" },
   {
     title: "Notifications",
-    Icon: NotificationsIcon,
+    icon: MdNotifications,
     path: "/dashboard/notifications"
   }
 ];
@@ -90,7 +91,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
         <Divider />
         {/* Navigation inside the website */}
         <List>
-          {navigationLinkItems.map(({ title, path, Icon }) => {
+          {navigationLinkItems.map(({ title, path, icon }) => {
             const active = location.pathname === path;
 
             return (
@@ -99,9 +100,9 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
                 to={path}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <ListItem button onClick={closeDrawer} sx={{backgroundColor: active ? "rgba(90, 184, 1, 0.15)" : "transparent"}}>
+                <ListItem button onClick={closeDrawer} sx={{ backgroundColor: active ? "rgba(90, 184, 1, 0.15)" : "transparent" }}>
                   <ListItemIcon>
-                    <Icon color={active ? "secondary" : "primary"} />
+                    <Icon color={active ? "secondary" : "primary"} component={icon} />
                   </ListItemIcon>
                   <ListItemText>{title}</ListItemText>
                 </ListItem>
@@ -113,7 +114,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
         {/* Navigation outside the website */}
         <ListItem button component="a" target="_blank" href={resourcesURL}>
           <ListItemIcon>
-            <LibraryBooksIcon color="primary" />
+            <Icon component={MdLibraryBooks} color="primary" />
           </ListItemIcon>
           <ListItemText>Resources</ListItemText>
         </ListItem>
@@ -124,7 +125,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
           target="_blank"
         >
           <ListItemIcon>
-            <PermDeviceInformationIcon color="primary" />
+            <Icon component={MdPermDeviceInformation} color="primary" />
           </ListItemIcon>
           <ListItemText>Help</ListItemText>
         </ListItem>

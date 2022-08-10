@@ -1,6 +1,6 @@
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Accordion, AccordionDetails, AccordionSummary, Alert, AlertTitle, Stack, Typography } from "@mui/material";
 import { formatDistanceToNowStrict } from "date-fns";
+import { MdExpandMore } from "react-icons/md";
 import useMentees from "../hooks/useMentees";
 import useMentor from "../hooks/useMentor";
 import InfoTextField from "./shared/InfoTextField";
@@ -19,7 +19,7 @@ const Profile = () => {
   if (error || !mentees) {
     if (!error && !mentees) error = "Cannot retrieve active mentees";
     return <TitledContainer title="Profile">
-      <Alert severity="error" sx={{my: 2}}>
+      <Alert severity="error" sx={{ my: 2 }}>
         <AlertTitle>{error}</AlertTitle>
         Please try again or contact the adminstrator.
       </Alert>
@@ -35,7 +35,7 @@ const Profile = () => {
       <strong>{mentees.length > 0 ? "Mentees" : "No mentees assigned"}</strong>
     </Typography>
     {mentees.map(mentee => <Accordion>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary expandIcon={<MdExpandMore />}>
         <strong>{`${mentee.firstName} ${mentee.lastName}`}</strong>
       </AccordionSummary>
       <AccordionDetails>

@@ -1,18 +1,17 @@
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import LogoutIcon from "@mui/icons-material/Logout";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import {
-  Box,
-  Badge,
-  Divider,
-  IconButton,
+  Box, Divider, Icon, IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem
 } from "@mui/material";
 import { useState } from "react";
+import {
+  MdAccountBox,
+  MdLogout,
+  MdMoreVert,
+  MdNotifications
+} from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -37,7 +36,7 @@ const MobileMenu = () => {
   return (
     <Box sx={{ display: { sm: "none" } }}>
       <IconButton size="large" onClick={(e) => setAnchorEl(e.currentTarget)}>
-        <MoreVertIcon />
+        <Icon component={MdMoreVert} />
       </IconButton>
       <Menu
         open={Boolean(anchorEl)}
@@ -55,20 +54,20 @@ const MobileMenu = () => {
       >
         <MenuItem onClick={onNavigate("/dashboard/notifications")}>
           <ListItemIcon>
-            <NotificationsIcon />
+            <Icon component={MdNotifications} />
           </ListItemIcon>
           <ListItemText>Notifications</ListItemText>
         </MenuItem>
         <MenuItem onClick={onNavigate("/dashboard/profile")}>
           <ListItemIcon>
-            <AccountBoxIcon />
+            <Icon component={MdAccountBox} />
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
         </MenuItem>
         <Divider />
         <MenuItem onClick={logout}>
           <ListItemIcon>
-            <LogoutIcon color="primary" />
+            <Icon color="primary" component={MdLogout} />
           </ListItemIcon>
           <ListItemText>Logout</ListItemText>
         </MenuItem>
