@@ -1,15 +1,17 @@
-from rest_framework.response import Response
+from datetime import date, timedelta
 
-from .participants import get_participants
-from .util import try_parse_int
-from users.models import MentorUser
-
-from users.permissions import userIsAdmin, userIsSuperUser
-from .constants import views_base_url, views_username, views_password
-from rest_framework.decorators import api_view
 import requests
 import xmltodict
+from preferences.models import Preference
 from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from users.models import MentorUser
+from users.permissions import userIsAdmin, userIsSuperUser
+
+from .constants import views_base_url, views_password, views_username
+from .participants import get_participants
+from .util import try_parse_int
 
 participant_associations_base_url = (
     views_base_url + "contacts/participants/{}/associations"
@@ -93,7 +95,7 @@ def translate_association_fields(associations):
         for association in associations
     ]
 
-
+# GET /api/views-api/mentor-mentees/
 @api_view(("GET",))
 def get_mentees_for_mentor(request):
     mentor_user = MentorUser.objects.filter(pk=request.user.id)
@@ -104,18 +106,38 @@ def get_mentees_for_mentor(request):
         )
     mentor_user = mentor_user.first()
 
-    menteeIds = get_mentee_ids_from_mentor(mentor_user)
+    menteeIds = get_mentee_ids_from_mentor(mentor_user, active=True)
 
     participants = get_participants(menteeIds)
 
     return Response(participants["results"], status.HTTP_200_OK)
 
 
-def get_mentee_ids_from_mentor(mentor_user):
+def get_mentee_ids_from_mentor(mentor_user, active = False):
     associations = get_associations(mentor_user.viewsPersonId)
+    preferences = Preference.objects
+    searchWindow = preferences.filter(key="searchingDurationInDays").first().get_value()
+    minimumDays = preferences.filter(key="minimumActiveDays").first().get_value()
+    today = date.today()
+    startSearch = date(today.year, today.month, 1) - timedelta(days=searchWindow)
+    endSearch = date(today.year + today.month // 12, today.month + 1 if today.month < 12 else 1, 1)
+
+    def isActiveMentee(association):
+        startActive = parse_date_string(association["startDate"])
+        endActive = parse_date_string(association["endDate"])
+        if endActive is None or not active: return True
+        if startActive is None or startActive < startSearch:
+            return (endActive - startSearch).days >= minimumDays
+        return (min(endActive, endSearch) - startActive).days >= minimumDays
 
     menteeIds = []
     for association in associations["results"]:
-        if association["association"] == "Mentee":
+        if association["association"] == "Mentee" and isActiveMentee(association):
             menteeIds.append(association["masterId"])
     return menteeIds
+
+def parse_date_string(dateString: str):
+    y, m, d = [int(n) for n in dateString.split("-")]
+    if y == 0 or m == 0 or d == 0:
+        return None
+    return date(y, m, d)

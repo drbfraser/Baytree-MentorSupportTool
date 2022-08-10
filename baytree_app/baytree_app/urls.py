@@ -1,13 +1,9 @@
 from django.contrib import admin
-from django.urls import path, include, re_path
-from admin_login.admin import blog_site
-from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.contrib.auth import views as auth_views
+from django.urls import include, path
 
-from .views import CookieTokenObtainPairView, CookieTokenRefreshView, CookieTokenVerifyView, logout_view
-
+from .views import (CookieTokenObtainPairView, CookieTokenRefreshView,
+                    CookieTokenVerifyView, logout_view)
 
 api_patterns = [
     path('sessions/', include('sessions.urls')),
@@ -20,6 +16,7 @@ api_patterns = [
     path('calendar_events/', include('calendar_events.urls')),
     path('notifications/', include('notifications.urls')),
     path('logging/', include('app_logging.urls')),
+    path('preferences/', include('preferences.urls')),
     path('token/', CookieTokenObtainPairView.as_view()),
     path('token/refresh/', CookieTokenRefreshView.as_view()),
     path('token/verify/', CookieTokenVerifyView.as_view()),

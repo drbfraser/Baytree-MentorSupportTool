@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "views_api",
     "records",
     "calendar_events",
+    "preferences",
     "app_logging"
 ]
 
