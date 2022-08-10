@@ -11,7 +11,7 @@ variables:
 
 test frontend-component:
   stage: test
-  image: cypress/included:10.4.0
+  image: cypress/browsers:node16.14.2-slim-chrome103-ff102
   tags:
     - docker
   rules:
@@ -27,9 +27,9 @@ test frontend-component:
     - if: $CI_PIPELINE_SOURCE == "web"
   before_script:
     - cd frontend
-    - npm ci
   script:
-    - npm run test:component
+    - npm ci
+    - npx cypress run --component --headless
 
 build info:
   # Always runs: allows pipeline execution to happen even if no other tasks run.
