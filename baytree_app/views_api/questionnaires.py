@@ -31,16 +31,57 @@ questionnaire_translated_fields = [
 @api_view(("GET",))
 @permission_classes((AdminPermissions,))
 def get_questionnaires_endpoint(request):
-    views_response = requests.get(
-        questionnaires_base_url,
-        auth=(views_username, views_password),
-    )
+    """
+    Controller that handles a request from the client browser and calls
+    get_questionnaires to return its response to the client.
+    """
+    id = request.GET.get("id", None)
+
+    if id != None:
+        response = get_questionnaires(id)
+    else:
+        response = get_questionnaires(
+            limit=request.GET.get("limit", None),
+            offset=request.GET.get("offset", None),
+            title=request.GET.get("title", None),
+        )
+
+    return Response(response, status=status.HTTP_200_OK)
+
+
+def get_questionnaires(
+    id: int = None, limit: int = None, offset: int = None, title: str = None
+):
+    if id != None:
+        views_response = requests.get(
+            f"{questionnaires_base_url}?QuestionnaireID={id}",
+            auth=(views_username, views_password),
+        )
+
+    else:
+        request_url = f"{questionnaires_base_url}?"
+
+        if limit != None:
+            request_url += f"&pageFold={limit}"
+        if offset != None:
+            request_url += f"&offset={offset}"
+        if title != None:
+            request_url += f"&Title={title}"
+
+        views_response = requests.get(
+            request_url,
+            auth=(views_username, views_password),
+        )
 
     parsedJson = json.loads(views_response.text)
 
     parsedQuestionnaires = []
 
     for questionnaires in parsedJson.items():
+        if not questionnaires[1]:
+            # no results were returned, stop parsing before error
+            break
+
         for questionnaire in questionnaires[1].items():
             parsedQuestionnaires.append(questionnaire[1])
 
@@ -59,4 +100,4 @@ def get_questionnaires_endpoint(request):
         "data": translatedQuestionnaires,
     }
 
-    return Response(response, status=status.HTTP_200_OK)
+    return response
