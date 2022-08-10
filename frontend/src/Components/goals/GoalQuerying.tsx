@@ -6,7 +6,7 @@ import { OrderingDate } from "../../api/goals";
 import { useGoalContext } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoalCategories";
 
-const GoalCateogoryFilter = () => {
+const GoalCategoryFilter = () => {
   const { categories, loading, error } = useGoalCategories();
   const { query, handleChangeQuery } = useGoalContext();
   if (loading) return <Skeleton />;
@@ -66,7 +66,7 @@ const GoalDateOrdering = () => {
 }
 
 export const GoalSearch = () => {
-  const {query, handleChangeQuery} = useGoalContext();
+  const { query, handleChangeQuery } = useGoalContext();
   const updateSearch = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     handleChangeQuery(prev => ({
       ...prev,
@@ -89,7 +89,7 @@ const GoalQuerying = () => {
     </Grid>
     <Grid item xs={12} md={6} lg={4}>
       <Typography variant="subtitle1" component="div" gutterBottom>Filter by categories</Typography>
-      <GoalCateogoryFilter />
+      <GoalCategoryFilter />
     </Grid>
     <Grid item xs={12} md={6} lg={4}>
       <Typography variant="subtitle1" component="div" gutterBottom>Sort by</Typography>
