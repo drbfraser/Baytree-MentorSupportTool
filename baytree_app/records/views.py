@@ -10,6 +10,7 @@ from views_api.sessions import (get_mentee_from_session_by_id,
                                 update_session_note_by_session_id)
 from views_api.volunteers import get_volunteers
 
+
 # Check the ownership of a session
 def is_owner(session, user):
     mentors = MentorUser.objects.filter(viewsPersonId=str(session["leadStaff"]))
@@ -62,7 +63,7 @@ def get_session_by_id(request, id=None):
     """
     Fetch all detail of a session by its id
     """
-    if id is None: return Response(status=status.HTTP_404_NOT_FOUND)
+    if id is None: return Response(status=status.HTTP_400_BAD_REQUEST)
 
     # Fetch the session by the id
     session = get_session(id)
@@ -88,9 +89,9 @@ def get_session_by_id(request, id=None):
 @api_view(("PUT", ))
 def update_session_note(request, id=None):
     """
-    Fetch all detail of a session by its id
+    Update the session note of a session by its session ID
     """
-    if id is None: return Response(status=status.HTTP_404_NOT_FOUND)
+    if id is None: return Response(status=status.HTTP_400_BAD_REQUEST)
 
     # Fetch the session by the id
     session = get_session(id)
