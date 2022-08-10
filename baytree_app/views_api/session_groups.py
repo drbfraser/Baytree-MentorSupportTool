@@ -33,7 +33,7 @@ academic year.
 
 
 def get_session_groups(
-    id: str = None, limit: int = None, offset: int = None, title: str = None
+    id: str = None, limit: int = None, offset: int = None, name: str = None
 ):
     """
     Gets session groups from Views API.
@@ -44,13 +44,13 @@ def get_session_groups(
     a number of session groups from Views when using the limit parameter.
     So, if limit = 5 and offset = 5, this would say: "give me 5 session groups,
     but skip the first 5 in the total session groups returned by the Views API."
-    title filters for sessions groups with the given title.
+    name filters for sessions groups with the given title.
 
     NOTE: if too many session groups are requested from Views, it will return an out of memory
     error, so make sure to use pagination in your client browser requests! (20 may be a safe limit)
 
     Example request/response:
-    http://localhost:8000/api/views-api/session-groups?limit=5&offset=2&title=Into%20School
+    http://localhost:8000/api/views-api/session-groups?limit=5&offset=2&name=Into%20School
 
     {
     "total": "1867",
@@ -90,8 +90,8 @@ def get_session_groups(
             request_url += f"&pageFold={limit}"
         if offset != None:
             request_url += f"&offset={offset}"
-        if title != None:
-            request_url += f"&Title={title}"
+        if name != None:
+            request_url += f"&Title={name}"
 
         response = requests.get(request_url, auth=(views_username, views_password))
 
@@ -130,7 +130,7 @@ def get_session_groups_endpoint(request):
         response = get_session_groups(
             limit=request.GET.get("limit", None),
             offset=request.GET.get("offset", None),
-            title=request.GET.get("title", None),
+            name=request.GET.get("name", None),
         )
 
     return Response(response, status=status.HTTP_200_OK)
