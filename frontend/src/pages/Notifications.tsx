@@ -15,7 +15,7 @@ import {
 } from "../api/notification";
 import { useAuth } from "../context/AuthContext";
 
-export default function Notification() {
+export default function Notifications() {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState([] as any[]);
   const [expanded, setExpanded] = useState("");

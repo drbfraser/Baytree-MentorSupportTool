@@ -1,11 +1,11 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Accordion, AccordionDetails, AccordionSummary, Alert, AlertTitle, Stack, Typography } from "@mui/material";
 import { formatDistanceToNowStrict } from "date-fns";
+import InfoTextField from "../Components/shared/InfoTextField";
+import Loading from "../Components/shared/Loading";
+import TitledContainer from "../Components/shared/TitledContainer";
 import useMentees from "../hooks/useMentees";
 import useMentor from "../hooks/useMentor";
-import InfoTextField from "./shared/InfoTextField";
-import Loading from "./shared/Loading";
-import TitledContainer from "./shared/TitledContainer";
 
 
 const Profile = () => {

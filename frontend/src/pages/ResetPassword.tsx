@@ -44,7 +44,7 @@ const usePasswordResetLink = () => {
   return { id, loading, hardError, handleResetPassword };
 }
 
-const ResetPasswordRequest = () => {
+const ResetPassword = () => {
   const { loading, hardError, handleResetPassword } = usePasswordResetLink();
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
@@ -112,4 +112,4 @@ const ResetPasswordRequest = () => {
   </form>
 };
 
-export default ResetPasswordRequest;
+export default ResetPassword;
