@@ -4,9 +4,9 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework import status
 from users.permissions import AdminPermissions
 import requests
-import xmltodict
+import json
 
-questionnaires_base_url = views_base_url + "evidence/questionnaires/search?q="
+questionnaires_base_url = views_base_url + "evidence/questionnaires/search.json"
 
 questionnaire_views_response_fields = [
     "QuestionnaireID",
@@ -36,28 +36,27 @@ def get_questionnaires_endpoint(request):
         auth=(views_username, views_password),
     )
 
-    parsed = xmltodict.parse(views_response.text)
+    parsedJson = json.loads(views_response.text)
 
-    # Handle edge case where no questionnaires were returned from views
-    questionnaires_count = int(parsed["evidence"]["questionnaires"]["@count"])
-    if questionnaires_count == "0":
-        response = {"total": questionnaires_count, "data": []}
-        return Response(response, status=status.HTTP_200_OK)
+    parsedQuestionnaires = []
 
-    parsed_questionnaire_list = parsed["evidence"]["questionnaires"]["questionnaire"]
-    if not isinstance(parsed_questionnaire_list, list):
-        parsed_questionnaire_list = [parsed_questionnaire_list]
+    for questionnaires in parsedJson.items():
+        for questionnaire in questionnaires[1].items():
+            parsedQuestionnaires.append(questionnaire[1])
 
-    questionnaires = [
+    translatedQuestionnaires = [
         {
             questionnaire_translated_fields[i]: int(questionnaire[field])
             if field == "QuestionnaireID"
             else questionnaire[field]
             for i, field in enumerate(questionnaire_views_response_fields)
         }
-        for questionnaire in parsed_questionnaire_list
+        for questionnaire in parsedQuestionnaires
     ]
 
-    response = {"total": questionnaires_count, "data": questionnaires}
+    response = {
+        "total": len(translatedQuestionnaires),
+        "data": translatedQuestionnaires,
+    }
 
     return Response(response, status=status.HTTP_200_OK)
