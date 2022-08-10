@@ -29,7 +29,29 @@ test frontend-component:
     - cd frontend
   script:
     - npm ci
-    - npx cypress run --component --headless
+    - npm run test:component
+
+test frontend-e2e:
+  stage: test
+  image: cypress/browsers:node16.14.2-slim-chrome103-ff102
+  tags:
+    - docker
+  rules:
+    - if: "$CI_MERGE_REQUEST_ID != null"
+      changes:
+        - frontend/**/*
+        - .gitlab-ci.yml
+      when: always
+    - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH || $CI_COMMIT_BRANCH == $STG_BRANCH || $CI_COMMIT_BRANCH == $PROD_BRANCH"
+      when: always
+    # Always build/test for schedule / manual "Run Pipeline" via web
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web"
+  before_script:
+    - cd frontend
+  script:
+    - npm ci
+    - npm run test:e2e
 
 build info:
   # Always runs: allows pipeline execution to happen even if no other tasks run.
