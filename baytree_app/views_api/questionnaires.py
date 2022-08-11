@@ -1,4 +1,6 @@
 from rest_framework.response import Response
+
+from .util import get_views_record_count_json
 from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework import status
@@ -82,14 +84,7 @@ def get_questionnaires(
             return None
 
         parsed_questionnaire = json.loads(views_response.text)
-
-        translated_questionnaire = {
-            questionnaire_translated_fields[i]: int(parsed_questionnaire[field])
-            if field == "QuestionnaireID"
-            else parsed_questionnaire[field]
-            for i, field in enumerate(questionnaire_views_response_fields)
-        }
-
+        translated_questionnaire = translate_questionnaire(parsed_questionnaire)
         return translated_questionnaire
 
     else:
@@ -116,27 +111,26 @@ def get_questionnaires(
             # no results were returned, stop parsing before error
             break
 
-        # get total number of records in views (non-page size)
-        trim_before_count = questionnaires[0][questionnaires[0].index("count") + 7 :]
-        trim_after_count = trim_before_count[: trim_before_count.index('"')]
-        total = int(trim_after_count)
-
         for questionnaire in questionnaires[1].items():
             parsedQuestionnaires.append(questionnaire[1])
 
     translatedQuestionnaires = [
-        {
-            questionnaire_translated_fields[i]: int(questionnaire[field])
-            if field == "QuestionnaireID"
-            else questionnaire[field]
-            for i, field in enumerate(questionnaire_views_response_fields)
-        }
-        for questionnaire in parsedQuestionnaires
+        translate_questionnaire(parsed_questionnaire)
+        for parsed_questionnaire in parsedQuestionnaires
     ]
 
     response = {
-        "total": total,
+        "total": get_views_record_count_json(parsedJson),
         "data": translatedQuestionnaires,
     }
 
     return response
+
+
+def translate_questionnaire(parsed_questionnaire):
+    return {
+        questionnaire_translated_fields[i]: int(parsed_questionnaire[field])
+        if field == "QuestionnaireID"
+        else parsed_questionnaire[field]
+        for i, field in enumerate(questionnaire_views_response_fields)
+    }

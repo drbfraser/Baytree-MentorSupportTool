@@ -1,10 +1,12 @@
 from rest_framework.response import Response
+
+from .util import get_views_record_count_json
 from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework import status
 from users.permissions import AdminPermissions
 import requests
-import xmltodict
+import json
 
 session_groups_base_url = views_base_url + "work/sessiongroups/"
 
@@ -84,20 +86,19 @@ def get_session_groups(
 
     if id != None:
         response = requests.get(
-            session_groups_base_url + id, auth=(views_username, views_password)
+            session_groups_base_url + id,
+            auth=(views_username, views_password),
+            headers={"Accept": "application/json"},
         )
 
         if response.status_code != 200:
             return None
 
-        parsed = xmltodict.parse(response.text)
-        session_group = {
-            session_group_translated_fields[i]: parsed["sessiongroup"][field]
-            for i, field in enumerate(session_group_fields)
-        }
-        return session_group
+        parsed_session_group = json.loads(response.text)
+        translated_session_group = translate_session_group(parsed_session_group)
+        return translated_session_group
     else:
-        request_url = f"{session_groups_base_url}search?q="
+        request_url = f"{session_groups_base_url}search.json?q="
 
         if limit != None:
             request_url += f"&pageFold={limit}"
@@ -108,24 +109,37 @@ def get_session_groups(
 
         response = requests.get(request_url, auth=(views_username, views_password))
 
-        parsed = xmltodict.parse(response.text)
-        if "sessiongroup" in parsed["work"]["sessiongroups"]:
-            parsed_session_group_list = parsed["work"]["sessiongroups"]["sessiongroup"]
-            if not isinstance(parsed_session_group_list, list):
-                parsed_session_group_list = [parsed_session_group_list]
-            session_groups = [
-                {
-                    session_group_translated_fields[i]: sessionGroup[field]
-                    for i, field in enumerate(session_group_fields)
-                }
-                for sessionGroup in parsed_session_group_list
-            ]
-            return {
-                "total": parsed["work"]["sessiongroups"]["@count"],
-                "data": session_groups,
-            }
-        else:
-            return {"total": parsed["work"]["sessiongroups"]["@count"], "data": []}
+        parsedJson = json.loads(response.text)
+
+        parsed_session_groups = []
+
+        for session_groups in parsedJson.items():
+            if not session_groups[1]:
+                # no results were returned, stop parsing before error
+                break
+
+            for session_group in session_groups[1].items():
+                parsed_session_groups.append(session_group[1])
+
+        translated_session_groups = [
+            translate_session_group(parsed_session_group)
+            for parsed_session_group in parsed_session_groups
+        ]
+
+        response = {
+            "total": get_views_record_count_json(parsedJson),
+            "data": translated_session_groups,
+        }
+
+        return response
+
+
+def translate_session_group(parsed_session_group):
+    """Convert field names from views response to names defined by session_group_translated_fields"""
+    return {
+        session_group_translated_fields[i]: parsed_session_group[field]
+        for i, field in enumerate(session_group_fields)
+    }
 
 
 @api_view(("GET",))
