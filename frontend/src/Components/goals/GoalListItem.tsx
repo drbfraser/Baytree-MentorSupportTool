@@ -1,32 +1,58 @@
-import CheckIcon from '@mui/icons-material/Check';
-import EditIcon from '@mui/icons-material/Edit';
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionActions,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  AlertTitle,
+  Box,
+  Button,
+  Chip,
+  Divider, Icon, Stack,
+  Typography
+} from "@mui/material";
 import { format, formatDistanceToNow } from "date-fns";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect } from "react";
+import { MdCheck, MdEdit, MdExpandMore } from "react-icons/md";
+import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
-import { Goal } from "../../api/goals";
+import { fetchGoalById, Goal } from "../../api/goals";
+import { useGoalContext } from '../../context/GoalContext';
+import Loading from '../shared/Loading';
 import GoalStatus from "./GoalStatus";
-
 type Props = {
   goal: Goal;
   expanded?: boolean;
   handleClick?: () => void;
-  handleEdit?: () => void;
-  handleComplete?: () => Promise<boolean>;
   minified?: boolean;
 };
 
-const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, handleClick, handleComplete, minified }) => {
+type DetailProps = {
+  goalId: number;
+  minified?: boolean;
+}
+
+const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified }) => {
+  const { handleCompleteGoal, openEdit } = useGoalContext();
+  const { data: goal, isLoading, error } = useQuery(`goal-${goalId}`, async () => fetchGoalById(goalId));
   const formatDate = (date: Date) => format(date, "eeee, MMMM do yyyy");
+
+  useEffect(() => () => toast.dismiss(), []);
+
+  if (isLoading) return <Loading />;
+  if (error || !goal) return <Alert severity="error">
+    <AlertTitle>Cannot fetch the goal detail</AlertTitle>
+    Please try again later
+  </Alert>
+
   const menteeName = goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : "N/A";
 
   const handleCompleteButton = async () => {
-    if (!handleComplete) return;
-    const success = await handleComplete();
+    const success = await handleCompleteGoal(goal);
     if (!success) toast.error("Cannot update the goal");
     else toast.success("Goal marked as completed");
   }
+
 
   const renderCategories = () => {
     let categories = goal.categories;
@@ -43,26 +69,7 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
     </Box>
   }
 
-  return <Accordion expanded={expanded} onClick={handleClick}>
-    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-      <Box sx={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        paddingRight: "8px"
-      }}>
-        <Typography variant={minified ? "subtitle2" : "h6"}>{goal.title}</Typography>
-        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-          {!minified && <Typography variant="subtitle2" sx={{
-            display: {
-              xs: "none",
-              sm: "block"
-            }
-          }}>{formatDistanceToNow(new Date(goal.creation_date), { addSuffix: true })}</Typography>}
-          {!minified && <GoalStatus status={goal.status} />}
-        </Stack>
-      </Box>
-    </AccordionSummary>
+  return <>
     <AccordionDetails>
       <Stack spacing={1}>
         {!minified && <div>
@@ -93,9 +100,36 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, handleEdit, expanded, ha
     </AccordionDetails>
     <Divider />
     {!minified && goal.status === "IN PROGRESS" && <AccordionActions>
-      <Button variant="outlined" startIcon={<EditIcon />} onClick={handleEdit}>Edit</Button>
-      <Button variant="contained" startIcon={<CheckIcon />} onClick={handleCompleteButton}>Complete</Button>
+      <Button variant="outlined" disabled={isLoading} startIcon={<Icon component={MdEdit} />} onClick={() => openEdit(goal)}>Edit</Button>
+      <Button variant="contained" disabled={isLoading} startIcon={<Icon component={MdCheck} />} onClick={handleCompleteButton}>Complete</Button>
     </AccordionActions>}
+  </>
+};
+
+const GoalListItem: FunctionComponent<Props> = ({ goal, expanded, handleClick, minified }) => {
+  const { query: { orderingDate } } = useGoalContext();
+
+  return <Accordion expanded={expanded} onClick={handleClick}>
+    <AccordionSummary expandIcon={<Icon component={MdExpandMore} />}>
+      <Box sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+        paddingRight: "8px"
+      }}>
+        <Typography variant={minified ? "subtitle2" : "h6"}>{goal.title}</Typography>
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+          {!minified && <Typography variant="subtitle2" sx={{
+            display: {
+              xs: "none",
+              sm: "block"
+            }
+          }}>{formatDistanceToNow(new Date(goal[orderingDate]), { addSuffix: true })}</Typography>}
+          {!minified && <GoalStatus status={goal.status} />}
+        </Stack>
+      </Box>
+    </AccordionSummary>
+    {expanded && <GoalItemDetail goalId={goal.id} minified={minified} />}
   </Accordion>
 };
 

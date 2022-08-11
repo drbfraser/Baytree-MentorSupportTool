@@ -17,13 +17,16 @@ export interface GoalCategory {
 export interface Goal {
   id: number;
   title: string;
-  mentee?: Participant;
   creation_date: string;
   goal_review_date: string;
   last_update_date: string;
   status: "IN PROGRESS" | "RECALIBRATED" | "ACHIEVED";
   description: string;
   categories: GoalCategory[];
+}
+
+export interface GoalDetail extends Goal {
+  mentee?: Participant;
 }
 
 export interface GoalInput {
@@ -34,34 +37,34 @@ export interface GoalInput {
   categories: GoalCategory[];
 }
 
-export type GoalParams = {
+export type OrderingDate = "creation_date" | "goal_review_date" | "last_update_date";
+
+export type GoalQuery = {
   limit: number;
   offset: number;
-  active?: boolean;
-  completed?: boolean;
+  status?: Goal["status"];
+  categoryIds?: number[];
+  orderingDate: OrderingDate;
+  ascending?: boolean;
+  search?: string;
 }
 
-export const fetchAllGoals = async (params: GoalParams = {limit: 5, offset: 0}) => {
-  try {
-    const apiRes = await goalsApi.get("", {
-      params
-    });
-    if (apiRes.status === 200) {
-      // Not nice implementation because of Django REST Framework
-      // with built-in pagination
-      const data = apiRes.data;
-      if (data.results) {
-        return { data: data.results as Goal[], error: "" };
-      } else {
-        return { data: data as Goal[], error: "" }
-      }
-    }
-    if (apiRes.status === 404)
-      return { data: undefined, error: "Cannot find users or goals" }
-    else throw Error;
-  } catch (err) {
-    return { data: undefined, error: "Cannot fetch goals" }
+export const fetchGoals = async (query: GoalQuery = { limit: 5, offset: 0, orderingDate: "creation_date" }) => {
+  let params: any = {
+    limit: query.limit,
+    offset: query.offset,
   }
+
+  if (query.status) params.status = query.status;
+  if (query.categoryIds && query.categoryIds.length > 0) params.categories = query.categoryIds.join(',');
+  if (query.orderingDate) params.ordering = (!query.ascending ? '-' : '') + query.orderingDate;
+  if (query.search) params.search = query.search;
+
+  const apiRes = await goalsApi.get<{ count: number, results: Goal[] }>("", {
+    params
+  });
+
+  return apiRes.data;
 };
 
 export const fetchGoalStatistics = async () => {
@@ -76,14 +79,13 @@ export const fetchGoalStatistics = async () => {
 }
 
 export const fetchAllGoalCategories = async () => {
-  try {
-    const apiRes = await goalsApi.get<GoalCategory[]>("categories/");
-    if (apiRes.status === 200) {
-      return { data: apiRes.data, error: "" };
-    } else throw Error;
-  } catch (_err) {
-    return { data: undefined, error: "Cannot fetch goal categories" };
-  }
+  const apiRes = await goalsApi.get<GoalCategory[]>("categories/");
+  return apiRes.data;
+}
+
+export const fetchGoalById = async (id: number) => {
+  const apiRes = await goalsApi.get<GoalDetail>(`${id}/`);
+  return apiRes.data;
 }
 
 export const submitGoal = async (input: GoalInput, id?: number) => {
@@ -113,3 +115,8 @@ export const submitCompleteGoal = async (goalId: number) => {
     return false;
   }
 };
+
+export const exportGoals = async () => {
+  const apiRes = await goalsApi.get<string>("export/");
+  return apiRes.data
+}

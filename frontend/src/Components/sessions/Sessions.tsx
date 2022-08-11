@@ -1,5 +1,3 @@
-import { DatePicker, LocalizationProvider, TimePicker } from "@mui/lab";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import {
   Alert,
   AlertTitle,
@@ -13,16 +11,18 @@ import {
   TextField,
   Typography
 } from "@mui/material";
+import { DatePicker, LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Field, Form, Formik } from "formik";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import TitledContainer from "../shared/TitledContainer";
+import useActivities from "../../hooks/useActivities";
 import useMentees from "../../hooks/useMentees";
 import useVenues from "../../hooks/useVenues";
-import { getInitialFormValues, submitSession } from "./session";
-import { SelectInputContainer, TimeInputContainer } from "./Containers";
-import useActivities from "../../hooks/useActivities";
 import Loading from "../shared/Loading";
+import TitledContainer from "../shared/TitledContainer";
+import { SelectInputContainer, TimeInputContainer } from "./Containers";
+import { getInitialFormValues, submitSession } from "./session";
 
 const SessionForm = () => {
   const { venues, error: venuesLoadError } = useVenues();
@@ -177,7 +177,7 @@ const SessionForm = () => {
                       >
                         {mentees.map((mentee) => (
                           <MenuItem key={mentee.viewsPersonId}
-                           value={mentee.viewsPersonId}>
+                            value={mentee.viewsPersonId}>
                             {`${mentee.firstName} ${mentee.lastName}`}
                           </MenuItem>
                         ))}
@@ -233,9 +233,9 @@ const SessionForm = () => {
         ) : menteesLoadError || venuesLoadError || activitiesLoadError ? (
           <Alert severity="error">
             <AlertTitle>We're sorry, this page is not working at the moment.</AlertTitle>
-              Please refresh or contact your administrator. <br />
-              Reason for error:
-              {menteesLoadError || venuesLoadError || activitiesLoadError}
+            Please refresh or contact your administrator. <br />
+            Reason for error:
+            {menteesLoadError || venuesLoadError || activitiesLoadError}
           </Alert>
         ) : (
           <Loading />

@@ -1,5 +1,4 @@
-import { DatePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { LoadingButton } from "@mui/lab";
 import {
   Alert,
   AlertTitle,
@@ -18,16 +17,17 @@ import {
   Select,
   TextField
 } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useFormik } from "formik";
-import { FunctionComponent } from "react";
 import { toast } from "react-toastify";
-import { Goal, GoalInput } from "../../api/goals";
-import { useGoals } from "../../context/GoalContext";
+import { GoalDetail, GoalInput } from "../../api/goals";
+import { useGoalContext } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoalCategories";
 import useMentees from "../../hooks/useMentees";
 import Loading from "../shared/Loading";
 
-const initialAnswer = (goal?: Goal) => {
+const initialAnswer = (goal?: GoalDetail) => {
   if (!goal) return {
     title: "",
     description: "",
@@ -48,15 +48,12 @@ const emptyAnswer = (input: GoalInput) => {
   return !input.title || !input.description;
 }
 
-interface Props {
-  goal?: Goal,
-  open: boolean,
-  handleClose: () => void
-}
 
-const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
+
+const GoalDialog = () => {
+  const { edit: { goal, open }, closeEdit } = useGoalContext();
   const { mentees, loadingMentees } = useMentees();
-  const { handleSubmitGoal } = useGoals();
+  const { handleSubmitGoal } = useGoalContext();
   const { categories, loading: loadingCategories, error: categoriesError } = useGoalCategories();
   const title = goal ? "Edit goal" : "Create new goal";
 
@@ -71,7 +68,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
         return;
       }
       toast.success("Goal submitted successfully");
-      handleClose();
+      closeEdit();
     }
   });
 
@@ -178,7 +175,7 @@ const GoalDialog: FunctionComponent<Props> = ({ goal, open, handleClose }) => {
         {/* Buttons */}
         <DialogActions>
           <Button
-            onClick={() => handleClose()}
+            onClick={closeEdit}
             disabled={isSubmitting}>Cancel</Button>
           <LoadingButton
             variant="contained"
