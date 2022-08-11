@@ -14,9 +14,9 @@ export const questionnairesFromViewsBackendEndpoint = `views-api/questionnaires`
 export const getQuestionnairesFromViews = async (
   params:
     | {
-        limit: number;
-        offset: number;
-        title: string;
+        limit?: number;
+        offset?: number;
+        title?: string;
       }
     | undefined
 ) => {

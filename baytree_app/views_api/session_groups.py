@@ -31,9 +31,14 @@ Thus, this group would contain all the recorded sessions for Youth Mentors in th
 academic year.
 """
 
+MAX_SESSION_GROUPS_PAGE_SIZE = 200
+
 
 def get_session_groups(
-    id: str = None, limit: int = None, offset: int = None, name: str = None
+    id: str = None,
+    limit: int = None,
+    offset: int = None,
+    name: str = None,
 ):
     """
     Gets session groups from Views API.
@@ -47,7 +52,7 @@ def get_session_groups(
     name filters for sessions groups with the given title.
 
     NOTE: if too many session groups are requested from Views, it will return an out of memory
-    error, so make sure to use pagination in your client browser requests! (20 may be a safe limit)
+    error, so make sure to use reasonable pagination in your client browser requests! (200 may be a safe limit)
 
     Example request/response:
     http://localhost:8000/api/views-api/session-groups?limit=5&offset=2&name=Into%20School
@@ -72,6 +77,10 @@ def get_session_groups(
         ...]
     }
     """
+
+    # limit page size to prevent out of memory errors returned from Views
+    if limit == None or limit > MAX_SESSION_GROUPS_PAGE_SIZE:
+        limit = MAX_SESSION_GROUPS_PAGE_SIZE
 
     if id != None:
         response = requests.get(

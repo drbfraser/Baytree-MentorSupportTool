@@ -52,9 +52,19 @@ def get_questionnaires_endpoint(request):
     return Response(response, status=status.HTTP_200_OK)
 
 
+MAX_QUESTIONNAIRES_PAGE_SIZE = 200
+
+
 def get_questionnaires(
-    id: int = None, limit: int = None, offset: int = None, title: str = None
+    id: int = None,
+    limit: int = None,
+    offset: int = None,
+    title: str = None,
 ):
+    # limit page size to prevent out of memory errors returned from Views
+    if limit == None or limit > MAX_QUESTIONNAIRES_PAGE_SIZE:
+        limit = MAX_QUESTIONNAIRES_PAGE_SIZE
+
     if id != None:
         views_response = requests.get(
             questionnaires_id_url.format(id),
@@ -99,6 +109,11 @@ def get_questionnaires(
             # no results were returned, stop parsing before error
             break
 
+        # get total number of records in views (non-page size)
+        trim_before_count = questionnaires[0][questionnaires[0].index("count") + 7 :]
+        trim_after_count = trim_before_count[: trim_before_count.index('"')]
+        total = int(trim_after_count)
+
         for questionnaire in questionnaires[1].items():
             parsedQuestionnaires.append(questionnaire[1])
 
@@ -113,7 +128,7 @@ def get_questionnaires(
     ]
 
     response = {
-        "total": len(translatedQuestionnaires),
+        "total": total,
         "data": translatedQuestionnaires,
     }
 

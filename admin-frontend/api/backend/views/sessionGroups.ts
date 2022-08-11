@@ -13,9 +13,9 @@ export const sessionGroupsFromViewsBackendEndpoint = `${API_BASE_URL}/views-api/
 export const getSessionGroupsFromViews = async (
   params:
     | {
-        limit: number;
-        offset: number;
-        name: string;
+        limit?: number;
+        offset?: number;
+        name?: string;
       }
     | undefined
 ) => {
@@ -27,7 +27,7 @@ export const getSessionGroupsFromViews = async (
   return response;
 };
 
-export const getQuestionnaireFromViews = async (id: number) => {
+export const getSessionGroupFromViews = async (id: number) => {
   const response = await backendGet<SessionGroupResponse>(
     sessionGroupsFromViewsBackendEndpoint,
     { id }
