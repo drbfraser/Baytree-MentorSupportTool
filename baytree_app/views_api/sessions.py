@@ -445,3 +445,33 @@ def get_note_from_session_by_id(id):
     if parsed_note is None: return None
     parsed_note = parsed_note["note"]
     return parsed_note["Note"]
+
+def update_session_note_by_session_id(session_id, note):
+    xmlData = (
+        "<notes>"
+            f"<Note>{note}</Note>"
+        "</notes>"
+    )
+    url = f"{sessions_base_url}/{session_id}/notes"
+    # Check if the note exists
+    response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
+    parsed = xmltodict.parse(response.text)
+    notes = parsed["session"]["notes"]
+    if notes is None:
+        response = requests.post(
+            url, 
+            xmlData, 
+            auth=(VIEWS_USERNAME, VIEWS_PASSWORD), 
+            headers={"content-type": "text/xml"})
+    else:
+        noteId = notes["note"]["@id"]
+        response = requests.put(
+            f"{url}/{noteId}",
+            xmlData,
+            auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+            headers={"content-type": "text/xml"})
+    if response.status_code != 200: return False
+    parsed = xmltodict.parse(response.text)
+    noteId = parsed["note"]["@id"]
+    return int(noteId) != 0
+

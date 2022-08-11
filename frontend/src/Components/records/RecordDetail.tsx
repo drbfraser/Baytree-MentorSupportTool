@@ -1,47 +1,38 @@
+import { LoadingButton } from "@mui/lab";
 import {
   Alert,
   AlertTitle,
   Button,
-  Chip, 
-  Dialog, 
+  Chip,
+  Dialog,
   DialogActions,
-  DialogContent, 
-  DialogProps, 
-  DialogTitle, 
-  Grid, 
-  Typography
+  DialogContent,
+  DialogProps,
+  DialogTitle,
+  Grid, TextField, Typography
 } from "@mui/material";
-import { AxiosError } from "axios";
 import { addMinutes } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
-import { FunctionComponent } from "react";
-import { useQuery } from "react-query";
-import { fetchSessionById, SessionDetail } from "../../api/records";
+import { FunctionComponent, useEffect, useState } from "react";
+import { SessionDetail } from "../../api/records";
+import useSessionDetail from "../../hooks/useSessionDetail";
 import { TIMEZONE_ID } from "../../Utils/locale";
 import InfoTextField from "../shared/InfoTextField";
 import Loading from "../shared/Loading";
 
 type Props = {
-  sessionId: string | number | undefined;
+  sessionId?: string | number;
   handleClose: () => void;
 } & DialogProps;
 
-const generateMessage = (error?: AxiosError | null) => {
-  const status = error?.response?.status;
-  if (status === undefined) return undefined;
-  if (status === 404) return "Session detail not found";
-  else "Cannot retrive session detail";
-}
-
 const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...props }) => {
-  const { data, isLoading, error } = useQuery<SessionDetail | undefined, AxiosError>(["sessionDetail", sessionId], async ({ signal }) => {
-    if (sessionId) {
-      return await fetchSessionById(sessionId, signal);
-    }
-  });
+  const [note, setNote] = useState("");
+  const { session, isFetching, isLoading, isSubmitting, sessionError, updateNote } = useSessionDetail(sessionId);
 
-  const errorMessage = generateMessage(error);
-  
+  useEffect(() => {
+    setNote(session?.note || "");
+  }, [session?.note]);
+
   const renderSession = (session: SessionDetail) => {
     const [startH, startM] = session.startTime.split(":").map(m => +m);
     const startTime = addMinutes(new Date(session.startDate), startH * 60 + startM);
@@ -73,23 +64,39 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...pro
           </Grid>
         </Grid>
         <Typography sx={{ mt: 2, mb: 1 }}><strong>Notes</strong></Typography>
-        <InfoTextField value={session.note} multiline minRows={3} />
+        <TextField
+          name="note"
+          value={note}
+          onChange={(ev) => {
+            setNote(ev.target.value);
+          }}
+          disabled={isFetching || isSubmitting}
+          multiline
+          minRows={3}
+          fullWidth />
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" color="secondary" onClick={handleClose}>Close</Button>
+        <LoadingButton
+          onClick={() => updateNote(note)}
+          loading={isSubmitting || isFetching}
+          disabled={!note || note === (session.note || "") || isFetching}
+          variant="contained"
+          color="primary">Update note</LoadingButton>
       </DialogActions>
     </>
   }
 
   return <Dialog fullWidth maxWidth="md" onClose={handleClose} {...props}>
-    {isLoading ? <Loading />
-      : errorMessage && <Alert severity="error">
-        <AlertTitle>Someting gone wrong</AlertTitle>
-        {errorMessage} <br />
-        Please refresh the page or contact the adminstrator
-        </Alert>}
-    {data && renderSession(data)}
+    {isLoading && <Loading />}
+    {!isLoading && (!session || sessionError) && <Alert severity="error"><AlertTitle>Someting gone wrong</AlertTitle>
+      {sessionError} <br />
+      Please refresh the page or contact the adminstrator
+    </Alert>
+    }
+    {session && renderSession(session)}
   </Dialog>
+
 }
 
 export default RecordDetail;
