@@ -85,7 +85,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     const sessionGroups = await getSessionGroupsFromViews({
       limit: SESSION_GROUPS_SELECT_PAGE_SIZE,
       offset: prevOptions.length,
-      name: search,
+      name: search, // search for session group by name
     });
 
     if (sessionGroups && sessionGroups.data) {
