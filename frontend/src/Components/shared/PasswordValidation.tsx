@@ -1,15 +1,19 @@
-
-
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorIcon from '@mui/icons-material/Error';
-import { Box, Typography } from "@mui/material";
+import { Box, Icon, Typography } from "@mui/material";
 import { FunctionComponent } from "react";
+import { MdCheckCircle, MdError } from "react-icons/md";
 
 const ValidationMessage: FunctionComponent<{ label: string; validated: boolean; }> = ({ label, validated }) => {
-  return <Box display="flex" alignItems="center">
-    {validated ? <CheckCircleIcon color="primary" fontSize="small" sx={{ m: 0.5 }} /> : <ErrorIcon color="error" fontSize="small" sx={{ m: 0.5 }} />}
-    <Typography variant="subtitle2" color={validated ? "primary" : "error"}>{label}</Typography>
-  </Box>;
+  return (
+    <Box display="flex" alignItems="center">
+      <Icon
+        color={validated ? "primary" : "error"}
+        component={validated ? MdCheckCircle : MdError}
+        fontSize="small"
+        sx={{ m: 0.5 }}
+      />
+      <Typography variant="subtitle2" color={validated ? "primary" : "error"}>{label}</Typography>
+    </Box>
+  );
 };
 
 const hasValidLength = (password: string) => password.length >= 8 && password.length <= 30;

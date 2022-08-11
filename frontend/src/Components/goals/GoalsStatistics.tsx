@@ -3,7 +3,8 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { FunctionComponent } from "react";
-import { useGoals } from "../../context/GoalContext";
+import { Goal } from "../../api/goals";
+import { useGoalContext } from "../../context/GoalContext";
 
 type GoalStatisticsCellType = {
   active?: boolean;
@@ -15,7 +16,7 @@ type GoalStatisticsCellType = {
 }
 
 const GoalStatisticsCell: FunctionComponent<GoalStatisticsCellType> = (props) => {
-  const { loadingStatistics } = useGoals();
+  const { loadingStatistics } = useGoalContext();
   const activeColor = props.activeColor || "rgba(90, 176, 49, 0.2)";
   const bgColor = props.active ? activeColor : undefined;
 
@@ -41,7 +42,16 @@ const GoalStatisticsCell: FunctionComponent<GoalStatisticsCellType> = (props) =>
 };
 
 const GoalsStatistics = () => {
-  const { statistics: { active, complete }, params, handleChangeParams } = useGoals();
+  const { statistics: { active, complete }, query, handleChangeQuery } = useGoalContext();
+  const isActive = query.status === 'IN PROGRESS';
+  const isComplete = query.status === 'ACHIEVED';
+
+  const setStatus = (status?: Goal["status"]) => () => handleChangeQuery(prev => ({
+    ...prev,
+    status,
+    offset: 0
+  }))
+
   return (
     <Grid container spacing={2}>
       <GoalStatisticsCell
@@ -49,31 +59,20 @@ const GoalsStatistics = () => {
         count={active + complete}
         color="blue"
         activeColor="rgba(0, 0, 255, 0.2)"
-        active={!params.active && !params.completed}
-        action={() => handleChangeParams(prev => ({
-          limit: prev.limit,
-          offset: 0
-        }))} />
+        active={!isActive && !isComplete}
+        action={setStatus(undefined)} />
       <GoalStatisticsCell
         title="Active"
         count={active}
         color="secondary"
-        active={params.active}
+        active={isActive}
         activeColor="rgba(255, 30, 137, 0.2)"
-        action={() => handleChangeParams(prev => ({
-          active: true,
-          limit: prev.limit,
-          offset: 0
-        }))} />
+        action={setStatus('IN PROGRESS')} />
       <GoalStatisticsCell
         title="Completed"
         count={complete}
-        active={params.completed}
-        action={() => handleChangeParams(prev => ({
-          completed: true,
-          limit: prev.limit,
-          offset: 0
-        }))} />
+        active={isComplete}
+        action={setStatus('ACHIEVED')} />
     </Grid>
   );
 }
