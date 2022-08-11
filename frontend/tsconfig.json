@@ -18,10 +18,14 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["cypress"],
+    "types": ["cypress", "@testing-library/cypress"],
     "paths": {
       "@pages/*": ["./src/pages/*"],
-    }
+      "@components/*": ["./src/Components/*"],
+      "@context/*": ["./src/context/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@mocks/*": ["./src/mocks/*"]
+    },
   },
   "include": [
     "src",

@@ -1,5 +1,23 @@
-import { rest } from "msw";
-import { setupWorker, SetupWorkerApi } from "msw";
-import { goalHandlers } from "./api/goals";
+import { rest, setupWorker, SetupWorkerApi } from "msw";
+import { API_BASE_URL } from "../api/url";
 
-export const worker = setupWorker(...goalHandlers);
+const worker = setupWorker();
+
+export {
+  API_BASE_URL,
+  worker
+};
+
+declare global {
+  interface Window {
+    msw: {
+      worker: SetupWorkerApi;
+      rest: typeof rest;
+    };
+  }
+}
+
+window.msw = {
+  worker,
+  rest,
+}

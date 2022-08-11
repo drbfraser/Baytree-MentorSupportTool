@@ -3,7 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Alert, AlertTitle, Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import { format, formatDistanceToNow } from "date-fns";
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useEffect } from "react";
 import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 import { fetchGoalById, Goal } from "../../api/goals";
@@ -24,7 +24,7 @@ type DetailProps = {
 }
 
 const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified }) => {
-  const {handleCompleteGoal, openEdit} = useGoalContext();
+  const { handleCompleteGoal, openEdit } = useGoalContext();
   const { data: goal, isLoading, error } = useQuery(`goal-${goalId}`, async () => fetchGoalById(goalId));
   const formatDate = (date: Date) => format(date, "eeee, MMMM do yyyy");
 
@@ -61,39 +61,53 @@ const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified }) =>
   }
 
   return <>
-  <AccordionDetails>
-    <Stack spacing={1}>
-      {!minified && <div>
-        <Typography variant="body1"><strong>Creation Date</strong></Typography>
-        <Typography variant="subtitle1">{formatDate(new Date(goal.creation_date))}</Typography>
-      </div>}
-      <div>
-        <Typography variant="body1"><strong>Review Date</strong></Typography>
-        <Typography variant="subtitle1">{formatDate(new Date(goal.goal_review_date))}</Typography>
-      </div>
-      {!minified && <div>
-        <Typography variant="body1"><strong>Last Update</strong></Typography>
-        <Typography variant="subtitle1">{formatDate(new Date(goal.last_update_date))}</Typography>
-      </div>}
-      {!minified && <div>
-        <Typography variant="body1"><strong>Mentee</strong></Typography>
-        <Typography variant="subtitle1">{menteeName}</Typography>
-      </div>}
-      <div>
-        <Typography variant="body1"><strong>Description</strong></Typography>
-        <Typography variant="subtitle1">{goal.description}</Typography>
-      </div>
-      <div>
-        <Typography variant="body1"><strong>Categories</strong></Typography>
-        {renderCategories()}
-      </div>
-    </Stack>
-  </AccordionDetails>
-  <Divider />
-  {!minified && goal.status === "IN PROGRESS" && <AccordionActions>
-    <Button variant="outlined" disabled={isLoading} startIcon={<EditIcon />} onClick={() => openEdit(goal)}>Edit</Button>
-    <Button variant="contained" disabled={isLoading} startIcon={<CheckIcon />} onClick={handleCompleteButton}>Complete</Button>
-  </AccordionActions>}
+    <AccordionDetails>
+      <Stack spacing={1}>
+        {!minified && <div>
+          <Typography variant="body1"><strong>Creation Date</strong></Typography>
+          <Typography variant="subtitle1">{formatDate(new Date(goal.creation_date))}</Typography>
+        </div>}
+        <div>
+          <Typography variant="body1"><strong>Review Date</strong></Typography>
+          <Typography variant="subtitle1">{formatDate(new Date(goal.goal_review_date))}</Typography>
+        </div>
+        {!minified && <div>
+          <Typography variant="body1"><strong>Last Update</strong></Typography>
+          <Typography variant="subtitle1">{formatDate(new Date(goal.last_update_date))}</Typography>
+        </div>}
+        {!minified && <div>
+          <Typography variant="body1"><strong>Mentee</strong></Typography>
+          <Typography variant="subtitle1">{menteeName}</Typography>
+        </div>}
+        <div>
+          <Typography variant="body1"><strong>Description</strong></Typography>
+          <Typography variant="subtitle1">{goal.description}</Typography>
+        </div>
+        <div>
+          <Typography variant="body1"><strong>Categories</strong></Typography>
+          {renderCategories()}
+        </div>
+      </Stack>
+    </AccordionDetails>
+    <Divider />
+    {!minified && goal.status === "IN PROGRESS" && <AccordionActions>
+      <Button
+        className="edit-button"
+        variant="outlined"
+        disabled={isLoading}
+        startIcon={<EditIcon />}
+        onClick={() => openEdit(goal)}>
+        Edit
+      </Button>
+      <Button
+        className="complete-button"
+        variant="contained"
+        disabled={isLoading}
+        startIcon={<CheckIcon />}
+        onClick={handleCompleteButton}>
+        Complete
+      </Button>
+    </AccordionActions>}
   </>
 };
 

@@ -1,7 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useState } from "react";
-import { Goal, GoalDetail } from "../api/goals";
 import { GoalProvider, useGoalContext } from '../context/GoalContext';
 import GoalDialog from '../Components/goals/GoalDialog';
 import GoalExportButton from '../Components/goals/GoalExportButton';

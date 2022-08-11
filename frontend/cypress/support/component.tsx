@@ -42,12 +42,6 @@ declare global {
 
 Cypress.Commands.add('mount', mount);
 Cypress.Commands.add("mountWithRouter", mountWithRouter);
-
-// Run service worker to mock the API
-before(async () => {
+Cypress.on('test:before:run:async', async () => {
   await worker.start();
 });
-
-after(async () => {
-  await worker.stop();
-})
