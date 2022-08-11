@@ -3,8 +3,10 @@ import { format } from "date-fns";
 import { API_BASE_URL } from "./url";
 import { Participant } from "./views";
 
+export const goalsUrl = `${API_BASE_URL}/goals`;
+
 export const goalsApi = axios.create({
-  baseURL: `${API_BASE_URL}/goals`,
+  baseURL: goalsUrl,
   headers: { "Content-Type": "application/json" },
   withCredentials: true
 });
@@ -49,6 +51,11 @@ export type GoalQuery = {
   search?: string;
 }
 
+export type GoalResult = {
+  count: number,
+  results: Goal[]
+}
+
 export const fetchGoals = async (query: GoalQuery = { limit: 5, offset: 0, orderingDate: "creation_date" }) => {
   let params: any = {
     limit: query.limit,
@@ -60,16 +67,21 @@ export const fetchGoals = async (query: GoalQuery = { limit: 5, offset: 0, order
   if (query.orderingDate) params.ordering = (!query.ascending ? '-' : '') + query.orderingDate;
   if (query.search) params.search = query.search;
 
-  const apiRes = await goalsApi.get<{ count: number, results: Goal[] }>("", {
+  const apiRes = await goalsApi.get<GoalResult>("", {
     params
   });
 
   return apiRes.data;
 };
 
+export type GoalStatistics = {
+  active: number;
+  complete: number;
+}
+
 export const fetchGoalStatistics = async () => {
   try {
-    const apiRes = await goalsApi.get<{ active: number, complete: number }>("statistics/")
+    const apiRes = await goalsApi.get<GoalStatistics>("statistics/")
     if (apiRes.status === 200) {
       return { data: apiRes.data, error: "" }
     } else throw Error;

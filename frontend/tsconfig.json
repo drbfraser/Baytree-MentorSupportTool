@@ -19,7 +19,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "types": ["cypress"],
-    "baseUrl": "./"
+    "paths": {
+      "@pages/*": ["./src/pages/*"],
+    }
   },
   "include": [
     "src",

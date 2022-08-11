@@ -12,14 +12,15 @@
 // You can read more here:
 // https://on.cypress.io/configuration
 // ***********************************************************
-import './commands'
 import { mount, MountOptions } from 'cypress/react';
 import { ReactNode } from 'react';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
+import { worker } from '../../src/mocks/worker';
+import './commands';
 
 const mountWithRouter = (
   component: ReactNode,
-  options: MountOptions & {routerProps?: MemoryRouterProps } = {}
+  options: MountOptions & { routerProps?: MemoryRouterProps } = {}
 ) => {
   const { routerProps = { initialEntries: ['/'] }, ...mountOptions } = options;
   const wrapped = <MemoryRouter {...routerProps}>{component}</MemoryRouter>
@@ -39,8 +40,14 @@ declare global {
   }
 }
 
-Cypress.Commands.add('mount', mount)
-Cypress.Commands.add("mountWithRouter", mountWithRouter)
+Cypress.Commands.add('mount', mount);
+Cypress.Commands.add("mountWithRouter", mountWithRouter);
 
-// Example use:
-// cy.mount(<MyComponent />)
+// Run service worker to mock the API
+before(async () => {
+  await worker.start();
+});
+
+after(async () => {
+  await worker.stop();
+})
