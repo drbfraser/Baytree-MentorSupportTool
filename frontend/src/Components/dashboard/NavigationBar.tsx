@@ -1,25 +1,27 @@
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import LogoutIcon from "@mui/icons-material/Logout";
-import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import AppBar from "@mui/material/AppBar";
-import Badge from "@mui/material/Badge";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Stack from "@mui/material/Stack";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+import {
+  AppBar,
+  Badge,
+  Box, Icon, IconButton,
+  Stack,
+  Toolbar,
+  Typography
+} from "@mui/material";
 import {
   FunctionComponent,
   MouseEventHandler,
   useEffect,
   useState
 } from "react";
+import {
+  MdAccountBox,
+  MdLogout,
+  MdMenu,
+  MdNotifications
+} from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { fetchUnreadNotificationCountByUserId } from "../../api/notification";
 import Logo from "../../Assets/baytree.png";
 import { useAuth } from "../../context/AuthContext";
-import Messages from "./Messages";
 import MobileMenu from "./MobileMenu";
 
 const NavigationButton: FunctionComponent<{
@@ -74,7 +76,7 @@ const NavigationBar: FunctionComponent<{
           }}
         >
           <IconButton onClick={openDrawer} sx={{ mr: 2 }}>
-            <MenuIcon />
+            <Icon component={MdMenu} />
           </IconButton>
           <img src={Logo} height={32} alt="Baytree Logo" />
         </Box>
@@ -90,14 +92,14 @@ const NavigationBar: FunctionComponent<{
           {/* <Messages /> */}
           <NavigationButton action={() => navigate("/dashboard/notifications")}>
             <Badge badgeContent={numNotifications} color="error">
-              <NotificationsIcon />
+              <Icon component={MdNotifications} />
             </Badge>
           </NavigationButton>
           <NavigationButton action={() => navigate("/dashboard/profile")}>
-            <AccountBoxIcon />
+            <Icon component={MdAccountBox} />
           </NavigationButton>
           <NavigationButton action={logout}>
-            <LogoutIcon color="secondary" />
+            <Icon component={MdLogout} color="secondary" />
           </NavigationButton>
           <MobileMenu />
         </Stack>

@@ -1,19 +1,17 @@
-import * as React from "react";
-
-import Avatar from "@mui/material/Avatar";
-import Badge from "@mui/material/Badge";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-
-import MailIcon from "@mui/icons-material/Mail";
-import { ListItemText, Typography } from "@mui/material";
-
+import {
+  Avatar,
+  Badge,
+  Divider,
+  Icon,
+  IconButton, ListItemText, Menu,
+  MenuItem, Typography
+} from "@mui/material";
 import { deepOrange, deepPurple, green } from "@mui/material/colors";
+import { useState } from "react";
+import { MdMail } from "react-icons/md";
 
 export default function Messages() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -33,7 +31,7 @@ export default function Messages() {
         aria-expanded={open ? "true" : undefined}
       >
         <Badge badgeContent={3} color="error">
-          <MailIcon />
+          <Icon component={MdMail} />
         </Badge>
       </IconButton>
       <Menu
@@ -50,7 +48,7 @@ export default function Messages() {
           <ListItemText
             primary="Brian F"
             secondary={
-              <React.Fragment>
+              <>
                 <Typography
                   sx={{ display: "inline" }}
                   variant="caption"
@@ -59,7 +57,7 @@ export default function Messages() {
                 >
                   Hi, Can you complete this by today? Its ...
                 </Typography>
-              </React.Fragment>
+              </>
             }
           ></ListItemText>
         </MenuItem>
@@ -69,7 +67,7 @@ export default function Messages() {
           <ListItemText
             primary="John S"
             secondary={
-              <React.Fragment>
+              <>
                 <Typography
                   sx={{ display: "inline" }}
                   variant="caption"
@@ -78,7 +76,7 @@ export default function Messages() {
                 >
                   I don't think i can make it for the next ...
                 </Typography>
-              </React.Fragment>
+              </>
             }
           ></ListItemText>
         </MenuItem>
@@ -88,7 +86,7 @@ export default function Messages() {
           <ListItemText
             primary="Michael K"
             secondary={
-              <React.Fragment>
+              <>
                 <Typography
                   sx={{ display: "inline" }}
                   variant="caption"
@@ -97,7 +95,7 @@ export default function Messages() {
                 >
                   Can I get your advice on this thing I ...
                 </Typography>
-              </React.Fragment>
+              </>
             }
           ></ListItemText>
         </MenuItem>

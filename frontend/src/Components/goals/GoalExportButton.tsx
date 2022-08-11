@@ -1,6 +1,7 @@
-import DownloadIcon from '@mui/icons-material/Download';
 import { LoadingButton } from '@mui/lab';
+import { Icon } from "@mui/material";
 import { useState } from 'react';
+import { MdDownload } from 'react-icons/md';
 import { toast } from "react-toastify";
 import { exportGoals } from "../../api/goals";
 
@@ -29,7 +30,7 @@ const GoalExportButton = () => {
   return <LoadingButton
     onClick={download}
     disabled={loading}
-    startIcon={<DownloadIcon />}
+    startIcon={<Icon component={MdDownload} />}
     variant="outlined"
     loading={loading}
     loadingPosition="start">
