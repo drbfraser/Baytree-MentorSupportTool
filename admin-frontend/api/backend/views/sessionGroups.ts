@@ -8,7 +8,7 @@ export interface SessionGroupResponse {
   leadStaff: string; // ex. 1
   otherStaff: string; // ex. 13|2|3
 }
-export const sessionGroupsFromViewsBackendEndpoint = `${API_BASE_URL}/views-api/session-groups`;
+export const sessionGroupsFromViewsBackendEndpoint = `views-api/session-groups`;
 
 export const getSessionGroupsFromViews = async (
   params:

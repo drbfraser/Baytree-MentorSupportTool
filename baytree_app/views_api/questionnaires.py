@@ -43,16 +43,23 @@ def get_questionnaires_endpoint(request):
         if not response:
             return Response("Not Found", status=status.HTTP_404_NOT_FOUND)
     else:
+        # Convert strings to integers
+        limit = request.GET.get("limit", None)
+        limit = int(limit) if limit != None else None
+
+        offset = request.GET.get("offset", None)
+        offset = int(offset) if offset != None else None
+
         response = get_questionnaires(
-            limit=request.GET.get("limit", None),
-            offset=request.GET.get("offset", None),
+            limit=offset,
+            offset=offset,
             title=request.GET.get("title", None),
         )
 
     return Response(response, status=status.HTTP_200_OK)
 
 
-MAX_QUESTIONNAIRES_PAGE_SIZE = 200
+MAX_QUESTIONNAIRES_PAGE_SIZE = 100
 
 
 def get_questionnaires(

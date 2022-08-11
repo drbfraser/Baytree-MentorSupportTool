@@ -80,12 +80,13 @@ const MentorSessionTrackingCard: React.FunctionComponent<
   };
 
   const loadSessionGroupOptions = async (search: any, prevOptions: any) => {
-    const SESSION_GROUPS_SELECT_PAGE_SIZE = 20;
+    const SESSION_GROUPS_SELECT_PAGE_SIZE = 30;
 
-    const sessionGroups = await getSessionGroupsFromViews(
-      SESSION_GROUPS_SELECT_PAGE_SIZE,
-      prevOptions.length
-    );
+    const sessionGroups = await getSessionGroupsFromViews({
+      limit: SESSION_GROUPS_SELECT_PAGE_SIZE,
+      offset: prevOptions.length,
+      name: search,
+    });
 
     if (sessionGroups && sessionGroups.data) {
       const selectboxOptions = {
