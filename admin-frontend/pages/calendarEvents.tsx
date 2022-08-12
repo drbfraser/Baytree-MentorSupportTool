@@ -2,31 +2,26 @@ import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
 import styled from "styled-components";
 import DataGrid from "../components/shared/datagrid/datagrid";
-import { 
-    getCalendarEvents,
-    saveCalendarEvents,
-    CalendarEvent,
-    createCalendarEvent,
-    updateCalendarEvent,
-    deleteCalendarEvent
+import {
+  getCalendarEvents,
+  CalendarEvent,
+  createCalendarEvent,
+  updateCalendarEvent,
+  deleteCalendarEvent,
 } from "../api/backend/calendarEvents";
 import {
-  onLoadPagedDataRowsFunc,
-  PagedDataRows,
   onSaveDataRowsFunc,
-  DataRow,
   onLoadDataRowsFunc,
 } from "../components/shared/datagrid/datagridTypes";
 
 const CalendarEvents: NextPage = () => {
-
   const getCalendarEventData: onLoadDataRowsFunc = async ({
     searchText,
     dataFieldsToSearch,
   }) => {
     const calendarEvents = await getCalendarEvents();
     if (!calendarEvents) {
-        throw "Failed to get calendar events.";
+      throw "Failed to get calendar events.";
     }
     return calendarEvents;
   };
@@ -36,25 +31,25 @@ const CalendarEvents: NextPage = () => {
     updatedCalendarEvents,
     deletedCalendarEvents
   ) => {
-   for (const createdCalendarEvent of createdCalendarEvents) {
-    const result = await createCalendarEvent(createdCalendarEvent);
-    if (!result) {
+    for (const createdCalendarEvent of createdCalendarEvents) {
+      const result = await createCalendarEvent(createdCalendarEvent);
+      if (!result) {
         return false;
+      }
     }
-   }
-   for (const updatedCalendarEvent of updatedCalendarEvents) {
-    const result = await updateCalendarEvent(updatedCalendarEvent);
-    if (!result) {
+    for (const updatedCalendarEvent of updatedCalendarEvents) {
+      const result = await updateCalendarEvent(updatedCalendarEvent);
+      if (!result) {
         return false;
+      }
     }
-   }
-   for (const deletedCalendarEvent of deletedCalendarEvents) {
-    const result = await deleteCalendarEvent(deletedCalendarEvent.id);
-    if (!result) {
+    for (const deletedCalendarEvent of deletedCalendarEvents) {
+      const result = await deleteCalendarEvent(deletedCalendarEvent.id);
+      if (!result) {
         return false;
+      }
     }
-   }
-   return true;
+    return true;
   };
 
   return (

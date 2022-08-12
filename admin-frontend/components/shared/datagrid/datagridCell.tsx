@@ -1,7 +1,11 @@
 import { Skeleton, TableCell, TextField, Typography } from "@mui/material";
 import { FC, useRef } from "react";
 import styled from "styled-components";
-import { ColumnDataTypes, ValueOption } from "./datagridTypes";
+import {
+  ColumnDataTypes,
+  OnLoadPagedColumnValueOptionsFunc,
+  ValueOption,
+} from "./datagridTypes";
 import useMobileLayout from "../../../hooks/useMobileLayout";
 import {
   isLoadingSelectOptions,
@@ -13,10 +17,15 @@ import {
 import DataGridSelectComponent from "./datagridSelectComponent";
 import DataGridDateComponent from "./datagridDateComponent";
 import DataGridBoolComponent from "./datagridBoolComponent";
+import PaginatedSelect from "../paginatedSelect";
 
 interface DataRowCellProps {
   isSelectCell: boolean;
   isMultiSelect?: boolean;
+  isSelectPaginated?: boolean;
+  selectPageSize?: number;
+  isSelectSearchable?: boolean;
+  onLoadPagedColumnValueOptionsFunc?: OnLoadPagedColumnValueOptionsFunc;
   valueOptions?: ValueOption[];
   value: any;
   onChangedValue: (newValue: any) => void;
@@ -36,6 +45,35 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
   const selectIdRef = useRef(0);
   const isOnMobileDevice = useMobileLayout();
 
+  const loadSelectOptions = async (search: any, prevOptions: any) => {
+    const DEFAULT_PAGE_SIZE = 30;
+    const pageSize = props.selectPageSize ?? DEFAULT_PAGE_SIZE;
+
+    const options = await props.onLoadPagedColumnValueOptionsFunc!!({
+      searchText: search,
+      limit: pageSize,
+      offset: prevOptions,
+    });
+
+    const selectboxOptions = {
+      options: options.data.map((option) => ({
+        value: option.id,
+        label: option.name,
+      })),
+      hasMore: prevOptions.length + pageSize < options.total,
+    };
+
+    return selectboxOptions;
+  };
+
+  const onSessionGroupSelectOptionChange = async (newSessionGroup: any) => {
+    const selectedSessionGroup =
+      newSessionGroup as PaginatedSelectOption<string>;
+
+    setSelectedSessionGroupId(selectedSessionGroup.value);
+    setSelectedSessionGroupName(selectedSessionGroup.label);
+  };
+
   /** Renders the correct component for the current column dataType, edit options */
   const renderComponentInCell = () => {
     if (
@@ -44,7 +82,14 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
       if (isLoadingSelectOptions(props.valueOptions)) {
         return <LoadingDataGridCell></LoadingDataGridCell>;
       } else {
-        return (
+        return props.isSelectPaginated || props.isSelectSearchable ? (
+          <PaginatedSelect
+            isMulti={false}
+            loadOptions={props.loadSessionGroupOptions}
+            onChange={props.onSessionGroupSelectOptionChange}
+            placeholder="Select a session group..."
+          ></PaginatedSelect>
+        ) : (
           <DataGridSelectComponent
             primaryKeyVal={props.primaryKeyVal}
             dataField={props.dataField}

@@ -14,6 +14,7 @@ import DataGrid from "../components/shared/datagrid/datagrid";
 import {
   onSaveDataRowsFunc,
   onLoadDataRowsFunc,
+  OnLoadColumnValueOptionsFunc,
 } from "../components/shared/datagrid/datagridTypes";
 
 const MentorRoles: NextPage = () => {
@@ -46,7 +47,7 @@ const MentorRoles: NextPage = () => {
     return !!result;
   };
 
-  const getSessionGroupOptions = async () => {
+  const getSessionGroupOptions: OnLoadColumnValueOptionsFunc = async () => {
     const response = await getSessionGroupsFromViews();
     if (response && response.status === 200 && response.data) {
       const sessionGroups = response.data;
@@ -59,7 +60,7 @@ const MentorRoles: NextPage = () => {
     }
   };
 
-  const getQuestionnaireOptions = async () => {
+  const getQuestionnaireOptions: OnLoadColumnValueOptionsFunc = async () => {
     const response = await getQuestionnairesFromViews();
     if (response) {
       const questionnaires = response.data;
@@ -72,7 +73,7 @@ const MentorRoles: NextPage = () => {
     }
   };
 
-  const getActivityOptions = async () => {
+  const getActivityOptions: OnLoadColumnValueOptionsFunc = async () => {
     const activities = await getActivitiesFromViews();
     if (activities) {
       return activities.results.map((activity) => ({
@@ -84,7 +85,7 @@ const MentorRoles: NextPage = () => {
     }
   };
 
-  const getVolunteeringOptions = async () => {
+  const getVolunteeringOptions: OnLoadColumnValueOptionsFunc = async () => {
     const volunteeringTypes = await getVolunteeringTypesFromViews();
     if (volunteeringTypes) {
       return volunteeringTypes.results.map((volunteeringType) => ({

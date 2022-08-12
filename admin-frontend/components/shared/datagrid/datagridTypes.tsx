@@ -42,8 +42,14 @@ export interface DataGridColumn {
   dataType?: ColumnDataTypes;
 
   valueOptions?: ValueOption[];
-  onLoadValueOptions?: OnLoadColumnValueOptionsFunc;
+  onLoadValueOptions?:
+    | OnLoadColumnValueOptionsFunc
+    | OnLoadPagedColumnValueOptionsFunc;
   isMultiSelect?: boolean;
+  isSelectPaginated?: boolean;
+  selectPageSize?: number;
+  isSelectSearchable?: boolean;
+
   disableEditing?: boolean;
   enableSearching?: boolean;
   keepColumnOnMobile?: boolean;
@@ -55,6 +61,11 @@ export type ColumnDataTypes = "date" | "boolean";
 // If column is "date" dataType, value format must be a string in "yyyy-mm-dd" (Javascript Date not working for now)
 
 export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
+export type OnLoadPagedColumnValueOptionsFunc = (params: {
+  searchText?: string;
+  limit: number;
+  offset: number;
+}) => Promise<{ total: number; data: ValueOption[] }>;
 
 export interface ValueOption {
   id: any;
