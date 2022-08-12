@@ -45,9 +45,7 @@ export interface DataGridColumn {
   onLoadValueOptions?: OnLoadColumnValueOptionsFunc;
   onLoadPagedValueOptions?: OnLoadPagedColumnValueOptionsFunc;
   isMultiSelect?: boolean;
-  isSelectPaginated?: boolean;
   selectPageSize?: number;
-  isSelectSearchable?: boolean;
 
   disableEditing?: boolean;
   enableSearching?: boolean;
