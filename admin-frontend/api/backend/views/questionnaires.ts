@@ -11,15 +11,11 @@ export interface Questionnaire {
 }
 
 export const questionnairesFromViewsBackendEndpoint = `views-api/questionnaires`;
-export const getQuestionnairesFromViews = async (
-  params:
-    | {
-        limit?: number;
-        offset?: number;
-        title?: string;
-      }
-    | undefined
-) => {
+export const getQuestionnairesFromViews = async (params?: {
+  limit?: number;
+  offset?: number;
+  title?: string;
+}) => {
   const response = await backendGet<{ total: number; data: Questionnaire[] }>(
     questionnairesFromViewsBackendEndpoint,
     params
