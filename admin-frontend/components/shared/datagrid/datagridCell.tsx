@@ -17,7 +17,7 @@ import {
 import DataGridSelectComponent from "./datagridSelectComponent";
 import DataGridDateComponent from "./datagridDateComponent";
 import DataGridBoolComponent from "./datagridBoolComponent";
-import PaginatedSelect from "../paginatedSelect";
+import PaginatedSelect, { PaginatedSelectOption } from "../paginatedSelect";
 
 interface DataRowCellProps {
   isSelectCell: boolean;
@@ -45,7 +45,11 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
   const selectIdRef = useRef(0);
   const isOnMobileDevice = useMobileLayout();
 
-  const loadSelectOptions = async (search: any, prevOptions: any) => {
+  // Used for paginated select columns
+  const onLoadPaginatedSelectOptions = async (
+    search: any,
+    prevOptions: any
+  ) => {
     const DEFAULT_PAGE_SIZE = 30;
     const pageSize = props.selectPageSize ?? DEFAULT_PAGE_SIZE;
 
@@ -66,12 +70,11 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
     return selectboxOptions;
   };
 
-  const onSessionGroupSelectOptionChange = async (newSessionGroup: any) => {
-    const selectedSessionGroup =
-      newSessionGroup as PaginatedSelectOption<string>;
+  // Used for paginated select columns
+  const onPaginatedSelectOptionChange = async (newOption: any) => {
+    const selectedOption = newOption as PaginatedSelectOption<string>;
 
-    setSelectedSessionGroupId(selectedSessionGroup.value);
-    setSelectedSessionGroupName(selectedSessionGroup.label);
+    props.onChangedValue(selectedOption.value);
   };
 
   /** Renders the correct component for the current column dataType, edit options */
@@ -85,9 +88,8 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
         return props.isSelectPaginated || props.isSelectSearchable ? (
           <PaginatedSelect
             isMulti={false}
-            loadOptions={props.loadSessionGroupOptions}
-            onChange={props.onSessionGroupSelectOptionChange}
-            placeholder="Select a session group..."
+            loadOptions={onLoadPaginatedSelectOptions}
+            onChange={onPaginatedSelectOptionChange}
           ></PaginatedSelect>
         ) : (
           <DataGridSelectComponent
