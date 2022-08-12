@@ -49,7 +49,7 @@ const MentorRoles: NextPage = () => {
 
   const getSessionGroupOptions: OnLoadColumnValueOptionsFunc = async () => {
     const response = await getSessionGroupsFromViews();
-    if (response && response.status === 200 && response.data) {
+    if (response) {
       const sessionGroups = response.data;
       return sessionGroups.map((sessionGroup) => ({
         id: parseInt(sessionGroup.viewsSessionGroupId),
