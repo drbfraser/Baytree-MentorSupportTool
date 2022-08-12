@@ -7,12 +7,6 @@ const InfoTextField: FunctionComponent<TextFieldProps> = (props) => {
       {...props}
       fullWidth
       disabled
-      sx={{
-        "& .MuiInputBase-input.Mui-disabled": {
-          WebkitTextFillColor: "black",
-          color: 'black'
-        },
-      }}
       value={props.value || ""} />
   )
 };

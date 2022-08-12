@@ -1,3 +1,4 @@
+import PasswordValidation, { isValid } from "@components/shared/PasswordValidation";
 import { LoadingButton } from "@mui/lab";
 import { Alert, AlertTitle, Box, Button, TextField, Typography } from "@mui/material";
 import { AxiosError } from "axios";
@@ -5,7 +6,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { resetPassword, userApi } from "../api/mentorAccount";
-import PasswordValidation, { isValid } from "../Components/shared/PasswordValidation";
 
 const usePasswordResetLink = () => {
   const params = useParams();

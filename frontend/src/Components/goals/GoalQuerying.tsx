@@ -1,12 +1,22 @@
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import { Alert, Button, Checkbox, debounce, Grid, ListItemText, MenuItem, Select, Skeleton, Stack, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  debounce,
+  Grid, Icon, ListItemText,
+  MenuItem, Select,
+  Skeleton,
+  Stack,
+  TextField,
+  Typography
+} from "@mui/material";
 import { ChangeEvent, useCallback } from 'react';
+import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 import { OrderingDate } from "../../api/goals";
 import { useGoalContext } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoalCategories";
 
-const GoalCateogoryFilter = () => {
+const GoalCategoryFilter = () => {
   const { categories, loading, error } = useGoalCategories();
   const { query, handleChangeQuery } = useGoalContext();
   if (loading) return <Skeleton />;
@@ -59,14 +69,14 @@ const GoalDateOrdering = () => {
         ascending: !prev.ascending
       }))}
       variant="outlined"
-      startIcon={query.ascending ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}>
+      startIcon={<Icon component={query.ascending ? MdArrowUpward : MdArrowDownward} />}>
       {query.ascending ? "Ascending" : "Descending"}
     </Button>
   </Stack>
 }
 
 export const GoalSearch = () => {
-  const {query, handleChangeQuery} = useGoalContext();
+  const { query, handleChangeQuery } = useGoalContext();
   const updateSearch = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     handleChangeQuery(prev => ({
       ...prev,
@@ -89,7 +99,7 @@ const GoalQuerying = () => {
     </Grid>
     <Grid item xs={12} md={6} lg={4}>
       <Typography variant="subtitle1" component="div" gutterBottom>Filter by categories</Typography>
-      <GoalCateogoryFilter />
+      <GoalCategoryFilter />
     </Grid>
     <Grid item xs={12} md={6} lg={4}>
       <Typography variant="subtitle1" component="div" gutterBottom>Sort by</Typography>

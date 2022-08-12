@@ -24,7 +24,7 @@
       "@components/*": ["./src/Components/*"],
       "@context/*": ["./src/context/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@mocks/*": ["./src/mocks/*"]
+      "@mocks/*": ["./src/mocks/*"],
     },
   },
   "include": [

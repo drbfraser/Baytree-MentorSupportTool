@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { API_BASE_URL } from "./url";
 
 export const recordsApi = axios.create({
@@ -53,8 +53,3 @@ export interface SessionDetail extends SessionRecord {
   created: Date;
   updated: Date;
 };
-
-export const fetchSessionById = async (sessionId: number | string, signal?: AbortSignal) => {
-  const response = await recordsApi.get<SessionDetail>(`${sessionId}/`, { signal });
-  return response.data;
-} 

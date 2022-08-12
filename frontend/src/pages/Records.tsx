@@ -1,12 +1,22 @@
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
+import {
+  Box,
+  Button, Icon, Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography
+} from "@mui/material";
 import { ReactText, useEffect, useState } from "react";
+import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 import { toast } from "react-toastify";
 import useRecords from "../hooks/useRecords";
-import Loading from "../Components/shared/Loading";
-import RecordDetail from "../Components/records/RecordDetail";
-import RecordRow from "../Components/records/RecordRow";
+import Loading from "@components/shared/Loading";
+import RecordDetail from "@components/records/RecordDetail";
+import RecordRow from "@components/records/RecordRow";
 
 const PAGNINATE_OPTIONS = [5, 10, 20];
 
@@ -57,7 +67,7 @@ export default function Records() {
         </Typography>
         <Button
           onClick={toggleOrdering}
-          startIcon={query.descending ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}>
+          startIcon={<Icon component={query.descending ? MdArrowDownward : MdArrowUpward} />}>
           {query.descending ? "Newest to oldest" : "Oldest to newest"}
         </Button>
       </Box>

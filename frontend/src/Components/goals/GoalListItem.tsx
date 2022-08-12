@@ -1,16 +1,25 @@
-import CheckIcon from '@mui/icons-material/Check';
-import EditIcon from '@mui/icons-material/Edit';
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Alert, AlertTitle, Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionActions,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  AlertTitle,
+  Box,
+  Button,
+  Chip,
+  Divider, Icon, Stack,
+  Typography
+} from "@mui/material";
 import { format, formatDistanceToNow } from "date-fns";
 import { FunctionComponent, useEffect } from "react";
+import { MdCheck, MdEdit, MdExpandMore } from "react-icons/md";
 import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 import { fetchGoalById, Goal } from "../../api/goals";
 import { useGoalContext } from '../../context/GoalContext';
 import Loading from '../shared/Loading';
 import GoalStatus from "./GoalStatus";
-
 type Props = {
   goal: Goal;
   expanded?: boolean;
@@ -91,22 +100,8 @@ const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified }) =>
     </AccordionDetails>
     <Divider />
     {!minified && goal.status === "IN PROGRESS" && <AccordionActions>
-      <Button
-        className="edit-button"
-        variant="outlined"
-        disabled={isLoading}
-        startIcon={<EditIcon />}
-        onClick={() => openEdit(goal)}>
-        Edit
-      </Button>
-      <Button
-        className="complete-button"
-        variant="contained"
-        disabled={isLoading}
-        startIcon={<CheckIcon />}
-        onClick={handleCompleteButton}>
-        Complete
-      </Button>
+      <Button variant="outlined" disabled={isLoading} startIcon={<Icon component={MdEdit} />} onClick={() => openEdit(goal)}>Edit</Button>
+      <Button variant="contained" disabled={isLoading} startIcon={<Icon component={MdCheck} />} onClick={handleCompleteButton}>Complete</Button>
     </AccordionActions>}
   </>
 };
@@ -115,7 +110,7 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, expanded, handleClick, m
   const { query: { orderingDate } } = useGoalContext();
 
   return <Accordion expanded={expanded} onClick={handleClick}>
-    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <AccordionSummary expandIcon={<Icon component={MdExpandMore} />}>
       <Box sx={{
         width: "100%",
         display: "flex",

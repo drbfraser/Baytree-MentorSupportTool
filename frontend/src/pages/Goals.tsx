@@ -1,14 +1,14 @@
-import AddIcon from '@mui/icons-material/Add';
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { GoalProvider, useGoalContext } from '../context/GoalContext';
-import GoalDialog from '../Components/goals/GoalDialog';
-import GoalExportButton from '../Components/goals/GoalExportButton';
-import GoalQuerying from '../Components/goals/GoalQuerying';
-import GoalsList from '../Components/goals/GoalsList';
-import GoalsStatistics from "../Components/goals/GoalsStatistics";
+import GoalDialog from '@components/goals/GoalDialog';
+import GoalExportButton from '@components/goals/GoalExportButton';
+import GoalQuerying from '@components/goals/GoalQuerying';
+import GoalsList from '@components/goals/GoalsList';
+import GoalsStatistics from "@components/goals/GoalsStatistics";
+import { GoalProvider, useGoalContext } from '@context/GoalContext';
+import { Box, Button, Icon, Stack, Typography } from "@mui/material";
+import { MdAdd } from "react-icons/md";
 
 const Goals = () => {
-  const {edit: {open}, openEdit} = useGoalContext();
+  const { edit: { open }, openEdit } = useGoalContext();
 
   return <>
     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
@@ -16,7 +16,12 @@ const Goals = () => {
       {/* Menu buttons */}
       <Stack direction="row" spacing={1}>
         <GoalExportButton />
-        <Button startIcon={<AddIcon />} variant="contained" onClick={() => openEdit()}>Add</Button>
+        <Button
+          startIcon={<Icon component={MdAdd} />}
+          variant="contained"
+          onClick={() => openEdit()}>
+          Add
+        </Button>
       </Stack>
     </Box>
 

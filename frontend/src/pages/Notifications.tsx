@@ -1,13 +1,8 @@
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Grow from "@mui/material/Grow";
+import { Accordion, AccordionDetails, AccordionSummary, Container, Grid, Grow } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";
+import { MdExpandMore } from "react-icons/md";
 import { Link } from "react-router-dom";
 import {
   fetchNotificationsByUserId,
@@ -61,7 +56,7 @@ export default function Notifications() {
               }}
             >
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+                expandIcon={<MdExpandMore />}
                 aria-controls="panel1bh-content"
                 id="panel1bh-header"
               >
@@ -77,7 +72,7 @@ export default function Notifications() {
                   {data.notification_type.title}
                 </Typography>
                 <Typography sx={{ color: "text.secondary", margin: "6px" }}>
-                  {formatDistanceToNow(new Date(data.creation_date), {addSuffix: true})}
+                  {formatDistanceToNow(new Date(data.creation_date), { addSuffix: true })}
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>

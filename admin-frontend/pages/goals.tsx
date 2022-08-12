@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Grid, TablePagination, TextField, Typography } from "@mui/material";
+import { Alert, AlertTitle, Grid, TablePagination, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
@@ -7,7 +7,7 @@ import { SyntheticEvent, useState } from "react";
 import { Goal } from "../api/backend/goals";
 import GoalExportButton from "../components/pages/goals/GoalExportButton";
 import GoalListItem from "../components/pages/goals/GoalListItem";
-import { GoalCateogoryFilter, GoalDateOrdering, GoalSearch } from "../components/pages/goals/GoalQuerying";
+import { GoalCategoryFilter, GoalDateOrdering, GoalSearch } from "../components/pages/goals/GoalQuerying";
 import OverlaySpinner from "../components/shared/overlaySpinner";
 import { DEFAULT_QUERY, PAGINATION_OPTIONS, useGoals } from "../hooks/useGoals";
 
@@ -47,7 +47,7 @@ const Goals: NextPage = () => {
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
           <Typography gutterBottom variant="subtitle1">Filter by categories</Typography>
-          <GoalCateogoryFilter query={query} handleChangeQuery={setQuery} />
+          <GoalCategoryFilter query={query} handleChangeQuery={setQuery} />
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
           <Typography gutterBottom variant="subtitle1">Sort by</Typography>
@@ -59,7 +59,7 @@ const Goals: NextPage = () => {
         <OverlaySpinner active={loading} />
         {!loading && error && <Alert severity="error">
           <AlertTitle>{error}</AlertTitle>
-          Please refresh the page or contact IT for assitance.
+          Please refresh the page or contact IT for assistance.
         </Alert>}
         {!loading && !error && goals.length === 0 && <Typography sx={{ textAlign: "center" }} variant="h6">No goals found</Typography>}
         {!loading && !error && goals.map(goal => {

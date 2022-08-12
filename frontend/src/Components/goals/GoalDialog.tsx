@@ -1,5 +1,4 @@
-import { DatePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { LoadingButton } from "@mui/lab";
 import {
   Alert,
   AlertTitle,
@@ -18,6 +17,8 @@ import {
   Select,
   TextField
 } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { GoalDetail, GoalInput } from "../../api/goals";
@@ -50,7 +51,7 @@ const emptyAnswer = (input: GoalInput) => {
 
 
 const GoalDialog = () => {
-  const {edit: {goal, open}, closeEdit} = useGoalContext();
+  const { edit: { goal, open }, closeEdit } = useGoalContext();
   const { mentees, loadingMentees } = useMentees();
   const { handleSubmitGoal } = useGoalContext();
   const { categories, loading: loadingCategories, error: categoriesError } = useGoalCategories();
