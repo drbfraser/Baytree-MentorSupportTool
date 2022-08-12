@@ -55,7 +55,7 @@ describe("Active goal details", () => {
     })
   });
 
-  it('should not contains action', () => {
+  it('should not contain action buttons', () => {
     cy.get('button.edit-button').should('not.exist');
     cy.get('button.complete-button').should('not.exist');
   })
@@ -85,7 +85,7 @@ describe("Active goal details", () => {
     })
   });
 
-  it('should contain action', () => {
+  it('should contain action buttons', () => {
     cy.get('button.edit-button').should('exist');
     cy.get('button.complete-button').should('exist');
   })
