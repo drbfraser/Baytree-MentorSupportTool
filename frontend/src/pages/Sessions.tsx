@@ -177,7 +177,7 @@ const SessionForm = () => {
                       >
                         {mentees.map((mentee) => (
                           <MenuItem key={mentee.viewsPersonId}
-                            value={mentee.viewsPersonId}>
+                             value={mentee.viewsPersonId}>
                             {`${mentee.firstName} ${mentee.lastName}`}
                           </MenuItem>
                         ))}

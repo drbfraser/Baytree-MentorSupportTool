@@ -19,7 +19,7 @@ const Profile = () => {
   if (error || !mentees) {
     if (!error && !mentees) error = "Cannot retrieve active mentees";
     return <TitledContainer title="Profile">
-      <Alert severity="error" sx={{ my: 2 }}>
+      <Alert severity="error" sx={{  my: 2  }}>
         <AlertTitle>{error}</AlertTitle>
         Please try again or contact the adminstrator.
       </Alert>
