@@ -22,10 +22,8 @@ import PaginatedSelect, { PaginatedSelectOption } from "../paginatedSelect";
 interface DataRowCellProps {
   isSelectCell: boolean;
   isMultiSelect?: boolean;
-  isSelectPaginated?: boolean;
-  selectPageSize?: number;
-  isSelectSearchable?: boolean;
   onLoadPagedColumnValueOptionsFunc?: OnLoadPagedColumnValueOptionsFunc;
+  selectPageSize?: number;
   valueOptions?: ValueOption[];
   value: any;
   onChangedValue: (newValue: any) => void;
@@ -85,7 +83,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
       if (isLoadingSelectOptions(props.valueOptions)) {
         return <LoadingDataGridCell></LoadingDataGridCell>;
       } else {
-        return props.isSelectPaginated || props.isSelectSearchable ? (
+        return props.onLoadPagedColumnValueOptionsFunc ? (
           <PaginatedSelect
             isMulti={false}
             loadOptions={onLoadPaginatedSelectOptions}

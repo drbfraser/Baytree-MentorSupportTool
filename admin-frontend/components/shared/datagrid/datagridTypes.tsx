@@ -42,9 +42,8 @@ export interface DataGridColumn {
   dataType?: ColumnDataTypes;
 
   valueOptions?: ValueOption[];
-  onLoadValueOptions?:
-    | OnLoadColumnValueOptionsFunc
-    | OnLoadPagedColumnValueOptionsFunc;
+  onLoadValueOptions?: OnLoadColumnValueOptionsFunc;
+  onLoadPagedValueOptions?: OnLoadPagedColumnValueOptionsFunc;
   isMultiSelect?: boolean;
   isSelectPaginated?: boolean;
   selectPageSize?: number;
@@ -62,7 +61,7 @@ export type ColumnDataTypes = "date" | "boolean";
 
 export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
 export type OnLoadPagedColumnValueOptionsFunc = (params: {
-  searchText?: string;
+  searchText: string;
   limit: number;
   offset: number;
 }) => Promise<{ total: number; data: ValueOption[] }>;

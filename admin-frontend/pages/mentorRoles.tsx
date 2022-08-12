@@ -1,5 +1,6 @@
 import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import {
   getMentorRoles,
@@ -15,6 +16,7 @@ import {
   onSaveDataRowsFunc,
   onLoadDataRowsFunc,
   OnLoadColumnValueOptionsFunc,
+  OnLoadPagedColumnValueOptionsFunc,
 } from "../components/shared/datagrid/datagridTypes";
 
 const MentorRoles: NextPage = () => {
@@ -47,18 +49,23 @@ const MentorRoles: NextPage = () => {
     return !!result;
   };
 
-  const getSessionGroupOptions: OnLoadColumnValueOptionsFunc = async () => {
-    const response = await getSessionGroupsFromViews();
-    if (response) {
-      const sessionGroups = response.data;
-      return sessionGroups.map((sessionGroup) => ({
-        id: parseInt(sessionGroup.viewsSessionGroupId),
-        name: sessionGroup.name,
-      }));
-    } else {
-      throw "Failed to retrieve session group option data.";
-    }
-  };
+  const getSessionGroupOptions: OnLoadPagedColumnValueOptionsFunc =
+    async () => {
+      const response = await getSessionGroupsFromViews();
+      if (response) {
+        const sessionGroups = response.data;
+        return {
+          total: response.total,
+          data: sessionGroups.map((sessionGroup) => ({
+            id: parseInt(sessionGroup.viewsSessionGroupId),
+            name: sessionGroup.name,
+          })),
+        };
+      } else {
+        toast.error("Failed to retrieve session group option data.");
+        return { total: 0, data: [] };
+      }
+    };
 
   const getQuestionnaireOptions: OnLoadColumnValueOptionsFunc = async () => {
     const response = await getQuestionnairesFromViews();
@@ -110,7 +117,7 @@ const MentorRoles: NextPage = () => {
           {
             header: "Session Group",
             dataField: "viewsSessionGroupId",
-            onLoadValueOptions: getSessionGroupOptions,
+            onLoadPagedValueOptions: getSessionGroupOptions,
           },
           {
             header: "Questionnaire",
