@@ -1,8 +1,9 @@
-import { LocalizationProvider, DatePicker } from "@mui/lab";
 import { TextField } from "@mui/material";
 import { FC, useState } from "react";
 import { padLeftString } from "../../../util/misc";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 export interface DataGridDateComponentProps {
   primaryKeyVal: any;
@@ -36,7 +37,7 @@ const DataGridDateComponent: FC<DataGridDateComponentProps> = (props) => {
         views={["year", "month", "day"]}
         openTo="year"
         value={datePickerValue}
-        onChange={(newValue) => {
+        onChange={(newValue: any) => {
           if (newValue) {
             // Convert to date string to store in datarow
             const year = newValue.getFullYear();
@@ -54,7 +55,7 @@ const DataGridDateComponent: FC<DataGridDateComponentProps> = (props) => {
             setDatePickerValue(newValue);
           }
         }}
-        renderInput={(params) => (
+        renderInput={(params: any) => (
           <TextField
             {...params}
             inputProps={{
