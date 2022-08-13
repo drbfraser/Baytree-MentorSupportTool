@@ -678,8 +678,9 @@ def verifyCreationLink(request):
     accountCreationLinkId = AccountCreationLink.objects.filter(link_id=id)
     if not accountCreationLinkId.exists():
         return Response(status=status.HTTP_401_UNAUTHORIZED)
-    if isLinkExpired(accountCreationLinkId):
-        return Response()
+    if isLinkExpired(accountCreationLinkId.first()):
+        return Response(status=status.HTTP_410_GONE)
+    return Response()
 
 
 @api_view(["POST"])
