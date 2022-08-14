@@ -57,7 +57,28 @@ export const isCellChanged = (
   if (isCreatedDataRow) {
     return true;
   } else if (originalDataRow && changedDataRow) {
-    return originalDataRow[dataField] !== changedDataRow[dataField];
+    if (Array.isArray(originalDataRow[dataField])) {
+      return !arraysEqual(
+        originalDataRow[dataField],
+        changedDataRow[dataField]
+      );
+    } else {
+      return originalDataRow[dataField] !== changedDataRow[dataField];
+    }
+  } else {
+    return false;
+  }
+};
+
+// Doesn't work for nested arrays, objects, shallow equality is used
+// Side effect: sorts the arrays
+const arraysEqual = (a1: Array<any>, a2: Array<any>) => {
+  if (a1 === a2) {
+    return true;
+  } else if (a1.length === a2.length) {
+    a1.sort();
+    a2.sort();
+    return a1.every((val, i) => val === a2[i]);
   } else {
     return false;
   }
