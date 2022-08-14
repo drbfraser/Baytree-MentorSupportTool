@@ -9,7 +9,10 @@ import {
 } from "../api/backend/mentorRoles";
 import { getActivitiesFromViews } from "../api/backend/views/activities";
 import { getQuestionnairesFromViews } from "../api/backend/views/questionnaires";
-import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
+import {
+  getSessionGroupFromViews,
+  getSessionGroupsFromViews,
+} from "../api/backend/views/sessionGroups";
 import { getVolunteeringTypesFromViews } from "../api/backend/views/volunteeringTypes";
 import DataGrid from "../components/shared/datagrid/datagrid";
 import {
@@ -49,9 +52,34 @@ const MentorRoles: NextPage = () => {
     return !!result;
   };
 
-  const getSessionGroupOptions: OnLoadPagedColumnValueOptionsFunc =
-    async () => {
-      const response = await getSessionGroupsFromViews();
+  const getSessionGroupOptions: OnLoadPagedColumnValueOptionsFunc = async ({
+    id,
+    limit,
+    offset,
+    searchText,
+  }) => {
+    if (id) {
+      const sessionGroup = await getSessionGroupFromViews(id);
+      if (sessionGroup) {
+        return {
+          total: 1,
+          data: [
+            {
+              id: parseInt(sessionGroup.viewsSessionGroupId),
+              name: sessionGroup.name,
+            },
+          ],
+        };
+      } else {
+        toast.error("Failed to retrieve initial session group option data");
+        return { total: 0, data: [] };
+      }
+    } else {
+      const response = await getSessionGroupsFromViews({
+        limit,
+        offset,
+        name: searchText,
+      });
       if (response) {
         const sessionGroups = response.data;
         return {
@@ -65,7 +93,8 @@ const MentorRoles: NextPage = () => {
         toast.error("Failed to retrieve session group option data.");
         return { total: 0, data: [] };
       }
-    };
+    }
+  };
 
   const getQuestionnaireOptions: OnLoadColumnValueOptionsFunc = async () => {
     const response = await getQuestionnairesFromViews();

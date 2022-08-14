@@ -10,9 +10,12 @@ export interface PaginatedSelectOption<ValueType> {
   label: string;
 }
 
-const PaginatedSelect: React.FC<React.ComponentProps<typeof AsyncPaginate>> = (
-  props
-) => {
+export interface PaginatedSelectProps
+  extends React.ComponentProps<typeof AsyncPaginate> {
+  fontSize?: string;
+}
+
+const PaginatedSelect: React.FC<PaginatedSelectProps> = (props) => {
   const themeColors = useSelector((state: RootState) => state.theme.colors);
 
   const [options, setOptions] = useState<any[]>([]);
@@ -45,10 +48,12 @@ const PaginatedSelect: React.FC<React.ComponentProps<typeof AsyncPaginate>> = (
         }),
         control: (base: any) => ({
           ...base,
+          fontSize: props.fontSize,
           ":focus-within": {
             borderColor: themeColors.primaryColor,
             color: themeColors.primaryColor,
             boxShadow: `0 0 3px 1.5px ${themeColors.primaryColor}`,
+            fontSize: props.fontSize,
           },
         }),
       }}

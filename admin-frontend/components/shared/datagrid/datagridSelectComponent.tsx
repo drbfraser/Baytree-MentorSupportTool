@@ -1,4 +1,4 @@
-import { Select, MenuItem, Checkbox } from "@mui/material";
+import { Select, MenuItem, Checkbox, Skeleton } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import PaginatedSelect, { PaginatedSelectOption } from "../paginatedSelect";
 import {
@@ -22,6 +22,27 @@ const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
   const isMultiSelect = props.isMultiSelect || Array.isArray(props.value);
   const [value, setValue] = useState<any>(props.value ?? "");
 
+  const isPaginatedSelect = !!props.onLoadPagedColumnValueOptionsFunc;
+  const [defaultValue, setDefaultValue] =
+    useState<PaginatedSelectOption<string> | null>(null);
+  const isLoadingDefaultValue = isPaginatedSelect && !defaultValue;
+
+  useEffect(() => {
+    if (isPaginatedSelect) {
+      props.onLoadPagedColumnValueOptionsFunc!!({ id: props.value }).then(
+        (defaultValue) => {
+          if (defaultValue.data.length > 0) {
+            const fetchedDefaultValue = defaultValue.data[0];
+            setDefaultValue({
+              value: fetchedDefaultValue.id,
+              label: fetchedDefaultValue.name,
+            });
+          }
+        }
+      );
+    }
+  }, []);
+
   const renderValue = (ids: any) => {
     if (isMultiSelect) {
       return ids.map((id: any) => getOptionName(id)).join(", ");
@@ -34,7 +55,6 @@ const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
     props.valueOptions.find((opt) => opt.id === id)?.name ?? id;
 
   useEffect(() => {
-    const isPaginatedSelect = !!props.onLoadPagedColumnValueOptionsFunc;
     if (!isPaginatedSelect) {
       if (isMultiSelect) {
         // remove any values that don't have a value in props.valueOptions
@@ -64,7 +84,7 @@ const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
     const options = await props.onLoadPagedColumnValueOptionsFunc!!({
       searchText: search,
       limit: pageSize,
-      offset: prevOptions,
+      offset: prevOptions.length,
     });
 
     const selectboxOptions = {
@@ -85,12 +105,19 @@ const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
     props.onChangedValue(selectedOption.value);
   };
 
-  return props.onLoadPagedColumnValueOptionsFunc ? (
+  return isPaginatedSelect && isLoadingDefaultValue ? (
+    <div style={{ width: "100%" }}>
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+    </div>
+  ) : isPaginatedSelect ? (
     <PaginatedSelect
       isMulti={false}
-      defaultValue={props.value}
+      defaultValue={defaultValue}
       loadOptions={onLoadPaginatedSelectOptions}
       onChange={onPaginatedSelectOptionChange}
+      fontSize="0.8rem"
     ></PaginatedSelect>
   ) : (
     <Select

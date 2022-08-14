@@ -59,9 +59,10 @@ export type ColumnDataTypes = "date" | "boolean";
 
 export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
 export type OnLoadPagedColumnValueOptionsFunc = (params: {
-  searchText: string;
-  limit: number;
-  offset: number;
+  id?: any; // Used on initial load to populate paginated select box with label for id
+  searchText?: string;
+  limit?: number;
+  offset?: number;
 }) => Promise<{ total: number; data: ValueOption[] }>;
 
 export interface ValueOption {
