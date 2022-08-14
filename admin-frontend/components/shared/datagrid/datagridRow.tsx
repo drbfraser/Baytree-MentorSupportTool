@@ -71,7 +71,10 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                   ]
                 }
                 onLoadPagedColumnValueOptionsFunc={col.onLoadPagedValueOptions}
-                isSelectCell={col.onLoadValueOptions !== undefined}
+                isSelectCell={
+                  col.onLoadValueOptions !== undefined ||
+                  col.onLoadPagedValueOptions !== undefined
+                }
                 isMultiSelect={col.isMultiSelect}
                 valueOptions={col.valueOptions}
                 value={
@@ -207,7 +210,10 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                         onLoadPagedColumnValueOptionsFunc={
                           col.onLoadPagedValueOptions
                         }
-                        isSelectCell={col.onLoadValueOptions !== undefined}
+                        isSelectCell={
+                          col.onLoadValueOptions !== undefined ||
+                          col.onLoadPagedValueOptions !== undefined
+                        }
                         isMultiSelect={col.isMultiSelect}
                         valueOptions={col.valueOptions}
                         value={

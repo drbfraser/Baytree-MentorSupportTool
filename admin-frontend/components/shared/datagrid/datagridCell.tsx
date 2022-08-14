@@ -43,55 +43,24 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
   const selectIdRef = useRef(0);
   const isOnMobileDevice = useMobileLayout();
 
-  // Used for paginated select columns
-  const onLoadPaginatedSelectOptions = async (
-    search: any,
-    prevOptions: any
-  ) => {
-    const DEFAULT_PAGE_SIZE = 30;
-    const pageSize = props.selectPageSize ?? DEFAULT_PAGE_SIZE;
-
-    const options = await props.onLoadPagedColumnValueOptionsFunc!!({
-      searchText: search,
-      limit: pageSize,
-      offset: prevOptions,
-    });
-
-    const selectboxOptions = {
-      options: options.data.map((option) => ({
-        value: option.id,
-        label: option.name,
-      })),
-      hasMore: prevOptions.length + pageSize < options.total,
-    };
-
-    return selectboxOptions;
-  };
-
-  // Used for paginated select columns
-  const onPaginatedSelectOptionChange = async (newOption: any) => {
-    const selectedOption = newOption as PaginatedSelectOption<string>;
-
-    props.onChangedValue(selectedOption.value);
-  };
-
   /** Renders the correct component for the current column dataType, edit options */
   const renderComponentInCell = () => {
     if (
       shouldRenderSelectComponent(props.isSelectCell, props.isColumnEditable)
     ) {
-      if (isLoadingSelectOptions(props.valueOptions)) {
+      if (
+        isLoadingSelectOptions(props.valueOptions) &&
+        !props.onLoadPagedColumnValueOptionsFunc
+      ) {
         return <LoadingDataGridCell></LoadingDataGridCell>;
       } else {
-        return props.onLoadPagedColumnValueOptionsFunc ? (
-          <PaginatedSelect
-            isMulti={false}
-            loadOptions={onLoadPaginatedSelectOptions}
-            onChange={onPaginatedSelectOptionChange}
-          ></PaginatedSelect>
-        ) : (
+        return (
           <DataGridSelectComponent
             primaryKeyVal={props.primaryKeyVal}
+            onLoadPagedColumnValueOptionsFunc={
+              props.onLoadPagedColumnValueOptionsFunc
+            }
+            selectPageSize={props.selectPageSize}
             dataField={props.dataField}
             idNumber={selectIdRef.current++}
             value={props.value}
