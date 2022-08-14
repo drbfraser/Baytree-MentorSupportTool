@@ -44,7 +44,6 @@ const PaginatedSelect: React.FC<PaginatedSelectProps> = (props) => {
         container: (base: any) => ({
           ...base,
           width: "100%",
-          zIndex: 8,
         }),
         control: (base: any) => ({
           ...base,
