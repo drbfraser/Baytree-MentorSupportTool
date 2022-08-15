@@ -83,8 +83,10 @@ const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
     search: any,
     prevOptions: any
   ) => {
-    const DEFAULT_PAGE_SIZE = 30;
-    const pageSize = props.selectPageSize ?? DEFAULT_PAGE_SIZE;
+    const DEFAULT_PAGE_SIZE = 20;
+    const pageSize = props.selectPageSize
+      ? props.selectPageSize
+      : DEFAULT_PAGE_SIZE;
 
     const options = await props.onLoadPagedColumnValueOptionsFunc!!({
       searchText: search,

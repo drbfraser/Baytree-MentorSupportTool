@@ -8,7 +8,10 @@ import {
   saveMentorRoles,
 } from "../api/backend/mentorRoles";
 import { getActivitiesFromViews } from "../api/backend/views/activities";
-import { getQuestionnairesFromViews } from "../api/backend/views/questionnaires";
+import {
+  getQuestionnaireFromViews,
+  getQuestionnairesFromViews,
+} from "../api/backend/views/questionnaires";
 import {
   getSessionGroupFromViews,
   getSessionGroupsFromViews,
@@ -96,16 +99,47 @@ const MentorRoles: NextPage = () => {
     }
   };
 
-  const getQuestionnaireOptions: OnLoadColumnValueOptionsFunc = async () => {
-    const response = await getQuestionnairesFromViews();
-    if (response) {
-      const questionnaires = response.data;
-      return questionnaires.map((questionnaire) => ({
-        id: questionnaire.viewsQuestionnaireId,
-        name: questionnaire.title,
-      }));
+  const getQuestionnaireOptions: OnLoadPagedColumnValueOptionsFunc = async ({
+    id,
+    limit,
+    offset,
+    searchText,
+  }) => {
+    if (id) {
+      const questionnaire = await getQuestionnaireFromViews(id);
+      if (questionnaire) {
+        return {
+          total: 1,
+          data: [
+            {
+              id: questionnaire.viewsQuestionnaireId,
+              name: questionnaire.title,
+            },
+          ],
+        };
+      } else {
+        toast.error("Failed to retrieve initial questionnaire option data");
+        return { total: 0, data: [] };
+      }
     } else {
-      throw "Failed to retrieve questionnaires option data.";
+      const response = await getQuestionnairesFromViews({
+        limit,
+        offset,
+        title: searchText,
+      });
+      if (response) {
+        const questionnaires = response.data;
+        return {
+          total: response.total,
+          data: questionnaires.map((questionnaire) => ({
+            id: questionnaire.viewsQuestionnaireId,
+            name: questionnaire.title,
+          })),
+        };
+      } else {
+        toast.error("Failed to retrieve questionnaires option data.");
+        return { total: 0, data: [] };
+      }
     }
   };
 
@@ -151,7 +185,7 @@ const MentorRoles: NextPage = () => {
           {
             header: "Questionnaire",
             dataField: "viewsQuestionnaireId",
-            onLoadValueOptions: getQuestionnaireOptions,
+            onLoadPagedValueOptions: getQuestionnaireOptions,
           },
           {
             header: "Activity",

@@ -53,7 +53,7 @@ def get_questionnaires_endpoint(request):
         offset = int(offset) if offset != None else None
 
         response = get_questionnaires(
-            limit=offset,
+            limit=limit,
             offset=offset,
             title=request.GET.get("title", None),
         )
