@@ -28,18 +28,23 @@ const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
   const isLoadingDefaultValue = isPaginatedSelect && !defaultValue;
 
   useEffect(() => {
+    // Load initial value for select
     if (isPaginatedSelect) {
-      props.onLoadPagedColumnValueOptionsFunc!!({ id: props.value }).then(
-        (defaultValue) => {
-          if (defaultValue.data.length > 0) {
-            const fetchedDefaultValue = defaultValue.data[0];
-            setDefaultValue({
-              value: fetchedDefaultValue.id,
-              label: fetchedDefaultValue.name,
-            });
+      if (props.value) {
+        props.onLoadPagedColumnValueOptionsFunc!!({ id: props.value }).then(
+          (defaultValue) => {
+            if (defaultValue.data.length > 0) {
+              const fetchedDefaultValue = defaultValue.data[0];
+              setDefaultValue({
+                value: fetchedDefaultValue.id,
+                label: fetchedDefaultValue.name,
+              });
+            }
           }
-        }
-      );
+        );
+      } else {
+        setDefaultValue({ value: "", label: "" });
+      }
     }
   }, []);
 
