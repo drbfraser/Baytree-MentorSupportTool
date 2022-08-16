@@ -1,7 +1,6 @@
 import requests
 import xmltodict
-from baytree_app.constants import (VIEWS_BASE_URL, VIEWS_PASSWORD,
-                                   VIEWS_USERNAME)
+from baytree_app.constants import VIEWS_BASE_URL, VIEWS_PASSWORD, VIEWS_USERNAME
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -141,11 +140,25 @@ class SessionsApiView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        if "mentorAttended" not in request.data:
+            return Response(
+                {"errors": "mentorAttended must be provided."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if "menteeAttended" not in request.data:
+            return Response(
+                {"errors": "menteeAttended must be provided."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         start_date = request.data["startDate"]
         start_time = request.data["startTime"]
         duration = request.data["duration"]
         views_venue_id = request.data["viewsVenueId"]
         activity = request.data["activity"]
+        mentorAttended = request.data["mentorAttended"]
+        menteeAttended = request.data["menteeAttended"]
 
         # Get mentor's mentor role
         mentor_role = mentor_user.mentorRole
@@ -269,7 +282,7 @@ class SessionsApiView(APIView):
                                 <Role>Lead</Role>
                                 <Volunteering>{2}</Volunteering>
                             </staff>""".format(
-            mentor_user.viewsPersonId, 1, mentor_role.volunteeringType
+            mentor_user.viewsPersonId, mentorAttended, mentor_role.volunteeringType
         )
         mentor_url = VIEWS_BASE_URL + "work/sessiongroups/sessions/{}/staff".format(
             session_id
@@ -296,7 +309,7 @@ class SessionsApiView(APIView):
                                 <ContactID>{0}</ContactID>
                                 <Attended>{1}</Attended>
                             </participants>""".format(
-            mentee_views_person_id, 1
+            mentee_views_person_id, menteeAttended
         )
         mentee_url = (
             VIEWS_BASE_URL
@@ -316,16 +329,18 @@ class SessionsApiView(APIView):
 
         return Response({"sessionId": try_parse_int(session_id)}, status=200)
 
+
 def get_session(id: str):
     """
     Gets a session from Views API by its id.
     """
     response = requests.get(
-            f"{sessions_base_url}/{id}",
-            auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
-        )
+        f"{sessions_base_url}/{id}",
+        auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+    )
 
-    if response.status_code != 200: return None
+    if response.status_code != 200:
+        return None
 
     parsed = xmltodict.parse(response.text)
     session = {
@@ -342,7 +357,7 @@ def get_sessions(
     startDateFrom: str = None,
     startDateTo: str = None,
     personId=None,
-    descendingDate=False
+    descendingDate=False,
 ):
     """
     Gets sessions from Views API.
@@ -353,13 +368,22 @@ def get_sessions(
     So, if limit = 5 and offset = 5, this would say: "give me 5 sessions,
     but skip the first 5 in the total sessions returned by the Views API."
     """
-    request_url = f"{sessions_base_url}/search" if sessionGroupId is None else sessions_base_url_by_group.format(sessionGroupId)
+    request_url = (
+        f"{sessions_base_url}/search"
+        if sessionGroupId is None
+        else sessions_base_url_by_group.format(sessionGroupId)
+    )
     params = {}
-    if limit != None: params["pageFold"] = limit
-    if offset != None: params["offset"] = offset
-    if startDateFrom != None: params["StartDate-from"] = startDateFrom
-    if startDateTo != None: params["StartDate-to"] = startDateTo
-    if personId != None: params["LeadStaff"] = personId
+    if limit != None:
+        params["pageFold"] = limit
+    if offset != None:
+        params["offset"] = offset
+    if startDateFrom != None:
+        params["StartDate-from"] = startDateFrom
+    if startDateTo != None:
+        params["StartDate-to"] = startDateTo
+    if personId != None:
+        params["LeadStaff"] = personId
 
     # In the case of requesting in reversed order with pagination
     # Process the limit and offset params before sending to Views
@@ -373,14 +397,17 @@ def get_sessions(
             params=dummyParams,
             auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
         )
-        if dummyResponse.status_code != 200: return None
+        if dummyResponse.status_code != 200:
+            return None
         parsed = xmltodict.parse(dummyResponse.text)
         count = int(parsed["sessions"]["@count"])
 
         # Process limit and offset before sending to view API
         limit = int(limit)
-        if offset is None: offset = 0
-        else: offset = int(offset)
+        if offset is None:
+            offset = 0
+        else:
+            offset = int(offset)
         offset = count - (offset + limit)
         if offset < 0:
             limit = limit + offset
@@ -398,7 +425,8 @@ def get_sessions(
         auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
     )
 
-    if response.status_code != 200: return None
+    if response.status_code != 200:
+        return None
 
     parsed = xmltodict.parse(response.text)
 
@@ -417,8 +445,9 @@ def get_sessions(
         }
         for session in parsed_session_list
     ]
-    
-    if descendingDate: sessions.reverse()
+
+    if descendingDate:
+        sessions.reverse()
 
     return {"count": int(parsed["sessions"]["@count"]), "results": sessions}
 
@@ -426,32 +455,31 @@ def get_sessions(
 def get_mentee_from_session_by_id(id):
     url = f"{sessions_base_url}/{id}/participants"
     response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
-    if response.status_code != 200: return None
+    if response.status_code != 200:
+        return None
     parsed_mentee = xmltodict.parse(response.content)
     parsed_mentee = parsed_mentee["session"]["participants"]
-    if parsed_mentee is None: return None
+    if parsed_mentee is None:
+        return None
     parsed_mentee = parsed_mentee["participant"]
-    return {
-        "menteeId": parsed_mentee["@id"],
-        "name": parsed_mentee["Name"]
-    }
+    return {"menteeId": parsed_mentee["@id"], "name": parsed_mentee["Name"]}
+
 
 def get_note_from_session_by_id(id):
     url = f"{sessions_base_url}/{id}/notes"
     response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
-    if response.status_code != 200: return None
+    if response.status_code != 200:
+        return None
     parsed_note = xmltodict.parse(response.content)
     parsed_note = parsed_note["session"]["notes"]
-    if parsed_note is None: return None
+    if parsed_note is None:
+        return None
     parsed_note = parsed_note["note"]
     return parsed_note["Note"]
 
+
 def update_session_note_by_session_id(session_id, note):
-    xmlData = (
-        "<notes>"
-            f"<Note>{note}</Note>"
-        "</notes>"
-    )
+    xmlData = "<notes>" f"<Note>{note}</Note>" "</notes>"
     url = f"{sessions_base_url}/{session_id}/notes"
     # Check if the note exists
     response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
@@ -459,19 +487,21 @@ def update_session_note_by_session_id(session_id, note):
     notes = parsed["session"]["notes"]
     if notes is None:
         response = requests.post(
-            url, 
-            xmlData, 
-            auth=(VIEWS_USERNAME, VIEWS_PASSWORD), 
-            headers={"content-type": "text/xml"})
+            url,
+            xmlData,
+            auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+            headers={"content-type": "text/xml"},
+        )
     else:
         noteId = notes["note"]["@id"]
         response = requests.put(
             f"{url}/{noteId}",
             xmlData,
             auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
-            headers={"content-type": "text/xml"})
-    if response.status_code != 200: return False
+            headers={"content-type": "text/xml"},
+        )
+    if response.status_code != 200:
+        return False
     parsed = xmltodict.parse(response.text)
     noteId = parsed["note"]["@id"]
     return int(noteId) != 0
-
