@@ -129,6 +129,7 @@ const SelectSessionGroup: React.FunctionComponent<SelectSessionGroupProps> = (
         loadOptions={props.loadSessionGroupOptions}
         onChange={props.onSessionGroupSelectOptionChange}
         placeholder="Select a session group..."
+        zIndex="10" // Prevent select list from being under other MUI components (like textfield)
       ></PaginatedSelect>
     </StyledSessionGroup>
   );

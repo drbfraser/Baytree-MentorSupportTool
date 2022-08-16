@@ -13,6 +13,7 @@ export interface PaginatedSelectOption<ValueType> {
 export interface PaginatedSelectProps
   extends React.ComponentProps<typeof AsyncPaginate> {
   fontSize?: string;
+  zIndex?: string;
 }
 
 const PaginatedSelect: React.FC<PaginatedSelectProps> = (props) => {
@@ -44,6 +45,7 @@ const PaginatedSelect: React.FC<PaginatedSelectProps> = (props) => {
         container: (base: any) => ({
           ...base,
           width: "100%",
+          zIndex: props.zIndex,
         }),
         control: (base: any) => ({
           ...base,
