@@ -11,7 +11,11 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import { DatePicker, LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  LocalizationProvider,
+  TimePicker
+} from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Field, Form, Formik } from "formik";
 import { useEffect } from "react";
@@ -82,33 +86,13 @@ const SessionForm = () => {
             {({ values, handleChange, setFieldValue, isSubmitting }) => {
               return (
                 <Form>
-                  {/* Attendance check box */}
-                  <FormControl
-                    fullWidth
-                    sx={{
-                      py: 2,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      flexDirection: "row",
-                      alignItems: "center"
-                    }}
-                  >
-                    <Typography
-                      sx={{ fontWeight: "bold" }}
-                      color="text.secondary"
-                    >
-                      Check if the session did not take place?
-                    </Typography>
-                    <Field name="cancelled" as={Checkbox} />
-                  </FormControl>
                   <Divider />
                   {values.cancelled && (
                     <Typography
                       sx={{ fontWeight: "bold", mt: 3, mb: 1 }}
                       color="text.secondary"
                     >
-                      If you or the mentee did not attend the session, please
-                      enter when the session was suppose to happen!
+                      When was the cancelled session supposed to happen?
                     </Typography>
                   )}
                   {/* Date and time */}
@@ -153,7 +137,7 @@ const SessionForm = () => {
                     >
                       {!values.cancelled
                         ? "Please enter your notes*"
-                        : "If you or the mentee did not attend the session, please explain why*"}
+                        : "Please enter a reason why the session was cancelled (ex. mentee was sick, holiday)*"}
                     </Typography>
                     <TextField
                       name="notes"
@@ -176,8 +160,10 @@ const SessionForm = () => {
                         onChange={handleChange}
                       >
                         {mentees.map((mentee) => (
-                          <MenuItem key={mentee.viewsPersonId}
-                            value={mentee.viewsPersonId}>
+                          <MenuItem
+                            key={mentee.viewsPersonId}
+                            value={mentee.viewsPersonId}
+                          >
                             {`${mentee.firstName} ${mentee.lastName}`}
                           </MenuItem>
                         ))}
@@ -217,6 +203,25 @@ const SessionForm = () => {
                     </SelectInputContainer>
                   </Grid>
                   <Divider />
+                  {/* Attendance check box */}
+                  <FormControl
+                    fullWidth
+                    sx={{
+                      py: 2,
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center"
+                    }}
+                  >
+                    <Typography
+                      sx={{ fontWeight: "bold" }}
+                      color="text.secondary"
+                    >
+                      Was the session cancelled?
+                    </Typography>
+                    <Field name="cancelled" as={Checkbox} />
+                  </FormControl>
+                  <Divider />
                   {/* Submit Session Button */}
                   <Button
                     type="submit"
@@ -232,7 +237,9 @@ const SessionForm = () => {
           </Formik>
         ) : menteesLoadError || venuesLoadError || activitiesLoadError ? (
           <Alert severity="error">
-            <AlertTitle>We're sorry, this page is not working at the moment.</AlertTitle>
+            <AlertTitle>
+              We're sorry, this page is not working at the moment.
+            </AlertTitle>
             Please refresh or contact your administrator. <br />
             Reason for error:
             {menteesLoadError || venuesLoadError || activitiesLoadError}
