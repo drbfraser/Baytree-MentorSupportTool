@@ -30,4 +30,9 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  server: {
+    watch: {
+      ignored: ['**/coverage/**'],
+    }
+  },
 })

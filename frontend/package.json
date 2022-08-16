@@ -31,14 +31,12 @@
     "build": "tsc && vite build",
     "format": "prettier --write src/**/*.ts{,x}",
     "cy:open": "cypress open",
-    "cy:headless": "cypress run --headless",
+    "cy:headless": "cypress run --quiet",
     "test": "start-server-and-test http-get://localhost:3000 cy:open",
     "coverage": "nyc report",
     "coverage:html": "open coverage/lcov-report/index.html",
-    "test:component": "cypress run --component --headless",
-    "test:e2e": "start-server-and-test http-get://localhost:3000 cy:headless",
-    "test:component:ci": "npm run test:component && npm run coverage",
-    "test:e2e:ci": "npm run test:e2e && npm run coverage"
+    "test:component": "cypress run --component --quiet",
+    "test:e2e": "start-server-and-test http-get://localhost:3000 cy:headless"
   },
   "eslintConfig": {
     "extends": [
