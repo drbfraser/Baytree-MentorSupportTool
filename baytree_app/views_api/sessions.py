@@ -4,6 +4,7 @@ from baytree_app.constants import VIEWS_BASE_URL, VIEWS_PASSWORD, VIEWS_USERNAME
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from views_api.session_groups import get_session_groups
 from users.models import MentorUser
 from users.permissions import userIsAdmin
 
@@ -242,7 +243,40 @@ class SessionsApiView(APIView):
         # POST request for Session Note #
         #################################
 
-        if "notes" in request.data:
+        if cancelled:
+            # If session is cancelled, make a note under the participant for the reason
+            session_group_name = get_session_groups(
+                str(mentor_role.viewsSessionGroupId)
+            )["name"]
+            sessionInformation = f"Cancelled session on {start_date} for session group {session_group_name}."
+            participantNoteBody = """<note>
+                                        <Note>{0}</Note>
+                                        <Private>0</Private>
+                                        <Type>Person</Type>
+                                        <TypeID>{1}</TypeID>
+                                    </note>""".format(
+                sessionInformation + " Reason: " + request.data["notes"]
+                if "notes" in request.data
+                else sessionInformation,
+                mentee_views_person_id,
+            )
+
+            participant_notes_url = f"{VIEWS_BASE_URL}contacts/participants/{mentee_views_person_id}/notes/attendance"
+
+            try:
+                response = requests.post(
+                    participant_notes_url,
+                    data=participantNoteBody,
+                    headers={"content-type": "text/xml"},
+                    auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+                )
+            except Exception as e:
+                return Response(
+                    {"Error": "Making a post request for participant note failed!"},
+                    status=500,
+                )
+
+        elif "notes" in request.data:
             viewNoteData = """<?xml version="1.0" encoding="utf-8"?>
                                 <notes>
                                     <Note>{0}</Note>
