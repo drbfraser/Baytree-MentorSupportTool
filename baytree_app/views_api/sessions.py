@@ -140,15 +140,9 @@ class SessionsApiView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if "mentorAttended" not in request.data:
+        if "cancelled" not in request.data:
             return Response(
-                {"errors": "mentorAttended must be provided."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if "menteeAttended" not in request.data:
-            return Response(
-                {"errors": "menteeAttended must be provided."},
+                {"errors": "cancelled must be provided."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -157,8 +151,7 @@ class SessionsApiView(APIView):
         duration = request.data["duration"]
         views_venue_id = request.data["viewsVenueId"]
         activity = request.data["activity"]
-        mentorAttended = request.data["mentorAttended"]
-        menteeAttended = request.data["menteeAttended"]
+        cancelled = request.data["cancelled"]
 
         # Get mentor's mentor role
         mentor_role = mentor_user.mentorRole
@@ -275,35 +268,37 @@ class SessionsApiView(APIView):
         # POST request for Mentor #
         ###########################
 
-        viewMentorData = """<?xml version="1.0" encoding="utf-8"?>
-                            <staff>
-                                <ContactID>{0}</ContactID>
-                                <Attended>{1}</Attended>
-                                <Role>Lead</Role>
-                                <Volunteering>{2}</Volunteering>
-                            </staff>""".format(
-            mentor_user.viewsPersonId, mentorAttended, mentor_role.volunteeringType
-        )
-        mentor_url = VIEWS_BASE_URL + "work/sessiongroups/sessions/{}/staff".format(
-            session_id
-        )
+        if not cancelled:
+            viewMentorData = """<?xml version="1.0" encoding="utf-8"?>
+                                <staff>
+                                    <ContactID>{0}</ContactID>
+                                    <Attended>1</Attended>
+                                    <Role>Lead</Role>
+                                    <Volunteering>{1}</Volunteering>
+                                </staff>""".format(
+                mentor_user.viewsPersonId, mentor_role.volunteeringType
+            )
+            mentor_url = VIEWS_BASE_URL + "work/sessiongroups/sessions/{}/staff".format(
+                session_id
+            )
 
-        try:
-            response = requests.post(
-                mentor_url,
-                data=viewMentorData,
-                headers={"content-type": "text/xml"},
-                auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
-            )
-        except Exception as e:
-            return Response(
-                {"Error": "Making a post request for mentor failed!"}, status=500
-            )
+            try:
+                response = requests.post(
+                    mentor_url,
+                    data=viewMentorData,
+                    headers={"content-type": "text/xml"},
+                    auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+                )
+            except Exception as e:
+                return Response(
+                    {"Error": "Making a post request for mentor failed!"}, status=500
+                )
 
         ###########################
         # POST request for Mentee #
         ###########################
 
+        menteeAttended = "0" if cancelled else "1"
         viewMenteeData = """<?xml version="1.0" encoding="utf-8"?>
                             <participants>
                                 <ContactID>{0}</ContactID>
