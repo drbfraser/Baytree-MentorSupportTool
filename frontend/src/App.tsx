@@ -1,5 +1,4 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import "./App.css";
 import { Dashboard, PrivateRoute, PublicLayout, PublicRoute } from "./layouts";
 import { CreateAccount, Goals, Home, Login, Notifications, Profile, Questionnaire, Records, ResetPassword, ResetPasswordRequest, Sessions } from "./pages";
 
