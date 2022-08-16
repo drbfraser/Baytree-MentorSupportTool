@@ -1,7 +1,17 @@
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
+import {
+  Box,
+  Button, Icon, Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography
+} from "@mui/material";
 import { ReactText, useEffect, useState } from "react";
+import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 import { toast } from "react-toastify";
 import useRecords from "../../hooks/useRecords";
 import Loading from "../shared/Loading";
@@ -57,7 +67,7 @@ export default function Records() {
         </Typography>
         <Button
           onClick={toggleOrdering}
-          startIcon={query.descending ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}>
+          startIcon={<Icon component={query.descending ? MdArrowDownward : MdArrowUpward} />}>
           {query.descending ? "Newest to oldest" : "Oldest to newest"}
         </Button>
       </Box>

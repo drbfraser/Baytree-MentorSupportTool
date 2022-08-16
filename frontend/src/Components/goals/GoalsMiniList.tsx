@@ -1,40 +1,32 @@
 import { Alert, Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import { fetchAllGoals, Goal } from "../../api/goals";
+import { fetchGoals, Goal } from "../../api/goals";
+import useGoals from "../../hooks/useGoals";
 import Loading from "../shared/Loading";
 import GoalListItem from "./GoalListItem";
 
 const GoalsMiniList = () => {
-  const [goals, setGoals] = useState([] as Goal[]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    setLoading(true);
-    fetchAllGoals({limit: 3, offset: 0, active: true})
-      .then(({ data, error }) => {
-        if (!data || error !== "") {
-          setError(error);
-        } else setGoals(data);
-      }).finally(() => setLoading(false));
-    return () => setLoading(false);
-  }, []);
+  const {goals, loadingGoals, goalError} = useGoals({
+    limit: 3,
+    offset: 0,
+    orderingDate: "goal_review_date"
+  });
 
   const [id, setId] = useState<number | undefined>();
 
-  if (loading) return <Loading />;
-  if (error) return <Alert severity="error">{error}</Alert>;
-  if (goals.length === 0) return <Alert severity="info">All goals achieved!</Alert>;
+  if (loadingGoals) return <Loading />;
+  if (goalError) return <Alert severity="error">{goalError}</Alert>;
+  if (goals.length === 0) return <Alert severity="success">All goals achieved!</Alert>;
 
   return <Box>
     {goals.map((goal) => {
       const expanded = id === goal.id;
       const handleClick = () => expanded ? setId(undefined) : setId(goal.id)
-      return <GoalListItem 
-        key={goal.id} 
+      return <GoalListItem
+        key={goal.id}
         expanded={expanded}
         handleClick={handleClick}
-        goal={goal} 
+        goal={goal}
         minified />
     })}
   </Box>
