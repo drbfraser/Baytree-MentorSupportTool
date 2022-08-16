@@ -157,9 +157,10 @@ class SessionsApiView(APIView):
         mentor_role = mentor_user.mentorRole
 
         # Get mentee views person id (either in params or from views associations)
+
         mentee_views_person_id = (
             request.data["menteeViewsPersonId"]
-            if hasattr(request.data, "menteeViewsPersonId")
+            if "menteeViewsPersonId" in request.data
             else None
         )
 
