@@ -23,7 +23,11 @@ export default defineConfig({
     }
   },
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: ["istanbul"]
+      }
+    }),
     tsconfigPaths(),
   ],
 })

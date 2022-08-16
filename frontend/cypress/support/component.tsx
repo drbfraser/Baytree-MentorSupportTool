@@ -12,6 +12,7 @@
 // You can read more here:
 // https://on.cypress.io/configuration
 // ***********************************************************
+import "@cypress/code-coverage/support";
 import { mount, MountOptions } from 'cypress/react';
 import { ReactNode } from 'react';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';

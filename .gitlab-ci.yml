@@ -29,7 +29,7 @@ test frontend-component:
     - cd frontend
   script:
     - npm ci --cache .npm --prefer-offline
-    - npm run test:component
+    - npm run test:component:ci
   cache:
     key:
       files:
