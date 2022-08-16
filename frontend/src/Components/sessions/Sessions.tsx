@@ -5,6 +5,7 @@ import {
   Checkbox,
   Divider,
   FormControl,
+  FormControlLabel,
   Grid,
   MenuItem,
   Select,
@@ -79,7 +80,9 @@ const SessionForm = () => {
               setSubmitting(true);
               toast.info("Submitting your session, please wait.");
               const success = await submitSession(data);
-              if (success) resetForm();
+              if (success) {
+                resetForm();
+              }
               setSubmitting(false);
             }}
           >
@@ -214,12 +217,17 @@ const SessionForm = () => {
                     }}
                   >
                     <Typography
-                      sx={{ fontWeight: "bold" }}
+                      sx={{ fontWeight: "bold", marginRight: "3rem" }}
                       color="text.secondary"
                     >
                       Was the session cancelled?
                     </Typography>
-                    <Field name="cancelled" as={Checkbox} />
+                    <FormControlLabel
+                      control={<Checkbox checked={values.cancelled} />}
+                      label=""
+                      name="cancelled"
+                      onChange={handleChange}
+                    />
                   </FormControl>
                   <Divider />
                   {/* Submit Session Button */}

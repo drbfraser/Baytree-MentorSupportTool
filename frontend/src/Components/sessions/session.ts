@@ -94,7 +94,9 @@ export const submitSession = async (data: SessionFormData) => {
       return true;
     } else throw Error();
   } catch (err) {
-    toast.error("Failed to submit session, please try again");
+    toast.error(
+      "Failed to submit session, please refresh the page and try again"
+    );
     return false;
   }
 };
