@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { AsyncPaginate } from "react-select-async-paginate";
 import { RootState } from "../../stores/store";
@@ -10,9 +10,13 @@ export interface PaginatedSelectOption<ValueType> {
   label: string;
 }
 
-const PaginatedSelect: React.FC<React.ComponentProps<typeof AsyncPaginate>> = (
-  props
-) => {
+export interface PaginatedSelectProps
+  extends React.ComponentProps<typeof AsyncPaginate> {
+  fontSize?: string;
+  zIndex?: string;
+}
+
+const PaginatedSelect: React.FC<PaginatedSelectProps> = (props) => {
   const themeColors = useSelector((state: RootState) => state.theme.colors);
 
   const [options, setOptions] = useState<any[]>([]);
@@ -41,14 +45,16 @@ const PaginatedSelect: React.FC<React.ComponentProps<typeof AsyncPaginate>> = (
         container: (base: any) => ({
           ...base,
           width: "100%",
-          zIndex: 8,
+          zIndex: props.zIndex,
         }),
         control: (base: any) => ({
           ...base,
+          fontSize: props.fontSize,
           ":focus-within": {
             borderColor: themeColors.primaryColor,
             color: themeColors.primaryColor,
             boxShadow: `0 0 3px 1.5px ${themeColors.primaryColor}`,
+            fontSize: props.fontSize,
           },
         }),
       }}

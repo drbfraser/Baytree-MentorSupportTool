@@ -53,7 +53,7 @@ class MentorRoleSerializer(BatchRestSerializer):
 
         answer = BatchRestSerializer.create(self, validated_data)
 
-        mentor_role_id = validated_data.get("id", None)
+        mentor_role_id = validated_data.get("id", answer.id)
         MentorRoleActivity.objects.filter(mentorRole_id=mentor_role_id).delete()
 
         for activity in activities:
