@@ -168,6 +168,7 @@ build-docker publish-docker-images:
   - docker image prune -f      # remove unused images since we just downloaded new ones
   - bash -c 'sleep 15'
   - docker exec baytree_server python manage.py migrate
+  - docker exec baytree_server python manage.py loaddata defaultPreferences.json
   - docker exec baytree_server python manage.py loaddata goalCategories
   - docker exec baytree_server python manage.py loaddata ukHolidays
   - docker images
