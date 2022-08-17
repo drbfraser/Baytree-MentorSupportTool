@@ -61,5 +61,6 @@ docker exec baytree_server python manage.py migrate
 
 echo -e "${BLUE}Seeding database...${COLOR_OFF}\n"
 docker exec baytree_server python manage.py loaddata goalCategories
+docker exec baytree_server python manage.py loaddata ukHolidays
 
 echo -e "\n${BLUE}Finished${COLOR_OFF}\n"
