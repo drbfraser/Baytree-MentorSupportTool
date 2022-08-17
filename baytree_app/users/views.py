@@ -695,4 +695,4 @@ def verifyResetLink(request):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
     if isLinkExpired(resetPasswordLinkId.first()):
         return Response(status=status.HTTP_410_GONE)
-    return Response()
+    return Response(status=status.HTTP_200_OK)

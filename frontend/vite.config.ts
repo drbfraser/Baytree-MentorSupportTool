@@ -10,19 +10,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          if (id.includes("node_modules")) {
-            if (id.includes("@mui"))
-              return "mui";
-            if (id.includes("@fullcalendar"))
-              return "calendar";
-            return "vendor";
-          }
+          if (id.includes('node_modules')) 
+            return id.toString().split('node_modules/')[1].split('/')[0].toString();
         }
       }
     }
-  },
-  server: {
-    host: "0.0.0.0"
   },
   plugins: [react()],
 })
