@@ -670,6 +670,7 @@ def getActivitiesForMentor(request):
         status=status.HTTP_200_OK,
     )
 
+
 @api_view(["POST"])
 @authentication_classes([])
 @permission_classes([])
@@ -680,7 +681,8 @@ def verifyCreationLink(request):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
     if isLinkExpired(accountCreationLinkId.first()):
         return Response(status=status.HTTP_410_GONE)
-    return Response()
+    else:
+        return Response(status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -693,4 +695,4 @@ def verifyResetLink(request):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
     if isLinkExpired(resetPasswordLinkId.first()):
         return Response(status=status.HTTP_410_GONE)
-    return Response()
+    return Response(status=status.HTTP_200_OK)

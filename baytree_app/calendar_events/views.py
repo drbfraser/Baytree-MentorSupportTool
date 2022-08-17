@@ -2,8 +2,14 @@ from rest_framework import generics, mixins
 
 from users.permissions import AdminPermissions
 
+from .models import UkHoliday
 from .models import CalendarEvent
-from .serializers import CalendarEventSerializer
+from .serializers import CalendarEventSerializer, UkHolidaySerializer
+
+# GET api/calendar_events/uk_holidays/
+class CalendarEventUkHolidayListAPIView(generics.ListAPIView):
+  queryset = UkHoliday.objects.all()
+  serializer_class = UkHolidaySerializer
 
 # GET api/calendar_events/
 class CalendarEventListAPIView(generics.ListAPIView):

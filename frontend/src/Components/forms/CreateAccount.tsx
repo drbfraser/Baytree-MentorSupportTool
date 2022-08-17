@@ -1,5 +1,12 @@
 import { LoadingButton } from "@mui/lab";
-import { Alert, AlertTitle, Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Box,
+  Button,
+  TextField,
+  Typography
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -7,7 +14,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createMentorAccount, userApi } from "../../api/mentorAccount";
 import PasswordValidation, { isValid } from "../shared/PasswordValidation";
@@ -21,7 +28,7 @@ const useAccountCreationLink = () => {
 
   const handleError = (hardError: AxiosError, submitting?: boolean) => {
     const code = hardError.response?.status;
-    if (!code || code === 500) setHardError("An error has occurred")
+    if (!code || code === 500) setHardError("An error has occurred");
     if (code === 401) setHardError("Invalid link");
     else if (code === 410) setHardError("Link expired");
     else if (submitting) {
@@ -29,12 +36,14 @@ const useAccountCreationLink = () => {
         "Failed to create an account. Please try again or contact an administrator for further assistance."
       );
     }
-  }
+  };
 
   useEffect(() => {
     setIsPageLoading(true);
-    userApi.post('verifyAccountCreationLink', { id })
-      .catch(handleError).finally(() => setIsPageLoading(false));
+    userApi
+      .post("verifyAccountCreationLink", { id })
+      .catch(handleError)
+      .finally(() => setIsPageLoading(false));
     return () => toast.dismiss();
   }, []);
 
@@ -47,33 +56,41 @@ const useAccountCreationLink = () => {
         setSuccess(false);
       })
       .finally(() => setIsPageLoading(false));
-  }
+  };
 
   return { isPageLoading, hardError, createAccount, success };
-}
+};
 
 const CreateAccount = () => {
-  const { isPageLoading, hardError, createAccount, success } = useAccountCreationLink();
+  const { isPageLoading, hardError, createAccount, success } =
+    useAccountCreationLink();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
   const [showModal, setShowModal] = useState(false);
 
   if (success) {
-    <Box width="100%" display="flex" flexDirection="column">
-      <Alert severity="success">Successfully created account!</Alert>
-      <Button sx={{ my: 2 }} variant="outlined" onClick={() => navigate("/login", { replace: true })}>
-        To login page
-      </Button>
-    </Box>
+    return (
+      <Box width="100%" display="flex" flexDirection="column">
+        <Alert severity="success">Successfully created account!</Alert>
+        <Button
+          sx={{ my: 2 }}
+          variant="outlined"
+          onClick={() => navigate("/login", { replace: true })}
+        >
+          To login page
+        </Button>
+      </Box>
+    );
   }
 
-  if (hardError) return (
-    <Alert severity="error" sx={{ width: "100%" }}>
-      <AlertTitle>{hardError}</AlertTitle>
-      Please try again or contact the adminstrator for further assistance.
-    </Alert>
-  )
+  if (hardError)
+    return (
+      <Alert severity="error" sx={{ width: "100%" }}>
+        <AlertTitle>{hardError}</AlertTitle>
+        Please try again or contact the adminstrator for further assistance.
+      </Alert>
+    );
 
   return (
     <>
@@ -82,8 +99,11 @@ const CreateAccount = () => {
         onSubmit={(e) => {
           e.preventDefault();
           setShowModal(true);
-        }}>
-        <Typography width="100%" variant="h6">Create your account password</Typography>
+        }}
+      >
+        <Typography width="100%" variant="h6">
+          Create your account password
+        </Typography>
         <TextField
           margin="normal"
           required
@@ -155,7 +175,7 @@ const CreateAccount = () => {
             Disagree
           </Button>
           <Button
-            variant='contained'
+            variant="contained"
             onClick={() => {
               setShowModal(false);
               createAccount(password);
