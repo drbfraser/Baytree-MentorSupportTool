@@ -1,7 +1,11 @@
 import { Skeleton, TableCell, TextField, Typography } from "@mui/material";
 import { FC, useRef } from "react";
 import styled from "styled-components";
-import { ColumnDataTypes, ValueOption } from "./datagridTypes";
+import {
+  ColumnDataTypes,
+  OnLoadPagedColumnValueOptionsFunc,
+  ValueOption,
+} from "./datagridTypes";
 import useMobileLayout from "../../../hooks/useMobileLayout";
 import {
   isLoadingSelectOptions,
@@ -13,10 +17,13 @@ import {
 import DataGridSelectComponent from "./datagridSelectComponent";
 import DataGridDateComponent from "./datagridDateComponent";
 import DataGridBoolComponent from "./datagridBoolComponent";
+import PaginatedSelect, { PaginatedSelectOption } from "../paginatedSelect";
 
 interface DataRowCellProps {
   isSelectCell: boolean;
   isMultiSelect?: boolean;
+  onLoadPagedColumnValueOptionsFunc?: OnLoadPagedColumnValueOptionsFunc;
+  selectPageSize?: number;
   valueOptions?: ValueOption[];
   value: any;
   onChangedValue: (newValue: any) => void;
@@ -41,12 +48,19 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
     if (
       shouldRenderSelectComponent(props.isSelectCell, props.isColumnEditable)
     ) {
-      if (isLoadingSelectOptions(props.valueOptions)) {
+      if (
+        isLoadingSelectOptions(props.valueOptions) &&
+        !props.onLoadPagedColumnValueOptionsFunc
+      ) {
         return <LoadingDataGridCell></LoadingDataGridCell>;
       } else {
         return (
           <DataGridSelectComponent
             primaryKeyVal={props.primaryKeyVal}
+            onLoadPagedColumnValueOptionsFunc={
+              props.onLoadPagedColumnValueOptionsFunc
+            }
+            selectPageSize={props.selectPageSize}
             dataField={props.dataField}
             idNumber={selectIdRef.current++}
             value={props.value}

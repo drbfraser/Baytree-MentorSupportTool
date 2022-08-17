@@ -7,25 +7,24 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  Skeleton,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineFileDownload, MdSearch } from "react-icons/md";
+import { toast } from "react-toastify";
 import styled from "styled-components";
+import {
+  getMentorRoles,
+  MentorRole,
+} from "../../../../api/backend/mentorRoles";
+import { getSessionGroupFromViews } from "../../../../api/backend/views/sessionGroups";
 import { MOBILE_BREAKPOINT } from "../../../../constants/constants";
 import PaginatedSelect from "../../../shared/paginatedSelect";
+import { SessionGroup } from "./MentorSessionTrackingCard/MentorSessionTrackingCard";
 
 interface HeaderProps {
-  loadSessionGroupOptions: (
-    search: any,
-    prevOptions: any
-  ) => Promise<{
-    options: {
-      value: string;
-      label: string;
-    }[];
-    hasMore: boolean;
-  }>;
-
   onSessionGroupSelectOptionChange: (newSessionGroupId: any) => void;
 
   onSetYear: (year: number) => void;
@@ -43,7 +42,6 @@ const Header: React.FunctionComponent<HeaderProps> = (props) => {
       <HeaderLayout>
         <HeaderTitle></HeaderTitle>
         <SelectSessionGroup
-          loadSessionGroupOptions={props.loadSessionGroupOptions}
           onSessionGroupSelectOptionChange={
             props.onSessionGroupSelectOptionChange
           }
@@ -105,37 +103,95 @@ const StyledHeaderTitle = styled.div`
   grid-area: title;
 `;
 interface SelectSessionGroupProps {
-  loadSessionGroupOptions: (
-    search: any,
-    prevOptions: any
-  ) => Promise<{
-    options: {
-      value: string;
-      label: string;
-    }[];
-    hasMore: boolean;
-  }>;
-
-  onSessionGroupSelectOptionChange: (newSessionGroupId: any) => void;
+  onSessionGroupSelectOptionChange: (newSessionGroup: SessionGroup) => void;
 }
 
 const SelectSessionGroup: React.FunctionComponent<SelectSessionGroupProps> = (
   props
 ) => {
+  interface sessionGroupOption {
+    id: number;
+    name: string;
+  }
+  const [sessionGroupOptions, setSessionGroupOptions] = useState<
+    sessionGroupOption[] | null
+  >(null);
+
+  useEffect(() => {
+    // Get the current mentor roles in the database
+    getMentorRoles().then(async (response) => {
+      if (response) {
+        // Once the mentor roles are fetched, fetch the session group information for each mentor role
+        const mentorRoles = response as MentorRole[];
+        const sessionGroups = await Promise.all(
+          mentorRoles.map(async (mentorRole) => {
+            const sessionGroup = await getSessionGroupFromViews(
+              mentorRole.viewsSessionGroupId
+            );
+
+            if (sessionGroup) {
+              // For each mentor role session group, we will need the id and name for select options
+              return {
+                id: sessionGroup.viewsSessionGroupId,
+                name: sessionGroup.name,
+              };
+            } else {
+              toast.error(
+                "Failed to get session group information for a mentor role."
+              );
+            }
+          })
+        );
+        if (sessionGroups.every((sessionGroup) => !!sessionGroup)) {
+          setSessionGroupOptions(sessionGroups as any);
+        }
+      } else {
+        toast.error("Failed to get mentor roles for session statistics.");
+      }
+    });
+  }, []);
+
   return (
     <StyledSessionGroup>
-      <PaginatedSelect
-        isMulti={false}
-        loadOptions={props.loadSessionGroupOptions}
-        onChange={props.onSessionGroupSelectOptionChange}
-        placeholder="Select a session group..."
-      ></PaginatedSelect>
+      {!sessionGroupOptions ? (
+        <>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </>
+      ) : (
+        <FormControl fullWidth>
+          <InputLabel id="select-session-group-statistics-label">
+            Session Group
+          </InputLabel>
+          <Select
+            labelId="select-session-group-statistics-label"
+            label="Session Group"
+            defaultValue=""
+            id="select-session-group-statistics"
+            fullWidth
+            variant="outlined"
+            onChange={(event) =>
+              props.onSessionGroupSelectOptionChange({
+                id: event.target.value,
+                name: event.target.name,
+              })
+            }
+          >
+            {sessionGroupOptions.map((sessionGroup, i) => (
+              <MenuItem key={i} value={sessionGroup.id.toString()}>
+                {sessionGroup.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
     </StyledSessionGroup>
   );
 };
 
 const StyledSessionGroup = styled.div`
-  max-width: 20rem;
+  width: 20rem;
   grid-area: selectSessionGroup;
   padding-left: 2rem;
 

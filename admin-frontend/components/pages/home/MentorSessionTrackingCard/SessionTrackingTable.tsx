@@ -1,9 +1,8 @@
-import { Skeleton, Typography } from "@mui/material";
+import { Skeleton } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { Session as ViewsSession } from "../../../../api/backend/views/sessions";
-import { BAYTREE_PRIMARY_COLOR } from "../../../../constants/constants";
 import DataGrid from "../../../shared/datagrid/datagrid";
 import Modal from "../../../shared/Modal";
 import Pager from "../../../shared/pager";
@@ -186,13 +185,5 @@ const LoadingSessionTrackingTable: React.FunctionComponent<{}> = () => {
     </>
   );
 };
-
-const ClickableMentorNameText = styled(Typography)`
-  color: ${BAYTREE_PRIMARY_COLOR};
-  text-decoration: underline;
-  :hover {
-    cursor: pointer;
-  }
-`;
 
 export default SessionTrackingTable;

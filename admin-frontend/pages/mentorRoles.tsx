@@ -1,5 +1,6 @@
 import { Paper, Typography } from "@mui/material";
 import { NextPage } from "next";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import {
   getMentorRoles,
@@ -7,13 +8,21 @@ import {
   saveMentorRoles,
 } from "../api/backend/mentorRoles";
 import { getActivitiesFromViews } from "../api/backend/views/activities";
-import { getQuestionnairesFromViews } from "../api/backend/views/questionnaires";
-import { getSessionGroupsFromViews } from "../api/backend/views/sessionGroups";
+import {
+  getQuestionnaireFromViews,
+  getQuestionnairesFromViews,
+} from "../api/backend/views/questionnaires";
+import {
+  getSessionGroupFromViews,
+  getSessionGroupsFromViews,
+} from "../api/backend/views/sessionGroups";
 import { getVolunteeringTypesFromViews } from "../api/backend/views/volunteeringTypes";
 import DataGrid from "../components/shared/datagrid/datagrid";
 import {
   onSaveDataRowsFunc,
   onLoadDataRowsFunc,
+  OnLoadColumnValueOptionsFunc,
+  OnLoadPagedColumnValueOptionsFunc,
 } from "../components/shared/datagrid/datagridTypes";
 
 const MentorRoles: NextPage = () => {
@@ -46,33 +55,95 @@ const MentorRoles: NextPage = () => {
     return !!result;
   };
 
-  const getSessionGroupOptions = async () => {
-    const response = await getSessionGroupsFromViews();
-    if (response && response.status === 200 && response.data) {
-      const sessionGroups = response.data;
-      return sessionGroups.map((sessionGroup) => ({
-        id: parseInt(sessionGroup.viewsSessionGroupId),
-        name: sessionGroup.name,
-      }));
+  const getSessionGroupOptions: OnLoadPagedColumnValueOptionsFunc = async ({
+    id,
+    limit,
+    offset,
+    searchText,
+  }) => {
+    if (id) {
+      const sessionGroup = await getSessionGroupFromViews(id);
+      if (sessionGroup) {
+        return {
+          total: 1,
+          data: [
+            {
+              id: parseInt(sessionGroup.viewsSessionGroupId),
+              name: sessionGroup.name,
+            },
+          ],
+        };
+      } else {
+        toast.error("Failed to retrieve initial session group option data");
+        return { total: 0, data: [] };
+      }
     } else {
-      throw "Failed to retrieve session group option data.";
+      const response = await getSessionGroupsFromViews({
+        limit,
+        offset,
+        name: searchText,
+      });
+      if (response) {
+        const sessionGroups = response.data;
+        return {
+          total: response.total,
+          data: sessionGroups.map((sessionGroup) => ({
+            id: parseInt(sessionGroup.viewsSessionGroupId),
+            name: sessionGroup.name,
+          })),
+        };
+      } else {
+        toast.error("Failed to retrieve session group option data.");
+        return { total: 0, data: [] };
+      }
     }
   };
 
-  const getQuestionnaireOptions = async () => {
-    const response = await getQuestionnairesFromViews();
-    if (response) {
-      const questionnaires = response.data;
-      return questionnaires.map((questionnaire) => ({
-        id: questionnaire.viewsQuestionnaireId,
-        name: questionnaire.title,
-      }));
+  const getQuestionnaireOptions: OnLoadPagedColumnValueOptionsFunc = async ({
+    id,
+    limit,
+    offset,
+    searchText,
+  }) => {
+    if (id) {
+      const questionnaire = await getQuestionnaireFromViews(id);
+      if (questionnaire) {
+        return {
+          total: 1,
+          data: [
+            {
+              id: questionnaire.viewsQuestionnaireId,
+              name: questionnaire.title,
+            },
+          ],
+        };
+      } else {
+        toast.error("Failed to retrieve initial questionnaire option data");
+        return { total: 0, data: [] };
+      }
     } else {
-      throw "Failed to retrieve questionnaires option data.";
+      const response = await getQuestionnairesFromViews({
+        limit,
+        offset,
+        title: searchText,
+      });
+      if (response) {
+        const questionnaires = response.data;
+        return {
+          total: response.total,
+          data: questionnaires.map((questionnaire) => ({
+            id: questionnaire.viewsQuestionnaireId,
+            name: questionnaire.title,
+          })),
+        };
+      } else {
+        toast.error("Failed to retrieve questionnaires option data.");
+        return { total: 0, data: [] };
+      }
     }
   };
 
-  const getActivityOptions = async () => {
+  const getActivityOptions: OnLoadColumnValueOptionsFunc = async () => {
     const activities = await getActivitiesFromViews();
     if (activities) {
       return activities.results.map((activity) => ({
@@ -84,7 +155,7 @@ const MentorRoles: NextPage = () => {
     }
   };
 
-  const getVolunteeringOptions = async () => {
+  const getVolunteeringOptions: OnLoadColumnValueOptionsFunc = async () => {
     const volunteeringTypes = await getVolunteeringTypesFromViews();
     if (volunteeringTypes) {
       return volunteeringTypes.results.map((volunteeringType) => ({
@@ -109,12 +180,12 @@ const MentorRoles: NextPage = () => {
           {
             header: "Session Group",
             dataField: "viewsSessionGroupId",
-            onLoadValueOptions: getSessionGroupOptions,
+            onLoadPagedValueOptions: getSessionGroupOptions,
           },
           {
             header: "Questionnaire",
             dataField: "viewsQuestionnaireId",
-            onLoadValueOptions: getQuestionnaireOptions,
+            onLoadPagedValueOptions: getQuestionnaireOptions,
           },
           {
             header: "Activity",
