@@ -118,8 +118,10 @@ const SelectSessionGroup: React.FunctionComponent<SelectSessionGroupProps> = (
   >(null);
 
   useEffect(() => {
+    // Get the current mentor roles in the database
     getMentorRoles().then(async (response) => {
       if (response) {
+        // Once the mentor roles are fetched, fetch the session group information for each mentor role
         const mentorRoles = response as MentorRole[];
         const sessionGroups = await Promise.all(
           mentorRoles.map(async (mentorRole) => {
@@ -128,6 +130,7 @@ const SelectSessionGroup: React.FunctionComponent<SelectSessionGroupProps> = (
             );
 
             if (sessionGroup) {
+              // For each mentor role session group, we will need the id and name for select options
               return {
                 id: sessionGroup.viewsSessionGroupId,
                 name: sessionGroup.name,
