@@ -70,33 +70,33 @@ export const submitSession = async (data: SessionFormData) => {
     notes,
     viewsVenueId,
     menteeViewsPersonId,
-    activity
+    activity,
+    cancelled
   };
 
   try {
     let viewsSubmitSuccessful = true;
     let backendSubmitSuccessful = true;
 
-    // only submit to views if session not missed/cancelled
-    if (!cancelled) {
-      const response = await axios.post(
-        `${API_BASE_URL}/views-api/sessions`,
-        viewSession,
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true
-        }
-      );
+    const response = await axios.post(
+      `${API_BASE_URL}/views-api/sessions`,
+      viewSession,
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true
+      }
+    );
 
-      viewsSubmitSuccessful = response.status === 200;
-    }
+    viewsSubmitSuccessful = response.status === 200;
 
     if (viewsSubmitSuccessful && backendSubmitSuccessful) {
       toast.success("Session submitted successfully");
       return true;
     } else throw Error();
   } catch (err) {
-    toast.error("Failed to submit session, please try again");
+    toast.error(
+      "Failed to submit session, please refresh the page and try again"
+    );
     return false;
   }
 };
