@@ -1,0 +1,458 @@
+[
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 1,
+        "fields":{
+        "name": "New Year’s Day",
+        "date": "2017-01-02"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 2,
+        "fields":{
+            "name": "Good Friday",
+            "date": "2017-04-14"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 3,
+        "fields":{
+            "name": "Easter Monday",
+            "date": "2017-04-17"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 4,
+        "fields":{
+            "name": "Early May bank holiday",
+            "date": "2017-05-01"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 5,
+        "fields":{
+            "name": "Spring bank holiday",
+            "date": "2017-05-29"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 6,
+        "fields":{
+            "name": "Summer bank holiday",
+            "date": "2017-08-28"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 7,
+        "fields":{
+            "name": "Christmas Day",
+            "date": "2017-12-25"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 8,
+        "fields":{
+            "name": "Boxing Day",
+            "date": "2017-12-26"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 9,
+        "fields":{
+            "name": "New Year’s Day",
+            "date": "2018-01-01"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 10,
+        "fields":{
+            "name": "Good Friday",
+            "date": "2018-03-30"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 11,
+        "fields":{
+            "name": "Easter Monday",
+            "date": "2018-04-02"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 12,
+        "fields":{
+            "name": "Early May bank holiday",
+            "date": "2018-05-07"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 13,
+        "fields":{
+            "name": "Spring bank holiday",
+            "date": "2018-05-28"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 14,
+        "fields":{
+            "name": "Summer bank holiday",
+            "date": "2018-08-27"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 15,
+        "fields":{
+            "name": "Christmas Day",
+            "date": "2018-12-25"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 16,
+        "fields":{
+            "name": "Boxing Day",
+            "date": "2018-12-26"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 17,
+        "fields":{
+            "name": "New Year’s Day",
+            "date": "2019-01-01"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 18,
+        "fields":{
+            "name": "Good Friday",
+            "date": "2019-04-19"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 19,
+        "fields":{
+            "name": "Easter Monday",
+            "date": "2019-04-22"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 20,
+        "fields":{
+            "name": "Early May bank holiday",
+            "date": "2019-05-06"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 21,
+        "fields":{
+            "name": "Spring bank holiday",
+            "date": "2019-05-27"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 22,
+        "fields":{
+            "name": "Summer bank holiday",
+            "date": "2019-08-26"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 23,
+        "fields":{
+            "name": "Christmas Day",
+            "date": "2019-12-25"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 24,
+        "fields":{
+            "name": "Boxing Day",
+            "date": "2019-12-26"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 25,
+        "fields":{
+            "name": "New Year’s Day",
+            "date": "2020-01-01"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 26,
+        "fields":{
+            "name": "Good Friday",
+            "date": "2020-04-10"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 27,
+        "fields":{
+            "name": "Easter Monday",
+            "date": "2020-04-13"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 28,
+        "fields":{
+            "name": "Early May bank holiday (VE day)",
+            "date": "2020-05-08"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 29,
+        "fields":{
+            "name": "Spring bank holiday",
+            "date": "2020-05-25"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 30,
+        "fields":{
+            "name": "Summer bank holiday",
+            "date": "2020-08-31"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 31,
+        "fields":{
+            "name": "Christmas Day",
+            "date": "2020-12-25"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 32,
+        "fields":{
+            "name": "Boxing Day",
+            "date": "2020-12-28"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 33,
+        "fields":{
+            "name": "New Year’s Day",
+            "date": "2021-01-01"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 34,
+        "fields":{
+            "name": "Good Friday",
+            "date": "2021-04-02"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 35,
+        "fields":{
+            "name": "Easter Monday",
+            "date": "2021-04-05"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 36,
+        "fields":{
+            "name": "Early May bank holiday",
+            "date": "2021-05-03"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 37,
+        "fields":{
+            "name": "Spring bank holiday",
+            "date": "2021-05-31"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 38,
+        "fields":{
+            "name": "Summer bank holiday",
+            "date": "2021-08-30"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 39,
+        "fields":{
+            "name": "Christmas Day",
+            "date": "2021-12-27"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 40,
+        "fields":{
+            "name": "Boxing Day",
+            "date": "2021-12-28"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 41,
+        "fields":{
+            "name": "New Year’s Day",
+            "date": "2022-01-03"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 42,
+        "fields":{
+            "name": "Good Friday",
+            "date": "2022-04-15"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 43,
+        "fields":{
+            "name": "Easter Monday",
+            "date": "2022-04-18"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 44,
+        "fields":{
+            "name": "Early May bank holiday",
+            "date": "2022-05-02"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 45,
+        "fields":{
+            "name": "Spring bank holiday",
+            "date": "2022-06-02"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 46,
+        "fields":{
+            "name": "Platinum Jubilee bank holiday",
+            "date": "2022-06-03"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 47,
+        "fields":{
+            "name": "Summer bank holiday",
+            "date": "2022-08-29"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 48,
+        "fields":{
+            "name": "Boxing Day",
+            "date": "2022-12-26"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 49,
+        "fields":{
+            "name": "Christmas Day",
+            "date": "2022-12-27"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 50,
+        "fields":{
+            "name": "New Year’s Day",
+            "date": "2023-01-02"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 51,
+        "fields":{
+            "name": "Good Friday",
+            "date": "2023-04-07"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 52,
+        "fields":{
+            "name": "Easter Monday",
+            "date": "2023-04-10"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 53,
+        "fields":{
+            "name": "Early May bank holiday",
+            "date": "2023-05-01"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 54,
+        "fields":{
+            "name": "Spring bank holiday",
+            "date": "2023-05-29"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 55,
+        "fields":{
+            "name": "Summer bank holiday",
+            "date": "2023-08-28"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 56,
+        "fields":{
+            "name": "Christmas Day",
+            "date": "2023-12-25"
+        }
+    },
+    {
+        "model": "calendar_events.ukHoliday",
+        "pk": 57,
+        "fields":{
+            "name": "Boxing Day",
+            "date": "2023-12-26"
+        }
+    }
+]
