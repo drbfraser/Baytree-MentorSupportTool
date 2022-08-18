@@ -13,10 +13,10 @@ import {
 import { ReactText, useEffect, useState } from "react";
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 import { toast } from "react-toastify";
-import useRecords from "../../hooks/useRecords";
-import Loading from "../shared/Loading";
-import RecordDetail from "./RecordDetail";
-import RecordRow from "./RecordRow";
+import useRecords from "../hooks/useRecords";
+import Loading from "@components/shared/Loading";
+import RecordDetail from "@components/records/RecordDetail";
+import RecordRow from "@components/records/RecordRow";
 
 const PAGNINATE_OPTIONS = [5, 10, 20];
 

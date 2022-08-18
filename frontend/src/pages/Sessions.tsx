@@ -1,3 +1,10 @@
+import { SelectInputContainer, TimeInputContainer } from "@components/sessions/Containers";
+import { getInitialFormValues, submitSession } from "@components/sessions/session";
+import Loading from "@components/shared/Loading";
+import TitledContainer from "@components/shared/TitledContainer";
+import useActivities from "@hooks/useActivities";
+import useMentees from "@hooks/useMentees";
+import useVenues from "@hooks/useVenues";
 import {
   Alert,
   AlertTitle,
@@ -21,13 +28,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Field, Form, Formik } from "formik";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import useActivities from "../../hooks/useActivities";
-import useMentees from "../../hooks/useMentees";
-import useVenues from "../../hooks/useVenues";
-import Loading from "../shared/Loading";
-import TitledContainer from "../shared/TitledContainer";
-import { SelectInputContainer, TimeInputContainer } from "./Containers";
-import { getInitialFormValues, submitSession } from "./session";
 
 const SessionForm = () => {
   const { venues, error: venuesLoadError } = useVenues();

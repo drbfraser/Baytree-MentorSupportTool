@@ -100,8 +100,8 @@ const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified }) =>
     </AccordionDetails>
     <Divider />
     {!minified && goal.status === "IN PROGRESS" && <AccordionActions>
-      <Button variant="outlined" disabled={isLoading} startIcon={<Icon component={MdEdit} />} onClick={() => openEdit(goal)}>Edit</Button>
-      <Button variant="contained" disabled={isLoading} startIcon={<Icon component={MdCheck} />} onClick={handleCompleteButton}>Complete</Button>
+      <Button className="edit-button" variant="outlined" disabled={isLoading} startIcon={<Icon component={MdEdit} />} onClick={() => openEdit(goal)}>Edit</Button>
+      <Button className="complete-button" variant="contained" disabled={isLoading} startIcon={<Icon component={MdCheck} />} onClick={handleCompleteButton}>Complete</Button>
     </AccordionActions>}
   </>
 };

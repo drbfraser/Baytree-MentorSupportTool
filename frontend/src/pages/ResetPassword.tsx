@@ -1,11 +1,11 @@
+import PasswordValidation, { isValid } from "@components/shared/PasswordValidation";
 import { LoadingButton } from "@mui/lab";
 import { Alert, AlertTitle, Box, Button, TextField, Typography } from "@mui/material";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { resetPassword, userApi } from "../../api/mentorAccount";
-import PasswordValidation, { isValid } from "../shared/PasswordValidation";
+import { resetPassword, userApi } from "../api/mentorAccount";
 
 const usePasswordResetLink = () => {
   const params = useParams();
@@ -44,7 +44,7 @@ const usePasswordResetLink = () => {
   return { id, loading, hardError, handleResetPassword };
 }
 
-const ResetPasswordRequest = () => {
+const ResetPassword = () => {
   const { loading, hardError, handleResetPassword } = usePasswordResetLink();
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
@@ -112,4 +112,4 @@ const ResetPasswordRequest = () => {
   </form>
 };
 
-export default ResetPasswordRequest;
+export default ResetPassword;

@@ -1,11 +1,11 @@
+import InfoTextField from "@components/shared/InfoTextField";
+import Loading from "@components/shared/Loading";
+import TitledContainer from "@components/shared/TitledContainer";
+import useMentees from "@hooks/useMentees";
+import useMentor from "@hooks/useMentor";
 import { Accordion, AccordionDetails, AccordionSummary, Alert, AlertTitle, Stack, Typography } from "@mui/material";
 import { formatDistanceToNowStrict } from "date-fns";
 import { MdExpandMore } from "react-icons/md";
-import useMentees from "../hooks/useMentees";
-import useMentor from "../hooks/useMentor";
-import InfoTextField from "./shared/InfoTextField";
-import Loading from "./shared/Loading";
-import TitledContainer from "./shared/TitledContainer";
 
 
 const Profile = () => {
@@ -19,7 +19,7 @@ const Profile = () => {
   if (error || !mentees) {
     if (!error && !mentees) error = "Cannot retrieve active mentees";
     return <TitledContainer title="Profile">
-      <Alert severity="error" sx={{ my: 2 }}>
+      <Alert severity="error" sx={{  my: 2  }}>
         <AlertTitle>{error}</AlertTitle>
         Please try again or contact the adminstrator.
       </Alert>

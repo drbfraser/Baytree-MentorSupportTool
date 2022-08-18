@@ -1,10 +1,9 @@
+import ActiveGoalsSummary from "@components/home/ActiveGoalsSummary";
+import MenteeInfo from "@components/home/MenteeInfo";
+import Scheduler from "@components/home/Scheduler";
+import Statistics from "@components/home/Statistics";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import GoalList from "../goals/GoalsList";
-import ActiveGoalsSummary from "./ActiveGoalsSummary";
-import MenteeInfo from "./MenteeInfo";
-import Scheduler from "./Scheduler";
-import Statistics from "./Statistics";
 
 const Home = () => {
   return (

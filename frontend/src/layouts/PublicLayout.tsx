@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import Logo from "../../Assets/baytree-logo.png";
-import Photo from "../../Assets/baytree-photo.jpg";
+import Logo from "../Assets/baytree-logo.png";
+import Photo from "../Assets/baytree-photo.jpg";
 
 const PublicLayout = () => {
   return (<Box display="flex" alignItems="stretch" justifyContent="center" component="main" minHeight="100vh">

@@ -1,11 +1,11 @@
+import GoalDialog from '@components/goals/GoalDialog';
+import GoalExportButton from '@components/goals/GoalExportButton';
+import GoalQuerying from '@components/goals/GoalQuerying';
+import GoalsList from '@components/goals/GoalsList';
+import GoalsStatistics from "@components/goals/GoalsStatistics";
+import { GoalProvider, useGoalContext } from '@context/GoalContext';
 import { Box, Button, Icon, Stack, Typography } from "@mui/material";
 import { MdAdd } from "react-icons/md";
-import { GoalProvider, useGoalContext } from '../../context/GoalContext';
-import GoalDialog from './GoalDialog';
-import GoalExportButton from './GoalExportButton';
-import GoalQuerying from './GoalQuerying';
-import GoalsList from './GoalsList';
-import GoalsStatistics from "./GoalsStatistics";
 
 const Goals = () => {
   const { edit: { open }, openEdit } = useGoalContext();

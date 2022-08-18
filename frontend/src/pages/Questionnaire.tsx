@@ -1,21 +1,21 @@
-import { Alert, AlertTitle, Button, fabClasses, FormControl, Typography } from "@mui/material";
-import { Form, Formik } from "formik";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import ChoiceInput, { isChoiceQuestion } from "@components/questionnaire/ChoiceInput";
+import InvalidQuestionnaire from "@components/questionnaire/InvalidQuestionnaire";
+import MenteesNameInput from "@components/questionnaire/MenteesNameInput";
+import MentorNameInput from "@components/questionnaire/MentorNameQuestion";
+import TextInput from "@components/questionnaire/TextInput";
+import Loading from "@components/shared/Loading";
+import TitledContainer from "@components/shared/TitledContainer";
 import useQuestionnaire, {
   isMenteeQuestion,
   isMentorQuestion,
   isRequired
-} from "../../hooks/useQuestionnaire";
-import Loading from "../shared/Loading";
-import TitledContainer from "../shared/TitledContainer";
-import ChoiceInput, { isChoiceQuestion } from "./ChoiceInput";
-import InvalidQuestionnaire from "./InvalidQuestionnaire";
-import MenteesNameInput from "./MenteesNameInput";
-import MentorNameInput from "./MentorNameQuestion";
-import TextInput from "./TextInput";
-import { Logger, logLevel} from "../../api/logging";
+} from "@hooks/useQuestionnaire";
+import { Alert, AlertTitle, Button, FormControl, Typography } from "@mui/material";
+import { Form, Formik } from "formik";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Logger, logLevel } from "../api/logging";
 
 const Questionnaire = () => {
   const [canSeeAlert, setcanSeeAlert] = useState("none");
@@ -48,18 +48,18 @@ const Questionnaire = () => {
             const menteeResult = await handleSubmitAnswerSet(answer, "mentee");
             if (menteeResult) {
               const mentorResult = await handleSubmitAnswerSet(answer, "mentor");
-              if (mentorResult){
+              if (mentorResult) {
                 toast.success("Submitted successfully, thank you");
                 resetForm();
               }
               else {
-                const volunteerQuestionnaireSubmissionLoggerError = 
-                "Failed to submit Volunteer questionnaire. \nViews Volunteer and Participant questionnaires may now be inconsistent. \nPlease contact the administrator to manually remove inconsistent \nquestionnaire from Participant's profile before trying again.";
+                const volunteerQuestionnaireSubmissionLoggerError =
+                  "Failed to submit Volunteer questionnaire. \nViews Volunteer and Participant questionnaires may now be inconsistent. \nPlease contact the administrator to manually remove inconsistent \nquestionnaire from Participant's profile before trying again.";
                 let menteeResultData = menteeResult.data
                 new Logger().sendLog(`${volunteerQuestionnaireSubmissionLoggerError}\n Mentor: ${menteeResultData["mentor"]}, Mentee: ${menteeResultData["mentee"]}, Questionnaire ID: ${menteeResultData["questionnaireId"]}, Submission ID: ${menteeResultData["submissionId"]}`, logLevel.error)
-                const volunteerQuestionnaireSubmissionError = 
-                <strong>Views Volunteer and Participant questionnaires may now be inconsistent. 
-                  <br/>Please contact the administrator to manually remove inconsistent questionnaire from Participant's profile before trying again.</strong>;
+                const volunteerQuestionnaireSubmissionError =
+                  <strong>Views Volunteer and Participant questionnaires may now be inconsistent.
+                    <br />Please contact the administrator to manually remove inconsistent questionnaire from Participant's profile before trying again.</strong>;
                 setSubmissionErrorTitle("Error: Failed to Submit Volunteer Questionnaire");
                 setSubmissionErrorMessage(volunteerQuestionnaireSubmissionError);
                 setcanSeeAlert("block");
@@ -68,7 +68,7 @@ const Questionnaire = () => {
               }
             } else {
               const questionnaireSubmissionError =
-              <strong>Failed to submit Participant questionnaire, consequently, Volunteer answer set not submitted. Please try again.</strong>;
+                <strong>Failed to submit Participant questionnaire, consequently, Volunteer answer set not submitted. Please try again.</strong>;
               setSubmissionErrorTitle("Error: Questionnaire Not Submitted");
               setSubmissionErrorMessage(questionnaireSubmissionError);
               setcanSeeAlert("block");
@@ -94,9 +94,8 @@ const Questionnaire = () => {
                       sx={{ fontWeight: "bold" }}
                       color="text.secondary"
                     >
-                      {`${index + 1}. ${question.Question} ${
-                        required ? "*" : ""
-                      }`}
+                      {`${index + 1}. ${question.Question} ${required ? "*" : ""
+                        }`}
                     </Typography>
                     {/* Question input */}
                     {isMentorQuestion(question) ? (
@@ -115,8 +114,8 @@ const Questionnaire = () => {
                 );
               })}
               {/* Error Message */}
-              <div style={{display: canSeeAlert}}>
-                <Alert style={{display: "flex"}} variant="outlined" severity="error">
+              <div style={{ display: canSeeAlert }}>
+                <Alert style={{ display: "flex" }} variant="outlined" severity="error">
                   <AlertTitle>{submissionErrorTitle}</AlertTitle>
                   {submissionErrorMessage}
                 </Alert>

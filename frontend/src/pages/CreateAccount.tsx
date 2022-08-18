@@ -1,3 +1,4 @@
+import PasswordValidation, { isValid } from "@components/shared/PasswordValidation";
 import { LoadingButton } from "@mui/lab";
 import {
   Alert,
@@ -16,8 +17,7 @@ import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { createMentorAccount, userApi } from "../../api/mentorAccount";
-import PasswordValidation, { isValid } from "../shared/PasswordValidation";
+import { createMentorAccount, userApi } from "../api/mentorAccount";
 
 const useAccountCreationLink = () => {
   const params = useParams();

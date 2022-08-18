@@ -33,7 +33,7 @@ const GoalStatisticsCell: FunctionComponent<GoalStatisticsCellType> = (props) =>
             {props.title.toUpperCase()}
           </Typography>
           <Typography component="p" variant="h2" color={props.color || "primary"}>
-            <strong>{loadingStatistics ? "-" : props.count}</strong>
+            <strong data-testid="goal-count">{loadingStatistics ? "-" : props.count}</strong>
           </Typography>
         </CardContent>
       </CardActionArea>
