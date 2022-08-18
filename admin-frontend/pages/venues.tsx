@@ -7,6 +7,7 @@ import DataGrid from "../components/shared/datagrid/datagrid";
 import {
   onSaveDataRowsFunc,
   onLoadDataRowsFunc,
+  OnLoadColumnValueOptionsFunc,
 } from "../components/shared/datagrid/datagridTypes";
 
 const MentorRoles: NextPage = () => {
@@ -45,7 +46,7 @@ const MentorRoles: NextPage = () => {
     return !!result;
   };
 
-  const getVenueOptions = async () => {
+  const getVenueOptions: OnLoadColumnValueOptionsFunc = async () => {
     const viewsVenues = await getVenuesFromViews();
     if (viewsVenues) {
       return viewsVenues.results.map((viewsVenue) => ({

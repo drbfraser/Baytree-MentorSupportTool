@@ -394,6 +394,9 @@ export const createDataRow = (
     if (col.dataType === "boolean") {
       // New data rows should have boolean fields set to false
       newDataRow[col.dataField] = false;
+    } else if (col.isMultiSelect) {
+      // Each multi-select field should be set to empty array
+      newDataRow[col.dataField] = [];
     } else {
       // Every other type of data field for a data row should be empty string
       newDataRow[col.dataField] = "";

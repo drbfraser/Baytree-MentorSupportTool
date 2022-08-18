@@ -12,7 +12,8 @@ import { ReactText, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import useEventDetailPopup from '../../hooks/useEventDetailPopup';
 import useSessionEvents, { EVENT_TYPE, SessionFilter } from '../../hooks/useSessionEvents';
-import useSpecialEvents, { toCalanderEvent } from '../../hooks/useSpecialEvents';
+import useSpecialEvents, { toCalendarEvent } from '../../hooks/useSpecialEvents';
+import useUkHolidays, { ukHolidayToCalendarEvent } from '../../hooks/useUkHolidays';
 import { TIMEZONE_ID } from '../../Utils/locale';
 import RecordDetail from '../records/RecordDetail';
 import SpecialEventDetail from '../records/SpecialEventDetail';
@@ -36,6 +37,7 @@ const Scheduler = () => {
 
   // Calandar states
   const calendarRef = useRef<FullCalendar | null>(null);
+  const { loadingUkHolidays, ukHolidaysError, ukHolidays } = useUkHolidays();
   const { loadingSpecialEvents, specialEventError, specialEvents } = useSpecialEvents();
   const { fetchSessionEvents, error, loadingSession } = useSessionEvents(filter);
 
@@ -46,6 +48,14 @@ const Scheduler = () => {
       if (id) toast.dismiss(id);
     }
   }, [error]);
+
+  useEffect(() => {
+    let id: ReactText;
+    if (ukHolidaysError) id = toast.error(ukHolidaysError);
+    return () => {
+      if (id) toast.dismiss(id);
+    }
+  }, [ukHolidaysError]);
 
   useEffect(() => {
     let id: ReactText;
@@ -75,7 +85,7 @@ const Scheduler = () => {
   return (
     <>
       <Paper elevation={4} sx={{ mb: 2 }}>
-        {(loadingSpecialEvents || loadingSession) && <LinearProgress sx={{ mt: "-4px" }} />}
+        {(loadingUkHolidays || loadingSpecialEvents || loadingSession) && <LinearProgress sx={{ mt: "-4px" }} />}
         <Box sx={{ pt: 2, px: 2 }}>
           {/* Calender */}
           <FullCalendar
@@ -87,7 +97,8 @@ const Scheduler = () => {
             timeZone={TIMEZONE_ID}
             lazyFetching
             eventSources={[
-              specialEvents.map(toCalanderEvent), // Static special events
+              ukHolidays.map(ukHolidayToCalendarEvent),
+              specialEvents.map(toCalendarEvent), // Static special events
               fetchSessionEvents // Lazily-fetched holidays
             ]}
             eventClick={({ event }) => {

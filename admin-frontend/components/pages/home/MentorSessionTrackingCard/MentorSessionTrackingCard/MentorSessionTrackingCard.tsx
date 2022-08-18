@@ -79,44 +79,17 @@ const MentorSessionTrackingCard: React.FunctionComponent<
     }
   };
 
-  const loadSessionGroupOptions = async (search: any, prevOptions: any) => {
-    const SESSION_GROUPS_SELECT_PAGE_SIZE = 20;
-
-    const sessionGroups = await getSessionGroupsFromViews(
-      SESSION_GROUPS_SELECT_PAGE_SIZE,
-      prevOptions.length
-    );
-
-    if (sessionGroups && sessionGroups.data) {
-      const selectboxOptions = {
-        options: sessionGroups.data.map((sessionGroup) => ({
-          value: sessionGroup.viewsSessionGroupId,
-          label: sessionGroup.name,
-        })),
-        hasMore:
-          prevOptions.length + SESSION_GROUPS_SELECT_PAGE_SIZE <
-          sessionGroups.total,
-      };
-
-      return selectboxOptions;
-    } else {
-      toast.error(ERROR_MESSAGE);
-      return { options: [], hasMore: false };
-    }
-  };
-
-  const onSessionGroupSelectOptionChange = async (newSessionGroup: any) => {
-    const selectedSessionGroup =
-      newSessionGroup as PaginatedSelectOption<string>;
-
-    setSelectedSessionGroupId(selectedSessionGroup.value);
-    setSelectedSessionGroupName(selectedSessionGroup.label);
+  const onSessionGroupSelectOptionChange = async ({
+    id,
+    name,
+  }: SessionGroup) => {
+    setSelectedSessionGroupId(id);
+    setSelectedSessionGroupName(name);
   };
 
   return (
     <CardLayout>
       <Header
-        loadSessionGroupOptions={loadSessionGroupOptions}
         onSessionGroupSelectOptionChange={onSessionGroupSelectOptionChange}
         onSetYear={setCurYear}
         curYear={curYear}
@@ -159,5 +132,10 @@ const CardLayout = styled(Paper)`
   grid-area: mentorSessionTrackingCard;
   padding: 1rem 2rem 1rem 2rem;
 `;
+
+export interface SessionGroup {
+  id: string;
+  name: string;
+}
 
 export default MentorSessionTrackingCard;

@@ -237,6 +237,7 @@ build-docker publish-docker-images:
   - bash -c 'sleep 15'
   - docker exec baytree_server python manage.py migrate
   - docker exec baytree_server python manage.py loaddata goalCategories
+  - docker exec baytree_server python manage.py loaddata ukHolidays
   - docker images
   - docker ps -a
   - docker volume ls

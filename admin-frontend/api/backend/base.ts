@@ -320,20 +320,23 @@ const backendFetch = async (
 ) => {
   const queryParamString = buildQueryParamString(queryParams);
 
-  let response = await fetch(
-    `${API_BASE_URL}/${relativeEndpointUrl}${queryParamString}`,
-    {
-      method: method,
-      body: JSON.stringify(body),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    }
-  );
-
-  return response;
+  try {
+    let response = await fetch(
+      `${API_BASE_URL}/${relativeEndpointUrl}${queryParamString}`,
+      {
+        method: method,
+        body: JSON.stringify(body),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    return response;
+  } catch {
+    return null;
+  }
 };
 
 const buildQueryParamString = (queryParams?: Record<string, any>) => {
@@ -363,7 +366,9 @@ export const backendGet = async <ResponseObject>(
     queryParams
   );
 
-  if (response.ok) {
+  if (!response) {
+    return null;
+  } else if (response.ok) {
     try {
       const object: ResponseObject = await response.json();
       return object;
@@ -380,7 +385,9 @@ export const backendGet = async <ResponseObject>(
         queryParams
       );
 
-      if (response.ok) {
+      if (!response) {
+        return null;
+      } else if (response.ok) {
         try {
           const object: ResponseObject = await response.json();
           return object;
@@ -400,7 +407,9 @@ export const backendGet = async <ResponseObject>(
 
 export const backendPost = async (relativeEndpointUrl: string, body: any) => {
   let response = await backendFetch(relativeEndpointUrl, "POST", body);
-  if (response.ok) {
+  if (!response) {
+    return null;
+  } else if (response.ok) {
     try {
       return await response.json();
     } catch {
@@ -410,7 +419,9 @@ export const backendPost = async (relativeEndpointUrl: string, body: any) => {
     const refreshRes = await refreshAccessToken();
     if (refreshRes) {
       response = await backendFetch(relativeEndpointUrl, "POST", body);
-      if (response.ok) {
+      if (!response) {
+        return null;
+      } else if (response.ok) {
         try {
           return await response.json();
         } catch {
@@ -427,12 +438,22 @@ export const backendPost = async (relativeEndpointUrl: string, body: any) => {
   }
 };
 
-export const backendDelete = async (relativeEndpointUrl: string, params?: Record<string, any>) => {
-  let response = await backendFetch(relativeEndpointUrl, "DELETE", undefined, params);
-  if (response.ok) {
+export const backendDelete = async (
+  relativeEndpointUrl: string,
+  params?: Record<string, any>
+) => {
+  let response = await backendFetch(
+    relativeEndpointUrl,
+    "DELETE",
+    undefined,
+    params
+  );
+  if (!response) {
+    return null;
+  } else if (response.ok) {
     try {
-      if (response.status === 204){
-        return "Success"
+      if (response.status === 204) {
+        return "Success";
       }
       return await response.json();
     } catch {
@@ -441,8 +462,15 @@ export const backendDelete = async (relativeEndpointUrl: string, params?: Record
   } else if (response.status === 401) {
     const refreshRes = await refreshAccessToken();
     if (refreshRes) {
-      response = await backendFetch(relativeEndpointUrl, "DELETE", undefined, params);
-      if (response.ok) {
+      response = await backendFetch(
+        relativeEndpointUrl,
+        "DELETE",
+        undefined,
+        params
+      );
+      if (!response) {
+        return null;
+      } else if (response.ok) {
         try {
           return await response.json();
         } catch {
@@ -461,7 +489,9 @@ export const backendDelete = async (relativeEndpointUrl: string, params?: Record
 
 export const backendPut = async (relativeEndpointUrl: string, body: any) => {
   let response = await backendFetch(relativeEndpointUrl, "PUT", body);
-  if (response.ok) {
+  if (!response) {
+    return null;
+  } else if (response.ok) {
     try {
       return await response.json();
     } catch {
@@ -471,7 +501,9 @@ export const backendPut = async (relativeEndpointUrl: string, body: any) => {
     const refreshRes = await refreshAccessToken();
     if (refreshRes) {
       response = await backendFetch(relativeEndpointUrl, "PUT", body);
-      if (response.ok) {
+      if (!response) {
+        return null;
+      } else if (response.ok) {
         try {
           return await response.json();
         } catch {

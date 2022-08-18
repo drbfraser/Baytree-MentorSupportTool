@@ -82,6 +82,24 @@ export interface SpecialEvent {
   note?: string
 }
 
+// UK Holidays
+export interface UkHoliday {
+  id: number,
+  name: string,
+  date: string
+}
+
+export const fetchUkHolidays = async () => {
+  try {
+    const apiRes = await baseApi.get<UkHoliday[]>("calendar_events/uk_holidays/");
+    if (apiRes.status === 200)
+      return { data: apiRes.data, error: "" }
+    throw Error
+  } catch (err) {
+    return { data: [] as UkHoliday[], error: "Cannot fetch UK holiday data" }
+  }
+}
+
 export const fetchSpecialEvents = async () => {
   try {
     const apiRes = await baseApi.get<SpecialEvent[]>("calendar_events/");

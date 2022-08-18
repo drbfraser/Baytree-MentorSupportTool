@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchSpecialEvents, SpecialEvent } from "../api/misc";
 import { EVENT_TYPE } from "./useSessionEvents";
 
-export const toCalanderEvent = (holiday: SpecialEvent) => {
+export const toCalendarEvent = (holiday: SpecialEvent) => {
   return {
     id: `${EVENT_TYPE.HOLIDAY}-${holiday.id}`,
     title: holiday.title,
