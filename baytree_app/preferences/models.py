@@ -21,10 +21,4 @@ class Preference(models.Model):
 
   # Needs to upgrade to MariaDB from 5.5 -> 10.2 or later
   # To use the models.JSONField()
-  json_value = models.CharField(max_length=1000)
-
-  def get_value(self):
-    return json.loads(self.json_value)
-
-  def __str__(self):
-    return f"{self.key} {self.json_value}"
+  value = models.CharField(max_length=1000)

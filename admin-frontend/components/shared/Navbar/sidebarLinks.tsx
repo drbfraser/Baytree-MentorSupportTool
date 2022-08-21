@@ -7,6 +7,7 @@ import {
   MdSupervisorAccount,
   MdEditCalendar,
   MdLocationOn,
+  MdSettings
 } from "react-icons/md";
 import { NavbarModalComponent } from "./navbar";
 
@@ -28,6 +29,7 @@ const sidebarLinks: SidebarLink[] = [
   { url: "/mentorRoles", title: "Settings", icon: MdSupervisorAccount },
   { url: "/venues", title: "Venues", icon: MdLocationOn },
   { url: "/calendarEvents", title: "Calendar", icon: MdEditCalendar },
+  { url: "/preferences", title: "Preferences", icon: MdSettings },
 ];
 
 export default sidebarLinks;
