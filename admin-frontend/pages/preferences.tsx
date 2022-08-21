@@ -33,34 +33,55 @@ const {
                 handleSubmitPreferences
             }}
         >
-            <Form>
-            {preferences.map((preference, index) => {
-                    return (
-                    <FormControl
-                        key={preference.id}
-                        fullWidth
-                        required={false}
-                        style={{ margin: "2em 0" }}
+          {({ values, handleChange, setFieldValue, isSubmitting }) => {
+            return (
+              <Form
+              >
+              {preferences == null ? <div></div> :
+              preferences.map((preference, index) => {
+                return (
+                <FormControl
+                    key={preference.key}
+                    fullWidth
+                    required={false}
+                    style={{ margin: "2em 0"}}
+                >
+                    {/* Preference label */}
+                    <Typography 
+                    style={{display: 'inline-block'}}
+                    sx={{ fontWeight: "bold" }}
+                    color="text.secondary"
                     >
-                        {/* Preference label */}
-                        <Typography
-                        sx={{ fontWeight: "bold" }}
-                        color="text.secondary"
-                        >
-                        {`${index + 1}. ${preference.key}`}
-                        </Typography>
-                        {/* Preference Text Field */}
-                        <TextField
-                            type="number"
-                            sx={{ mt: 1 }}
-                            variant="outlined"
-                            label={preference.key == "searchingDurationInDays" ? " Searching Duration in Days" : "Minimum Active Days"}
-                        />
-                    </FormControl>
-                    );
-                })}
-            <button type="submit">Submit</button>
-            </Form>
+                    {`${index + 1}. ${preference.key == "searchingDurationInDays" ? " Searching Duration in Days" : "Minimum Active Days"}`}
+                    </Typography>
+                    {/* Current Days */}
+                    <Typography
+                    sx={{ fontWeight: "normal"}}
+                    color="text.secondary"
+                    >
+                    {`(Current: ${preference.value} days)`} 
+                    </Typography>
+                    {/* Preference Text Field */}
+                    <TextField
+                      id={preference.key}
+                      type="number"
+                      sx={{ mt: 1 }}
+                      variant="outlined"
+                      label={"Number of Days"}
+                      onChange={handleChange}
+                    />
+                </FormControl>
+                );
+                  })}
+                <Button 
+                  type="submit"
+                  variant="contained"
+                  sx={{ mt: 3 }}
+                  >Submit
+                </Button>
+              </Form>
+            );
+          }}
         </Formik>
     }
     </PreferencesCard>
