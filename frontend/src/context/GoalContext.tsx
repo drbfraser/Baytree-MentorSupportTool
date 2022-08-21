@@ -46,7 +46,7 @@ export const GoalContext = createContext<GoalContextType>({
   handleChangeQuery: (_arg) => { }
 });
 
-export const GoalProvider: FunctionComponent<{}> = (props) => {
+export const GoalProvider = (props: any) => {
   const [query, setQuery] = useState(DEFAULT_QUERY);
   const { goals, loadingGoals, goalError, count, refreshGoals } = useGoals(query);
   const { statistics, loadingStatistics, refreshStatistics, statisticsError } = useGoalStatistics();
