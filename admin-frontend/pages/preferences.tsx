@@ -1,23 +1,20 @@
-import { FormControl, Paper, TextField, Typography } from "@mui/material";
+import { Button, FormControl, Paper, TextField, Typography } from "@mui/material";
 import { NextPage } from "next";
 import styled from "styled-components";
 import { Formik, Form } from "formik";
+import { toast } from 'react-toastify'
 import usePreferences from "../hooks/usePreferences";
 import OverlaySpinner from "../components/shared/overlaySpinner";
 
-
-export interface Preference {
-    id: number,
-    key: string,
-    json_value: number
-}
+const DEFAULT_MINIMUM_ACTIVE_DAYS = "5"
+const DEFAULT_SEARCHING_DURATION_IN_DAYS = "30"
 
 const Preferences: NextPage = () => {
 
 const {
     loading,
     preferences,
-    handleSubmitPreferences,
+    handleUpdatePreferences,
   } = usePreferences();
 
   return (
@@ -25,12 +22,29 @@ const {
       <PreferencesTitle variant="h5">Admin Preferences</PreferencesTitle>
       {loading ? ( <OverlaySpinner active={loading}/> ) :
         <Formik
+            enableReinitialize
             initialValues={{
-                searchingDurationInDays: '',
-                minimumActiveDays: '',
+                searchingDurationInDays: preferences == null ? DEFAULT_SEARCHING_DURATION_IN_DAYS : preferences[0].value,
+                minimumActiveDays: preferences == null ? DEFAULT_MINIMUM_ACTIVE_DAYS : preferences[1].value,
               }}
-            onSubmit={async (answer, { resetForm, setSubmitting }) => {
-                handleSubmitPreferences
+            onSubmit={async (data, { resetForm, setSubmitting }) => {
+              if (parseInt(data.searchingDurationInDays) < 0) {
+                data.searchingDurationInDays = preferences == null ? DEFAULT_SEARCHING_DURATION_IN_DAYS : preferences[0].value;
+                toast.info("Cannot set searching duration in days to less than 0. Using Current days instead.");
+              }
+              if (parseInt(data.minimumActiveDays) < 0) {
+                data.minimumActiveDays = preferences == null ? DEFAULT_MINIMUM_ACTIVE_DAYS : preferences[1].value;
+                toast.info("Cannot set minimum active days to less than 0. Using Current days instead.");
+              }
+              setSubmitting(true);
+              const success = await handleUpdatePreferences(data);
+              if (success) {
+                toast.success("Form successfully submitted!");
+                resetForm();
+              } else {
+                toast.error("Could not submit preference change.");
+              }
+              setSubmitting(false); 
             }}
         >
           {({ values, handleChange, setFieldValue, isSubmitting }) => {
