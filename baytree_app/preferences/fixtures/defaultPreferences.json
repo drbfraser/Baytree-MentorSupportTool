@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "key": "searchingDurationInDays",
-      "json_value": "30"
+      "value": "30"
     }
   },
   {
@@ -12,7 +12,7 @@
     "pk": 2,
     "fields": {
       "key": "minimumActiveDays",
-      "json_value": "5"
+      "value": "5"
     }
   }
 ]
