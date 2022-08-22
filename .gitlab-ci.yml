@@ -11,7 +11,7 @@ variables:
 
 test frontend-component:
   stage: test
-  image: cypress/browsers:node16.14.2-slim-chrome103-ff102
+  image: cypress/browsers:node17.8.0-chrome99-ff97-slim
   tags:
     - docker
   rules:
