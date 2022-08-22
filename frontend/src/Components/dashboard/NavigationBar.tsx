@@ -24,9 +24,12 @@ import Logo from "../../Assets/baytree.png";
 import { useAuth } from "../../context/AuthContext";
 import MobileMenu from "./MobileMenu";
 
-const NavigationButton: FunctionComponent<{
-  action?: MouseEventHandler<HTMLButtonElement>;
-}> = (props) => {
+export interface NavigationButtonProps {
+  action?: MouseEventHandler<HTMLButtonElement>,
+  children: React.ReactNode
+}
+
+const NavigationButton = (props: NavigationButtonProps) => {
   return (
     <IconButton
       sx={{ display: { xs: "none", sm: "inherit" } }}
