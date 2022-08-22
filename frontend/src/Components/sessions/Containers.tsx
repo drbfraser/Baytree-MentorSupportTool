@@ -1,39 +1,42 @@
 import { Grid, Typography, FormControl } from "@mui/material";
-import { FunctionComponent } from "react";
+
+export interface TimeInputContainerProps {
+  label: string,
+  children: React.ReactNode
+}
 
 // Reponsive container for time
-export const TimeInputContainer: FunctionComponent<{ label: string }> = ({
-  label,
-  children
-}) => {
+export const TimeInputContainer = (props: TimeInputContainerProps) => {
   return (
     <Grid container item xs={12} sm={4} alignItems="center">
       <Grid item xs={5} sm={12}>
         <Typography sx={{ fontWeight: "bold" }} color="text.secondary">
-          {label}
+          {props.label}
         </Typography>
       </Grid>
       <Grid item xs={7} sm={12}>
-        <FormControl fullWidth>{children}</FormControl>
+        <FormControl fullWidth>{props.children}</FormControl>
       </Grid>
     </Grid>
   );
 };
 
+export interface SelectInputContainerProps {
+  label: string,
+  children: React.ReactNode
+}
+
 // Reponsive container for select
-export const SelectInputContainer: FunctionComponent<{ label: string }> = ({
-  label,
-  children
-}) => {
+export const SelectInputContainer = (props: SelectInputContainerProps) => {
   return (
     <Grid container item xs={12} sm={4} alignItems="center">
       <Grid item xs={5} sm={12}>
         <Typography sx={{ fontWeight: "bold" }} color="text.secondary">
-          {label}
+          {props.label}
         </Typography>
       </Grid>
       <Grid item xs={7} sm={12}>
-        <FormControl fullWidth>{children}</FormControl>
+        <FormControl fullWidth>{props.children}</FormControl>
       </Grid>
     </Grid>
   );

@@ -1,10 +1,11 @@
 import { Container, Divider, Grow, Typography } from "@mui/material";
-import { FunctionComponent } from "react";
 
-const TitledContainer: FunctionComponent<{ title: string }> = ({
-  title,
-  children
-}) => {
+export interface TitledContainerProps {
+  title: string,
+  children: React.ReactNode
+}
+
+const TitledContainer = (props: TitledContainerProps) => {
   return (
     <Grow in>
       <Container maxWidth="md" sx={{ boxShadow: 5, borderRadius: 5, p: 2 }}>
@@ -15,10 +16,10 @@ const TitledContainer: FunctionComponent<{ title: string }> = ({
           color="text.secondary"
           gutterBottom
         >
-          {title}
+          {props.title}
         </Typography>
         <Divider />
-        {children}
+        {props.children}
       </Container>
     </Grow>
   );

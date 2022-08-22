@@ -1,4 +1,4 @@
-import { createContext, FunctionComponent, useContext } from "react";
+import { createContext, useContext } from "react";
 import { login, logout, verify } from "../api/auth";
 import useLocalStorage from "../hooks/useLocalStorage";
 
@@ -19,7 +19,11 @@ const AuthContext = createContext<AuthContextType>({
   verifyClient: async () => false
 });
 
-export const AuthProvider: FunctionComponent<{}> = (props) => {
+interface AuthProviderProps {
+  children: React.ReactNode
+}
+
+export const AuthProvider = (props: AuthProviderProps) => {
   const [user, setUser] = useLocalStorage<StorageInfo>("user", undefined);
 
   const signIn = async (email: string, password: string) => {

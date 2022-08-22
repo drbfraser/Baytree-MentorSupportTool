@@ -19,12 +19,13 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "types": ["cypress", "@testing-library/cypress"],
+    "baseUrl": "./",
     "paths": {
-      "@pages/*": ["./src/pages/*"],
-      "@components/*": ["./src/Components/*"],
-      "@context/*": ["./src/context/*"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@mocks/*": ["./src/mocks/*"],
+      "@pages/*": ["src/pages/*"],
+      "@components/*": ["src/Components/*"],
+      "@context/*": ["src/context/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@mocks/*": ["src/mocks/*"],
     },
   },
   "include": [
