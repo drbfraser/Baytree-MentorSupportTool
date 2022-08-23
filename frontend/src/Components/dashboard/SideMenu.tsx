@@ -7,7 +7,7 @@ import {
   ListItemText, Toolbar, useMediaQuery
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { FunctionComponent, useEffect, useState } from "react";
+import { type FunctionComponent, useEffect, useState } from "react";
 import {
   MdAutoGraph,
   MdBook,

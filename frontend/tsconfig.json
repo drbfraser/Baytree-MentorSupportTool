@@ -12,7 +12,6 @@
     "importsNotUsedAsValues": "error",
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",

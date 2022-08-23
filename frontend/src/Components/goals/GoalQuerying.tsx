@@ -10,7 +10,7 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import { ChangeEvent, useCallback } from 'react';
+import { type ChangeEvent, useCallback } from 'react';
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 import type { OrderingDate } from "../../api/goals";
 import { useGoalContext } from "../../context/GoalContext";

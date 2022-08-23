@@ -6,12 +6,8 @@ import {
   Toolbar,
   Typography
 } from "@mui/material";
-import {
-  FunctionComponent,
-  MouseEventHandler,
-  useEffect,
-  useState
-} from "react";
+import type { FunctionComponent, MouseEventHandler } from "react";
+import { useEffect, useState } from "react";
 import {
   MdAccountBox,
   MdLogout,

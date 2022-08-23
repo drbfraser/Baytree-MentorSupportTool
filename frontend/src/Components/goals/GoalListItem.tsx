@@ -12,11 +12,11 @@ import {
   Typography
 } from "@mui/material";
 import { format, formatDistanceToNow } from "date-fns";
-import { FunctionComponent, useEffect } from "react";
+import { type FunctionComponent, useEffect } from "react";
 import { MdCheck, MdEdit, MdExpandMore } from "react-icons/md";
 import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
-import { fetchGoalById, Goal } from "../../api/goals";
+import { fetchGoalById, type Goal } from "../../api/goals";
 import { useGoalContext } from '../../context/GoalContext';
 import Loading from '../shared/Loading';
 import GoalStatus from "./GoalStatus";
