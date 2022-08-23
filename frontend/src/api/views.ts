@@ -9,7 +9,7 @@ export type User = {
   dateOfBirth?: string;
   ethnicity?: string;
   country?: string;
-}
+};
 
 export const dummyUser: User = {
   firstname: "Super User",
@@ -49,7 +49,7 @@ export type Association = {
   description: string | null;
   startDate: string; // ex. 2021-07-07
   endDate: string; // ex. 0000-00-00
-}
+};
 
 export const getAssociations = async (volunteerId: number) => {
   try {
@@ -72,7 +72,7 @@ export const getAssociations = async (volunteerId: number) => {
 export type Venue = {
   id: number;
   name: string;
-}
+};
 
 export const getViewsVenues = async () => {
   try {
@@ -94,7 +94,7 @@ export type Participant = {
   dateOfBirth: string;
   ethnicity: string;
   country: string;
-}
+};
 
 export const getParticipants = async (params?: { ids: number[] }) => {
   let paramsString = "";

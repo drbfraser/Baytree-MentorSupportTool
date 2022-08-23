@@ -1,4 +1,6 @@
-import PasswordValidation, { isValid } from "@components/shared/PasswordValidation";
+import PasswordValidation, {
+  isValid
+} from "@components/shared/PasswordValidation";
 import { LoadingButton } from "@mui/lab";
 import {
   Alert,

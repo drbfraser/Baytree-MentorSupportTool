@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 import { API_BASE_URL } from "./url";
 
 // Logging endpoint
@@ -16,12 +16,11 @@ export enum logLevel {
   debug = "debug",
   warning = "warning",
   critical = "critical",
-  error = "error",
+  error = "error"
 }
 
 // Custom Logger class to create logs that will be sent to /logging
 export class Logger {
-
   private getStackTrace() {
     try {
       throw new Error();
@@ -30,17 +29,27 @@ export class Logger {
     }
   }
 
-  private createJsonLog (message: string, logLevel: logLevel, displayStackTrace: boolean = false) {
+  private createJsonLog(
+    message: string,
+    logLevel: logLevel,
+    displayStackTrace: boolean = false
+  ) {
     return {
-      message: message, 
+      message: message,
       level: logLevel,
       timeStamp: Date.now(),
-      stackTrace: displayStackTrace ? this.getStackTrace() : "",
+      stackTrace: displayStackTrace ? this.getStackTrace() : ""
     };
   }
 
-  sendLog = async (message: string, logLevel: logLevel, displayStackTrace: boolean = false) => {
-    let jsonLog = this.createJsonLog(message, logLevel, displayStackTrace)
-    return await loggingApi.post("", jsonLog).catch(error => alert(error.message));
+  sendLog = async (
+    message: string,
+    logLevel: logLevel,
+    displayStackTrace: boolean = false
+  ) => {
+    let jsonLog = this.createJsonLog(message, logLevel, displayStackTrace);
+    return await loggingApi
+      .post("", jsonLog)
+      .catch((error) => alert(error.message));
   };
 }

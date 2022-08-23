@@ -61,9 +61,16 @@ const useQuestionnaire = () => {
       .every((q) => (answerSet[q.QuestionID] || "") !== "");
   };
 
-  const handleSubmitAnswerSet = async (answerSet: AnswerSet, person: string) => {
+  const handleSubmitAnswerSet = async (
+    answerSet: AnswerSet,
+    person: string
+  ) => {
     if (questionnaireId < 0) return undefined;
-    return await submitAnswerSetForQuestionnaire(answerSet, questionnaireId, person);
+    return await submitAnswerSetForQuestionnaire(
+      answerSet,
+      questionnaireId,
+      person
+    );
   };
 
   const loading = loadingQuestionnaire || loadingMentor || loadingMentees;

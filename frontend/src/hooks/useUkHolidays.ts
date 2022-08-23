@@ -23,11 +23,16 @@ const useUkHolidays = () => {
     fetchUkHolidays()
       .then(({ data, error }) => {
         if (error) setError(error);
-        else setEvents(data)
-      }).finally(() => setLoading(false));
+        else setEvents(data);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  return { loadingUkHolidays: loading, ukHolidays: events, ukHolidaysError: error }
+  return {
+    loadingUkHolidays: loading,
+    ukHolidays: events,
+    ukHolidaysError: error
+  };
 };
 
 export default useUkHolidays;

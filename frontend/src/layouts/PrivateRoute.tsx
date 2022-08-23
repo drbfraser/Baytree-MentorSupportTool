@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import {ReactQueryDevtools} from "react-query/devtools"
+import { ReactQueryDevtools } from "react-query/devtools";
 import { Navigate, Outlet } from "react-router-dom";
 import { goalsApi } from "../api/goals";
 import { userApi } from "../api/mentorAccount";

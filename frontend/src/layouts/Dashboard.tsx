@@ -31,7 +31,7 @@ const Dashboard = () => {
       >
         <Toolbar />
         {/* The main content of the application */}
-        <Box sx={{p: 3}}>
+        <Box sx={{ p: 3 }}>
           <Outlet />
         </Box>
       </Box>

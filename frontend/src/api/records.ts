@@ -17,7 +17,7 @@ export type SessionRecord = {
   startTime: string;
   duration: string;
   cancelled: string;
-}
+};
 
 type Params = {
   startDateFrom?: string;
@@ -26,18 +26,22 @@ type Params = {
   offset?: number;
   sessionGroupId?: number;
   descending?: 0 | 1;
-}
+};
 
-export const fetchSessions = async (params: Params = {descending: 0}) => {
+export const fetchSessions = async (params: Params = { descending: 0 }) => {
   try {
-    const response = await recordsApi.get<{count: number, results: SessionRecord[]}>('', { params });
-    if (response.status === 200) return {data: response.data, error: ""}
-    if (response.status === 404) return {data: undefined, error: "Cannot find any records"}
-    else throw Error
+    const response = await recordsApi.get<{
+      count: number;
+      results: SessionRecord[];
+    }>("", { params });
+    if (response.status === 200) return { data: response.data, error: "" };
+    if (response.status === 404)
+      return { data: undefined, error: "Cannot find any records" };
+    else throw Error;
   } catch (_) {
-    return {data: undefined, error: "Cannot retrieve any records"}
+    return { data: undefined, error: "Cannot retrieve any records" };
   }
-}
+};
 
 export type SessionDetail = SessionRecord & {
   activity: string;
@@ -48,7 +52,7 @@ export type SessionDetail = SessionRecord & {
   mentee?: {
     menteeId: string;
     name: string;
-  }
+  };
   note?: string;
   created: Date;
   updated: Date;

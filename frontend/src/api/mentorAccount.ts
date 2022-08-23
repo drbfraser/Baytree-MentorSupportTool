@@ -52,7 +52,7 @@ export type SessionsCount = {
   sessions_missed: number;
   sessions_remaining: number;
   sessions_total: number;
-}
+};
 
 export const getSessionCount = async (mentorId: number) => {
   const response = await userApi.get<{ status: string; data: SessionsCount }>(

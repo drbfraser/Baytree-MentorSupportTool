@@ -7,7 +7,7 @@ type LoginData = {
   is_admin: boolean;
   is_mentor: boolean;
   is_superuser: boolean;
-}
+};
 
 const authApi = axios.create({
   baseURL: `${API_BASE_URL}/token/`,

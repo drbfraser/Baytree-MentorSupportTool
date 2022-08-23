@@ -1,4 +1,11 @@
-import { Accordion, AccordionDetails, AccordionSummary, Container, Grid, Grow } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Container,
+  Grid,
+  Grow
+} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";
@@ -72,7 +79,9 @@ export default function Notifications() {
                   {data.notification_type.title}
                 </Typography>
                 <Typography sx={{ color: "text.secondary", margin: "6px" }}>
-                  {formatDistanceToNow(new Date(data.creation_date), { addSuffix: true })}
+                  {formatDistanceToNow(new Date(data.creation_date), {
+                    addSuffix: true
+                  })}
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>

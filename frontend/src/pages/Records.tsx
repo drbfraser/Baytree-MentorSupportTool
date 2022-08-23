@@ -1,6 +1,8 @@
 import {
   Box,
-  Button, Icon, Paper,
+  Button,
+  Icon,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -25,30 +27,32 @@ export default function Records() {
   const [query, setQuery] = useState({
     page: 0,
     limit: PAGNINATE_OPTIONS[0],
-    descending: true,
+    descending: true
   });
   const { count, sessions, loading, error } = useRecords(query);
 
   const handleChangePage = (
     _: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number,
+    newPage: number
   ) => {
     setQuery((prev) => ({ ...prev, page: newPage }));
   };
 
   const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setQuery((prev) => ({ ...prev, page: 0, limit: +event.target.value }))
+    setQuery((prev) => ({ ...prev, page: 0, limit: +event.target.value }));
   };
 
   const toggleOrdering = () => {
-    setQuery((prev) => ({ ...prev, descending: !prev.descending }))
-  }
+    setQuery((prev) => ({ ...prev, descending: !prev.descending }));
+  };
 
   // Record dialog
   const [open, setOpen] = useState(false);
-  const [sessionId, setSessionId] = useState<string | number | undefined>(undefined);
+  const [sessionId, setSessionId] = useState<string | number | undefined>(
+    undefined
+  );
 
   // Give the error toast when failure
   useEffect(() => {
@@ -56,18 +60,30 @@ export default function Records() {
     if (error) toastId = toast.error(error);
     return () => {
       if (toastId) toast.dismiss(toastId);
-    }
+    };
   }, [error]);
 
   return (
     <>
-      <Box sx={{ mb: 2, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <Box
+        sx={{
+          mb: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between"
+        }}
+      >
         <Typography variant="h4" component="h2">
           Records
         </Typography>
         <Button
           onClick={toggleOrdering}
-          startIcon={<Icon component={query.descending ? MdArrowDownward : MdArrowUpward} />}>
+          startIcon={
+            <Icon
+              component={query.descending ? MdArrowDownward : MdArrowUpward}
+            />
+          }
+        >
           {query.descending ? "Newest to oldest" : "Oldest to newest"}
         </Button>
       </Box>
@@ -84,23 +100,34 @@ export default function Records() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {loading && <TableRow>
-                <TableCell colSpan={5}><Loading /></TableCell>
-              </TableRow>}
-              {sessions.length === 0 && !loading && <TableRow>
-                <TableCell colSpan={5} align="center">No records found</TableCell>
-              </TableRow>}
-              {!loading && sessions.map(session => {
-                return <RecordRow
-                  session={session}
-                  key={session.viewsSessionId}
-                  handleClick={() => {
-                    setSessionId(session.viewsSessionId);
-                    setOpen(true);
-                  }} />
-              })}
+              {loading && (
+                <TableRow>
+                  <TableCell colSpan={5}>
+                    <Loading />
+                  </TableCell>
+                </TableRow>
+              )}
+              {sessions.length === 0 && !loading && (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    No records found
+                  </TableCell>
+                </TableRow>
+              )}
+              {!loading &&
+                sessions.map((session) => {
+                  return (
+                    <RecordRow
+                      session={session}
+                      key={session.viewsSessionId}
+                      handleClick={() => {
+                        setSessionId(session.viewsSessionId);
+                        setOpen(true);
+                      }}
+                    />
+                  );
+                })}
             </TableBody>
-
           </Table>
         </TableContainer>
         <TablePagination
@@ -111,9 +138,14 @@ export default function Records() {
           count={count}
           page={query.page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage} />
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Paper>
-      <RecordDetail sessionId={sessionId} open={open} handleClose={() => setOpen(false)} />
+      <RecordDetail
+        sessionId={sessionId}
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
     </>
   );
 }

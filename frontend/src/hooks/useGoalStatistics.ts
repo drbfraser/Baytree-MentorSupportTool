@@ -8,12 +8,14 @@ const useGoalStatistics = () => {
 
   const refreshStatistics = () => {
     setLoading(true);
-    fetchGoalStatistics().then(({ data, error }) => {
-      if (!data || error !== "") {
-        setError(error);
-      } else setStatistics(data);
-    }).finally(() => setLoading(false));
-  }
+    fetchGoalStatistics()
+      .then(({ data, error }) => {
+        if (!data || error !== "") {
+          setError(error);
+        } else setStatistics(data);
+      })
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
     refreshStatistics();

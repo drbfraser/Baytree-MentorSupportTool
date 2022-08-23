@@ -1,5 +1,11 @@
-import { SelectInputContainer, TimeInputContainer } from "@components/sessions/Containers";
-import { getInitialFormValues, submitSession } from "@components/sessions/session";
+import {
+  SelectInputContainer,
+  TimeInputContainer
+} from "@components/sessions/Containers";
+import {
+  getInitialFormValues,
+  submitSession
+} from "@components/sessions/session";
 import Loading from "@components/shared/Loading";
 import TitledContainer from "@components/shared/TitledContainer";
 import useActivities from "@hooks/useActivities";

@@ -1,6 +1,6 @@
 import type { EventInput } from "@fullcalendar/react";
 import { useEffect, useMemo, useState } from "react";
-import { fetchSpecialEvents,type SpecialEvent } from "../api/misc";
+import { fetchSpecialEvents, type SpecialEvent } from "../api/misc";
 import { EVENT_TYPE } from "./useSessionEvents";
 
 export const toCalendarEvent = (holiday: SpecialEvent) => {
@@ -10,10 +10,12 @@ export const toCalendarEvent = (holiday: SpecialEvent) => {
     start: holiday.startDate,
     end: holiday.endDate,
     allDay: true,
-    rrule: holiday.isAnnual ? {
-      freq: 'yearly',
-      dtstart: holiday.startDate
-    } : undefined
+    rrule: holiday.isAnnual
+      ? {
+          freq: "yearly",
+          dtstart: holiday.startDate
+        }
+      : undefined
   } as EventInput;
 };
 
@@ -26,11 +28,16 @@ const useSpecialEvents = () => {
     fetchSpecialEvents()
       .then(({ data, error }) => {
         if (error) setError(error);
-        else setEvents(data)
-      }).finally(() => setLoading(false));
+        else setEvents(data);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  return { loadingSpecialEvents: loading, specialEvents: events, specialEventError: error }
+  return {
+    loadingSpecialEvents: loading,
+    specialEvents: events,
+    specialEventError: error
+  };
 };
 
 export default useSpecialEvents;
