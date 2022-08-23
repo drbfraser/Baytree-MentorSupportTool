@@ -47,7 +47,7 @@ export const fetchMenteeListByMentorId = (id: number) => {
     .then(({ data }) => data.menteeUsers || []); // Why ???
 };
 
-export interface SessionsCount {
+export type SessionsCount = {
   sessions_attended: number;
   sessions_missed: number;
   sessions_remaining: number;

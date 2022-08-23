@@ -11,12 +11,12 @@ export const goalsApi = axios.create({
   withCredentials: true
 });
 
-export interface GoalCategory {
+export type GoalCategory = {
   id: number;
   name: string;
 }
 
-export interface Goal {
+export type Goal = {
   id: number;
   title: string;
   creation_date: string;
@@ -27,11 +27,11 @@ export interface Goal {
   categories: GoalCategory[];
 }
 
-export interface GoalDetail extends Goal {
+export type GoalDetail = Goal & {
   mentee?: Participant;
 }
 
-export interface GoalInput {
+export type GoalInput = {
   title: string;
   goal_review_date: Date;
   mentee_id?: number | string;

@@ -10,7 +10,7 @@ export const recordsApi = axios.create({
   }
 });
 
-export interface SessionRecord {
+export type SessionRecord = {
   viewsSessionId: string;
   name: string;
   startDate: string;
@@ -39,7 +39,7 @@ export const fetchSessions = async (params: Params = {descending: 0}) => {
   }
 }
 
-export interface SessionDetail extends SessionRecord {
+export type SessionDetail = SessionRecord & {
   activity: string;
   sessionGroup?: {
     name: string;

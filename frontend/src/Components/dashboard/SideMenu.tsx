@@ -39,7 +39,7 @@ const navigationLinkItems = [
   }
 ];
 
-interface SideMenuProps {
+type SideMenuProps = {
   drawerWidth: number;
   mobileDrawerOpened: boolean;
   closeDrawer: () => void;

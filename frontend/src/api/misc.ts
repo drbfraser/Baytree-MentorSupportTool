@@ -8,7 +8,7 @@ export const baseApi = axios.create({
 });
 
 // Questionnaire
-export interface Question {
+export type Question = {
   enabled: string;
   Question: string;
   QuestionID: string;
@@ -58,7 +58,7 @@ export const fetchResourcesURL = async () => {
 
 // Sessions
 // TODO: Update the session based on the schema frontend
-export interface Session {
+export type Session = {
   SessionID: number;
   Title: string;
   StartDate: string;
@@ -73,7 +73,7 @@ export const fetchSessionListByMentorId = async (id: number) => {
 };
 
 // Holidays
-export interface SpecialEvent {
+export type SpecialEvent = {
   id: number,
   title: string,
   startDate: string,
@@ -83,7 +83,7 @@ export interface SpecialEvent {
 }
 
 // UK Holidays
-export interface UkHoliday {
+export type UkHoliday = {
   id: number,
   name: string,
   date: string
@@ -123,7 +123,7 @@ export const getActivitiesForMentor = async () => {
     return null;
   }
 };
-export interface Venue {
+export type Venue = {
   viewsVenueId: number;
 }
 

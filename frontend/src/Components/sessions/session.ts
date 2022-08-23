@@ -3,7 +3,7 @@ import format from "date-fns/format";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../../api/url";
 
-export interface SessionFormData {
+export type SessionFormData = {
   cancelled: boolean;
   date: Date;
   clockIn: Date;
@@ -26,7 +26,7 @@ export const getInitialFormValues = () =>
     activity: ""
   } as SessionFormData);
 
-export interface Mentee {
+export type Mentee = {
   id: number;
   name: string;
 }

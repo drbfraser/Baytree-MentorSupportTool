@@ -2,11 +2,11 @@ import { createContext, useContext } from "react";
 import { login, logout, verify } from "../api/auth";
 import useLocalStorage from "../hooks/useLocalStorage";
 
-interface StorageInfo {
+type StorageInfo = {
   userId: number;
   viewsPersonId?: number;
 }
-interface AuthContextType {
+type AuthContextType = {
   user?: StorageInfo;
   signIn: (email: string, password: string) => Promise<boolean>;
   signOut: () => Promise<boolean>;
@@ -19,11 +19,7 @@ const AuthContext = createContext<AuthContextType>({
   verifyClient: async () => false
 });
 
-interface AuthProviderProps {
-  children: React.ReactNode
-}
-
-export const AuthProvider = (props: AuthProviderProps) => {
+export const AuthProvider: React.FC<{children: React.ReactNode}> = (props) => {
   const [user, setUser] = useLocalStorage<StorageInfo>("user", undefined);
 
   const signIn = async (email: string, password: string) => {

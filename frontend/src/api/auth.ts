@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_BASE_URL } from "./url";
 
-interface LoginData {
+type LoginData = {
   user_id: number;
   viewsPersonId: number;
   is_admin: boolean;

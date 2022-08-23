@@ -1,16 +1,14 @@
 import { FormHelperText, MenuItem, Select } from "@mui/material";
 import { useField } from "formik";
-
-import { FunctionComponent } from "react";
 import { Question } from "../../api/misc";
 import { Participant } from "../../api/views";
 
-interface Props {
+type Props = {
   question: Question;
   menteeList: Participant[];
 }
 
-const MenteesNameInput: FunctionComponent<Props> = ({
+const MenteesNameInput: React.FC<Props> = ({
   question,
   menteeList
 }) => {

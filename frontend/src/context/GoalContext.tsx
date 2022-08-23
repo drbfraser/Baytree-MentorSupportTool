@@ -1,4 +1,4 @@
-import { createContext, FunctionComponent, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { Goal, GoalDetail, GoalInput, GoalQuery, submitCompleteGoal, submitGoal } from "../api/goals";
 import useGoals from "../hooks/useGoals";
 import useGoalStatistics from "../hooks/useGoalStatistics";
@@ -7,7 +7,7 @@ type GoalEdit = {
   goal?: GoalDetail
   open: boolean
 }
-interface GoalContextType {
+type GoalContextType = {
   goals: Goal[];
   edit: GoalEdit;
   openEdit: (goal?: GoalDetail) => void;
@@ -46,7 +46,7 @@ export const GoalContext = createContext<GoalContextType>({
   handleChangeQuery: (_arg) => { }
 });
 
-export const GoalProvider = (props: any) => {
+export const GoalProvider: React.FC<{ children: React.ReactNode }> = (props) => {
   const [query, setQuery] = useState(DEFAULT_QUERY);
   const { goals, loadingGoals, goalError, count, refreshGoals } = useGoals(query);
   const { statistics, loadingStatistics, refreshStatistics, statisticsError } = useGoalStatistics();
@@ -69,7 +69,7 @@ export const GoalProvider = (props: any) => {
     refreshStatistics();
     return true;
   }
-  
+
   return <GoalContext.Provider
     value={{
       loadingGoals,
