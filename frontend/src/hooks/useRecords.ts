@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchSessions, SessionRecord } from "../api/records";
+import { fetchSessions, type SessionRecord } from "../api/records";
 
 const useRecords = (query: {
   page: number,

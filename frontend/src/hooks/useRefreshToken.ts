@@ -1,4 +1,4 @@
-import { AxiosError, AxiosInstance } from "axios";
+import type { AxiosError, AxiosInstance } from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { refreshAccessToken } from "../api/auth";

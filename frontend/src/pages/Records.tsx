@@ -10,9 +10,9 @@ import {
   TableRow,
   Typography
 } from "@mui/material";
-import { ReactText, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
-import { toast } from "react-toastify";
+import { type Id, toast } from "react-toastify";
 import useRecords from "../hooks/useRecords";
 import Loading from "@components/shared/Loading";
 import RecordDetail from "@components/records/RecordDetail";
@@ -52,7 +52,7 @@ export default function Records() {
 
   // Give the error toast when failure
   useEffect(() => {
-    let toastId: ReactText;
+    let toastId: Id;
     if (error) toastId = toast.error(error);
     return () => {
       if (toastId) toast.dismiss(toastId);

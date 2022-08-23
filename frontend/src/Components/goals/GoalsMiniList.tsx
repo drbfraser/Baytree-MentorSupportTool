@@ -1,12 +1,11 @@
 import { Alert, Box } from "@mui/material";
-import { useEffect, useState } from "react";
-import { fetchGoals, Goal } from "../../api/goals";
+import { useState } from "react";
 import useGoals from "../../hooks/useGoals";
 import Loading from "../shared/Loading";
 import GoalListItem from "./GoalListItem";
 
 const GoalsMiniList = () => {
-  const {goals, loadingGoals, goalError} = useGoals({
+  const { goals, loadingGoals, goalError } = useGoals({
     limit: 3,
     offset: 0,
     orderingDate: "goal_review_date"

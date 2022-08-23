@@ -1,6 +1,6 @@
-import { EventInput } from "@fullcalendar/react";
+import type { EventInput } from "@fullcalendar/react";
 import { useEffect, useState } from "react";
-import { fetchUkHolidays, UkHoliday } from "../api/misc";
+import { fetchUkHolidays, type UkHoliday } from "../api/misc";
 import { EVENT_TYPE } from "./useSessionEvents";
 
 export const ukHolidayToCalendarEvent = (ukHoliday: UkHoliday) => {

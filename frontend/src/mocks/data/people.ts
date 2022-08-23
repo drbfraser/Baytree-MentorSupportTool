@@ -1,4 +1,4 @@
-import { Participant, User } from "../../api/views";
+import type { Participant, User } from "../../api/views";
 
 // Fake data retrieved from https://datafakegenerator.com/generador.php
 export const mentors: User[] = [

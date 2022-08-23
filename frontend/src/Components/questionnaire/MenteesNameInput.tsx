@@ -1,7 +1,7 @@
 import { FormHelperText, MenuItem, Select } from "@mui/material";
 import { useField } from "formik";
-import { Question } from "../../api/misc";
-import { Participant } from "../../api/views";
+import type { Question } from "../../api/misc";
+import type { Participant } from "../../api/views";
 
 type Props = {
   question: Question;

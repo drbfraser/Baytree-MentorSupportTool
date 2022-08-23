@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
-import { Goal, GoalDetail, GoalInput, GoalQuery, submitCompleteGoal, submitGoal } from "../api/goals";
+import type { Goal, GoalDetail, GoalInput, GoalQuery } from "../api/goals";
+import { submitCompleteGoal, submitGoal } from "../api/goals";
 import useGoals from "../hooks/useGoals";
 import useGoalStatistics from "../hooks/useGoalStatistics";
 

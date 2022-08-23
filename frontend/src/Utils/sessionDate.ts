@@ -1,5 +1,5 @@
 import { addMinutes } from "date-fns";
-import { SessionRecord } from "../api/records";
+import type { SessionRecord } from "../api/records";
 
 export const convertSessionDate = (session: SessionRecord) => {
   const [startH, startM] = session.startTime.split(":").map(m => +m);

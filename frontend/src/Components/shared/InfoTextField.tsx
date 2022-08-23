@@ -1,5 +1,5 @@
-import { TextField, TextFieldProps } from "@mui/material";
-import { FunctionComponent } from "react";
+import { TextField, type TextFieldProps } from "@mui/material";
+import type { FunctionComponent } from "react";
 
 const InfoTextField: FunctionComponent<TextFieldProps> = (props) => {
   return (

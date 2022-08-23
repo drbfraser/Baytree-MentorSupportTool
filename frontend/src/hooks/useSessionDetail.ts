@@ -1,8 +1,8 @@
-import { AxiosError } from "axios";
+import type { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
-import { recordsApi, SessionDetail } from "../api/records";
+import { recordsApi, type SessionDetail } from "../api/records";
 
 const generateMessage = (error: AxiosError, defaultMessage: string) => {
   const status = error.response?.status;

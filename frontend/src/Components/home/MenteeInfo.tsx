@@ -1,12 +1,8 @@
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { fetchMenteeListByMentorId } from "../../api/mentorAccount";
-import { API_BASE_URL } from "../../api/url";
 import { useAuth } from "../../context/AuthContext";
-import TitledContainer from "../shared/TitledContainer";
 
 export default function MenteeInfo() {
   const { user } = useAuth();

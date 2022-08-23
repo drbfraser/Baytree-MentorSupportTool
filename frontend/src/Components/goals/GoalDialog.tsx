@@ -21,7 +21,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { GoalDetail, GoalInput } from "../../api/goals";
+import type { GoalDetail, GoalInput } from "../../api/goals";
 import { useGoalContext } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoalCategories";
 import useMentees from "../../hooks/useMentees";

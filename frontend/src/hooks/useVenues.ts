@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchVenues } from "../api/misc";
-import { getViewsVenues, Venue } from "../api/views";
+import { getViewsVenues, type Venue } from "../api/views";
 
 /** Get venue list on views from the backend
  * @returns

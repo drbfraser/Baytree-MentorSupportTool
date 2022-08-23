@@ -1,10 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  AnswerSet,
-  fetchQuestions,
-  Question,
-  submitAnswerSetForQuestionnaire
-} from "../api/misc";
+import type { AnswerSet, Question } from "../api/misc";
+import { fetchQuestions, submitAnswerSetForQuestionnaire } from "../api/misc";
 import useMentees from "./useMentees";
 import useMentor from "./useMentor";
 

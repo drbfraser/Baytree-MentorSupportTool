@@ -29,7 +29,7 @@ type NavigationButtonProps = {
   children: React.ReactNode
 }
 
-const NavigationButton: React.FC<NavigationButtonProps> = (props) => {
+const NavigationButton: FunctionComponent<NavigationButtonProps> = (props) => {
   return (
     <IconButton
       sx={{ display: { xs: "none", sm: "inherit" } }}

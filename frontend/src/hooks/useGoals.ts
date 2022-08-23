@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { fetchGoals, GoalQuery } from "../api/goals";
+import { fetchGoals, type GoalQuery } from "../api/goals";
 
 const useGoals = (query: GoalQuery) => {
   const {data, isLoading, error, refetch} = useQuery(["goal", query], () => fetchGoals(query));

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { format } from "date-fns";
 import { API_BASE_URL } from "./url";
-import { Participant } from "./views";
+import type { Participant } from "./views";
 
 export const goalsUrl = `${API_BASE_URL}/goals`;
 

@@ -1,4 +1,4 @@
-import { rest, setupWorker, SetupWorkerApi } from "msw";
+import { rest, setupWorker, type SetupWorkerApi } from "msw";
 import { API_BASE_URL } from "../api/url";
 
 const worker = setupWorker();

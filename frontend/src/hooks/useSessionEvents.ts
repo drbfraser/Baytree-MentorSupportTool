@@ -1,8 +1,8 @@
-import { EventInput, EventSourceFunc } from "@fullcalendar/react";
+import type { EventInput, EventSourceFunc } from "@fullcalendar/react";
 import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { useCallback, useState } from "react";
-import { fetchSessions, SessionRecord } from "../api/records";
+import { fetchSessions, type SessionRecord } from "../api/records";
 import { TIMEZONE_ID } from "../Utils/locale";
 import { convertSessionDate } from "../Utils/sessionDate";
 

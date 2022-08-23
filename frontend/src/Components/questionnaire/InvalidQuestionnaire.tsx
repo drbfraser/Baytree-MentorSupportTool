@@ -1,5 +1,5 @@
 import { Alert, AlertTitle } from "@mui/material";
-import { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
 
 const InvalidQuestionnaire: FunctionComponent<{ error: string }> = ({
   error

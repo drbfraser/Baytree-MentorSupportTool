@@ -1,3 +1,0 @@
-export const MOBILE_BREAKPOINT = "61.25rem";
-export const BAYTREE_PRIMARY_COLOR = "#5AB031";
-export const BAYTREE_SECONDARY_COLOR = "#FF1E89";

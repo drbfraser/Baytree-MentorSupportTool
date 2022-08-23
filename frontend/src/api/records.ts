@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { API_BASE_URL } from "./url";
 
 export const recordsApi = axios.create({

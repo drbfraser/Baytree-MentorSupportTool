@@ -20,6 +20,7 @@ import { fetchGoalById, Goal } from "../../api/goals";
 import { useGoalContext } from '../../context/GoalContext';
 import Loading from '../shared/Loading';
 import GoalStatus from "./GoalStatus";
+
 type Props = {
   goal: Goal;
   expanded?: boolean;

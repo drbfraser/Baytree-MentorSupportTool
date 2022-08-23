@@ -1,9 +1,9 @@
 import {
-  Alert, Button, Chip, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, Grid, Typography
+  Alert, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography, type DialogProps
 } from "@mui/material";
 import { formatInTimeZone } from "date-fns-tz";
-import { FunctionComponent } from "react";
-import { SpecialEvent } from "../../api/misc";
+import type { FunctionComponent } from "react";
+import type { SpecialEvent } from "../../api/misc";
 import { TIMEZONE_ID } from "../../Utils/locale";
 import InfoTextField from "../shared/InfoTextField";
 

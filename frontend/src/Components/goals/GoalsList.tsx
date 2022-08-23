@@ -1,6 +1,5 @@
 import { Alert, AlertTitle, Box, TablePagination, Typography } from "@mui/material";
-import { FunctionComponent, useState } from "react";
-import { Goal, GoalDetail } from "../../api/goals";
+import { useState } from "react";
 import { PAGINATION_OPTIONS, useGoalContext } from "../../context/GoalContext";
 import Loading from "../shared/Loading";
 import GoalListItem from "./GoalListItem";

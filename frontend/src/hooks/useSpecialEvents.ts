@@ -1,6 +1,6 @@
-import { EventInput } from "@fullcalendar/react";
+import type { EventInput } from "@fullcalendar/react";
 import { useEffect, useMemo, useState } from "react";
-import { fetchSpecialEvents, SpecialEvent } from "../api/misc";
+import { fetchSpecialEvents,type SpecialEvent } from "../api/misc";
 import { EVENT_TYPE } from "./useSessionEvents";
 
 export const toCalendarEvent = (holiday: SpecialEvent) => {
