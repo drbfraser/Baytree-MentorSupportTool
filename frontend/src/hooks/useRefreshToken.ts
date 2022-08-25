@@ -1,4 +1,4 @@
-import { AxiosError, AxiosInstance } from "axios";
+import type { AxiosError, AxiosInstance } from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { refreshAccessToken } from "../api/auth";
@@ -19,7 +19,6 @@ const useRefreshToken = (api: AxiosInstance) => {
 
           // Resend the request if refresh was sucessful
           if (refreshed) return api(prevRequest);
-
           // Log out and Navigate back to login page for expired refresh token
           else {
             await signOut();
@@ -28,12 +27,12 @@ const useRefreshToken = (api: AxiosInstance) => {
         }
         return error;
       }
-    )
+    );
     return () => {
       // Eject this interceptor when the private routes unmounted
       api.interceptors.response.eject(interceptor);
-    }
-  }, [])
+    };
+  }, []);
 };
 
 export default useRefreshToken;

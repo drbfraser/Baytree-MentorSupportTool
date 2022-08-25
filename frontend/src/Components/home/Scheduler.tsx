@@ -2,16 +2,16 @@
 // https://github.com/fullcalendar/fullcalendar/issues/6371
 // Beware of formatter
 import '@fullcalendar/react/dist/vdom'; // This must comes first
-import FullCalendar, { ToolbarInput } from '@fullcalendar/react'; // this must comes second
+import FullCalendar, { type ToolbarInput } from '@fullcalendar/react'; // this must comes second
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interationPlugin from "@fullcalendar/interaction";
 import rrulePlugin from "@fullcalendar/rrule";
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Box, Checkbox, FormControlLabel, FormGroup, LinearProgress, Paper, useMediaQuery, useTheme } from '@mui/material';
-import { ReactText, useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { useEffect, useRef, useState } from 'react';
+import { type Id, toast } from 'react-toastify';
 import useEventDetailPopup from '../../hooks/useEventDetailPopup';
-import useSessionEvents, { EVENT_TYPE, SessionFilter } from '../../hooks/useSessionEvents';
+import useSessionEvents, { EVENT_TYPE, type SessionFilter } from '../../hooks/useSessionEvents';
 import useSpecialEvents, { toCalendarEvent } from '../../hooks/useSpecialEvents';
 import useUkHolidays, { ukHolidayToCalendarEvent } from '../../hooks/useUkHolidays';
 import { TIMEZONE_ID } from '../../Utils/locale';
@@ -42,7 +42,7 @@ const Scheduler = () => {
   const { fetchSessionEvents, error, loadingSession } = useSessionEvents(filter);
 
   useEffect(() => {
-    let id: ReactText;
+    let id: Id;
     if (error) id = toast.error(error);
     return () => {
       if (id) toast.dismiss(id);
@@ -50,7 +50,7 @@ const Scheduler = () => {
   }, [error]);
 
   useEffect(() => {
-    let id: ReactText;
+    let id: Id;
     if (ukHolidaysError) id = toast.error(ukHolidaysError);
     return () => {
       if (id) toast.dismiss(id);
@@ -58,7 +58,7 @@ const Scheduler = () => {
   }, [ukHolidaysError]);
 
   useEffect(() => {
-    let id: ReactText;
+    let id: Id;
     if (specialEventError) id = toast.error(specialEventError);
     return () => {
       if (id) toast.dismiss(id);

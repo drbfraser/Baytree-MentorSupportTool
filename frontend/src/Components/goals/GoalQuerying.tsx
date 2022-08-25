@@ -10,9 +10,9 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import { ChangeEvent, useCallback } from 'react';
+import { type ChangeEvent, useCallback } from 'react';
 import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
-import { OrderingDate } from "../../api/goals";
+import type { OrderingDate } from "../../api/goals";
 import { useGoalContext } from "../../context/GoalContext";
 import { useGoalCategories } from "../../hooks/useGoalCategories";
 

@@ -1,6 +1,6 @@
-import { EventInput } from "@fullcalendar/react";
+import type { EventInput } from "@fullcalendar/react";
 import { useEffect, useState } from "react";
-import { fetchUkHolidays, UkHoliday } from "../api/misc";
+import { fetchUkHolidays, type UkHoliday } from "../api/misc";
 import { EVENT_TYPE } from "./useSessionEvents";
 
 export const ukHolidayToCalendarEvent = (ukHoliday: UkHoliday) => {
@@ -23,11 +23,16 @@ const useUkHolidays = () => {
     fetchUkHolidays()
       .then(({ data, error }) => {
         if (error) setError(error);
-        else setEvents(data)
-      }).finally(() => setLoading(false));
+        else setEvents(data);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  return { loadingUkHolidays: loading, ukHolidays: events, ukHolidaysError: error }
+  return {
+    loadingUkHolidays: loading,
+    ukHolidays: events,
+    ukHolidaysError: error
+  };
 };
 
 export default useUkHolidays;

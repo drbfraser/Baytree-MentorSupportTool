@@ -1,5 +1,11 @@
-import { SelectInputContainer, TimeInputContainer } from "@components/sessions/Containers";
-import { getInitialFormValues, submitSession } from "@components/sessions/session";
+import {
+  SelectInputContainer,
+  TimeInputContainer
+} from "@components/sessions/Containers";
+import {
+  getInitialFormValues,
+  submitSession
+} from "@components/sessions/session";
 import Loading from "@components/shared/Loading";
 import TitledContainer from "@components/shared/TitledContainer";
 import useActivities from "@hooks/useActivities";
@@ -25,7 +31,7 @@ import {
   TimePicker
 } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 

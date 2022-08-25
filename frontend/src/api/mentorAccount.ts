@@ -47,12 +47,12 @@ export const fetchMenteeListByMentorId = (id: number) => {
     .then(({ data }) => data.menteeUsers || []); // Why ???
 };
 
-export interface SessionsCount {
+export type SessionsCount = {
   sessions_attended: number;
   sessions_missed: number;
   sessions_remaining: number;
   sessions_total: number;
-}
+};
 
 export const getSessionCount = async (mentorId: number) => {
   const response = await userApi.get<{ status: string; data: SessionsCount }>(

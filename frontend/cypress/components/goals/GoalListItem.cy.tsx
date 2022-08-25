@@ -2,7 +2,7 @@ import GoalListItem from "@components/goals/GoalListItem";
 import { GoalProvider } from "@context/GoalContext";
 import goalHandlers from "@mocks/api/goals";
 import { mockGoals } from "@mocks/data/goals";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 beforeEach(() => {

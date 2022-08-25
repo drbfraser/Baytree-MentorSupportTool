@@ -2,8 +2,8 @@ import { CardActionArea, CardContent } from "@mui/material";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { FunctionComponent } from "react";
-import { Goal } from "../../api/goals";
+import type { FunctionComponent } from "react";
+import type { Goal } from "../../api/goals";
 import { useGoalContext } from "../../context/GoalContext";
 
 type GoalStatisticsCellType = {

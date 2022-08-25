@@ -29,7 +29,7 @@
   "scripts": {
     "start": "vite --host --port 3000",
     "build": "tsc && vite build",
-    "format": "prettier --write src/**/*.ts{,x}",
+    "format": "prettier --write src/**/*.ts{,x} cypress/**/*.ts{,x}",
     "cy:open": "cypress open",
     "cy:headless": "cypress run --quiet",
     "test": "start-server-and-test http-get://localhost:3000 cy:open",

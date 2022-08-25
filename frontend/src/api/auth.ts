@@ -1,13 +1,13 @@
 import axios from "axios";
 import { API_BASE_URL } from "./url";
 
-interface LoginData {
+type LoginData = {
   user_id: number;
   viewsPersonId: number;
   is_admin: boolean;
   is_mentor: boolean;
   is_superuser: boolean;
-}
+};
 
 const authApi = axios.create({
   baseURL: `${API_BASE_URL}/token/`,

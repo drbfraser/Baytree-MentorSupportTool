@@ -1,5 +1,5 @@
 import { Box, Icon, Typography } from "@mui/material";
-import { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
 import { MdCheckCircle, MdError } from "react-icons/md";
 
 const ValidationMessage: FunctionComponent<{ label: string; validated: boolean; }> = ({ label, validated }) => {

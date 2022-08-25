@@ -1,8 +1,8 @@
 import { Chip, TableCell, TableRow } from "@mui/material";
 import { addMinutes } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
-import { FunctionComponent } from "react";
-import { SessionRecord } from "../../api/records";
+import type { FunctionComponent } from "react";
+import type { SessionRecord } from "../../api/records";
 import { TIMEZONE_ID } from "../../Utils/locale";
 
 const RecordRow: FunctionComponent<{ session: SessionRecord, handleClick: () => void }> = ({ session, handleClick }) => {

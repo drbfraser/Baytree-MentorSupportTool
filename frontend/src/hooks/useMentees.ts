@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMenteesForMentor, Participant } from "../api/views";
+import { getMenteesForMentor, type Participant } from "../api/views";
 import { useAuth } from "../context/AuthContext";
 
 /** Get mentees for the currently logged in mentor from backend

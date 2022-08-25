@@ -6,12 +6,8 @@ import {
   Toolbar,
   Typography
 } from "@mui/material";
-import {
-  FunctionComponent,
-  MouseEventHandler,
-  useEffect,
-  useState
-} from "react";
+import type { FunctionComponent, MouseEventHandler } from "react";
+import { useEffect, useState } from "react";
 import {
   MdAccountBox,
   MdLogout,
@@ -24,12 +20,12 @@ import Logo from "../../Assets/baytree.png";
 import { useAuth } from "../../context/AuthContext";
 import MobileMenu from "./MobileMenu";
 
-export interface NavigationButtonProps {
+type NavigationButtonProps = {
   action?: MouseEventHandler<HTMLButtonElement>,
   children: React.ReactNode
 }
 
-const NavigationButton = (props: NavigationButtonProps) => {
+const NavigationButton: FunctionComponent<NavigationButtonProps> = (props) => {
   return (
     <IconButton
       sx={{ display: { xs: "none", sm: "inherit" } }}

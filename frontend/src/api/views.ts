@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_BASE_URL } from "./url";
 
-export interface User {
+export type User = {
   firstname: string;
   surname: string;
   viewsPersonId: number;
@@ -9,7 +9,7 @@ export interface User {
   dateOfBirth?: string;
   ethnicity?: string;
   country?: string;
-}
+};
 
 export const dummyUser: User = {
   firstname: "Super User",
@@ -39,7 +39,7 @@ export const getMentorProfile = async () => {
   }
 };
 
-export interface Association {
+export type Association = {
   associationId: number;
   masterType: "Person" | "Staff";
   masterId: number;
@@ -49,7 +49,7 @@ export interface Association {
   description: string | null;
   startDate: string; // ex. 2021-07-07
   endDate: string; // ex. 0000-00-00
-}
+};
 
 export const getAssociations = async (volunteerId: number) => {
   try {
@@ -69,10 +69,10 @@ export const getAssociations = async (volunteerId: number) => {
   }
 };
 
-export interface Venue {
+export type Venue = {
   id: number;
   name: string;
-}
+};
 
 export const getViewsVenues = async () => {
   try {
@@ -86,7 +86,7 @@ export const getViewsVenues = async () => {
   }
 };
 
-export interface Participant {
+export type Participant = {
   firstName: string;
   lastName: string;
   viewsPersonId: number;
@@ -94,7 +94,7 @@ export interface Participant {
   dateOfBirth: string;
   ethnicity: string;
   country: string;
-}
+};
 
 export const getParticipants = async (params?: { ids: number[] }) => {
   let paramsString = "";

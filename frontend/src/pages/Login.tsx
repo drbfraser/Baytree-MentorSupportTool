@@ -29,9 +29,13 @@ const Login = () => {
 
   return (
     <form noValidate onSubmit={handleSubmit}>
-      <Typography width="100%" variant="h6">Log in to Mentor Portal</Typography>
+      <Typography width="100%" variant="h6">
+        Log in to Mentor Portal
+      </Typography>
       {errors && (
-        <Alert severity="warning" sx={{ my: 1 }}>Invalid email or password</Alert>
+        <Alert severity="warning" sx={{ my: 1 }}>
+          Invalid email or password
+        </Alert>
       )}
       <TextField
         margin="normal"

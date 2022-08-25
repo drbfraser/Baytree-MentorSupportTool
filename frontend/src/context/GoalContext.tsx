@@ -1,13 +1,14 @@
-import { createContext, FunctionComponent, useContext, useState } from "react";
-import { Goal, GoalDetail, GoalInput, GoalQuery, submitCompleteGoal, submitGoal } from "../api/goals";
+import { createContext, useContext, useState } from "react";
+import type { Goal, GoalDetail, GoalInput, GoalQuery } from "../api/goals";
+import { submitCompleteGoal, submitGoal } from "../api/goals";
 import useGoals from "../hooks/useGoals";
 import useGoalStatistics from "../hooks/useGoalStatistics";
 
 type GoalEdit = {
-  goal?: GoalDetail
-  open: boolean
-}
-interface GoalContextType {
+  goal?: GoalDetail;
+  open: boolean;
+};
+type GoalContextType = {
   goals: Goal[];
   edit: GoalEdit;
   openEdit: (goal?: GoalDetail) => void;
@@ -15,13 +16,15 @@ interface GoalContextType {
   error: string;
   query: GoalQuery;
   count: number;
-  statistics: { active: number, complete: number };
+  statistics: { active: number; complete: number };
   loadingGoals: boolean;
   loadingStatistics: boolean;
   handleSubmitGoal: (input: GoalInput, id?: number) => Promise<boolean>;
   handleCompleteGoal: (goal: Goal) => Promise<boolean>;
-  handleChangeQuery: (arg: GoalQuery | ((prev: GoalQuery) => GoalQuery)) => void;
-}
+  handleChangeQuery: (
+    arg: GoalQuery | ((prev: GoalQuery) => GoalQuery)
+  ) => void;
+};
 
 export const PAGINATION_OPTIONS = [5, 10];
 export const DEFAULT_QUERY = {
@@ -33,8 +36,8 @@ export const DEFAULT_QUERY = {
 export const GoalContext = createContext<GoalContextType>({
   goals: [],
   edit: { open: false },
-  openEdit: (_) => { },
-  closeEdit: () => { },
+  openEdit: (_) => {},
+  closeEdit: () => {},
   statistics: { active: 0, complete: 0 },
   loadingGoals: false,
   loadingStatistics: false,
@@ -43,13 +46,17 @@ export const GoalContext = createContext<GoalContextType>({
   count: 0,
   handleSubmitGoal: async (_input, _id) => true,
   handleCompleteGoal: async (_goal) => true,
-  handleChangeQuery: (_arg) => { }
+  handleChangeQuery: (_arg) => {}
 });
 
-export const GoalProvider = (props: any) => {
+export const GoalProvider: React.FC<{ children: React.ReactNode }> = (
+  props
+) => {
   const [query, setQuery] = useState(DEFAULT_QUERY);
-  const { goals, loadingGoals, goalError, count, refreshGoals } = useGoals(query);
-  const { statistics, loadingStatistics, refreshStatistics, statisticsError } = useGoalStatistics();
+  const { goals, loadingGoals, goalError, count, refreshGoals } =
+    useGoals(query);
+  const { statistics, loadingStatistics, refreshStatistics, statisticsError } =
+    useGoalStatistics();
   const [edit, setEdit] = useState<GoalEdit>({ open: false });
 
   // Submit a goal
@@ -68,28 +75,32 @@ export const GoalProvider = (props: any) => {
     refreshGoals();
     refreshStatistics();
     return true;
-  }
-  
-  return <GoalContext.Provider
-    value={{
-      loadingGoals,
-      loadingStatistics,
-      statistics,
-      goals,
-      edit,
-      openEdit: (goal) => setEdit({ goal, open: true }),
-      closeEdit: () => setEdit({ open: false }),
-      count,
-      error: statisticsError || goalError || "",
-      query,
-      handleSubmitGoal,
-      handleCompleteGoal,
-      handleChangeQuery: (fn) => {
-        setQuery(fn);
-      }
-    }} {...props} />
+  };
+
+  return (
+    <GoalContext.Provider
+      value={{
+        loadingGoals,
+        loadingStatistics,
+        statistics,
+        goals,
+        edit,
+        openEdit: (goal) => setEdit({ goal, open: true }),
+        closeEdit: () => setEdit({ open: false }),
+        count,
+        error: statisticsError || goalError || "",
+        query,
+        handleSubmitGoal,
+        handleCompleteGoal,
+        handleChangeQuery: (fn) => {
+          setQuery(fn);
+        }
+      }}
+      {...props}
+    />
+  );
 };
 
 export const useGoalContext = () => {
   return useContext(GoalContext);
-}
+};

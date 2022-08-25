@@ -1,10 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  AnswerSet,
-  fetchQuestions,
-  Question,
-  submitAnswerSetForQuestionnaire
-} from "../api/misc";
+import type { AnswerSet, Question } from "../api/misc";
+import { fetchQuestions, submitAnswerSetForQuestionnaire } from "../api/misc";
 import useMentees from "./useMentees";
 import useMentor from "./useMentor";
 
@@ -65,9 +61,16 @@ const useQuestionnaire = () => {
       .every((q) => (answerSet[q.QuestionID] || "") !== "");
   };
 
-  const handleSubmitAnswerSet = async (answerSet: AnswerSet, person: string) => {
+  const handleSubmitAnswerSet = async (
+    answerSet: AnswerSet,
+    person: string
+  ) => {
     if (questionnaireId < 0) return undefined;
-    return await submitAnswerSetForQuestionnaire(answerSet, questionnaireId, person);
+    return await submitAnswerSetForQuestionnaire(
+      answerSet,
+      questionnaireId,
+      person
+    );
   };
 
   const loading = loadingQuestionnaire || loadingMentor || loadingMentees;

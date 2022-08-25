@@ -1,12 +1,9 @@
-import { rest, setupWorker, SetupWorkerApi } from "msw";
+import { rest, setupWorker, type SetupWorkerApi } from "msw";
 import { API_BASE_URL } from "../api/url";
 
 const worker = setupWorker();
 
-export {
-  API_BASE_URL,
-  worker
-};
+export { API_BASE_URL, worker };
 
 declare global {
   interface Window {
@@ -19,5 +16,5 @@ declare global {
 
 window.msw = {
   worker,
-  rest,
-}
+  rest
+};

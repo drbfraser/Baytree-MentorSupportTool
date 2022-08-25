@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Activity, getActivitiesForMentor } from "../api/misc";
+import { type Activity, getActivitiesForMentor } from "../api/misc";
 
 /** Get activity list for the current mentor's mentor role from the backend
  * @returns

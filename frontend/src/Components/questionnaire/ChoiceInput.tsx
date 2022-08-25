@@ -6,8 +6,8 @@ import {
   useTheme
 } from "@mui/material";
 import { useField } from "formik";
-import { FunctionComponent } from "react";
-import { Question } from "../../api/misc";
+import type { FunctionComponent } from "react";
+import type { Question } from "../../api/misc";
 
 const choices = [
   "Strongly Disagree",

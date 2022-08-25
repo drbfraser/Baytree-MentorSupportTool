@@ -1,4 +1,5 @@
-import { DefaultBodyType, PathParams, rest } from "msw";
+import type { DefaultBodyType, PathParams } from "msw";
+import { rest } from "msw";
 import type { GoalCategory, GoalDetail, GoalResult, GoalStatistics } from "../../api/goals";
 import { API_BASE_URL } from "../../api/url";
 import { mockGoalCateogories, mockGoals } from "../data/goals";

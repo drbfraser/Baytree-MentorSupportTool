@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { dummyUser, getMentorProfile, User } from "../api/views";
+import { dummyUser, getMentorProfile, type User } from "../api/views";
 
 const useMentor = () => {
   const [loadingMentor, setLoadingMentor] = useState(false);

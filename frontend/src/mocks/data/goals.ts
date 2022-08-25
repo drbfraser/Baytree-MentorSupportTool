@@ -1,4 +1,4 @@
-import { GoalCategory, Goal } from "../../api/goals";
+import type { GoalCategory, Goal } from "../../api/goals";
 
 export const mockGoalCateogories: GoalCategory[] = [
   {

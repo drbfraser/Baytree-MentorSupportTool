@@ -8,14 +8,14 @@ export const baseApi = axios.create({
 });
 
 // Questionnaire
-export interface Question {
+export type Question = {
   enabled: string;
   Question: string;
   QuestionID: string;
   category: string;
   inputType: "text" | "number";
   validation: string;
-}
+};
 
 export type AnswerSet = {
   [key: string]: string | undefined;
@@ -58,7 +58,7 @@ export const fetchResourcesURL = async () => {
 
 // Sessions
 // TODO: Update the session based on the schema frontend
-export interface Session {
+export type Session = {
   SessionID: number;
   Title: string;
   StartDate: string;
@@ -66,50 +66,50 @@ export interface Session {
   Status: string;
   Snippet: string;
   Note: string;
-}
+};
 
 export const fetchSessionListByMentorId = async (id: number) => {
   return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data);
 };
 
 // Holidays
-export interface SpecialEvent {
-  id: number,
-  title: string,
-  startDate: string,
-  endDate: string,
-  isAnnual: boolean,
-  note?: string
-}
+export type SpecialEvent = {
+  id: number;
+  title: string;
+  startDate: string;
+  endDate: string;
+  isAnnual: boolean;
+  note?: string;
+};
 
 // UK Holidays
-export interface UkHoliday {
-  id: number,
-  name: string,
-  date: string
-}
+export type UkHoliday = {
+  id: number;
+  name: string;
+  date: string;
+};
 
 export const fetchUkHolidays = async () => {
   try {
-    const apiRes = await baseApi.get<UkHoliday[]>("calendar_events/uk_holidays/");
-    if (apiRes.status === 200)
-      return { data: apiRes.data, error: "" }
-    throw Error
+    const apiRes = await baseApi.get<UkHoliday[]>(
+      "calendar_events/uk_holidays/"
+    );
+    if (apiRes.status === 200) return { data: apiRes.data, error: "" };
+    throw Error;
   } catch (err) {
-    return { data: [] as UkHoliday[], error: "Cannot fetch UK holiday data" }
+    return { data: [] as UkHoliday[], error: "Cannot fetch UK holiday data" };
   }
-}
+};
 
 export const fetchSpecialEvents = async () => {
   try {
     const apiRes = await baseApi.get<SpecialEvent[]>("calendar_events/");
-    if (apiRes.status === 200)
-      return { data: apiRes.data, error: "" }
-    throw Error
+    if (apiRes.status === 200) return { data: apiRes.data, error: "" };
+    throw Error;
   } catch (err) {
-    return { data: [] as SpecialEvent[], error: "Cannot fetch holidays data" }
+    return { data: [] as SpecialEvent[], error: "Cannot fetch holidays data" };
   }
-}
+};
 export type Activity = string;
 
 export const getActivitiesForMentor = async () => {
@@ -123,9 +123,9 @@ export const getActivitiesForMentor = async () => {
     return null;
   }
 };
-export interface Venue {
+export type Venue = {
   viewsVenueId: number;
-}
+};
 
 export const fetchVenues = async () => {
   try {

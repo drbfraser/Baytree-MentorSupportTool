@@ -7,14 +7,14 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogProps,
+  type DialogProps,
   DialogTitle,
   Grid, TextField, Typography
 } from "@mui/material";
 import { addMinutes } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
-import { FunctionComponent, useEffect, useState } from "react";
-import { SessionDetail } from "../../api/records";
+import { type FunctionComponent, useEffect, useState } from "react";
+import type { SessionDetail } from "../../api/records";
 import useSessionDetail from "../../hooks/useSessionDetail";
 import { TIMEZONE_ID } from "../../Utils/locale";
 import InfoTextField from "../shared/InfoTextField";
