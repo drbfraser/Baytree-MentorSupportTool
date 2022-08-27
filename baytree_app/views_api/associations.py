@@ -95,6 +95,7 @@ def translate_association_fields(associations):
         for association in associations
     ]
 
+
 # GET /api/views-api/mentor-mentees/
 @api_view(("GET",))
 def get_mentees_for_mentor(request):
@@ -113,19 +114,22 @@ def get_mentees_for_mentor(request):
     return Response(participants["results"], status.HTTP_200_OK)
 
 
-def get_mentee_ids_from_mentor(mentor_user, active = False):
+def get_mentee_ids_from_mentor(mentor_user, active=False):
     associations = get_associations(mentor_user.viewsPersonId)
     preferences = Preference.objects
-    searchWindow = preferences.filter(key="searchingDurationInDays").first().get_value()
-    minimumDays = preferences.filter(key="minimumActiveDays").first().get_value()
+    searchWindow = int(preferences.filter(key="searchingDurationInDays").first().value)
+    minimumDays = int(preferences.filter(key="minimumActiveDays").first().value)
     today = date.today()
     startSearch = date(today.year, today.month, 1) - timedelta(days=searchWindow)
-    endSearch = date(today.year + today.month // 12, today.month + 1 if today.month < 12 else 1, 1)
+    endSearch = date(
+        today.year + today.month // 12, today.month + 1 if today.month < 12 else 1, 1
+    )
 
     def isActiveMentee(association):
         startActive = parse_date_string(association["startDate"])
         endActive = parse_date_string(association["endDate"])
-        if endActive is None or not active: return True
+        if endActive is None or not active:
+            return True
         if startActive is None or startActive < startSearch:
             return (endActive - startSearch).days >= minimumDays
         return (min(endActive, endSearch) - startActive).days >= minimumDays
@@ -135,6 +139,7 @@ def get_mentee_ids_from_mentor(mentor_user, active = False):
         if association["association"] == "Mentee" and isActiveMentee(association):
             menteeIds.append(association["masterId"])
     return menteeIds
+
 
 def parse_date_string(dateString: str):
     y, m, d = [int(n) for n in dateString.split("-")]
