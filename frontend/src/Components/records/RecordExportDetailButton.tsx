@@ -48,7 +48,7 @@ const RecordExportDetailButton:FunctionComponent<Props> = ({sessionId}) => {
     let row: { [key: string]: string } = {};
     row.sessionName  = sessionInfo.name ? sessionInfo.name : "";
     row.sessionGroup = sessionInfo.sessionGroup.name ? sessionInfo.sessionGroup.name : "";
-    row.mentor       = sessionInfo.mentor.name ? sessionInfo.mentor.name : sessionInfo.mentor.firstname + sessionInfo.mentor.surname
+    row.mentor       = sessionInfo.mentor.name ? sessionInfo.mentor.name : sessionInfo.mentor.firstname +" "+sessionInfo.mentor.surname
     row.mentee       = sessionInfo.mentee.name ? sessionInfo.mentee.name : sessionInfo.mentee.firstname + sessionInfo.mentee.surname
     row.startDate    = sessionInfo.startDate ? sessionInfo.startDate : "";
     row.startTime    = sessionInfo.startTime ? sessionInfo.startTime : "";
