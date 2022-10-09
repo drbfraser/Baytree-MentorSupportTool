@@ -19,6 +19,7 @@ import useSessionDetail from "../../hooks/useSessionDetail";
 import { TIMEZONE_ID } from "../../Utils/locale";
 import InfoTextField from "../shared/InfoTextField";
 import Loading from "../shared/Loading";
+import RecordExportDetailButton from "@components/records/RecordExportDetailButton";
 
 type Props = {
   sessionId?: string | number;
@@ -77,6 +78,7 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...pro
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" color="secondary" onClick={handleClose}>Close</Button>
+        <RecordExportDetailButton sessionId={sessionId}/>
         <LoadingButton
           onClick={() => updateNote(note)}
           loading={isSubmitting || isFetching}

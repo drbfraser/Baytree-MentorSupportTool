@@ -65,7 +65,10 @@ class SessionsApiView(APIView):
         """
         id = request.GET.get("id", None)
         sessionGroupId = request.GET.get("sessionGroupId", None)
+
+
         mentor_user = MentorUser.objects.filter(pk=request.user.id)
+        print("request", request)
 
         if id != None:
             if not userIsAdmin(request.user) and (
@@ -78,10 +81,15 @@ class SessionsApiView(APIView):
             response = get_session(id)
 
         elif sessionGroupId != None:
+            print("get_sessions", sessionGroupId)
+
+            print("admin: ", userIsAdmin(request.user), "mentor" ,mentor_user.exists())
             if not userIsAdmin(request.user) and not mentor_user.exists():
                 return Response(
                     "You do not have permission to access this resource", 401
                 )
+
+
 
             response = get_sessions(
                 sessionGroupId=sessionGroupId,
@@ -395,6 +403,7 @@ def get_sessions(
     personId=None,
     descendingDate=False,
 ):
+
     """
     Gets sessions from Views API.
     The limit and offset parameters are used to implement pagination.
@@ -409,6 +418,7 @@ def get_sessions(
         if sessionGroupId is None
         else sessions_base_url_by_group.format(sessionGroupId)
     )
+
     params = {}
     if limit != None:
         params["pageFold"] = limit
