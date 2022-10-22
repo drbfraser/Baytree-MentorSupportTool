@@ -1,0 +1,136 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Admin debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}/admin-frontend"
+    },
+    {
+      "name": "Admin debug client-side",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:3001",
+      "cwd": "${workspaceFolder}/admin-frontend"
+    },
+    {
+      "name": "Admin debug full stack",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/admin-frontend",
+      "serverReadyAction": {
+        "pattern": "started server on .+, url: (https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    },
+    {
+      "name": "mentor portal",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3001",
+      "webRoot": "${workspaceFolder}/frontend/src",
+      "sourceMapPathOverrides": {
+        "webpack:///src/*": "${webRoot}/*"
+      }
+    },
+    {
+      "name": "baytree app backend",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/baytree_app/manage.py",
+      "args": ["runserver"],
+      "django": true
+    },
+    {
+      "name": "baytree app backend test all",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/baytree_app/manage.py",
+      "args": ["test", "baytree_app/"],
+      "django": true
+    },
+    {
+      "name": "baytree app backend test coverage",
+      "type": "python",
+      "request": "launch",
+      "program": "coverage",
+      "args": [
+        "run",
+        "--source='.'",
+        "${workspaceFolder}/baytree_app/manage.py",
+        "test",
+        "baytree_app/"
+      ],
+      "django": true
+    },
+    {
+      "name": "backend makemigrations",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/baytree_app/manage.py",
+      "args": ["makemigrations"],
+      "django": true
+    },
+    {
+      "name": "backend makemigrations merge",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/baytree_app/manage.py",
+      "args": ["makemigrations", "--merge"],
+      "django": true
+    },
+    {
+      "name": "backend fixmigrations",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/baytree_app/manage.py",
+      "args": ["migrate", "users", "0021"],
+      "django": true
+    },
+    {
+      "name": "backend migrate",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/baytree_app/manage.py",
+      "args": ["migrate"],
+      "django": true
+    },
+    {
+      "name": "backend migrate fake",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/baytree_app/manage.py",
+      "args": ["migrate", "mentor_sessions", "0009", "--fake"],
+      "django": true
+    },
+    {
+      "name": "backend startapp",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/baytree_app/manage.py",
+      "args": ["startapp", "emails"],
+      "django": true
+    },
+    {
+      "name": "backend loaddata",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/baytree_app/manage.py",
+      "args": ["loaddata", "defaultPreferences.json"],
+      "django": true
+    },
+    {
+      "name": "backend shell",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/baytree_app/manage.py",
+      "args": ["shell"],
+      "django": true
+    }
+  ]
+}
