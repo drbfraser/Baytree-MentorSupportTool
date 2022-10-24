@@ -43,13 +43,8 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    docker exec baytree_server python manage.py migrate
    docker exec -it baytree_server python manage.py createsuperuser
    ```
-6. install default preference:
-7. 
-   ```bash
-   docker exec baytree_server python manage.py loaddata defaultPreferences.json
-   ```
-   
-8. You can use `Ctrl+C` to stop running the application
+
+6. You can use `Ctrl+C` to stop running the application
 
 ### Run Locally
 
