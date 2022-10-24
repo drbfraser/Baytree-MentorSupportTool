@@ -27,7 +27,6 @@ const useQuestionnaire = () => {
   );
 
   const [LogMessage, setLogMessage] = useState([])
-  console.log(questions)
   // Fetch the question
   useEffect(() => {
     fetchQuestions()
@@ -97,8 +96,6 @@ const useQuestionnaire = () => {
 
         }
     );
-    console.log(questions.length)
-    console.log(validFormat)
     return (
         questions.length > 0
     );
@@ -106,6 +103,7 @@ const useQuestionnaire = () => {
 
   useEffect(()=>{
     //todo: add a boolean to toggle log or not
+    console.log("Log: useQuestionnaires")
     console.log(LogMessage)
   },[LogMessage])
 
