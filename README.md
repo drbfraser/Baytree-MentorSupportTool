@@ -44,6 +44,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    docker exec -it baytree_server python manage.py createsuperuser
    ```
 6. install default preference:
+7. 
    ```bash
    docker exec baytree_server python manage.py loaddata defaultPreferences.json
    ```
@@ -87,12 +88,6 @@ To migrate your database, either because you or someone else made database migra
 ```bash
 docker exec baytree_server python manage.py migrate
 ```
-
-install default preference:
-
-   ```bash
-   docker exec baytree_server python manage.py loaddata defaultPreferences.json
-   ```
 
 ### Creating a User
 
