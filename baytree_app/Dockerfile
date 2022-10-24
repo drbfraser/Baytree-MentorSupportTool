@@ -4,5 +4,4 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /code
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-RUN  manage.py loaddata defaultPreferences.json
 COPY . .
