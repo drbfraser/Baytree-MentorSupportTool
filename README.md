@@ -22,6 +22,9 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
    VIEWS_USERNAME=the_username
    VIEWS_PASSWORD=the_password
+
+   CELERY_BROKER_URL=redis://redis:6379
+   CELERY_RESULT_BACKEND=redis://redis:6379
    ```
 
    According to Google's new less-secure app policy, the gmail account must have 2-factor authentication enabled and an "app password" must be created which can be used with Django.
@@ -101,6 +104,20 @@ You can create a super (admin) user by running:
 
 ```bash
 docker exec -it baytree_server python manage.py createsuperuser
+```
+
+### Starting Cronjobs for storing active users
+
+The project uses Celery to run background tasks. To start up Celery use the following command: 
+
+```
+docker exec baytree_server python manage.py start_celery
+```
+
+To stop the Celery worker, you should use the following command: 
+
+```
+docker exec baytree_server python manage.py stop_celery
 ```
 
 ### Install backend Packages

@@ -16,9 +16,13 @@ services:
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
       - VIEWS_USERNAME=${VIEWS_USERNAME}
       - VIEWS_PASSWORD=${VIEWS_PASSWORD}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+
     depends_on:
       - database
-  database:
+      - redis
+  database: 
     container_name: baytree_database
     image: mariadb:5.5
     environment:
@@ -28,6 +32,9 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - baytree_database_data:/var/lib/mysql
+  redis:
+    container_name: redis
+    image: redis:latest
 
 volumes:
   baytree_database_data:

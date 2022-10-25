@@ -79,7 +79,8 @@ INSTALLED_APPS = [
     "records",
     "calendar_events",
     "preferences",
-    "app_logging"
+    "app_logging",
+    "cronjobs"
 ]
 
 MIDDLEWARE = [
@@ -223,3 +224,8 @@ DATABASES = {
         "PORT": 3306,
     }
 }
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND_URL", "")
+
+

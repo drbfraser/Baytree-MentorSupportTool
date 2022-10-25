@@ -179,6 +179,8 @@ build server:
     EMAIL_PASSWORD: ""
     VIEWS_USERNAME: ""
     VIEWS_PASSWORD: ""
+    CELERY_BROKER_URL: ""
+    CELERY_BACKEND_URL: ""
   before_script:
     - cd baytree_app
   script:
