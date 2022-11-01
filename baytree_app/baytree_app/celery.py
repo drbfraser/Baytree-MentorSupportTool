@@ -12,7 +12,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     "store-active-mentors-every-hour": {
         "task": "store_active_mentors",
-        "schedule": crontab(hour=1),
+        "schedule": crontab(hour = 1),
         "args": []
     }
 }
