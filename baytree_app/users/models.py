@@ -82,6 +82,17 @@ class AdminUser(models.Model):
 
     def __str__(self):
         return self.user.last_name + ", " + self.user.first_name
+        
+
+class SessionStats(models.Model):
+    sessions_attended = models.PositiveIntegerField(default=0)
+    sessions_missed = models.PositiveIntegerField(default=0)
+    sessions_remaining = models.PositiveIntegerField(default=0)
+    sessions_total = models.PositiveIntegerField(default=0)
+    mentor = models.OneToOneField("MentorUser", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.mentor)
 
 
 def generateAccountCreationLinkExpiryDateTime():

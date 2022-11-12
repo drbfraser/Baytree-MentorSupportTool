@@ -18,6 +18,7 @@ from .models import (
     ResetPasswordLink,
     CustomUser,
     MentorUser,
+    SessionStats
 )
 from .constants import (
     views_username,
@@ -393,51 +394,15 @@ class StatisticViews(APIView):
 
         if type == "mentor":
             mentorUser = MentorUser.objects.all().filter(user_id=id)
-            all_volunteer_url = views_mentor_base_url + str(mentorUser[0].viewsPersonId)
-
-            # get mentor sessions from Viewsapp
-            try:
-                responseSession = requests.get(
-                    all_volunteer_url + "/sessions",
-                    headers={"content-type": "text/xml"},
-                    auth=(views_username, views_password),
-                )
-            except Exception as e:
-                return Response(
-                    {"errors": "Request to viewsapp for session failed"}, status=400
-                )
-
-            # turn the xml response to dictionary
-            parsedSession = xmltodict.parse(responseSession.text)
-
-            # Check to see if the mentor has zero sessions entered
-            if parsedSession["volunteer"]["sessions"] is None:
-                return Response(
-                    {
-                        "status": "success",
-                        "data": {
-                            "sessions_total": sessions_total,
-                            "sessions_attended": sessions_attended,
-                            "sessions_missed": sessions_missed,
-                            "sessions_remaining": (
-                                sessions_total_perYear - sessions_total
-                            ),
-                        },
-                    },
-                    status=status.HTTP_200_OK,
-                )
-
-            # sort throught the dictionary
-            volunteerSessionList = parsedSession["volunteer"]["sessions"]["session"]
-
-            # counting the session atteded and not attended
-            for sessionDict in volunteerSessionList:
-                sessions_total += 1
-                if sessionDict["Status"] == "Attended":
-                    sessions_attended += 1
-                else:
-                    sessions_missed += 1
-            sessions_remaining = sessions_total_perYear - sessions_total
+            if len(mentorUser) > 0:
+                try:
+                    session_stats = SessionStats.objects.get(mentor=mentorUser[0])
+                    sessions_total = session_stats.sessions_total
+                    sessions_attended = session_stats.sessions_attended
+                    sessions_missed = session_stats.sessions_missed
+                    sessions_remaining = session_stats.sessions_remaining
+                except SessionStats.DoesNotExist:
+                    pass
 
         elif type == "mentee":
             # TODO: The mentee ID is hard coded here as 4. Once the Mentee portal is created

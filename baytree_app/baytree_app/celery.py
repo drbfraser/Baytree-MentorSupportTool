@@ -1,6 +1,7 @@
 import os
 from celery import Celery
 from celery.schedules import crontab
+from datetime import timedelta
 
 # configuration for celery
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "baytree_app.settings")
@@ -14,6 +15,13 @@ app.conf.beat_schedule = {
         "task": "store_active_mentors",
         "schedule": crontab(hour = 1),
         "args": []
+    },
+
+    "store-sessions-statistics-every-hour": {
+        "task": "store_sessions_statistics",
+        "schedule": timedelta(hours = 1),
+        "args": []
     }
+
 }
 
