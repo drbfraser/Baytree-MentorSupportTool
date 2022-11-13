@@ -1,3 +1,5 @@
+import json
+
 import requests
 import xmltodict
 from baytree_app.constants import VIEWS_BASE_URL, VIEWS_PASSWORD, VIEWS_USERNAME
@@ -9,6 +11,8 @@ from users.models import MentorUser
 from users.permissions import userIsAdmin
 
 from views_api.associations import get_associations
+
+import logging
 
 from .util import try_parse_int
 
@@ -209,7 +213,7 @@ class SessionsApiView(APIView):
             start_time,
             duration,
             0,
-            activity,
+            activity.lstrip(),
             mentor_user.viewsPersonId,
             views_venue_id,
         )
@@ -233,6 +237,20 @@ class SessionsApiView(APIView):
                 return Response(
                     {"Error": "Making a post request for session failed!"},
                     status=response.status_code,
+                )
+            # error handle From XML file
+            if int(response.text.find("<errors>")) > 0:
+                # todo: logging
+                error_message = response.text[
+                             (response.text.find("<errors>") + len("<errors>")) : (
+                                 response.text.find("</errors>")
+                             )
+                             ]
+                logging.error(f" Sessions' parameter error: {error_message}")
+
+                return Response(
+                    {"Error": "Making a post request for session failed!"},
+                    status=500,
                 )
 
             # getting session ID from response
