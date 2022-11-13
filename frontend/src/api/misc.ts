@@ -7,18 +7,20 @@ export const baseApi = axios.create({
   withCredentials: true
 });
 
+
 // Questionnaire
 export type Question = {
   enabled: string;
   Question: string;
   QuestionID: string;
   category: string;
-  inputType: "text" | "number";
+  inputType: "text" | "textarea" |"number" | "date" | "radio" | "checkselect" | "select" | "selectother" | "phone_number" |"time";
   validation: string;
+  valueList: { items: string[]}
 };
 
 export type AnswerSet = {
-  [key: string]: string | undefined;
+  [key: string]: string | string[] |undefined;
 };
 
 export const submitAnswerSetForQuestionnaire = async (

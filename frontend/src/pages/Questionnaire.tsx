@@ -1,6 +1,8 @@
 import ChoiceInput, {
   isChoiceQuestion
 } from "@components/questionnaire/ChoiceInput";
+import CheckBoxInput from "@components/questionnaire/CheckBoxInput"
+import SelectorInput,{isSelectorQuestion} from "@components/questionnaire/SelectorInput";
 import InvalidQuestionnaire from "@components/questionnaire/InvalidQuestionnaire";
 import MenteesNameInput from "@components/questionnaire/MenteesNameInput";
 import MentorNameInput from "@components/questionnaire/MentorNameQuestion";
@@ -21,14 +23,17 @@ import {
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Logger, logLevel } from "../api/logging";
+import {isCheckBoxQuestion} from "@components/questionnaire/CheckBoxInput";
 
 const Questionnaire = () => {
   const [canSeeAlert, setcanSeeAlert] = useState("none");
   const [submissionErrorMessage, setSubmissionErrorMessage] = useState(<></>);
   const [submissionErrorTitle, setSubmissionErrorTitle] = useState("Error");
+  const {handleSubmit} = useForm();
 
   const {
     loading,
@@ -39,6 +44,8 @@ const Questionnaire = () => {
     errorMessage,
     handleSubmitAnswerSet
   } = useQuestionnaire();
+
+  console.log(questions)
 
   return (
     <TitledContainer title="Monthly Progress Report">
@@ -122,7 +129,7 @@ const Questionnaire = () => {
                       sx={{ fontWeight: "bold" }}
                       color="text.secondary"
                     >
-                      {`${index + 1}. ${question.Question} ${
+                      {`${question.Question} ${
                         required ? "*" : ""
                       }`}
                     </Typography>
@@ -136,7 +143,12 @@ const Questionnaire = () => {
                       />
                     ) : isChoiceQuestion(question) ? (
                       <ChoiceInput question={question} />
-                    ) : (
+                    ) : isCheckBoxQuestion(question)? (
+                        <CheckBoxInput question={question}/>
+                    ) : isSelectorQuestion(question)?(
+                        <SelectorInput question = {question}/>
+                    ) :
+                    (
                       <TextInput question={question} />
                     )}
                   </FormControl>

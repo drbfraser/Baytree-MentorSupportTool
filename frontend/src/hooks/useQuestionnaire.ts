@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import type { AnswerSet, Question } from "../api/misc";
-import { fetchQuestions, submitAnswerSetForQuestionnaire } from "../api/misc";
+import {fetchQuestions, submitAnswerSetForQuestionnaire} from "../api/misc";
 import useMentees from "./useMentees";
 import useMentor from "./useMentor";
+import {unmountComponentAtNode} from "react-dom";
 
 export const MENTOR_NAME = /mentor('s)? name/gi;
 export const MENTEE_NAME = /mentee('s)? name/gi;
@@ -22,6 +23,8 @@ const useQuestionnaire = () => {
   const { mentor, loadingMentor, error: mentorError } = useMentor();
   const { mentees, error: menteeError, loadingMentees } = useMentees();
   const [questions, setQuestions] = useState([] as Question[]);
+
+
   const [questionsError, setQuestionnaireError] = useState<string | undefined>(
       undefined
   );
@@ -66,6 +69,7 @@ const useQuestionnaire = () => {
       answerSet: AnswerSet,
       person: string
   ) => {
+    console.log(answerSet)
     if (questionnaireId < 0) return undefined;
     return await submitAnswerSetForQuestionnaire(
         answerSet,
