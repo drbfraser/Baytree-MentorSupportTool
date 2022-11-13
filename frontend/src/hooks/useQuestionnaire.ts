@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import type { AnswerSet, Question } from "../api/misc";
-import { fetchQuestions, submitAnswerSetForQuestionnaire } from "../api/misc";
+import {fetchQuestions, submitAnswerSetForQuestionnaire} from "../api/misc";
 import useMentees from "./useMentees";
 import useMentor from "./useMentor";
+import {unmountComponentAtNode} from "react-dom";
 
 export const MENTOR_NAME = /mentor('s)? name/gi;
 export const MENTEE_NAME = /mentee('s)? name/gi;
@@ -22,6 +23,8 @@ const useQuestionnaire = () => {
   const { mentor, loadingMentor, error: mentorError } = useMentor();
   const { mentees, error: menteeError, loadingMentees } = useMentees();
   const [questions, setQuestions] = useState([] as Question[]);
+
+
   const [questionsError, setQuestionnaireError] = useState<string | undefined>(
       undefined
   );
@@ -83,19 +86,7 @@ const useQuestionnaire = () => {
   const isValidQuestionnaire = useMemo(() => {
     const mentorQuestion = questions.filter(isMentorQuestion);
     const menteeQuestion = questions.filter(isMenteeQuestion);
-    const validFormat = questions.every(
-        (q) =>{
-            if(q.inputType === "text" ||
-                q.inputType === "number" ||
-                q.inputType === "textarea"){
-              console.log(q.inputType)
-              return true
-            }
-          setLogMessage(LogMessage.concat(q.inputType))
-          return false
 
-        }
-    );
     return (
         questions.length > 0
     );
@@ -103,8 +94,6 @@ const useQuestionnaire = () => {
 
   useEffect(()=>{
     //todo: add a boolean to toggle log or not
-    console.log("Log: useQuestionnaires")
-    console.log(LogMessage)
   },[LogMessage])
 
 
