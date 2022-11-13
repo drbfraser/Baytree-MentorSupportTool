@@ -69,7 +69,6 @@ const useQuestionnaire = () => {
       answerSet: AnswerSet,
       person: string
   ) => {
-    console.log(answerSet)
     if (questionnaireId < 0) return undefined;
     return await submitAnswerSetForQuestionnaire(
         answerSet,
@@ -87,19 +86,7 @@ const useQuestionnaire = () => {
   const isValidQuestionnaire = useMemo(() => {
     const mentorQuestion = questions.filter(isMentorQuestion);
     const menteeQuestion = questions.filter(isMenteeQuestion);
-    const validFormat = questions.every(
-        (q) =>{
-            if(q.inputType === "text" ||
-                q.inputType === "number" ||
-                q.inputType === "textarea"){
-              console.log(q.inputType)
-              return true
-            }
-          setLogMessage(LogMessage.concat(q.inputType))
-          return false
 
-        }
-    );
     return (
         questions.length > 0
     );
@@ -107,8 +94,6 @@ const useQuestionnaire = () => {
 
   useEffect(()=>{
     //todo: add a boolean to toggle log or not
-    console.log("Log: useQuestionnaires")
-    console.log(LogMessage)
   },[LogMessage])
 
 

@@ -45,8 +45,6 @@ const Questionnaire = () => {
     handleSubmitAnswerSet
   } = useQuestionnaire();
 
-  console.log(questions)
-
   return (
     <TitledContainer title="Monthly Progress Report">
       {/* Start the form */}
