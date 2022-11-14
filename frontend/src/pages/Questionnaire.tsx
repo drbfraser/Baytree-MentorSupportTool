@@ -28,6 +28,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Logger, logLevel } from "../api/logging";
 import {isCheckBoxQuestion} from "@components/questionnaire/CheckBoxInput";
+import SpecialInput, {isSpecialQuestion} from "@components/questionnaire/SpecialInput";
 
 const Questionnaire = () => {
   const [canSeeAlert, setcanSeeAlert] = useState("none");
@@ -44,6 +45,8 @@ const Questionnaire = () => {
     errorMessage,
     handleSubmitAnswerSet
   } = useQuestionnaire();
+
+  console.log(questions)
 
   return (
     <TitledContainer title="Monthly Progress Report">
@@ -145,8 +148,9 @@ const Questionnaire = () => {
                         <CheckBoxInput question={question}/>
                     ) : isSelectorQuestion(question)?(
                         <SelectorInput question = {question}/>
-                    ) :
-                    (
+                    ) : isSpecialQuestion(question)?(
+                        <SpecialInput question={question}/>
+                    ) : (
                       <TextInput question={question} />
                     )}
                   </FormControl>
