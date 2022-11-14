@@ -46,6 +46,7 @@ const RecordExportDetailButton:FunctionComponent<Props> = ({sessionId}) => {
     // convert to json
     let sessionInfo = JSON.parse(session);
     let row: { [key: string]: string } = {};
+    console.log(sessionInfo)
     row.sessionName  = sessionInfo.name ? sessionInfo.name : "";
     row.sessionGroup = sessionInfo.sessionGroup.name ? sessionInfo.sessionGroup.name : "";
     row.mentor       = sessionInfo.mentor.name ? sessionInfo.mentor.name : sessionInfo.mentor.firstname +" "+sessionInfo.mentor.surname
@@ -53,8 +54,7 @@ const RecordExportDetailButton:FunctionComponent<Props> = ({sessionId}) => {
     row.startDate    = sessionInfo.startDate ? sessionInfo.startDate : "";
     row.startTime    = sessionInfo.startTime ? sessionInfo.startTime : "";
     row.Duration     = sessionInfo.duration ? sessionInfo.duration : "";
-    row.notes        = sessionInfo.notes ? sessionInfo.notes : "";
-
+    row.notes        = sessionInfo.note ? sessionInfo.note : "";
     // convert back to string
     return JSON.stringify(row)
   }
