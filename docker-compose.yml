@@ -44,6 +44,7 @@ services:
     volumes:
       - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
       - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf
+      - ./fluent-bit/testLog/:/fluent-bit/etc/testLog/
     ports:
       - "24224:24224/tcp"
       - "24224:24224/udp"

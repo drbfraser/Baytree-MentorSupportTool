@@ -229,3 +229,4 @@ lib/generated_plugin_registrant.dart
 # Build products from Docker
 admin_frontend_build.tar.gz
 frontend_build.tar.gz
+/fluent-bit/testLog/
