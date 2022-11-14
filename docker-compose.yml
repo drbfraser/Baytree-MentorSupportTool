@@ -25,7 +25,7 @@ services:
       - fluent-bit
   database: 
     container_name: baytree_database
-    image: mariadb:5.5
+    image: mariadb:10.9.4
     environment:
       - MYSQL_DATABASE=baytree
       - MYSQL_USER=${MYSQL_USER}
