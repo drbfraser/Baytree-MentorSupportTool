@@ -1,18 +1,27 @@
-import axios from "axios";
-import { login } from './auth';
+import { login, logout } from './auth';
+var axios = require("axios");
+var MockAdapter = require("axios-mock-adapter");
 
-jest.mock("axios");
+var mock = new MockAdapter(axios);
 
-describe("fetchUsers", () => {
-    describe("when API call is successful", () => {
-      it("should return users list", () => {
-        // ...
-      });
-    })
+describe("authentication", () => {
 
-    describe("when API call fails", () => {
-      it("should return empty users list", () => {
-        // ...
-      });
-    });
+  /*it("login", async () => {
+    // mock
+    mock.onGet(`/login`, { testEmail: 'testEmail', password: 'testPassword' }).reply(200, { data: { email: testEmail, password: "John" }, error: "" });
+    // when
+    const result = await axios.get("/login")
+    // then
+    expect(mock.history.get[0].url).toEqual('/login');
+  });*/
+
+  it("logout", async () => {
+    // mock
+    mock.onGet(`/logout`).reply(200);
+    // when
+    const result = await axios.get("/logout")
+    // then
+    expect(mock.history.get[0].url).toEqual('/logout');
   });
+});
+
