@@ -42,7 +42,7 @@ const Goals: NextPage = () => {
       {/* Querying */}
       <Grid container sx={{ my: 2 }} spacing={2}>
         <Grid item xs={12} lg={4}>
-          <Typography gutterBottom variant="subtitle1">Search by title or email</Typography>
+          <Typography gutterBottom variant="subtitle1">Search by keywords: Title, mentor or mentee</Typography>
           <GoalSearch query={query} handleChangeQuery={setQuery} />
         </Grid>
         <Grid item xs={12} md={6} lg={4}>

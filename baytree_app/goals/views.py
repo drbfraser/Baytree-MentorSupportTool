@@ -1,5 +1,6 @@
 import csv
 import io
+import threading
 
 from django.http import Http404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -9,46 +10,120 @@ from users.models import MentorUser
 from users.permissions import userIsAdmin, userIsSuperUser
 
 from .models import Goal, GoalCategory
-from .serializers import (GoalCategorySerializer, GoalDetailSerializer,
-                          GoalSerializer)
+from .serializers import (GoalCategorySerializer, GoalDetailSerializer,)
 
-
-class MentorGoalQuerySetMixin():  
+class MentorGoalQuerySetMixin():
   def get_queryset(self, *args, **kwargs):
     qs = super().get_queryset(*args, **kwargs)
     user = self.request.user
     if userIsAdmin(user) or userIsSuperUser(user): return qs
     return qs.filter(mentor__user_id=user.id)
 
-class GoalSearchFilter(filters.SearchFilter):
-  def get_search_fields(self, view, request):
-    fields = ["title"]
-    user = request.user
-    if userIsAdmin(user) or userIsSuperUser(user): fields.append("^mentor__user__email")
-    return fields
+
+"""
+  This filter can only filter mentor and title which stored in the local database
+  unused until someone can implement get mentee name in serializers
+"""
+
+# class GoalSearchFilter(filters.SearchFilter):
+#   def get_search_fields(self, view, request):
+#
+#
+#     fields = ["title"]
+#     user = request.user
+#     if userIsAdmin(user) or userIsSuperUser(user): fields.append("^mentor__user__email")
+#
+#     #fields.append("^mentee__firstName")
+#     return fields
 
 # GET, POST /api/goals/
 class GoalListCreateAPIView(
   MentorGoalQuerySetMixin,
   generics.ListCreateAPIView):
   queryset = Goal.objects.all()
-  serializer_class = GoalSerializer
-  filter_backends = (GoalSearchFilter, filters.OrderingFilter, DjangoFilterBackend)
+  serializer_class = GoalDetailSerializer
+
+  #unused
+  #filter_backends = (GoalSearchFilter, filters.OrderingFilter, DjangoFilterBackend)
+
   ordering_fields = ['creation_date', 'goal_review_date', 'last_update_date']
   filterset_fields = ['status']
 
   def get_queryset(self, *args, **kwargs):
     qs = super().get_queryset(*args, **kwargs)
+
     categoryParams = self.request.GET.get('categories', None)
-    if categoryParams is not None:
-      ids = [int(x) for x in categoryParams.split(',')]
+    qs = self.CategoryParamsQueryFilter(qs, categoryParams)
+
+    serachQuery = self.request.GET.get('search', None)
+
+    # join 3 queries for search field
+    titleQuerySet = self.TitleQueryFilter(qs, serachQuery)
+    mentorQuerySet = self.MentorEmailQueryFilter(qs, serachQuery)
+    menteeQuerySet = self.MenteeNameQueryFilter(qs, serachQuery)
+
+    qs = titleQuerySet | mentorQuerySet| menteeQuerySet
+
+    return qs
+
+  def TitleQueryFilter(self, qs, query):
+    # process query base on title
+    if query is not None:
+      titles = []
+      for goal in qs.all():
+        if query in goal.title:
+          titles.append(goal.title)
+
+      return qs.filter(title__in=titles)
+    return qs
+
+
+  def MentorEmailQueryFilter(self, qs, query):
+    # process query base on mentor email
+    if query is not None:
+      email = []
+      for goal in qs.all():
+        if query in goal.mentor.user.email:
+          email.append(goal.mentor.user.email)
+      return qs.filter(mentor__user__email__in=email)
+    return qs
+
+
+  def CategoryParamsQueryFilter(self, qs, query):
+    # process query base on category
+    if query is not None:
+      ids = [int(x) for x in query.split(',')]
       for id in ids:
         qs = qs.filter(categories__id=id)
+
     return qs
+
+
+  def MenteeNameQueryFilter(self, qs, query):
+    # process query base on mentor name
+    if query:
+      id = []
+      running_thread = []
+      # multithreading for multiple get request
+      for goal in qs.all():
+        running_thread.append(threading.Thread(target=self.MenteeNameQuery, args=(goal, query, id)))
+      # start all thread
+      for t in running_thread:
+        t.start()
+      # join
+      for t in running_thread:
+        t.join()
+      return qs.filter(mentee_id__in=id)
+    return qs
+
+  def MenteeNameQuery(self, goal, query, id):
+      mentee = goal.get_mentee()
+      if mentee and query.lower() in (mentee['firstName'].lower()):
+        id.append(goal.mentee_id)
 
   def perform_create(self, serializer):
     mentors = MentorUser.objects.filter(user_id=self.request.user.id)
-    if mentors is None: raise Http404() 
+    if mentors is None: raise Http404()
     return serializer.save(mentor=mentors.first(), categories=self.request.data["categories"])
 
 # GET, PUT, PATCH, DELETE /api/goals/<id>
