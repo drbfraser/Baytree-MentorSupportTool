@@ -11,7 +11,7 @@ const Count: FunctionComponent<{
   color?: string;
 }> = (props) => {
   return (
-    <Grid item xs={12} sm={6} xl={3}>
+    <Grid item xs={12} sm={6} xl={6}>
       <Card
         sx={{
           p: 2,
@@ -24,7 +24,8 @@ const Count: FunctionComponent<{
           variant="h6"
           component="h6"
           color="text.secondary"
-          sx={{ width: "100px" }}
+          // align="center"
+          sx={{marginLeft: "5%", width: "60%",display: 'flex', alignItems: 'center'}}
         >
           {props.title}
         </Typography>
@@ -32,7 +33,7 @@ const Count: FunctionComponent<{
           component="p"
           variant="h3"
           color={props.color || "primary"}
-          sx={{ fontWeight: "bold" }}
+          sx={{ fontWeight: "bold", width:"20%" }}
         >
           {props.count}
         </Typography>
@@ -58,16 +59,16 @@ export default function Statistics() {
     <Grid container spacing={1}>
       <Count title="Sessions Attended" count={data.sessions_attended} />
       <Count title="Missed Sessions" count={data.sessions_missed} color="red" />
-      <Count
-        title="Upcoming Sessions"
-        count={data.sessions_remaining}
-        color="blue"
-      />
-      <Count
-        title="Pending Reports"
-        count={data.sessions_remaining}
-        color="orange"
-      />
+      {/*<Count*/}
+      {/*  title="Upcoming Sessions"*/}
+      {/*  count={data.sessions_remaining}*/}
+      {/*  color="blue"*/}
+      {/*/>*/}
+      {/*<Count*/}
+      {/*  title="Pending Reports"*/}
+      {/*  count={data.sessions_remaining}*/}
+      {/*  color="orange"*/}
+      {/*/>*/}
     </Grid>
   );
 }

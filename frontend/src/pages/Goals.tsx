@@ -19,7 +19,7 @@ const Goals = () => {
         <Typography variant="h4">Goals</Typography>
         {/* Menu buttons */}
         <Stack direction="row" spacing={1}>
-          <GoalExportButton />
+          {/*<GoalExportButton />*/}
           <Button
             startIcon={<Icon component={MdAdd} />}
             variant="contained"

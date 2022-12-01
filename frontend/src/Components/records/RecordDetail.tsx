@@ -78,7 +78,7 @@ const RecordDetail: FunctionComponent<Props> = ({ sessionId, handleClose, ...pro
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" color="secondary" onClick={handleClose}>Close</Button>
-        <RecordExportDetailButton sessionId={sessionId}/>
+        {/*<RecordExportDetailButton sessionId={sessionId}/>*/}
         <LoadingButton
           onClick={() => updateNote(note)}
           loading={isSubmitting || isFetching}
