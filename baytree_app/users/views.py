@@ -461,7 +461,7 @@ class StatisticViews(APIView):
                     "sessions_total": sessions_total,
                     "sessions_attended": sessions_attended,
                     "sessions_missed": sessions_missed,
-                    "sessions_remaining": sessions_remaining,
+                    "sessions_remaining": sessions_remaining | 0,
                 },
             },
             status=status.HTTP_200_OK,

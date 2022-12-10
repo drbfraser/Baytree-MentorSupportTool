@@ -27,3 +27,4 @@ kombu==5.2.4
 packaging==21.3
 prompt-toolkit==3.0.32
 redis==4.3.4
+fluent-logger

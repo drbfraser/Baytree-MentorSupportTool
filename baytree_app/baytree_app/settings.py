@@ -41,14 +41,27 @@ LOGGING = {
         },
         "console": {
             "class": "logging.StreamHandler",
+            "level": "WARNING",
         },
+        "fluent": {
+            "class": "fluent.handler.FluentHandler",
+            "tag": "django",
+            "host": "fluent-bit",
+            "port": 24224,
+            'level': "ERROR",
+        }
     },
     "loggers": {
         "django": {
-            "handlers": ["file", "console"],
+            "handlers": ["file", "console", "fluent"],
             "level": "WARNING",
-            "propagate": True,
+            "propagate": False,
         },
+        "django.request": {
+            "handlers": ["file", "console", "fluent"],
+            "level": "ERROR",
+            "propagate": False,
+        }
     },
 }
 

@@ -1,3 +1,5 @@
+import json
+
 from django.http import HttpResponse
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -19,9 +21,11 @@ from rest_framework.decorators import api_view, permission_classes
 from django.apps import apps
 from django.db.models import ForeignKey
 
-from xmlrpc.client import DateTime
-from datetime import date, datetime
+from datetime import datetime
 from django.utils.timezone import make_aware
+import logging
+
+from .FluentLoggingHandler import FluentLoggingHandler
 
 
 @api_view(("GET",))
@@ -153,8 +157,10 @@ class CookieTokenVerifyView(TokenVerifyView):
 class CookieTokenObtainPairView(TokenObtainPairView):
     def finalize_response(self, request, response, *args, **kwargs):
         # If wrong password, (unauthorized), don't return additional info or cookies
+
         if response.status_code == 401:
             return super().finalize_response(request, response, *args, **kwargs)
+
 
         if response.data.get("refresh"):
             cookie_max_age = 3600 * 24  # 1 day
@@ -201,6 +207,11 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 
         response.data["last_login"] = user.last_login
         user.last_login = make_aware(datetime.now())
+
+        Flogging = FluentLoggingHandler()
+
+        Flogging.sendLog("login request by " + str(user))
+
         user.save()
 
         return super().finalize_response(request, response, *args, **kwargs)
