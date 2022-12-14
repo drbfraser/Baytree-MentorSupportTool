@@ -63,7 +63,7 @@ LOGGING = {
         "fluent": {
             "class": "fluent.handler.FluentHandler",
             "tag": "django",
-            "host": os.environ["LOGGING_URL"] if os.environ["LOGGING_URL"] else "fluent-bit",
+            "host": "fluent-bit" if not os.environ["LOGGING_URL"] else os.environ["LOGGING_URL"],
             "port": 24224,
         },
     },
