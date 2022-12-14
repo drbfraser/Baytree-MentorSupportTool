@@ -5,8 +5,8 @@ import logging
 
 class FluentLoggingHandler:
     def __init__(self):
-        if(os.environ["LOGGING_URL"]):
-            self.host = os.environ["LOGGING_URL"]
+        if os.environ.get("LOGGING_URL"):
+            self.host = os.environ.get("LOGGING_URL")
         else:
             self.host = "fluent-bit"
 
