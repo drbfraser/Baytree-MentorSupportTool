@@ -1,14 +1,25 @@
 
 import os
 import requests
-from logging import StreamHandler
+import logging
+
 class FluentLoggingHandler:
     def __init__(self):
         self.host = os.environ["LOGGING_URL"]
-
+        self.info_logger = logging.getLogger("django_message")
 
     def sendLog(self, message):
-        # try:
-        print(self.host)
-        obj = {"log:": message}
-        requests.post(""+self.host, json=obj)
+        try:
+            obj = {"log: ": message}
+            requests.post(""+self.host, json=obj)
+        except Exception as e:
+            print(e)
+
+    def sendInfoLog(self, message):
+        try:
+            self.info_logger.setLevel(logging.INFO)
+            #obj = {"log: ": message}
+            self.info_logger.info(message)
+        except Exception as e:
+            print(e)
+

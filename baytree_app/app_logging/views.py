@@ -15,9 +15,9 @@ class LoggingViews(generics.GenericAPIView):
         data = request.data
         if data["level"] is None or data["message"] is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         # Get a logger
-        logger = logging.getLogger("django")
+        logger = logging.getLogger("django_error_log")
 
         # Log message
         try:
@@ -29,7 +29,7 @@ class LoggingViews(generics.GenericAPIView):
                 stack_trace = "\n" + stack_trace
 
             log_message = '[{timeStamp}] {logLevel}: {message} {stackTrace}'
-            formatted_log_message = log_message.format(timeStamp = date_time, logLevel = log_level, 
+            formatted_log_message = log_message.format(timeStamp = date_time, logLevel = log_level,
                 message = data["message"], stackTrace = stack_trace)
 
             log_level = data["level"]
