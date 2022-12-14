@@ -9,10 +9,11 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import logging
 from datetime import timedelta
 from pathlib import Path
 import os
+from pythonjsonlogger import jsonlogger
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,36 +33,56 @@ else:
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": False,
+    "disable_existing_loggers": True,
+    'formatters': {
+        'json': {
+            '()': jsonlogger.JsonFormatter,
+            'format': '%(levelname)s %(message)s'
+        }
+    },
     "handlers": {
-        "file": {
-            "level": "WARNING",
+        "file_error": {
             "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "server_logs/server.log")
+            "filename": os.path.join(BASE_DIR, "server_logs/server_error.log"),
+            "level": logging.ERROR
+        },
+        "file_info": {
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "server_logs/server_info.log"),
+            "level": logging.INFO
+        },
+        "file_message": {
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "server_logs/server_message.log"),
+            "level": logging.INFO
         },
         "console": {
             "class": "logging.StreamHandler",
-            "level": "WARNING",
+            "level": logging.ERROR,
         },
         "fluent": {
             "class": "fluent.handler.FluentHandler",
             "tag": "django",
-            "host": "fluent-bit",
+            "host": "fluent-bit" if not os.environ.get("LOGGING_URL") else os.environ.get("LOGGING_URL"),
             "port": 24224,
-            'level': "ERROR",
-        }
+        },
     },
     "loggers": {
         "django": {
-            "handlers": ["file", "console", "fluent"],
-            "level": "WARNING",
-            "propagate": False,
+            "handlers": ["file_error", "file_info", "console", "fluent"],
+            "level": logging.INFO,
+            'formatter': ["json"]
         },
-        "django.request": {
-            "handlers": ["file", "console", "fluent"],
-            "level": "ERROR",
-            "propagate": False,
-        }
+        "django_message": {
+            "handlers": ["file_message", "console", "fluent"],
+            "level": logging.INFO,
+            'formatter': ["json"]
+        },
+        # "django.debug.log": {
+        #     "handlers": ["file", "console", "fluent"],
+        #     "level": logging.DEBUG,
+        #     'propagate': True
+        # },
     },
 }
 

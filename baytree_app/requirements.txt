@@ -28,3 +28,4 @@ packaging==21.3
 prompt-toolkit==3.0.32
 redis==4.3.4
 fluent-logger
+python-json-logger==2.0.4
