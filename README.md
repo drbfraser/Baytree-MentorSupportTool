@@ -7,8 +7,8 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 ### Setup
 
 1. Install [Docker](https://www.docker.com/get-started)
-2. Create a file named `.env` (for environment variables) in the same directory as `docker-compose.yml`. It should look like this:
-
+2. Create a file named `.env` (for environment variables) in the same directory as `docker-compose.yml`. It should look like this:<br>
+   https://docs.google.com/spreadsheets/d/13HQ6cQN-TV768EQvKWX-bSvkPLpZm8jhZJ9jTaL2jGE/edit#gid=0 <br>
    ```text
    SECRET_KEY=something_random
 
@@ -25,6 +25,9 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
    CELERY_BROKER_URL=redis://redis:6379
    CELERY_RESULT_BACKEND=redis://redis:6379
+   AWS_ACCESS_KEY_ID= {your_id}
+   AWS_SECRET_ACCESS_KEY= {your_key}
+   AWS_DEFAULT_REGION= us-east-1
    ```
 
    According to Google's new less-secure app policy, the gmail account must have 2-factor authentication enabled and an "app password" must be created which can be used with Django.
@@ -38,21 +41,33 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    docker compose run --rm admin-frontend npm install
    ```
 
-4. Then, run the application: `docker compose up`
+4. You need to build the docker compose first or when you updated the dependencies
 
-5. Run migrations and create a superuser (while the application is running):
+   ```bash
+   docker compose build
+   ```
+   
+5. Then, run the application:
+
+   ```bash
+   docker compose up
+   ```
+
+6. Run migrations and create a superuser (while the application is running):
 
    ```bash
    docker exec baytree_server python manage.py migrate
    docker exec -it baytree_server python manage.py createsuperuser
    ```
-6. install default preference: 
+7. install default preference: 
 
    ```bash
    docker exec baytree_server python manage.py loaddata defaultPreferences.json
+   docker exec baytree_server python manage.py loaddata goalCategories
+   docker exec baytree_server python manage.py loaddata ukHolidays
    ```
 
-7. You can use `Ctrl+C` to stop running the application
+8. You can use `Ctrl+C` to stop running the application
 
 ### Run Locally
 
@@ -96,6 +111,9 @@ To install default preference:
 
    ```bash
    docker exec baytree_server python manage.py loaddata defaultPreferences.json
+   docker exec baytree_server python manage.py loaddata goalCategories
+   docker exec baytree_server python manage.py loaddata ukHolidays
+
    ```
 
 ### Creating a User

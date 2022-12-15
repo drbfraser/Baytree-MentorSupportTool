@@ -41,25 +41,30 @@ LOGGING = {
         }
     },
     "handlers": {
+        # logs server error into server_error.log
         "file_error": {
             "class": "logging.FileHandler",
             "filename": os.path.join(BASE_DIR, "server_logs/server_error.log"),
             "level": logging.ERROR
         },
+        # log server info into server_info.log
         "file_info": {
             "class": "logging.FileHandler",
             "filename": os.path.join(BASE_DIR, "server_logs/server_info.log"),
             "level": logging.INFO
         },
+        # log custom message into server_message.log
         "file_message": {
             "class": "logging.FileHandler",
             "filename": os.path.join(BASE_DIR, "server_logs/server_message.log"),
             "level": logging.INFO
         },
+        # console only logs warning and error message
         "console": {
             "class": "logging.StreamHandler",
-            "level": logging.ERROR,
+            "level": logging.WARNING,
         },
+        # log to fluent bit
         "fluent": {
             "class": "fluent.handler.FluentHandler",
             "tag": "django",
@@ -68,11 +73,13 @@ LOGGING = {
         },
     },
     "loggers": {
+        # server message
         "django": {
             "handlers": ["file_error", "file_info", "console", "fluent"],
             "level": logging.INFO,
             'formatter': ["json"]
         },
+        # custom message
         "django_message": {
             "handlers": ["file_message", "console", "fluent"],
             "level": logging.INFO,
@@ -148,7 +155,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "baytree_app.wsgi.application"
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -167,7 +173,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -180,7 +185,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -207,7 +211,6 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "/?verification=1"
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "/?verification=1"
 
-
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "users.serializers.UserSerializer",
 }
@@ -232,9 +235,7 @@ SIMPLE_JWT = {
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 
-
 SITE_ID = 1
-
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
@@ -246,7 +247,6 @@ EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASSWORD"]
 EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
 DEFAULT_FROM_EMAIL = os.environ["EMAIL_USER"]
 SERVER_EMAIL = os.environ["EMAIL_USER"]
-
 
 DATABASES = {
     "default": {
@@ -261,5 +261,3 @@ DATABASES = {
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND_URL", "")
-
-
