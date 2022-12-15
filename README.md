@@ -8,7 +8,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
 1. Install [Docker](https://www.docker.com/get-started)
 2. Create a file named `.env` (for environment variables) in the same directory as `docker-compose.yml`. It should look like this:<br>
-   https://docs.google.com/spreadsheets/d/13HQ6cQN-TV768EQvKWX-bSvkPLpZm8jhZJ9jTaL2jGE/edit#gid=0 <br>
+
    ```text
    SECRET_KEY=something_random
 
