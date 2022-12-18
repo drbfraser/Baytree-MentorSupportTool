@@ -151,7 +151,7 @@ build server:
   stage: build
   image: python:3.9.1-buster
   services:
-    - name: mariadb:5.5
+    - name: mariadb:10.9.4
       alias: test_mysql
   tags:
     - docker
