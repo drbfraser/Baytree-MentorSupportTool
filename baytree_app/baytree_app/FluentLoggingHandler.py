@@ -1,6 +1,6 @@
 
 import os
-import requests
+# import requests
 import logging
 
 class FluentLoggingHandler:
@@ -8,15 +8,15 @@ class FluentLoggingHandler:
         if os.environ.get("LOGGING_URL"):
             self.host = os.environ.get("LOGGING_URL")
         else:
-            self.host = "http://fluent-bit"
+            self.host = "http://fluent-bit:24223/"
         self.info_logger = logging.getLogger("django_message")
 
-    def sendLog(self, message):
-        try:
-            obj = {"log: ": message}
-            requests.post(""+self.host, json=obj)
-        except Exception as e:
-            print(e)
+    # def sendLog(self, message):
+    #     try:
+    #         obj = {"log: ": message}
+    #         requests.post(""+self.host, json=obj)
+    #     except Exception as e:
+    #         print(e)
 
     def sendInfoLog(self, message):
         try:
