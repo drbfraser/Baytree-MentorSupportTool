@@ -163,7 +163,6 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         replace_number = 4
         replace_str = "-"*replace_number + request.data["email"][replace_number:]
         Flogging.sendLog("login request by " + str(replace_str))
-
         Flogging.sendInfoLog("login request by INFO: " + str(replace_str))
 
         if response.status_code == 401:
