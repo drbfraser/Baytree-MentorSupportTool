@@ -211,8 +211,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 
         response.data["is_superuser"] = user.is_superuser
 
-        # login success logging
-        Flogging.sendInfoLog("login as admin") if user.is_superuser else Flogging.sendInfoLog("login as mentor")
+        # # login success logging
+        # Flogging.sendInfoLog("login as admin") if user.is_superuser else Flogging.sendInfoLog("login as mentor")
 
         response.data["last_login"] = user.last_login
         user.last_login = make_aware(datetime.now())
