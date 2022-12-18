@@ -153,6 +153,8 @@ build server:
   services:
     - name: mariadb:10.9.4
       alias: test_mysql
+    - name: fluent/fluent-bit
+      alias: fluent-bit
   tags:
     - docker
   rules:
