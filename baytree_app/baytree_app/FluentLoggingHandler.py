@@ -8,7 +8,7 @@ class FluentLoggingHandler:
         if os.environ.get("LOGGING_URL"):
             self.host = os.environ.get("LOGGING_URL")
         else:
-            self.host = "fluent-bit"
+            self.host = "http://fluent-bit"
         self.info_logger = logging.getLogger("django_message")
 
     def sendLog(self, message):
