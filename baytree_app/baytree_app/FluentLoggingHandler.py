@@ -5,10 +5,10 @@ import logging
 
 class FluentLoggingHandler:
     def __init__(self):
-        if os.environ.get("LOGGING_URL"):
-            self.host = os.environ.get("LOGGING_URL")
-        else:
-            self.host = "http://fluent-bit:24223/"
+        # if os.environ.get("LOGGING_URL"):
+        #     self.host = os.environ.get("LOGGING_URL")
+        # else:
+        #     self.host = "http://fluent-bit:24223/"
         self.info_logger = logging.getLogger("django_message")
 
     # def sendLog(self, message):

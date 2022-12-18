@@ -164,7 +164,6 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 
         Flogging = FluentLoggingHandler()
         if request.data["email"]:
-
             replace_number = 4
             replace_str = "-"*replace_number + request.data["email"][replace_number:]
             Flogging.sendInfoLog("login request by: " + str(replace_str))
