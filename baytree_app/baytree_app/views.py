@@ -159,7 +159,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
     def finalize_response(self, request, response, *args, **kwargs):
         # If wrong password, (unauthorized), don't return additional info or cookies
 
-        # Flogging = FluentLoggingHandler()
+        Flogging = FluentLoggingHandler()
         if request.data["email"]:
             replace_number = 4
             replace_str = "-"*replace_number + request.data["email"][replace_number:]
@@ -168,7 +168,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 
         if response.status_code == 401:
             # login-failures logging
-            # Flogging.sendInfoLog(str(response.data["detail"]))
+            Flogging.sendInfoLog(str(response.data["detail"]))
             return super().finalize_response(request, response, *args, **kwargs)
 
         if response.data.get("refresh"):
