@@ -183,30 +183,6 @@ The frontends can either be run in Docker (using the instructions above) or outs
    - frontend: `npm start`
    - admin-frontend: `npm run dev`
 
-## Mobile Application
-
-Development on the mobile application ***ceased** around summer 2021*.
-
-### Technical Requirements
-
-- Flutter SDK - then run flutter doctor and update your path
-- Xcode
-- Android Studio
-
-### Run Application
-
-Run the file `prj\mobile\lib\main.dart`
-
-### TEMPORARILY Run Application
-
-In the mobile folder run the following commands:
-
-flutter pub get
-
-After setting up the emulator run:
-
-flutter run --no-sound-null-safety
-
 ## Admin Portal
 
 Navigate to <http://localhost:3001/admin> in your browser and use your superuser credentials (or any admin user credentials) to log in
