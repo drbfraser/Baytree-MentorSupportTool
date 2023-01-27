@@ -9,7 +9,7 @@ export const notificationApi = axios.create({
   withCredentials: true
 });
 
-export const fetchNotificationsByUserId = async (id: number) => {
+export const fetchNotificationsByUserId = async (id: number|undefined) => {
   const apiRes = await notificationApi.get("/", { params: { mentor_id: id } });
   return apiRes.data;
 };

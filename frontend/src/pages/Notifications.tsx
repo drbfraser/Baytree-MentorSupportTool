@@ -21,30 +21,49 @@ import {
 import { useAuth } from '../context/AuthContext'
 import TitledContainer from '@components/shared/TitledContainer'
 
+interface NotificationType {
+  id: number;
+  title: string;
+  content: string;
+  type: string;
+  period_in_days:number;
+}
+
+type Notification = {
+  id: number;
+  creation_date: Date;
+  is_read: boolean;
+  mentor_id: number;
+  notification_type_id: number;
+  content: string;
+  notification_type: NotificationType
+}
+
 export default function Notifications() {
   const { user } = useAuth()
-  const [notifications, setNotifications] = useState([] as any[])
-  const [expanded, setExpanded] = useState('')
+  const [notifications, setNotifications] = useState([] as Notification[])
+  const [expanded, setExpanded] = useState<boolean|number>()
 
   // Toggle when a notification is read
   const [readToggle, setReadToggle] = useState(false)
 
   // Refetch the data when a read toggle change
   useEffect(() => {
-    fetchNotificationsByUserId(user!.userId)
+    fetchNotificationsByUserId(user?.userId)
       .then(setNotifications)
       .catch((error) => console.error('Error:', error))
   }, [readToggle])
 
-  const handleNotificationComplete = (notificationId: any) => {
-    if (!notifications.find((n) => n.id === notificationId).is_read) {
+  const handleNotificationComplete = (notificationId: number) => {
+    const notification = notifications.find((n) => n.id === notificationId)
+    if (notification && !notification.is_read) {
       readNotification(+notificationId).then(() =>
         setReadToggle((toggle) => !toggle)
       )
     }
   }
 
-  const handleChange1 = (panel: any) => (_event: any, isExpanded: any) => {
+  const handleChange1 = (panel: number) => (_event: React.SyntheticEvent<Element, Event>, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
 
     if (isExpanded) {
@@ -102,7 +121,7 @@ export default function Notifications() {
             <TitledContainer title="Notifications Under Development...">
               <Alert severity="error">
                 <AlertTitle>
-                  We're sorry, this page is not working at the moment.
+                  We&apos;re sorry, this page is not working at the moment.
                 </AlertTitle>
               </Alert>
             </TitledContainer>
