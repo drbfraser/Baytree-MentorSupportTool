@@ -4,6 +4,7 @@
 version: "3.9"
 services:
   mock-views-app:
+    image: node:16
     command: node server.js
     ports:
       - "5000:5000"
