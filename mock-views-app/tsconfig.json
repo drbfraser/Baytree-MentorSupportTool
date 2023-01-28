@@ -4,8 +4,7 @@
     "module": "ESNext",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-
-    /* Type Checking */
+    "moduleResolution":"node",
     "strict": true,
     "skipLibCheck": true
   }
