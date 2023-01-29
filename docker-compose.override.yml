@@ -1,8 +1,13 @@
 # Used for running the server in a local development environment.
-# Automatically overrides values in base `docker-compose.yml` file when 
+# Automatically overrides values in base `docker-compose.yml` file when
 # exeucting a `docker compose up`
 version: "3.9"
 services:
+  mock-views-app:
+    image: node:16
+    command: node server.js
+    ports:
+      - "5000:5000"
   server:
     command: python manage.py runserver 0.0.0.0:8000
     ports:
