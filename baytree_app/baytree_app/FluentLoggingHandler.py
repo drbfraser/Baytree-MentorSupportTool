@@ -48,7 +48,7 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
-    def writeMessageLog(self, message: str, loggingLevel: int):
+    def writeMessageLog(self, message, loggingLevel: int):
         try:
             self.messageLogger.setLevel(loggingLevel)
             obj = {"log": {
