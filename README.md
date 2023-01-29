@@ -46,7 +46,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    ```bash
    docker compose build
    ```
-   
+
 5. Then, run the application:
 
    ```bash
@@ -59,7 +59,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    docker exec baytree_server python manage.py migrate
    docker exec -it baytree_server python manage.py createsuperuser
    ```
-7. install default preference: 
+7. install default preference:
 
    ```bash
    docker exec baytree_server python manage.py loaddata defaultPreferences.json
@@ -83,7 +83,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
 ### Commands Inside Container
 
-If you want to open a terminal within a container, use the command: 
+If you want to open a terminal within a container, use the command:
 
 ```bash
 docker exec -it [container-name] bash
@@ -107,7 +107,7 @@ To migrate your database, either because you or someone else made database migra
 docker exec baytree_server python manage.py migrate
 ```
 
-To install default preference: 
+To install default preference:
 
    ```bash
    docker exec baytree_server python manage.py loaddata defaultPreferences.json
@@ -126,13 +126,13 @@ docker exec -it baytree_server python manage.py createsuperuser
 
 ### Starting Cronjobs for storing active users
 
-The project uses Celery to run background tasks. To start up Celery use the following command: 
+The project uses Celery to run background tasks. To start up Celery use the following command:
 
 ```
 docker exec baytree_server python manage.py start_celery
 ```
 
-To stop the Celery worker, you should use the following command: 
+To stop the Celery worker, you should use the following command:
 
 ```
 docker exec baytree_server python manage.py stop_celery
@@ -179,7 +179,8 @@ The frontends can either be run in Docker (using the instructions above) or outs
 1. Install [Node.js](https://nodejs.org/en/)
 2. Run `npm install` in both frontend folders
 3. Use the command `docker compose up server` to run only the backend + database
-4. Use the following commands to run the frontends:
+4. Use the command `docker compose up mock-views-app` to run the node server for mocking Views APIs.
+5. Use the following commands to run the frontends:
    - frontend: `npm start`
    - admin-frontend: `npm run dev`
 
