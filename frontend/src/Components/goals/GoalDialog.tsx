@@ -107,7 +107,7 @@ const GoalDialog = () => {
   if (!errorMessage && !mentees) errorMessage = 'Cannot load mentees'
 
   return (
-    <Dialog open={open} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={() => closeEdit()} fullWidth maxWidth="sm">
       <DialogTitle>{title}</DialogTitle>
       {loading && <Loading />}
       {!loading && errorMessage && (
@@ -227,3 +227,4 @@ const GoalDialog = () => {
 }
 
 export default GoalDialog
+
