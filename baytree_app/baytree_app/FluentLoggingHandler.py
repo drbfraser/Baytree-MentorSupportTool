@@ -2,12 +2,6 @@ import logging
 
 class FluentLoggingHandler:
 
-    DEBUG = logging.DEBUG
-    INFO = logging.INFO
-    WARNING = logging.WARNING
-    ERROR = logging.ERROR
-    CRITICAL = logging.CRITICAL
-
     messageLogger = logging.getLogger("django_message")
     requestLogger = logging.getLogger("django.request")
 
@@ -17,7 +11,7 @@ class FluentLoggingHandler:
     def sendInfoLog(self, message):
         pass
 
-    def writeRequestReceivedLog(self, request, message = {}):
+    def logRequestReceived(self, request, message = {}):
         try:
             obj = {"log": {
                 "requestingUser": request.user,
@@ -30,7 +24,7 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
-    def writeResponseSentLog(self, response, message = {}):
+    def logResponseSent(self, response, message = {}):
         try:
             obj = {"log": {
                 "meta": response.headers,
@@ -48,23 +42,47 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
-    def writeMessageLog(self, message, loggingLevel: int):
+    def logDebugMessage(self, message):
         try:
-            self.messageLogger.setLevel(loggingLevel)
             obj = {"log": {
                 "message": message
             }}
-            if loggingLevel == self.DEBUG:
-                self.messageLogger.debug(obj)
-            elif loggingLevel == self.WARNING:
-                self.messageLogger.warning(obj)
-            elif loggingLevel == self.ERROR:
-                self.messageLogger.error(obj)
-            elif loggingLevel == self.CRITICAL:
-                self.messageLogger.critical(obj)
-            else:
-                # Default is INFO level
-                self.messageLogger.info(obj)
-        
+            self.messageLogger.debug(obj)
+        except Exception as e:
+            print(e)
+
+    def logInfoMessage(self, message):
+        try:
+            obj = {"log": {
+                "message": message
+            }}
+            self.messageLogger.info(obj)
+        except Exception as e:
+            print(e)
+
+    def logWarningMessage(self, message):
+        try:
+            obj = {"log": {
+                "message": message
+            }}
+            self.messageLogger.warning(obj)
+        except Exception as e:
+            print(e)
+
+    def logErrorMessage(self, message):
+        try:
+            obj = {"log": {
+                "message": message
+            }}
+            self.messageLogger.error(obj)
+        except Exception as e:
+            print(e)
+
+    def logCriticalMessage(self, message):
+        try:
+            obj = {"log": {
+                "message": message
+            }}
+            self.messageLogger.critical(obj)
         except Exception as e:
             print(e)

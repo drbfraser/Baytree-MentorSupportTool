@@ -7,14 +7,20 @@ base_url = 'https://thebaytreecentre.sharepoint.com/:f:/g/Ej7DxK0KjzNBuTwQ_lU-0b
 
 @api_view(("GET",))
 def get_resource(request):   
-    # logger.writeRequestReceivedLog(request)
+    # logger.logRequestReceived(request)
+
     # loggingMessage = {
     #     "msg": "Test log",
-    #     "data": None # This can be actual data, or a link, or an exception (e.__str()__)
+    #     "data": None # This can be actual data, or a string, a link, or an exception (e.__str()__)
     # }
-    # logger.writeMessageLog(loggingMessage, logger.INFO)
+    # logger.logDebugMessage(loggingMessage)
+    # logger.logInfoMessage(loggingMessage)
+    # logger.logWarningMessage(loggingMessage)
+    # logger.logErrorMessage(loggingMessage)
+    # logger.logCriticalMessage(loggingMessage)
+
     # response = Response(base_url)
-    # logger.writeResponseSentLog(response)
+    # logger.logResponseSent(response)
     return Response(base_url)
 
 
