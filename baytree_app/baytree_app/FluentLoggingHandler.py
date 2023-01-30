@@ -13,76 +13,76 @@ class FluentLoggingHandler:
 
     def logRequestReceived(self, request, message = {}):
         try:
-            obj = {"log": {
+            logJson = {"log": {
                 "requestingUser": request.user,
                 "meta": request.META,
                 "requestReceived": True,
                 "message": message
             }}
-            self.requestLogger.info(obj)
+            self.requestLogger.info(logJson)
         
         except Exception as e:
             print(e)
 
     def logResponseSent(self, response, message = {}):
         try:
-            obj = {"log": {
+            logJson = {"log": {
                 "meta": response.headers,
                 "requestReceived": False,
                 "message": message
             }}
             if response.status_code < 400:
-                self.requestLogger.info(obj)
+                self.requestLogger.info(logJson)
             elif response.status_code < 600:
-                self.requestLogger.error(obj)
+                self.requestLogger.error(logJson)
             else:
                 # Default is INFO level
-                self.requestLogger.info(obj)
+                self.requestLogger.info(logJson)
         
         except Exception as e:
             print(e)
 
-    def logDebugMessage(self, message):
+    def debug(self, message):
         try:
-            obj = {"log": {
+            logJson = {"log": {
                 "message": message
             }}
-            self.messageLogger.debug(obj)
+            self.messageLogger.debug(logJson)
         except Exception as e:
             print(e)
 
-    def logInfoMessage(self, message):
+    def info(self, message):
         try:
-            obj = {"log": {
+            logJson = {"log": {
                 "message": message
             }}
-            self.messageLogger.info(obj)
+            self.messageLogger.info(logJson)
         except Exception as e:
             print(e)
 
-    def logWarningMessage(self, message):
+    def warning(self, message):
         try:
-            obj = {"log": {
+            logJson = {"log": {
                 "message": message
             }}
-            self.messageLogger.warning(obj)
+            self.messageLogger.warning(logJson)
         except Exception as e:
             print(e)
 
-    def logErrorMessage(self, message):
+    def error(self, message):
         try:
-            obj = {"log": {
+            logJson = {"log": {
                 "message": message
             }}
-            self.messageLogger.error(obj)
+            self.messageLogger.error(logJson)
         except Exception as e:
             print(e)
 
-    def logCriticalMessage(self, message):
+    def critical(self, message):
         try:
-            obj = {"log": {
+            logJson = {"log": {
                 "message": message
             }}
-            self.messageLogger.critical(obj)
+            self.messageLogger.critical(logJson)
         except Exception as e:
             print(e)

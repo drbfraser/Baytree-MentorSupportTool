@@ -13,11 +13,11 @@ def get_resource(request):
     #     "msg": "Test log",
     #     "data": None # This can be actual data, or a string, a link, or an exception (e.__str()__)
     # }
-    # logger.logDebugMessage(loggingMessage)
-    # logger.logInfoMessage(loggingMessage)
-    # logger.logWarningMessage(loggingMessage)
-    # logger.logErrorMessage(loggingMessage)
-    # logger.logCriticalMessage(loggingMessage)
+    # logger.debug(loggingMessage)
+    # logger.info(loggingMessage)
+    # logger.warning(loggingMessage)
+    # logger.error(loggingMessage)
+    # logger.critical(loggingMessage)
 
     # response = Response(base_url)
     # logger.logResponseSent(response)
