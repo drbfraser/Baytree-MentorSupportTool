@@ -37,32 +37,22 @@ LOGGING = {
     'formatters': {
         'json': {
             '()': jsonlogger.JsonFormatter,
-            'format': '%(levelname)s %(message)s'
+            'format': '%(asctime)s %(levelname)s %(message)s'
         }
     },
     "handlers": {
-        # logs server error into server_error.log
-        "file_error": {
+        # Log application logs into server_application
+        "application": {
             "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "server_logs/server_error.log"),
-            "level": logging.ERROR
-        },
-        # log server info into server_info.log
-        "file_info": {
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "server_logs/server_info.log"),
-            "level": logging.INFO
-        },
-        # log custom message into server_message.log
-        "file_message": {
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "server_logs/server_message.log"),
-            "level": logging.INFO
+            "filename": os.path.join(BASE_DIR, "server_logs/server_application.log"),
+            "level": logging.INFO,
+            "formatter": "json"
         },
         # console only logs warning and error message
         "console": {
             "class": "logging.StreamHandler",
             "level": logging.WARNING,
+            "formatter": "json"
         },
         # log to fluent bit
         "fluent": {
@@ -70,26 +60,46 @@ LOGGING = {
             "tag": "django",
             "host": "http://fluent-bit:24223/" if not os.environ.get("LOGGING_URL") else os.environ.get("LOGGING_URL"),
             "port": 24224,
+            "formatter": "json"
+        },
+        # Log server requests received to server_requests.log
+        "requests": {
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "server_logs/server_requests.log"),
+            "level": logging.INFO,
+            "formatter": "json"
+        },
+        # Log security errors to server_security.log
+        "security_errors": {
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "server_logs/server_security.log"),
+            "level": logging.INFO,
+            "formatter": "json"
         },
     },
     "loggers": {
-        # server message
+        # Server message
         "django": {
-            "handlers": ["file_error", "file_info", "console", "fluent"],
-            "level": logging.INFO,
-            'formatter': ["json"]
+            "handlers": ["application", "console", "fluent"],
+            "level": logging.INFO
         },
-        # custom message
+        # Server requests
+        "django.request": {
+            "handlers": ["requests", "console", "fluent"],
+            "level": logging.INFO,
+            "propagate": False
+        },
+        # Server messages
         "django_message": {
-            "handlers": ["file_message", "console", "fluent"],
-            "level": logging.INFO,
-            'formatter': ["json"]
+            "handlers": ["application", "fluent"],
+            "level": logging.INFO
         },
-        # "django.debug.log": {
-        #     "handlers": ["file", "console", "fluent"],
-        #     "level": logging.DEBUG,
-        #     'propagate': True
-        # },
+        # Security
+        "django.security.*": {
+            "handlers": ["security_errors", "console", "fluent"],
+            "level": logging.INFO,
+            "propagate": False
+        },
     },
 }
 

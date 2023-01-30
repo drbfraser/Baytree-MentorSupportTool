@@ -1,28 +1,78 @@
-
-import os
-# import requests
 import logging
 
 class FluentLoggingHandler:
-    def __init__(self):
-        # if os.environ.get("LOGGING_URL"):
-        #     self.host = os.environ.get("LOGGING_URL")
-        # else:
-        #     self.host = "http://fluent-bit:24223/"
-        self.info_logger = logging.getLogger("django_message")
 
-    # def sendLog(self, message):
-    #     try:
-    #         obj = {"log: ": message}
-    #         requests.post(""+self.host, json=obj)
-    #     except Exception as e:
-    #         print(e)
+    messageLogger = logging.getLogger("django_message")
+    requestLogger = logging.getLogger("django.request")
+
+    def __init__(self):
+        pass
 
     def sendInfoLog(self, message):
+        pass
+
+    def logRequestReceived(self, request, message = {}):
         try:
-            self.info_logger.setLevel(logging.INFO)
-            #obj = {"log: ": message}
-            self.info_logger.info(message)
+            logJson = {"log": {
+                "requestingUser": request.user,
+                "meta": request.META,
+                "isRequestReceivedLog": True,
+                "message": message
+            }}
+            self.requestLogger.info(logJson)
+        
         except Exception as e:
             print(e)
 
+    def logResponseSent(self, response, message = {}):
+        try:
+            logJson = {"log": {
+                "meta": response.headers,
+                "isRequestReceivedLog": False,
+                "message": message
+            }}
+            if response.status_code < 400:
+                self.requestLogger.info(logJson)
+            elif response.status_code < 600:
+                self.requestLogger.error(logJson)
+            else:
+                # Default is INFO level
+                self.requestLogger.info(logJson)
+        
+        except Exception as e:
+            print(e)
+
+    def debug(self, message):
+        try:
+            logJson = {"log": message}
+            self.messageLogger.debug(logJson)
+        except Exception as e:
+            print(e)
+
+    def info(self, message):
+        try:
+            logJson = {"log": message}
+            self.messageLogger.info(logJson)
+        except Exception as e:
+            print(e)
+
+    def warning(self, message):
+        try:
+            logJson = {"log": message}
+            self.messageLogger.warning(logJson)
+        except Exception as e:
+            print(e)
+
+    def error(self, message):
+        try:
+            logJson = {"log": message}
+            self.messageLogger.error(logJson)
+        except Exception as e:
+            print(e)
+
+    def critical(self, message):
+        try:
+            logJson = {"log": message}
+            self.messageLogger.critical(logJson)
+        except Exception as e:
+            print(e)
