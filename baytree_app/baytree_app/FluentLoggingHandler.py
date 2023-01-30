@@ -16,7 +16,7 @@ class FluentLoggingHandler:
             logJson = {"log": {
                 "requestingUser": request.user,
                 "meta": request.META,
-                "requestReceived": True,
+                "isRequestReceived": True,
                 "message": message
             }}
             self.requestLogger.info(logJson)
@@ -28,7 +28,7 @@ class FluentLoggingHandler:
         try:
             logJson = {"log": {
                 "meta": response.headers,
-                "requestReceived": False,
+                "isRequestReceived": False,
                 "message": message
             }}
             if response.status_code < 400:
