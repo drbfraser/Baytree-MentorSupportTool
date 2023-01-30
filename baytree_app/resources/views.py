@@ -10,7 +10,7 @@ def get_resource(request):
     # logger.logRequestReceived(request)
 
     # loggingMessage = {
-    #     "msg": "Test log",
+    #     "content": "Test log",
     #     "data": None # This can be actual data, or a string, a link, or an exception (e.__str()__)
     # }
     # logger.debug(loggingMessage)

@@ -44,45 +44,35 @@ class FluentLoggingHandler:
 
     def debug(self, message):
         try:
-            logJson = {"log": {
-                "message": message
-            }}
+            logJson = {"log": message}
             self.messageLogger.debug(logJson)
         except Exception as e:
             print(e)
 
     def info(self, message):
         try:
-            logJson = {"log": {
-                "message": message
-            }}
+            logJson = {"log": message}
             self.messageLogger.info(logJson)
         except Exception as e:
             print(e)
 
     def warning(self, message):
         try:
-            logJson = {"log": {
-                "message": message
-            }}
+            logJson = {"log": message}
             self.messageLogger.warning(logJson)
         except Exception as e:
             print(e)
 
     def error(self, message):
         try:
-            logJson = {"log": {
-                "message": message
-            }}
+            logJson = {"log": message}
             self.messageLogger.error(logJson)
         except Exception as e:
             print(e)
 
     def critical(self, message):
         try:
-            logJson = {"log": {
-                "message": message
-            }}
+            logJson = {"log": message}
             self.messageLogger.critical(logJson)
         except Exception as e:
             print(e)
