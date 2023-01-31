@@ -116,7 +116,7 @@ const GoalDialog = () => {
           Please try again later
         </Alert>
       )}
-      {!loading && !errorMessage && mentees && (
+      {!loading && !errorMessage && mentees ? (
         <form onSubmit={handleSubmit}>
           <DialogContent>
             {/* Title */}
@@ -221,6 +221,10 @@ const GoalDialog = () => {
             </LoadingButton>
           </DialogActions>
         </form>
+      ) : (
+        <DialogActions>
+          <Button onClick={closeEdit}>Cancel</Button>
+        </DialogActions>
       )}
     </Dialog>
   )
