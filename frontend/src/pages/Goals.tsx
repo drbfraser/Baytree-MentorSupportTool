@@ -1,21 +1,20 @@
-import GoalDialog from "@components/goals/GoalDialog";
-import GoalExportButton from "@components/goals/GoalExportButton";
-import GoalQuerying from "@components/goals/GoalQuerying";
-import GoalsList from "@components/goals/GoalsList";
-import GoalsStatistics from "@components/goals/GoalsStatistics";
-import { GoalProvider, useGoalContext } from "@context/GoalContext";
-import { Box, Button, Icon, Stack, Typography } from "@mui/material";
-import { MdAdd } from "react-icons/md";
+import GoalDialog from '@components/goals/GoalDialog'
+import GoalQuerying from '@components/goals/GoalQuerying'
+import GoalsList from '@components/goals/GoalsList'
+import GoalsStatistics from '@components/goals/GoalsStatistics'
+import { GoalProvider, useGoalContext } from '@context/GoalContext'
+import { Box, Button, Icon, Stack, Typography } from '@mui/material'
+import { MdAdd } from 'react-icons/md'
 
 const Goals = () => {
   const {
     edit: { open },
     openEdit
-  } = useGoalContext();
+  } = useGoalContext()
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h4">Goals</Typography>
         {/* Menu buttons */}
         <Stack direction="row" spacing={1}>
@@ -37,15 +36,16 @@ const Goals = () => {
       <GoalsList />
       {open && <GoalDialog />}
     </>
-  );
-};
+  )
+}
 
 const WrappedGoals = () => {
   return (
     <GoalProvider>
       <Goals />
     </GoalProvider>
-  );
-};
+  )
+}
 
-export default WrappedGoals;
+export default WrappedGoals
+
