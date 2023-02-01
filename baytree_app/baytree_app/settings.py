@@ -119,7 +119,6 @@ INSTALLED_APPS = [
     "emails",
     "users",
     "questionnaires",
-    "questions_and_answers",
     "sessions",
     "admin_login",
     "goals",
