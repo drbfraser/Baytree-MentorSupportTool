@@ -1,10 +1,12 @@
 from rest_framework import generics, mixins
-
+from baytree_app.FluentLoggingHandler import FluentLoggingHandler
 from users.permissions import AdminPermissions
 
 from .models import UkHoliday
 from .models import CalendarEvent
 from .serializers import CalendarEventSerializer, UkHolidaySerializer
+
+logger = FluentLoggingHandler()
 
 # GET api/calendar_events/uk_holidays/
 class CalendarEventUkHolidayListAPIView(generics.ListAPIView):
@@ -33,7 +35,33 @@ class CalendarEventUpdateDestroyAPIVIew(
   permission_classes = [AdminPermissions]
 
   def put(self, request, *args, **kwargs):
-    return self.update(request, *args, **kwargs)
+    response = self.update(request, *args, **kwargs)
+    if (response.status_code == 200):
+      loggingMessage = {
+        "content": "Successfully edited calendar event",
+        "data": response.data
+      }
+    else:
+      loggingMessage = {
+        "content": "Unable to edit calendar event",
+        "data": response.data
+      }
+    logger.info(loggingMessage)
+    return response
 
   def delete(self, request, *args, **kwargs):
-    return self.destroy(request, *args, **kwargs)
+    pathInfo = request.path_info.split('/')
+    itemId = pathInfo[-2]
+    response = self.destroy(request, *args, **kwargs)
+    if (response.status_code == 204):
+      loggingMessage = {
+        "content": "Successfully deleted calendar event with ID {}".format(itemId),
+        "data": None
+      }
+    else:
+      loggingMessage = {
+        "content": "Unable to delete calendar event with ID {}".format(itemId),
+        "data": None
+      }
+    logger.info(loggingMessage)
+    return response
