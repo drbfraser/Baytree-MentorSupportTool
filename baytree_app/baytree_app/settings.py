@@ -247,7 +247,8 @@ SIMPLE_JWT = {
 }
 
 SITE_ID = 1
-
+print('here!')
+print(os.environ)
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = os.environ["EMAIL_HOST"]
@@ -258,6 +259,7 @@ EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASSWORD"]
 EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
 DEFAULT_FROM_EMAIL = os.environ["EMAIL_USER"]
 SERVER_EMAIL = os.environ["EMAIL_USER"]
+MOCK_VIEWS = os.environ["MOCK_VIEWS"]
 
 DATABASES = {
     "default": {

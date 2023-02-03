@@ -1,9 +1,9 @@
 version: "3.9"
 services:
-  mock-views-app:
-    container_name: mock-views-app
+  views_mock:
+    container_name: views_mock
     build:
-      context: ./mock-views-app
+      context: ./views_mock
   server:
     container_name: baytree_server
     build:
