@@ -157,6 +157,7 @@ const MentorRoles: NextPage = () => {
 
   const getVolunteeringOptions: OnLoadColumnValueOptionsFunc = async () => {
     const volunteeringTypes = await getVolunteeringTypesFromViews();
+    console.log('VolunteeringTypes:', volunteeringTypes)
     if (volunteeringTypes) {
       return volunteeringTypes.results.map((volunteeringType) => ({
         id: volunteeringType,

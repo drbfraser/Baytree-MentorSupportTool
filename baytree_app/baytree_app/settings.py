@@ -247,8 +247,7 @@ SIMPLE_JWT = {
 }
 
 SITE_ID = 1
-print('here!')
-print(os.environ)
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = os.environ["EMAIL_HOST"]
