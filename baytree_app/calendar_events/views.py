@@ -41,12 +41,13 @@ class CalendarEventUpdateDestroyAPIVIew(
         "content": "Successfully edited calendar event",
         "data": response.data
       }
+      logger.info(loggingMessage)
     else:
       loggingMessage = {
         "content": "Unable to edit calendar event",
         "data": response.data
       }
-    logger.info(loggingMessage)
+      logger.warning(loggingMessage)
     return response
 
   def delete(self, request, *args, **kwargs):
@@ -58,10 +59,11 @@ class CalendarEventUpdateDestroyAPIVIew(
         "content": "Successfully deleted calendar event with ID {}".format(itemId),
         "data": None
       }
+      logger.info(loggingMessage)
     else:
       loggingMessage = {
         "content": "Unable to delete calendar event with ID {}".format(itemId),
         "data": None
       }
-    logger.info(loggingMessage)
+      logger.warning(loggingMessage)
     return response
