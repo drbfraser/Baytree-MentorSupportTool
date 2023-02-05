@@ -10,6 +10,10 @@ services:
       - MYSQL_DATABASE=baytree
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    depends_on:
+      - database
+      - redis
+      - fluent-bit
   server:
     container_name: baytree_server
     build:
