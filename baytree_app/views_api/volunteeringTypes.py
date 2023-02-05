@@ -1,13 +1,9 @@
 from rest_framework.response import Response
 from users.permissions import MentorPermissions
-from users.models import MentorRole
-from users.models import MentorUser
 import json
 
-from users.permissions import userIsAdmin, userIsSuperUser
 from .constants import views_base_url, views_username, views_password
 from rest_framework.decorators import permission_classes, api_view
-from rest_framework import status
 from users.permissions import AdminPermissions
 import requests
 
@@ -19,8 +15,6 @@ volunteering_types_base_url = (
 @permission_classes([AdminPermissions | MentorPermissions])
 def get_volunteering_types_endpoint(request):
     access_token = request.COOKIES.get('access_token')
-
-    print("HEADER INSIDE GET VOLUNTEERING TYPES ENDPOINT:", access_token)
     return Response(get_volunteering_types(access_token), 200)
 
 def get_volunteering_types(access_token):
@@ -30,9 +24,6 @@ def get_volunteering_types(access_token):
         headers={"Accept": "application/json", "Cookie": "access_token=" + access_token},
     )
 
-    print("RESPONSE ???: ", response)
-    print(response.text)
-
     return parse_volunteering_types(response)
 
 
@@ -40,7 +31,7 @@ def parse_volunteering_types(response):
     parsed = json.loads(response.text)
 
     # Check if no volunteering types were returned from Views:
-    if not "items" in parsed or len(parsed["items"]) == 0:
+    if "items" not in parsed or len(parsed["items"]) == 0:
         return {
             "count": 0,
             "results": [],

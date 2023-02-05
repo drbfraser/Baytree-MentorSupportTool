@@ -6,6 +6,10 @@ services:
       context: ./views_mock
     environment:
       - SECRET_KEY=${SECRET_KEY}
+      - MYSQL_HOST=baytree_database
+      - MYSQL_DATABASE=baytree
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
   server:
     container_name: baytree_server
     build:
