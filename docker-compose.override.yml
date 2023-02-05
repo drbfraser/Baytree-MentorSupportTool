@@ -3,7 +3,7 @@
 # exeucting a `docker compose up`
 version: "3.9"
 services:
-  views_mock:
+  views-mock:
     command: python manage.py runserver 0.0.0.0:5001
     ports:
       - "5001:5001"

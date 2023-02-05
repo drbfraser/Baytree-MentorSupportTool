@@ -15,27 +15,23 @@ volunteering_types_base_url = (
     views_base_url + "admin/valuelists/sessiongroup/volunteeringtypes"
 )
 
-print("Volunteering types  URL: ", volunteering_types_base_url)
-print('username' + views_username)
-print('password:' + views_password)
-
-
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
 def get_volunteering_types_endpoint(request):
-    print("CALLING THE GET VOLUNTEERING TYPES ENDPOINT!")
-    return Response(get_volunteering_types(), 200)
+    access_token = request.COOKIES.get('access_token')
 
+    print("HEADER INSIDE GET VOLUNTEERING TYPES ENDPOINT:", access_token)
+    return Response(get_volunteering_types(access_token), 200)
 
-def get_volunteering_types():
-
+def get_volunteering_types(access_token):
     response = requests.get(
         volunteering_types_base_url,
         auth=(views_username, views_password),
-        headers={"Accept": "application/json"},
+        headers={"Accept": "application/json", "Cookie": "access_token=" + access_token},
     )
 
     print("RESPONSE ???: ", response)
+    print(response.text)
 
     return parse_volunteering_types(response)
 

@@ -1,9 +1,11 @@
 version: "3.9"
 services:
-  views_mock:
-    container_name: views_mock
+  views-mock:
+    container_name: views-mock
     build:
       context: ./views_mock
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
   server:
     container_name: baytree_server
     build:

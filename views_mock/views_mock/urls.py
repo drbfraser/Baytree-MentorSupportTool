@@ -1,8 +1,11 @@
-from django.contrib import admin
-from django.urls import path
-from .views import get_volunteering_types_endpoint
+from django.urls import include, path
 
+from .views import (CookieTokenObtainPairView, CookieTokenRefreshView,
+                    CookieTokenVerifyView)
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/views-api/volunteering-types', get_volunteering_types_endpoint)
+    path('', include('views_api.urls')),
+    path('api/token/', CookieTokenObtainPairView.as_view()),
+    path('token/refresh/', CookieTokenRefreshView.as_view()),
+    path('token/verify/', CookieTokenVerifyView.as_view()),
+    # path('token/logout/', logout_view),
 ]

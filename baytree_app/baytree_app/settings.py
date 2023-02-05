@@ -22,7 +22,7 @@ DEBUG = os.environ.get("DEBUG", "") == "yes"
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 if DEBUG:
-    ALLOWED_HOSTS = ["localhost"]
+    ALLOWED_HOSTS = ["localhost", "views_mock"]
     CORS_ALLOW_ALL_ORIGINS = True
     CORS_ALLOW_CREDENTIALS = True
 else:
