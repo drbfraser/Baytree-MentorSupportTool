@@ -1,5 +1,6 @@
 import logging
 
+
 class FluentLoggingHandler:
 
     messageLogger = logging.getLogger("django_message")
@@ -11,7 +12,7 @@ class FluentLoggingHandler:
     def sendInfoLog(self, message):
         pass
 
-    def logRequestReceived(self, request, message = {}):
+    def logRequestReceived(self, request, message={}):
         try:
             logJson = {"log": {
                 "requestingUser": request.user,
@@ -20,11 +21,11 @@ class FluentLoggingHandler:
                 "message": message
             }}
             self.requestLogger.info(logJson)
-        
+
         except Exception as e:
             print(e)
 
-    def logResponseSent(self, response, message = {}):
+    def logResponseSent(self, response, message={}):
         try:
             logJson = {"log": {
                 "meta": response.headers,
@@ -38,7 +39,7 @@ class FluentLoggingHandler:
             else:
                 # Default is INFO level
                 self.requestLogger.info(logJson)
-        
+
         except Exception as e:
             print(e)
 
