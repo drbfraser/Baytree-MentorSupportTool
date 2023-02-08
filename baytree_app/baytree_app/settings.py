@@ -258,7 +258,7 @@ EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASSWORD"]
 EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
 DEFAULT_FROM_EMAIL = os.environ["EMAIL_USER"]
 SERVER_EMAIL = os.environ["EMAIL_USER"]
-MOCK_VIEWS = os.environ["MOCK_VIEWS"]
+VIEWS_BASE_URL = os.environ["VIEWS_BASE_URL"]
 
 DATABASES = {
     "default": {
