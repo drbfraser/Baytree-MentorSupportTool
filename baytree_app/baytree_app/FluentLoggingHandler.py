@@ -12,7 +12,7 @@ class FluentLoggingHandler:
     def sendInfoLog(self, message):
         pass
 
-    def logRequestReceived(self, request, message={}):
+    def logRequestReceived(self, request, message="Request Received"):
         try:
             logJson = {"log": {
                 "requestingUser": request.user,
@@ -25,7 +25,7 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
-    def logResponseSent(self, response, message={}):
+    def logResponseSent(self, response, message="Response Sent"):
         try:
             logJson = {"log": {
                 "meta": response.headers,
