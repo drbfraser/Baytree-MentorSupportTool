@@ -9,61 +9,57 @@ from .serializers import CalendarEventSerializer, UkHolidaySerializer
 logger = FluentLoggingHandler()
 
 # GET api/calendar_events/uk_holidays/
+
+
 class CalendarEventUkHolidayListAPIView(generics.ListAPIView):
-  queryset = UkHoliday.objects.all()
-  serializer_class = UkHolidaySerializer
+    queryset = UkHoliday.objects.all()
+    serializer_class = UkHolidaySerializer
 
 # GET api/calendar_events/
+
+
 class CalendarEventListAPIView(generics.ListAPIView):
-  queryset = CalendarEvent.objects.all()
-  serializer_class = CalendarEventSerializer
+    queryset = CalendarEvent.objects.all()
+    serializer_class = CalendarEventSerializer
 
 # POST api/calendar_events/create/
+
+
 class CalendarEventCreateAPIView(generics.CreateAPIView):
-  queryset = CalendarEvent.objects.all()
-  serializer_class = CalendarEventSerializer
-  permission_classes = [AdminPermissions]
+    queryset = CalendarEvent.objects.all()
+    serializer_class = CalendarEventSerializer
+    permission_classes = [AdminPermissions]
 
 # PUT, DELETE api/calendar_events/<id>/
+
+
 class CalendarEventUpdateDestroyAPIVIew(
-  mixins.UpdateModelMixin,
-  mixins.DestroyModelMixin,
-  generics.GenericAPIView):
-  queryset = CalendarEvent.objects.all()
-  serializer_class = CalendarEventSerializer
-  lookup_field = "pk"
-  permission_classes = [AdminPermissions]
+        mixins.UpdateModelMixin,
+        mixins.DestroyModelMixin,
+        generics.GenericAPIView):
+    queryset = CalendarEvent.objects.all()
+    serializer_class = CalendarEventSerializer
+    lookup_field = "pk"
+    permission_classes = [AdminPermissions]
 
-  def put(self, request, *args, **kwargs):
-    response = self.update(request, *args, **kwargs)
-    if (response.status_code == 200):
-      loggingMessage = {
-        "content": "Successfully edited calendar event",
-        "data": response.data
-      }
-      logger.info(loggingMessage)
-    else:
-      loggingMessage = {
-        "content": "Unable to edit calendar event",
-        "data": response.data
-      }
-      logger.warning(loggingMessage)
-    return response
+    def put(self, request, *args, **kwargs):
+        response = self.update(request, *args, **kwargs)
+        if (response.status_code == 200):
+            logger.res_info(response.status_code, response.data,
+                            "Successfully edited calendar event")
+        else:
+            logger.res_info(response.status_code, response.data,
+                            "Unable to edit calendar event")
+        return response
 
-  def delete(self, request, *args, **kwargs):
-    pathInfo = request.path_info.split('/')
-    itemId = pathInfo[-2]
-    response = self.destroy(request, *args, **kwargs)
-    if (response.status_code == 204):
-      loggingMessage = {
-        "content": "Successfully deleted calendar event with ID {}".format(itemId),
-        "data": None
-      }
-      logger.info(loggingMessage)
-    else:
-      loggingMessage = {
-        "content": "Unable to delete calendar event with ID {}".format(itemId),
-        "data": None
-      }
-      logger.warning(loggingMessage)
-    return response
+    def delete(self, request, *args, **kwargs):
+        pathInfo = request.path_info.split('/')
+        itemId = pathInfo[-2]
+        response = self.destroy(request, *args, **kwargs)
+        if (response.status_code == 204):
+            logger.res_info(response.status_code, None,
+                            f"Successfully deleted calendar event with ID {itemId}")
+        else:
+            logger.res_info(response.status_code, None,
+                            f"Unable to delete calendar event with ID {itemId}")
+        return response
