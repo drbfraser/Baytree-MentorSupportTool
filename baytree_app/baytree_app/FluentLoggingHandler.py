@@ -56,10 +56,22 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
-    def info(self, url="N/A", data=None, message=""):
+    def req_info(self, url="", request_method="", data=None, message=""):
         try:
             logJson = {"log": {
                 "url": url,
+                "method": request_method,
+                "data": data,
+                "message": message
+            }}
+            self.messageLogger.info(logJson)
+        except Exception as e:
+            print(e)
+
+    def res_info(self, status_code="", data=None, message=""):
+        try:
+            logJson = {"log": {
+                "status": status_code,
                 "data": data,
                 "message": message
             }}
