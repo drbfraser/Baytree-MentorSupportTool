@@ -1,8 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 # from baytree_app.FluentLoggingHandler import FluentLoggingHandler
-# import os
-# import traceback
 
 base_url = 'https://thebaytreecentre.sharepoint.com/:f:/g/Ej7DxK0KjzNBuTwQ_lU-0bMBdMNHOWzHi2bzGJB86G4Bjg'
 # logger = FluentLoggingHandler()
@@ -10,20 +8,17 @@ base_url = 'https://thebaytreecentre.sharepoint.com/:f:/g/Ej7DxK0KjzNBuTwQ_lU-0b
 
 @api_view(("GET",))
 def get_resource(request):
-    # test_var = "testing logging methods"
-    # file_path = os.path.abspath(__file__)
-
-    # logger.debug("test_var", test_var, file_path,
-    #              13, "logging test_var's value")
-    # logger.req_info(base_url, request.method, None,
-    #                 "Sending request for a resource")
-    # logger.warning(file_path, 19, "Logging a warning")
+    # logger.debug("Logging debug level")
+    # logger.info("Logging info level")
+    # logger.warning("Logging warning level")
     # try:
     #     raise ValueError("Error")
     # except ValueError as e:
-    #     stack_trace = traceback.format_exc()
-    #     logger.error(file_path, 22, stack_trace, "Error has occured")
-    #     logger.critical(file_path, 22, stack_trace,
-    #                     "Critical error has occured")
+    #     logger.error("Logging error level")
+    #     logger.critical("Logging critical level")
+
+    # logger.logRequestReceived(request, "Logging request")
+    # response = Response(base_url)
+    # logger.logResponseSent(response, "Logging response")
 
     return Response(base_url)
