@@ -31,14 +31,14 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
    GRAFANA_LOGGING_URL=logs-prod3.grafana.net
    GRAFANA_USER=319402
-   GRAFANA_API_KEY={your Grafana API key}
+   GRAFANA_API_KEY={your_Grafana_API_key}
    ```
 
    According to Google's new less-secure app policy, the gmail account must have 2-factor authentication enabled and an "app password" must be created which can be used with Django.
 
    Replace instances of `something_random` with random strings, and `the_username` and `the_password` with appropriate credentials (which you can obtain by talking to someone on the team).
 
-   You can get the Grafana API key by talking to someone on the team.
+   You can get the `your_Grafana_API_key` by talking to someone on the team.
 
 3. Install frontend dependencies (if running in Docker - see frontend section if not):
 
