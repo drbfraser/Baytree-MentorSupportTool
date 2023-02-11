@@ -45,11 +45,10 @@ class CalendarEventUpdateDestroyAPIVIew(
     def put(self, request, *args, **kwargs):
         response = self.update(request, *args, **kwargs)
         if (response.status_code == 200):
-            logger.res_info(response.status_code, response.data,
-                            "Successfully edited calendar event")
+            logger.logResponseSent(
+                response, "Successfully edited calendar event")
         else:
-            logger.res_info(response.status_code, response.data,
-                            "Unable to edit calendar event")
+            logger.logResponseSent(response, "Unable to edit calendar event")
         return response
 
     def delete(self, request, *args, **kwargs):
@@ -57,9 +56,9 @@ class CalendarEventUpdateDestroyAPIVIew(
         itemId = pathInfo[-2]
         response = self.destroy(request, *args, **kwargs)
         if (response.status_code == 204):
-            logger.res_info(response.status_code, None,
-                            f"Successfully deleted calendar event with ID {itemId}")
+            logger.logResponseSent(
+                response, f"Successfully deleted calendar event with ID {itemId}")
         else:
-            logger.res_info(response.status_code, None,
-                            f"Unable to delete calendar event with ID {itemId}")
+            logger.logResponseSent(
+                response, f"Unable to delete calendar event with ID {itemId}")
         return response
