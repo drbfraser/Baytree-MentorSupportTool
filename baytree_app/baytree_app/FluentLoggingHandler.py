@@ -43,73 +43,37 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
-    def debug(self, var_name="", var_val=None, file_path="", line_num=None, message=""):
+    def debug(self, message=""):
         try:
-            logJson = {"log": {
-                "variable": var_name,
-                "value": var_val,
-                "file_path": file_path,
-                "line_number": line_num,
-                "message": message
-            }}
+            logJson = {"log": message}
             self.messageLogger.debug(logJson)
         except Exception as e:
             print(e)
 
-    def req_info(self, url="", request_method="", data=None, message=""):
+    def info(self, message=""):
         try:
-            logJson = {"log": {
-                "url": url,
-                "method": request_method,
-                "data": data,
-                "message": message
-            }}
+            logJson = {"log": message}
             self.messageLogger.info(logJson)
         except Exception as e:
             print(e)
 
-    def res_info(self, status_code="", data=None, message=""):
+    def warning(self, message=""):
         try:
-            logJson = {"log": {
-                "status": status_code,
-                "data": data,
-                "message": message
-            }}
-            self.messageLogger.info(logJson)
-        except Exception as e:
-            print(e)
-
-    def warning(self, file_path="", line_num=None, message=""):
-        try:
-            logJson = {"log": {
-                "file_path": file_path,
-                "line_number": line_num,
-                "message": message
-            }}
+            logJson = {"log": message}
             self.messageLogger.warning(logJson)
         except Exception as e:
             print(e)
 
-    def error(self, file_path="", line_num=None, stack_trace="", message=""):
+    def error(self, message=""):
         try:
-            logJson = {"log": {
-                "file_path": file_path,
-                "line_number": line_num,
-                "stack_trace": stack_trace,
-                "message": message
-            }}
+            logJson = {"log": message}
             self.messageLogger.error(logJson)
         except Exception as e:
             print(e)
 
-    def critical(self, file_path="", line_num=None, stack_trace="", message=""):
+    def critical(self, message=""):
         try:
-            logJson = {"log": {
-                "file_path": file_path,
-                "line_number": line_num,
-                "stack_trace": stack_trace,
-                "message": message
-            }}
+            logJson = {"log": message}
             self.messageLogger.critical(logJson)
         except Exception as e:
             print(e)
