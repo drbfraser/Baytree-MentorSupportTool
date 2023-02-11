@@ -6,8 +6,6 @@ from .models import UkHoliday
 from .models import CalendarEvent
 from .serializers import CalendarEventSerializer, UkHolidaySerializer
 
-logger = FluentLoggingHandler()
-
 # GET api/calendar_events/uk_holidays/
 
 
@@ -45,10 +43,11 @@ class CalendarEventUpdateDestroyAPIVIew(
     def put(self, request, *args, **kwargs):
         response = self.update(request, *args, **kwargs)
         if (response.status_code == 200):
-            logger.logResponseSent(
+            FluentLoggingHandler.logResponseSent(
                 response, "Successfully edited calendar event")
         else:
-            logger.logResponseSent(response, "Unable to edit calendar event")
+            FluentLoggingHandler.logResponseSent(
+                response, "Unable to edit calendar event")
         return response
 
     def delete(self, request, *args, **kwargs):
@@ -56,9 +55,9 @@ class CalendarEventUpdateDestroyAPIVIew(
         itemId = pathInfo[-2]
         response = self.destroy(request, *args, **kwargs)
         if (response.status_code == 204):
-            logger.logResponseSent(
+            FluentLoggingHandler.logResponseSent(
                 response, f"Successfully deleted calendar event with ID {itemId}")
         else:
-            logger.logResponseSent(
+            FluentLoggingHandler.logResponseSent(
                 response, f"Unable to delete calendar event with ID {itemId}")
         return response
