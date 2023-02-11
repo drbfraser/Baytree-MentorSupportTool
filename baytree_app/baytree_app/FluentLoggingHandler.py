@@ -12,6 +12,7 @@ class FluentLoggingHandler:
     def sendInfoLog(self, message):
         pass
 
+    @staticmethod
     def logRequestReceived(self, request, message="Request Received"):
         try:
             logJson = {"log": {
@@ -25,6 +26,7 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
+    @staticmethod
     def logResponseSent(self, response, message="Response Sent"):
         try:
             logJson = {"log": {
@@ -43,6 +45,7 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
+    @staticmethod
     def debug(self, message=""):
         try:
             logJson = {"log": message}
@@ -50,6 +53,7 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
+    @staticmethod
     def info(self, message=""):
         try:
             logJson = {"log": message}
@@ -57,6 +61,7 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
+    @staticmethod
     def warning(self, message=""):
         try:
             logJson = {"log": message}
@@ -64,6 +69,7 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
+    @staticmethod
     def error(self, message=""):
         try:
             logJson = {"log": message}
@@ -71,6 +77,7 @@ class FluentLoggingHandler:
         except Exception as e:
             print(e)
 
+    @staticmethod
     def critical(self, message=""):
         try:
             logJson = {"log": message}
