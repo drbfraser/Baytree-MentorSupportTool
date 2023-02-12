@@ -46,9 +46,13 @@ services:
     image: fluent/fluent-bit
     container_name: fluentbit
     volumes:
-      - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      # Dynamically mounts correct conf file based on current environment
+      - ./fluent-bit/fluent-bit-${ENVIRONMENT:-local}.conf:/fluent-bit/etc/fluent-bit.conf
       - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf
       - ./fluent-bit/testLog/:/fluent-bit/etc/testLog/
+      - ./fluent-bit/inputs/:/fluent-bit/etc/inputs/
+      - ./fluent-bit/outputs/:/fluent-bit/etc/outputs/
+      - ./fluent-bit/filters/:/fluent-bit/etc/filters/
       - ./baytree_app/server_logs/:/baytree_app/etc/server_logs
     ports:
       - "24224:24224/tcp"
@@ -56,12 +60,16 @@ services:
       - "24223:24223/tcp"
       - "24223:24223/udp"
     environment:
+      # Used in production and staging
       AWS_ACCESS_KEY_ID : ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY : ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION : ${AWS_DEFAULT_REGION}
+
+      # Used in dev
       GRAFANA_LOGGING_URL: ${GRAFANA_LOGGING_URL}
       GRAFANA_USER: ${GRAFANA_USER}
       GRAFANA_API_KEY: ${GRAFANA_API_KEY}
+
       ENVIRONMENT: ${ENVIRONMENT}
 
 volumes:
