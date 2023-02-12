@@ -40,6 +40,8 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
    You can get the `your_Grafana_API_key` by talking to someone on the team.
 
+   You can get the `your_id` and `your_key` by talking to someone on the team.
+
 3. Install frontend dependencies (if running in Docker - see frontend section if not):
 
    ```bash
