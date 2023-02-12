@@ -13,7 +13,7 @@ class FluentLoggingHandler:
         pass
 
     @staticmethod
-    def logRequestReceived(self, request, message="Request Received"):
+    def logRequestReceived(request, message="Request Received"):
         try:
             logJson = {"log": {
                 "requestingUser": request.user,
@@ -21,13 +21,13 @@ class FluentLoggingHandler:
                 "isRequestReceivedLog": True,
                 "message": message
             }}
-            self.requestLogger.info(logJson)
+            FluentLoggingHandler.requestLogger.info(logJson)
 
         except Exception as e:
             print(e)
 
     @staticmethod
-    def logResponseSent(self, response, message="Response Sent"):
+    def logResponseSent(response, message="Response Sent"):
         try:
             logJson = {"log": {
                 "meta": response.headers,
@@ -35,52 +35,52 @@ class FluentLoggingHandler:
                 "message": message
             }}
             if response.status_code < 400:
-                self.requestLogger.info(logJson)
+                FluentLoggingHandler.requestLogger.info(logJson)
             elif response.status_code < 600:
-                self.requestLogger.error(logJson)
+                FluentLoggingHandler.requestLogger.error(logJson)
             else:
                 # Default is INFO level
-                self.requestLogger.info(logJson)
+                FluentLoggingHandler.requestLogger.info(logJson)
 
         except Exception as e:
             print(e)
 
     @staticmethod
-    def debug(self, message=""):
+    def debug(message=""):
         try:
             logJson = {"log": message}
-            self.messageLogger.debug(logJson)
+            FluentLoggingHandler.messageLogger.debug(logJson)
         except Exception as e:
             print(e)
 
     @staticmethod
-    def info(self, message=""):
+    def info(message=""):
         try:
             logJson = {"log": message}
-            self.messageLogger.info(logJson)
+            FluentLoggingHandler.messageLogger.info(logJson)
         except Exception as e:
             print(e)
 
     @staticmethod
-    def warning(self, message=""):
+    def warning(message=""):
         try:
             logJson = {"log": message}
-            self.messageLogger.warning(logJson)
+            FluentLoggingHandler.messageLogger.warning(logJson)
         except Exception as e:
             print(e)
 
     @staticmethod
-    def error(self, message=""):
+    def error(message=""):
         try:
             logJson = {"log": message}
-            self.messageLogger.error(logJson)
+            FluentLoggingHandler.messageLogger.error(logJson)
         except Exception as e:
             print(e)
 
     @staticmethod
-    def critical(self, message=""):
+    def critical(message=""):
         try:
             logJson = {"log": message}
-            self.messageLogger.critical(logJson)
+            FluentLoggingHandler.messageLogger.critical(logJson)
         except Exception as e:
             print(e)
