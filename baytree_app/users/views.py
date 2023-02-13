@@ -393,6 +393,7 @@ class StatisticViews(APIView):
         sessions_attended = 0
         sessions_missed = 0
         sessions_total_perYear = 52  # sessions assumed to be once a week
+        sessions_remaining = 0
 
         if type == "mentor":
             mentorUser = MentorUser.objects.all().filter(user_id=id)
@@ -464,7 +465,7 @@ class StatisticViews(APIView):
                     "sessions_total": sessions_total,
                     "sessions_attended": sessions_attended,
                     "sessions_missed": sessions_missed,
-                    "sessions_remaining": sessions_remaining | 0,
+                    "sessions_remaining": sessions_remaining,
                 },
             },
             status=status.HTTP_200_OK,
