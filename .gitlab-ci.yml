@@ -183,10 +183,7 @@ build server:
     VIEWS_PASSWORD: ""
     CELERY_BROKER_URL: ""
     CELERY_BACKEND_URL: ""
-    LOGGING_URL: ""
-    AWS_ACCESS_KEY_ID: ""
-    AWS_SECRET_ACCESS_KEY: ""
-    AWS_DEFAULT_REGION: ""
+
   before_script:
     - cd baytree_app
   script:
@@ -293,6 +290,10 @@ deploy development:
     - deploy-development
   variables:
     BRANCH_TAG: "dev"
+    GRAFANA_LOGGING_URL: $GRAFANA_LOGGING_URL
+    GRAFANA_USER: $GRAFANA_USER
+    GRAFANA_API_KEY: $GRAFANA_API_KEY
+
   rules:
     - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH"
   script:
@@ -309,6 +310,10 @@ deploy staging:
     - deploy-staging
   variables:
     BRANCH_TAG: "staging"
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION: us-east-1
+
   rules:
     - if: "$CI_COMMIT_BRANCH == $STG_BRANCH"
   script:
@@ -321,6 +326,10 @@ deploy production:
     - deploy-dockerhub-shell
   variables:
     BRANCH_TAG: "prod"
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION: us-east-1
+
   rules:
     - if: "$CI_COMMIT_BRANCH == $PROD_BRANCH"
   script:
