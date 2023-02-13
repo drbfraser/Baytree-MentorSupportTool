@@ -67,7 +67,8 @@ class MentorRoleViewSet(BatchRestViewSet):
 class MentorUserViewSet(BatchRestViewSet):
     queryset = MentorUser.objects.all()
     serializer_class = MentorSerializer
-    permission_classes = [IsAuthenticated & (AdminPermissions | MentorOwnerPermissions)]
+    permission_classes = [IsAuthenticated & (
+        AdminPermissions | MentorOwnerPermissions)]
     model_class = MentorUser
 
     def list(self, request, *args, **kwargs):
@@ -115,7 +116,7 @@ class MentorUserViewSet(BatchRestViewSet):
             return Response(
                 {
                     "count": len(mentor_users),
-                    "results": mentor_users[offset : limit + offset],
+                    "results": mentor_users[offset: limit + offset],
                 }
             )
 
@@ -124,7 +125,8 @@ class MentorUserViewSet(BatchRestViewSet):
 
             if "count" in response.data:
                 volunteers_response = get_volunteers(
-                    id=[m_user["viewsPersonId"] for m_user in response.data["results"]],
+                    id=[m_user["viewsPersonId"]
+                        for m_user in response.data["results"]],
                 )
 
                 mentor_users = self.join_views_volunteers_to_mentor_users(
@@ -391,12 +393,14 @@ class StatisticViews(APIView):
         sessions_attended = 0
         sessions_missed = 0
         sessions_total_perYear = 52  # sessions assumed to be once a week
+        sessions_remaining = 0
 
         if type == "mentor":
             mentorUser = MentorUser.objects.all().filter(user_id=id)
             if len(mentorUser) > 0:
                 try:
-                    session_stats = SessionStats.objects.get(mentor=mentorUser[0])
+                    session_stats = SessionStats.objects.get(
+                        mentor=mentorUser[0])
                     sessions_total = session_stats.sessions_total
                     sessions_attended = session_stats.sessions_attended
                     sessions_missed = session_stats.sessions_missed
@@ -461,7 +465,7 @@ class StatisticViews(APIView):
                     "sessions_total": sessions_total,
                     "sessions_attended": sessions_attended,
                     "sessions_missed": sessions_missed,
-                    "sessions_remaining": sessions_remaining | 0,
+                    "sessions_remaining": sessions_remaining,
                 },
             },
             status=status.HTTP_200_OK,
@@ -502,11 +506,13 @@ def sendResetPasswordEmail(request):
             )
 
         # Delete before resending reset password email and generate new link
-        found_reset_password_link = ResetPasswordLink.objects.filter(email=email)
+        found_reset_password_link = ResetPasswordLink.objects.filter(
+            email=email)
         if found_reset_password_link.exists():
             found_reset_password_link.first().delete()
 
-        password_reset_link = ResetPasswordLink(account_type=account_type, email=email)
+        password_reset_link = ResetPasswordLink(
+            account_type=account_type, email=email)
         password_reset_link.save()
 
         if os.environ.get("DEBUG", "") != "yes" and os.environ.get("DOMAIN") != None:
@@ -525,7 +531,8 @@ def sendResetPasswordEmail(request):
 
         if account_type == "Mentor":
             email_html = generateEmailTemplateHtml(
-                "mentorResetPassword", {"resetPasswordButtonLink": reset_password_link}
+                "mentorResetPassword", {
+                    "resetPasswordButtonLink": reset_password_link}
             )
 
         # Send email to Mentor to confirm their account
@@ -628,7 +635,8 @@ def getActivitiesForMentor(request):
             status=status.HTTP_404_NOT_FOUND,
         )
 
-    mentorRoleActivities = MentorRoleActivity.objects.filter(mentorRole=mentorRole)
+    mentorRoleActivities = MentorRoleActivity.objects.filter(
+        mentorRole=mentorRole)
 
     return Response(
         [mentorRoleActivity.activity for mentorRoleActivity in mentorRoleActivities],
