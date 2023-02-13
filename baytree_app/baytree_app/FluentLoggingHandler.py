@@ -17,7 +17,22 @@ class FluentLoggingHandler:
         try:
             logJson = {"log": {
                 "requestingUser": request.user,
+                "url": request.path,
                 "meta": request.META,
+                "isRequestReceivedLog": True,
+                "message": message
+            }}
+            FluentLoggingHandler.requestLogger.info(logJson)
+
+        except Exception as e:
+            print(e)
+
+    @staticmethod
+    def logViewsRequestReceived(url="", data=None, message="Request Received from Views"):
+        try:
+            logJson = {"log": {
+                "url": url,
+                "data": data,
                 "isRequestReceivedLog": True,
                 "message": message
             }}
