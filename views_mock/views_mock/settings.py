@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "django.contrib.sites",
     "views_api",
-    "users"
+    "users",
+    "sessions"
 ]
 
 MIDDLEWARE = [

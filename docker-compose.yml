@@ -3,7 +3,8 @@ services:
   views-mock:
     container_name: views-mock
     build:
-      context: ./views_mock
+      context: ./
+      dockerfile: ./views_mock/Dockerfile
     environment:
       - SECRET_KEY=${SECRET_KEY}
       - MYSQL_HOST=baytree_database
@@ -17,7 +18,8 @@ services:
   server:
     container_name: baytree_server
     build:
-      context: ./baytree_app
+      context: ./
+      dockerfile: ./baytree_app/Dockerfile
     environment:
       - SECRET_KEY=${SECRET_KEY}
       - MYSQL_HOST=baytree_database

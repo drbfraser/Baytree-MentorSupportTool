@@ -5,6 +5,8 @@ version: "3.9"
 services:
   views-mock:
     command: python manage.py runserver 0.0.0.0:5001
+    volumes:
+      - ./views_mock:/code
     ports:
       - "5001:5001"
   server:

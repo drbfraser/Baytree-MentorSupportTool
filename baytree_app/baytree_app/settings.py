@@ -117,7 +117,6 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "django.contrib.sites",
     "emails",
-    "users",
     "questionnaires",
     "questions_and_answers",
     "sessions",
@@ -131,7 +130,8 @@ INSTALLED_APPS = [
     "calendar_events",
     "preferences",
     "app_logging",
-    "cronjobs"
+    "cronjobs",
+    "users"
 ]
 
 MIDDLEWARE = [

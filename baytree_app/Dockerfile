@@ -1,7 +1,12 @@
-# Reference: https://docs.docker.com/compose/django/
 FROM python:3.9.1-buster
 ENV PYTHONUNBUFFERED=1
 WORKDIR /code
-COPY requirements.txt .
+
+# # Install dependencies
+COPY /baytree_app/requirements.txt .
 RUN pip install -r requirements.txt
-COPY . .
+
+# Build and install shared-apps
+COPY /shared-apps .
+RUN python setup.py sdist && python -m pip install --user ./dist/shared-apps-0.1.tar.gz
+COPY ./baytree_app .
