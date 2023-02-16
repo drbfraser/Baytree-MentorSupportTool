@@ -32,6 +32,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    GRAFANA_LOGGING_URL=logs-prod3.grafana.net
    GRAFANA_USER=319402
    GRAFANA_API_KEY={your_Grafana_API_key}
+   VIEWS_BASE_URL=base_url_for_views_apis
    ```
 
    According to Google's new less-secure app policy, the gmail account must have 2-factor authentication enabled and an "app password" must be created which can be used with Django.
@@ -41,6 +42,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    You can get the `your_Grafana_API_key` by talking to someone on the team.
 
    You can get the `your_id` and `your_key` by talking to someone on the team.
+   For `VIEWS_BASE_URL`, set to `https://app.viewsapp.net/api/restful/` to call the actual Views APIs or `http://views-mock:5001/` to call the mock Views APIs.
 
 3. Install frontend dependencies (if running in Docker - see frontend section if not):
 

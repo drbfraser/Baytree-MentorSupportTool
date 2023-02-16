@@ -3,10 +3,11 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /code
 
 # # Install dependencies
-COPY /baytree_app/requirements.txt .
+COPY /views_mock/requirements.txt .
 RUN pip install -r requirements.txt
 
 # Build and install shared-apps
 COPY /shared-apps .
 RUN python setup.py sdist && python -m pip install --user ./dist/shared-apps-0.1.tar.gz
-COPY ./baytree_app .
+
+COPY ./views_mock .

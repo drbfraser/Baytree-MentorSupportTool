@@ -1,13 +1,25 @@
 version: "3.9"
 services:
-  mock-views-app:
-    container_name: mock-views-app
+  views-mock:
+    container_name: views-mock
     build:
-      context: ./mock-views-app
+      context: ./
+      dockerfile: ./views_mock/Dockerfile
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - MYSQL_HOST=baytree_database
+      - MYSQL_DATABASE=baytree
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    depends_on:
+      - database
+      - redis
+      - fluent-bit
   server:
     container_name: baytree_server
     build:
-      context: ./baytree_app
+      context: ./
+      dockerfile: ./baytree_app/Dockerfile
     environment:
       - SECRET_KEY=${SECRET_KEY}
       - MYSQL_HOST=baytree_database

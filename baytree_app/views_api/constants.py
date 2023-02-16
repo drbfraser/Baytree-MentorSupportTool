@@ -1,5 +1,4 @@
 import os
-
-views_base_url = 'https://app.viewsapp.net/api/restful/'
+views_base_url = os.environ["VIEWS_BASE_URL"]
 views_username = os.environ["VIEWS_USERNAME"]
 views_password = os.environ["VIEWS_PASSWORD"]
