@@ -88,6 +88,14 @@ DATABASES = {
         "PASSWORD": os.environ["MYSQL_PASSWORD"],
         "HOST": os.environ["MYSQL_HOST"],
         "PORT": 3306,
+    },
+    "views-mock-db": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ["VIEWS_MYSQL_DATABASE"],
+        "USER": os.environ["MYSQL_USER"],
+        "PASSWORD": os.environ["MYSQL_PASSWORD"],
+        "HOST": os.environ["VIEWS_MYSQL_HOST"],
+        "PORT": 3307,
     }
 }
 

@@ -11,7 +11,10 @@ services:
       - MYSQL_DATABASE=baytree
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - VIEWS_MYSQL_DATABASE=${VIEWS_MYSQL_DATABASE}
+      - VIEWS_MYSQL_HOST=${VIEWS_MYSQL_HOST}
     depends_on:
+      - views-mock-db
       - database
       - redis
       - fluent-bit
@@ -36,6 +39,7 @@ services:
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
 
     depends_on:
+      - views-mock-db
       - database
       - redis
       - fluent-bit
@@ -49,6 +53,18 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - baytree_database_data:/var/lib/mysql
+  views-mock-db:
+    container_name: views-mock-db
+    image: mariadb:10.9.4
+    environment:
+      - MYSQL_DATABASE=baytree
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - VIEWS_MYSQL_DATABASE=${VIEWS_MYSQL_DATABASE}
+      - VIEWS_MYSQL_HOST=${VIEWS_MYSQL_HOST}
+    volumes:
+      - views-mock-data:/var/lib/mysql
 
   redis:
     container_name: redis
@@ -86,3 +102,4 @@ services:
 
 volumes:
   baytree_database_data:
+  views-mock-data:
