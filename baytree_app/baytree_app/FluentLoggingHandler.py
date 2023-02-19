@@ -42,9 +42,10 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
-    def logResponseReceived(response, message="Response has been received"):
+    def logResponseReceived(response, url="", message="Response has been received"):
         try:
             logJson = {"log": {
+                "url": url,
                 "meta": response.headers,
                 "isRequestSentLog": False,
                 "message": message

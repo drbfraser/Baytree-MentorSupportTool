@@ -18,6 +18,6 @@ def get_resource(request):
 
     # FluentLoggingHandler.logRequestSent(request, "Logging request")
     # response = Response(base_url)
-    # FluentLoggingHandler.logResponseReceived(response, "Logging response")
+    # FluentLoggingHandler.logResponseReceived(response, request.path "Logging response")
 
     return Response(base_url)
