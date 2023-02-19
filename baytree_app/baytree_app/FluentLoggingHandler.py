@@ -13,13 +13,13 @@ class FluentLoggingHandler:
         pass
 
     @staticmethod
-    def logRequestReceived(request, message="Request Received"):
+    def logRequestSent(request, message="Request has been sent"):
         try:
             logJson = {"log": {
                 "requestingUser": request.user,
                 "url": request.path,
                 "meta": request.META,
-                "isRequestReceivedLog": True,
+                "isRequestSentLog": True,
                 "message": message
             }}
             FluentLoggingHandler.requestLogger.info(logJson)
@@ -28,12 +28,12 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
-    def logViewsRequestReceived(url="", data=None, message="Request Received from Views"):
+    def logViewsRequestSent(url="", data=None, message="Request has been sent to Views"):
         try:
             logJson = {"log": {
                 "url": url,
                 "data": data,
-                "isRequestReceivedLog": True,
+                "isRequestSentLog": True,
                 "message": message
             }}
             FluentLoggingHandler.requestLogger.info(logJson)
@@ -42,11 +42,11 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
-    def logResponseSent(response, message="Response Sent"):
+    def logResponseReceived(response, message="Response has been received"):
         try:
             logJson = {"log": {
                 "meta": response.headers,
-                "isRequestReceivedLog": False,
+                "isRequestSentLog": False,
                 "message": message
             }}
             if response.status_code < 400:
