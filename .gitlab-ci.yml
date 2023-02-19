@@ -183,12 +183,12 @@ build server:
     VIEWS_PASSWORD: ""
     CELERY_BROKER_URL: ""
     CELERY_BACKEND_URL: ""
-    LOGGING_URL: ""
-    AWS_ACCESS_KEY_ID: ""
-    AWS_SECRET_ACCESS_KEY: ""
-    AWS_DEFAULT_REGION: ""
+
   before_script:
-    - cd baytree_app
+    - cd shared-apps
+    - python setup.py sdist
+    - python -m pip install --user ./dist/shared-apps-0.1.tar.gz
+    - cd ../baytree_app
   script:
     - pip install -r requirements.txt
     - python manage.py check
@@ -222,8 +222,8 @@ build-docker publish-docker-images:
     # Build images (tagged by docker-composition*.yml using IMAGE_TAG)
     - *export_image_tag
     - docker compose -f docker-compose.yml -f docker-compose.deploy.yml build
-    
-    # Push images to Docker Hub 
+
+    # Push images to Docker Hub
     - docker images
     - docker login -u $HUB_USER -p $HUB_TOKEN
     - docker push $HUB_USER/$HUB_REPO_BACKEND:$IMAGE_TAG
@@ -258,7 +258,7 @@ build-docker publish-docker-images:
 
   # Download images (docker skips if already be present)
   - echo "Trying to tag images of version '$IMAGE_TAG' with new tag '$BRANCH_TAG'"
-  - | 
+  - |
     echo "If you get 'Error response from daemon - manifest for ... not found - manifest unknown - manifest unknown'"
     echo "   it likely means the pipeline did not build and deploy a docker image for this commit."
     echo "   Was there a MR to this branch that did not get build for use on Dev server?"
@@ -293,6 +293,10 @@ deploy development:
     - deploy-development
   variables:
     BRANCH_TAG: "dev"
+    GRAFANA_LOGGING_URL: $GRAFANA_LOGGING_URL
+    GRAFANA_USER: $GRAFANA_USER
+    GRAFANA_API_KEY: $GRAFANA_API_KEY
+
   rules:
     - if: "$CI_COMMIT_BRANCH == $DEV_BRANCH"
   script:
@@ -309,6 +313,10 @@ deploy staging:
     - deploy-staging
   variables:
     BRANCH_TAG: "staging"
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION: us-east-1
+
   rules:
     - if: "$CI_COMMIT_BRANCH == $STG_BRANCH"
   script:
@@ -321,6 +329,10 @@ deploy production:
     - deploy-dockerhub-shell
   variables:
     BRANCH_TAG: "prod"
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION: us-east-1
+
   rules:
     - if: "$CI_COMMIT_BRANCH == $PROD_BRANCH"
   script:

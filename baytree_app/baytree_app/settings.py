@@ -117,7 +117,6 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "django.contrib.sites",
     "emails",
-    "users",
     "questionnaires",
     "questions_and_answers",
     "sessions",
@@ -131,7 +130,8 @@ INSTALLED_APPS = [
     "calendar_events",
     "preferences",
     "app_logging",
-    "cronjobs"
+    "cronjobs",
+    "users"
 ]
 
 MIDDLEWARE = [
@@ -258,6 +258,7 @@ EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASSWORD"]
 EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
 DEFAULT_FROM_EMAIL = os.environ["EMAIL_USER"]
 SERVER_EMAIL = os.environ["EMAIL_USER"]
+os.environ.setdefault("VIEWS_BASE_URL", "http://views-mock:5001/")
 
 DATABASES = {
     "default": {
