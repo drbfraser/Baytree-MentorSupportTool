@@ -15,13 +15,13 @@ const useVenues = () => {
     try {
       const viewsVenues = await getViewsVenues()
       if (!viewsVenues.data) {
-        setError('FAIL_LOAD_VENUES_ENDPOINT')
+        setError('Failed to load venues data')
         return
       }
 
       const venues = await fetchVenues()
       if (!venues) {
-        setError('FAIL_LOAD_VENUES_ENDPOINT')
+        setError('Failed to load venues data')
         return
       }
 
@@ -32,7 +32,7 @@ const useVenues = () => {
 
       setVenues(allowedVenues)
     } catch {
-      setError('FAIL_LOAD_EXCEPTION')
+      setError('An error has occurred')
     }
   }
 
@@ -44,8 +44,8 @@ const useVenues = () => {
 }
 
 export type OnVenuesFailedToLoadReason =
-  | 'FAIL_LOAD_VENUES_ENDPOINT'
-  | 'FAIL_LOAD_EXCEPTION'
+  | 'Failed to load venues data'
+  | 'An error has occurred'
 
 export default useVenues
 

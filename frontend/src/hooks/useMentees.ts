@@ -15,20 +15,20 @@ const useMentees = () => {
   const getMenteeData = async () => {
     try {
       if (!user || !user.viewsPersonId) {
-        setError('INVALID_USER')
+        setError('The current user is not valid')
         return
       }
 
       const menteesResponse = await getMenteesForMentor()
 
       if (!menteesResponse.data) {
-        setError('MENTEES_ENDPOINT')
+        setError('Failed to load mentees data')
         return
       }
 
       setMentees(menteesResponse.data)
     } catch {
-      setError('EXCEPTION')
+      setError('An error has occurred')
     }
   }
 
@@ -40,9 +40,9 @@ const useMentees = () => {
 }
 
 export type OnMenteesFailedToLoadReason =
-  | 'MENTEES_ENDPOINT'
-  | 'INVALID_USER'
-  | 'EXCEPTION'
+  | 'Failed to load mentees data'
+  | 'The current user is not valid'
+  | 'An error has occurred'
 
 export default useMentees
 

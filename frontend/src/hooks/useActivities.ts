@@ -14,13 +14,13 @@ const useActivities = () => {
     try {
       const activities = await getActivitiesForMentor()
       if (!activities) {
-        setError('FAIL_LOAD_ACTIVITIES_ENDPOINT')
+        setError('Failed to load activities data')
         return
       }
 
       setActivities(activities)
     } catch {
-      setError('FAIL_LOAD_EXCEPTION')
+      setError('An error has occurred')
     }
   }
 
@@ -32,8 +32,8 @@ const useActivities = () => {
 }
 
 export type OnActivitiesFailedToLoadReason =
-  | 'FAIL_LOAD_ACTIVITIES_ENDPOINT'
-  | 'FAIL_LOAD_EXCEPTION'
+  | 'Failed to load activities data'
+  | 'An error has occurred'
 
 export default useActivities
 
