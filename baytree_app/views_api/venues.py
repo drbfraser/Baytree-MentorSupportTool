@@ -25,7 +25,10 @@ def get_venues(request):
     response = requests.get(
         venues_base_url,
         auth=(views_username, views_password),
-        headers={"Cookie": "access_token=" + request.COOKIES.get('access_token')}
+        headers={
+            "Accept": "application/json",
+            "Cookie": "access_token=" + request.COOKIES.get('access_token')
+        }
     )
 
     return parse_venues(response)
@@ -33,7 +36,6 @@ def get_venues(request):
 
 def parse_venues(response):
     data = response.json()
-    print(data)
 
     # Check if no volunteering types were returned from Views:
     if "items" not in data or data["count"] == data["archivedItems"]:
