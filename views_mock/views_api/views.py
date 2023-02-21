@@ -17,3 +17,19 @@ def get_volunteering_types_endpoint(request):
         }
     }
   return Response(data, 200)
+
+@api_view(("GET",))
+@permission_classes([AdminPermissions | MentorPermissions])
+def get_venues_endpoint(request):
+
+  items = {
+    "item id=\"0\"": "Venue 1",
+    "item id=\"1\"": "Venue 2",
+    "item id=\"2\"": "Venue 3"
+  }
+  data = {
+    "count": 3,
+    "items": items,
+    "archivedItems": 0
+  }
+  return Response(data, 200)
