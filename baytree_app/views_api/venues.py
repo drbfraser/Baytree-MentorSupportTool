@@ -27,7 +27,7 @@ def get_venues(request):
         auth=(views_username, views_password),
         headers={
             "Accept": "application/json",
-            "Cookie": "access_token=" + request.COOKIES.get('access_token')
+            "Cookie": f"access_token={request.COOKIES.get('access_token')}"
         }
     )
 
