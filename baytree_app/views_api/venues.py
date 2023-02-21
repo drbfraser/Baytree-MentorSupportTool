@@ -18,31 +18,31 @@ venues_base_url = views_base_url + "admin/valuelists/sessiongroup/venues"
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
 def get_venues_endpoint(request):
-    return Response(get_venues(), 200)
+    return Response(get_venues(request), 200)
 
 
-def get_venues():
+def get_venues(request):
     response = requests.get(
         venues_base_url,
         auth=(views_username, views_password),
+        headers={"Cookie": "access_token=" + request.COOKIES.get('access_token')}
     )
 
     return parse_venues(response)
 
 
 def parse_venues(response):
-    parsed = xmltodict.parse(response.text)
+    data = response.json()
+    print(data)
 
     # Check if no volunteering types were returned from Views:
-    if not "items" in parsed["valuelist"] or not "item" in parsed["valuelist"]["items"]:
+    if "items" not in data or data["count"] == data["archivedItems"]:
         return {
             "count": 0,
             "results": [],
         }
 
-    items = parsed["valuelist"]["items"]["item"]
-    if not isinstance(items, list):
-        items = [items]
+    items = data["items"]
 
     return {
         "count": len(items),
@@ -51,4 +51,11 @@ def parse_venues(response):
 
 
 def translate_venue_fields(venues):
-    return [{"id": int(venue["@id"]), "name": venue["#text"]} for venue in venues]
+    data = []
+    for key in venues:
+        strKey = str(key)
+        id = int(strKey[8:].strip('\"'))
+        name = venues[key]
+        data.append({"id": id, "name": name})
+
+    return data
