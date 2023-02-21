@@ -8,8 +8,8 @@ from users.permissions import AdminPermissions
 import requests
 import json
 
-questionnaires_search_url = views_base_url + "evidence/questionnaires/search.json"
-questionnaires_id_url = views_base_url + "evidence/questionnaires/{}.json"
+questionnaires_search_url = views_base_url + "evidence/questionnaires/search"
+questionnaires_id_url = views_base_url + "evidence/questionnaires/{}"
 
 questionnaire_views_response_fields = [
     "QuestionnaireID",
@@ -39,9 +39,10 @@ def get_questionnaires_endpoint(request):
     get_questionnaires to return its response to the client.
     """
     id = request.GET.get("id", None)
+    access_token = request.COOKIES.get('access_token')
 
     if id != None:
-        response = get_questionnaires(id)
+        response = get_questionnaires(access_token, id)
         if not response:
             return Response("Not Found", status=status.HTTP_404_NOT_FOUND)
     else:
@@ -53,6 +54,7 @@ def get_questionnaires_endpoint(request):
         offset = int(offset) if offset != None else None
 
         response = get_questionnaires(
+            access_token=access_token,
             limit=limit,
             offset=offset,
             title=request.GET.get("title", None),
@@ -65,6 +67,7 @@ MAX_QUESTIONNAIRES_PAGE_SIZE = 100
 
 
 def get_questionnaires(
+    access_token: str = None,
     id: int = None,
     limit: int = None,
     offset: int = None,
@@ -78,6 +81,10 @@ def get_questionnaires(
         views_response = requests.get(
             questionnaires_id_url.format(id),
             auth=(views_username, views_password),
+            headers={
+                "Accept": "application/json",
+                "Cookie": f"access_token={access_token}"
+            }
         )
 
         if views_response.status_code != 200:
@@ -100,6 +107,10 @@ def get_questionnaires(
         views_response = requests.get(
             request_url,
             auth=(views_username, views_password),
+            headers={
+                "Accept": "application/json",
+                "Cookie": f"access_token={access_token}"
+            }
         )
 
     parsedJson = json.loads(views_response.text)
