@@ -37,6 +37,7 @@ MAX_SESSION_GROUPS_PAGE_SIZE = 100
 
 
 def get_session_groups(
+    access_token: str = None,
     id: str = None,
     limit: int = None,
     offset: int = None,
@@ -88,7 +89,10 @@ def get_session_groups(
         response = requests.get(
             session_groups_base_url + id,
             auth=(views_username, views_password),
-            headers={"Accept": "application/json"},
+            headers={
+                "Accept": "application/json",
+                "Cookie": f"access_token={access_token}"
+            },
         )
 
         if response.status_code != 200:
@@ -98,7 +102,7 @@ def get_session_groups(
         translated_session_group = translate_session_group(parsed_session_group)
         return translated_session_group
     else:
-        request_url = f"{session_groups_base_url}search.json?q="
+        request_url = f"{session_groups_base_url}search?q="
 
         if limit != None:
             request_url += f"&pageFold={limit}"
@@ -107,7 +111,14 @@ def get_session_groups(
         if name != None:
             request_url += f"&Title={name}"
 
-        response = requests.get(request_url, auth=(views_username, views_password))
+        response = requests.get(
+            request_url,
+            auth=(views_username, views_password),
+            headers={
+                "Accept": "application/json",
+                "Cookie": f"access_token={access_token}"
+            }
+        )
 
         parsedJson = json.loads(response.text)
 
@@ -150,9 +161,10 @@ def get_session_groups_endpoint(request):
     to return its response to the client.
     """
     id = request.GET.get("id", None)
+    access_token = request.COOKIES.get('access_token')
 
     if id != None:
-        response = get_session_groups(id)
+        response = get_session_groups(access_token, id)
         if not response:
             return Response("Not Found", status=status.HTTP_404_NOT_FOUND)
     else:
@@ -164,6 +176,7 @@ def get_session_groups_endpoint(request):
         offset = int(offset) if offset != None else None
 
         response = get_session_groups(
+            access_token=access_token,
             limit=limit,
             offset=offset,
             name=request.GET.get("name", None),
