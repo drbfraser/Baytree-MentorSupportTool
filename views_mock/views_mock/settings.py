@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "django.contrib.sites",
-    "views_api",
     "users",
-    "sessions"
+    "sessions",
+    "volunteering_types"
 ]
 
 MIDDLEWARE = [
@@ -83,19 +83,11 @@ WSGI_APPLICATION = 'views_mock.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.environ["MYSQL_DATABASE"],
-        "USER": os.environ["MYSQL_USER"],
-        "PASSWORD": os.environ["MYSQL_PASSWORD"],
-        "HOST": os.environ["MYSQL_HOST"],
-        "PORT": 3306,
-    },
-    "views-mock-db": {
-        "ENGINE": "django.db.backends.mysql",
         "NAME": os.environ["VIEWS_MYSQL_DATABASE"],
         "USER": os.environ["MYSQL_USER"],
         "PASSWORD": os.environ["MYSQL_PASSWORD"],
         "HOST": os.environ["VIEWS_MYSQL_HOST"],
-        "PORT": 3307,
+        "PORT": 3306,
     }
 }
 

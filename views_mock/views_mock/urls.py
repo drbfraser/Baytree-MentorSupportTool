@@ -1,5 +1,5 @@
 from django.urls import include, path
 
 urlpatterns = [
-    path('', include('views_api.urls'))
+    path('', include('volunteering_types.urls'))
 ]
