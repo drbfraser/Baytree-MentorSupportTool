@@ -13,18 +13,21 @@ volunteering_types_base_url = (
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_volunteering_types_endpoint(request):
-    access_token = request.COOKIES.get('access_token')
+def get_volunteering_types_endpoint(request, access_token):
     return Response(get_volunteering_types(access_token), 200)
 
-def get_volunteering_types(access_token):
+def get_volunteering_types(access_token=''):
+    headers = {"Accept": "application/json"}
+    if (access_token):
+      headers["Cookie"] = "access_token=" + access_token
     response = requests.get(
         volunteering_types_base_url,
         auth=(views_username, views_password),
-        headers={"Accept": "application/json", "Cookie": "access_token=" + access_token},
+        headers=headers,
     )
 
-    return parse_volunteering_types(response)
+    parsed_data = parse_volunteering_types(response)
+    return parsed_data
 
 
 def parse_volunteering_types(response):
