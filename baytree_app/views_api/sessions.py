@@ -179,7 +179,8 @@ class SessionsApiView(APIView):
 
         # get first associated mentee for mentor if not provided in request body
         if not mentee_views_person_id:
-            associations = get_associations(mentor_user.viewsPersonId)
+            access_token = request.COOKIES.get('access_token')
+            associations = get_associations(mentor_user.viewsPersonId, access_token=access_token)
             mentee_association = next(
                 filter(lambda a: a["association"] == "Mentee", associations["results"]),
                 None,

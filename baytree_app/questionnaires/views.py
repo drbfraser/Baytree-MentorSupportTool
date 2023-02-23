@@ -169,8 +169,9 @@ def submit_answer_set(request):
             )
 
         mentor_user = mentor_user.first()
-
-        menteeIds = get_mentee_ids_from_mentor(mentor_user)
+        
+        access_token = request.COOKIES.get('access_token')
+        menteeIds = get_mentee_ids_from_mentor(mentor_user, access_token=access_token)
 
         menteeId = menteeIds[0]
         # Construct Mentee the answer set XML payload
