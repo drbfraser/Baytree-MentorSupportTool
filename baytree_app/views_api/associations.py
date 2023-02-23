@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 import requests
-import xmltodict
+import json
 from preferences.models import Preference
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -52,23 +52,27 @@ For instance, if the association is "Mentee", the "master" Person is a Mentee of
 """
 
 
-def get_associations(volunteer_id):
+def get_associations(volunteer_id, access_token=None):
 
     response = requests.get(
         staff_associations_base_url.format(volunteer_id),
         auth=(views_username, views_password),
+        headers = {
+            "Accept": "application/json",
+            "Cookie": f"access_token={access_token}"
+        }
     )
 
     return parse_associations(response)
 
 
 def parse_associations(response):
-    parsed = xmltodict.parse(response.text)
+    parsed = json.loads(response.text)
 
     # Check if no associations were returned from Views:
     if (
-        not parsed["staff"]["associations"]
-        or not "association" in parsed["staff"]["associations"]
+        not parsed["associations"]
+        or len(parsed["associations"]) == 0
     ):
         return {
             "count": 0,
@@ -76,7 +80,7 @@ def parse_associations(response):
         }
 
     # Make sure the associations are wrapped in a list, if there is a single association
-    associations = parsed["staff"]["associations"]["association"]
+    associations = parsed["associations"]
     if not isinstance(associations, list):
         associations = [associations]
 
@@ -87,14 +91,14 @@ def parse_associations(response):
 
 
 def translate_association_fields(associations):
-    return [
-        {
-            association_translated_fields[i]: try_parse_int(association[field])
-            for i, field in enumerate(association_views_response_fields)
-        }
-        for association in associations
-    ]
-
+    data = []
+    for association in associations:
+        dataToAdd = {}
+        associationIndex = list(association.keys())[0]
+        for i, field in enumerate(association_views_response_fields):
+            dataToAdd[association_translated_fields[i]] = try_parse_int(association[associationIndex][field])
+        data.append(dataToAdd)
+    return data
 
 # GET /api/views-api/mentor-mentees/
 @api_view(("GET",))
@@ -106,16 +110,16 @@ def get_mentees_for_mentor(request):
             status=status.HTTP_401_UNAUTHORIZED,
         )
     mentor_user = mentor_user.first()
-
-    menteeIds = get_mentee_ids_from_mentor(mentor_user, active=True)
+    access_token = request.COOKIES.get('access_token')
+    menteeIds = get_mentee_ids_from_mentor(mentor_user, active=True, access_token=access_token)
 
     participants = get_participants(menteeIds)
 
     return Response(participants["results"], status.HTTP_200_OK)
 
 
-def get_mentee_ids_from_mentor(mentor_user, active=False):
-    associations = get_associations(mentor_user.viewsPersonId)
+def get_mentee_ids_from_mentor(mentor_user, active=False, access_token=None):
+    associations = get_associations(mentor_user.viewsPersonId, access_token=access_token)
     preferences = Preference.objects
     searchWindow = int(preferences.filter(key="searchingDurationInDays").first().value)
     minimumDays = int(preferences.filter(key="minimumActiveDays").first().value)
