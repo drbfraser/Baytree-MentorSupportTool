@@ -143,8 +143,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "baytree_app.middleware.LoggingMiddleware",
-    "baytree_app.middleware.AccessTokenMiddleware"
+    "baytree_app.middlewares.LoggingMiddleware.LoggingMiddleware",
+    "baytree_app.middlewares.ViewsAuthMiddleware.ViewsAuthMiddleware"
 ]
 
 ROOT_URLCONF = "baytree_app.urls"

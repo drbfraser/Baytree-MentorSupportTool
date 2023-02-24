@@ -1,19 +1,8 @@
-from baytree_app.FluentLoggingHandler import FluentLoggingHandler
 import os
 from django.urls import resolve
 import base64
 
-class LoggingMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        FluentLoggingHandler.logRequestReceived(request)
-        response = self.get_response(request)
-        FluentLoggingHandler.logResponseSent(response)
-        return response
-
-class AccessTokenMiddleware:
+class ViewsAuthMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -21,6 +10,7 @@ class AccessTokenMiddleware:
         path = request.META["PATH_INFO"]
         access_token = request.COOKIES.get("access_token")
         headers = {"Accept": "application/json"}
+
         # For views requests, determine the appropriate authentication method depending on the destination of the request (Views App or Mock Views)
         if (path.startswith("/api/views-api")):
           if os.environ["VIEWS_BASE_URL"]=="http://views-mock:5001/":
