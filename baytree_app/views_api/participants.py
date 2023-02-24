@@ -40,7 +40,7 @@ These participant records in Views contain contact and general information about
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_participants_endpoint(request):
+def get_participants_endpoint(request, headers):
     """
     Handles a request from the client browser and calls get_participants
     to return its response to the client.
@@ -49,16 +49,19 @@ def get_participants_endpoint(request):
     ids = None if ids == [] else ids
 
     if ids != None:
-        response = get_participants(ids)
+        response = get_participants(ids, headers)
     else:
+        print('id is none!')
         response = get_participants(
-            limit=request.GET.get("limit", None), offset=request.GET.get("offset", None)
+            headers=headers,
+            limit=request.GET.get("limit", None),
+            offset=request.GET.get("offset", None)
         )
 
     return Response(response, status=status.HTTP_200_OK)
 
 
-def get_participants(ids=None, limit: int = 5, offset: int = 0):
+def get_participants(ids=None, headers='', limit: int = 5, offset: int = 0):
     """
     Gets participants from Views API.
     If an id argument is provided, the participant with a matching PersonId will be returned.
@@ -77,7 +80,7 @@ def get_participants(ids=None, limit: int = 5, offset: int = 0):
 
         response = requests.get(
             participants_base_url + "search?" + id_filter_string,
-            auth=(views_username, views_password),
+            headers=headers,
         )
 
     else:
@@ -88,19 +91,19 @@ def get_participants(ids=None, limit: int = 5, offset: int = 0):
                 + str(limit)
                 + "&offset="
                 + str(offset),
-                auth=(views_username, views_password),
+                headers=headers,
             )
         else:
             response = requests.get(
                 participants_base_url + "search?q=",
-                auth=(views_username, views_password),
+                headers=headers,
             )
 
     return parse_participants(response)
 
-def get_participant_by_id(id):
+def get_participant_by_id(id, headers):
     url = f"{participants_base_url}{id}.json"
-    response = requests.get(url, auth=(views_username, views_password))
+    response = requests.get(url, headers=headers)
     if response.status_code != 200: return None
     json = response.json()
     data = { newKey: json[oldKey] for (oldKey, newKey) in zip(participantFields, participantTranslateFields)}
@@ -109,26 +112,19 @@ def get_participant_by_id(id):
 
 def parse_participants(response):
     # Remove invalid tags
-    responseText = response.text.replace(
-        "<2Personrelationshipandcontactnumberofpersonauthorised_P_229/>", ""
-    )
+    parsed = response.json()
 
-    parsed = xmltodict.parse(responseText)
+    firstKey = list(parsed.keys())[0]
+    count = int(firstKey[19:].strip('\"'))
+    participantsList = parsed[firstKey]
 
-    # Make sure the participants are wrapped in a list, if there is a single participant
-    if not isinstance(parsed["contacts"]["participants"]["participant"], list):
-        parsed["contacts"]["participants"]["participant"] = [
-            parsed["contacts"]["participants"]["participant"]
-        ]
-
-    participants = [
-        {
-            participantTranslateFields[i]: try_parse_int(participant[field])
-            for i, field in enumerate(participantFields)
-        }
-        for participant in parsed["contacts"]["participants"]["participant"]
-    ]
+    participants = []
+    for participantKey in participantsList:
+        participantData = {}
+        for i, field in enumerate(participantFields):
+            participantData[participantTranslateFields[i]] = try_parse_int(participantsList[participantKey][field])
+        participants.append(participantData)
     return {
-        "count": int(parsed["contacts"]["participants"]["@count"]),
+        "count": count,
         "results": participants,
     }
