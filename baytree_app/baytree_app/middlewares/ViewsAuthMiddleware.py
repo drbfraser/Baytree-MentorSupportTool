@@ -9,7 +9,7 @@ class ViewsAuthMiddleware:
     def __call__(self, request):
         path = request.META["PATH_INFO"]
         access_token = request.COOKIES.get("access_token")
-        headers = {"Accept": "application/json"}
+        headers = {"Accept": "application/xml"}
 
         # For views requests, determine the appropriate authentication method depending on the destination of the request (Views App or Mock Views)
         if (path.startswith("/api/views-api")):
