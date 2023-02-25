@@ -51,11 +51,10 @@ def get_participants_endpoint(request, headers):
     if ids != None:
         response = get_participants(ids, headers)
     else:
-        print('id is none!')
         response = get_participants(
-            headers=headers,
-            limit=request.GET.get("limit", None),
-            offset=request.GET.get("offset", None)
+          headers=headers,
+          limit=request.GET.get("limit", None),
+          offset=request.GET.get("offset", None)
         )
 
     return Response(response, status=status.HTTP_200_OK)
@@ -101,9 +100,9 @@ def get_participants(ids=None, headers='', limit: int = 5, offset: int = 0):
 
     return parse_participants(response)
 
-def get_participant_by_id(id, headers):
+def get_participant_by_id(id):
     url = f"{participants_base_url}{id}.json"
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, auth=(views_username, views_password))
     if response.status_code != 200: return None
     json = response.json()
     data = { newKey: json[oldKey] for (oldKey, newKey) in zip(participantFields, participantTranslateFields)}
@@ -112,19 +111,26 @@ def get_participant_by_id(id, headers):
 
 def parse_participants(response):
     # Remove invalid tags
-    parsed = response.json()
+    responseText = response.text.replace(
+        "<2Personrelationshipandcontactnumberofpersonauthorised_P_229/>", ""
+    )
 
-    firstKey = list(parsed.keys())[0]
-    count = int(firstKey[19:].strip('\"'))
-    participantsList = parsed[firstKey]
+    parsed = xmltodict.parse(responseText)
 
-    participants = []
-    for participantKey in participantsList:
-        participantData = {}
-        for i, field in enumerate(participantFields):
-            participantData[participantTranslateFields[i]] = try_parse_int(participantsList[participantKey][field])
-        participants.append(participantData)
+    # Make sure the participants are wrapped in a list, if there is a single participant
+    if not isinstance(parsed["contacts"]["participants"]["participant"], list):
+        parsed["contacts"]["participants"]["participant"] = [
+            parsed["contacts"]["participants"]["participant"]
+        ]
+
+    participants = [
+        {
+            participantTranslateFields[i]: try_parse_int(participant[field])
+            for i, field in enumerate(participantFields)
+        }
+        for participant in parsed["contacts"]["participants"]["participant"]
+    ]
     return {
-        "count": count,
+        "count": int(parsed["contacts"]["participants"]["@count"]),
         "results": participants,
     }
