@@ -1,7 +1,7 @@
 from users.permissions import MentorPermissions
 from .util import try_parse_int
 from users.permissions import AdminPermissions
-from .constants import views_base_url, views_username, views_password
+from .constants import views_base_url
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -100,9 +100,9 @@ def get_participants(ids=None, headers='', limit: int = 5, offset: int = 0):
 
     return parse_participants(response)
 
-def get_participant_by_id(id):
+def get_participant_by_id(id, headers):
     url = f"{participants_base_url}{id}.json"
-    response = requests.get(url, auth=(views_username, views_password))
+    response = requests.get(url, headers=headers)
     if response.status_code != 200: return None
     json = response.json()
     data = { newKey: json[oldKey] for (oldKey, newKey) in zip(participantFields, participantTranslateFields)}

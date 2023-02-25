@@ -21,10 +21,10 @@ def get_venues_endpoint(request):
     return Response(get_venues(), 200)
 
 
-def get_venues():
+def get_venues(request, headers):
     response = requests.get(
         venues_base_url,
-        auth=(views_username, views_password),
+        headers=headers,
     )
 
     return parse_venues(response)
