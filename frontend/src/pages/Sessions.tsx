@@ -41,7 +41,8 @@ const SessionForm = () => {
   useEffect(() => {
     if (venuesLoadError) {
       toast.error(
-        `Loading venue data failed. Reason: ${venuesLoadError}. Please try refreshing or contact an administrator.`
+        `Loading venue data failed. Reason: ${venuesLoadError}. Please try refreshing or contact an administrator.`,
+        { autoClose: 5000 }
       )
     }
   }, [venuesLoadError])
@@ -51,7 +52,8 @@ const SessionForm = () => {
   useEffect(() => {
     if (menteesLoadError) {
       toast.error(
-        `Loading mentee data failed. Reason: ${menteesLoadError}. Please try refreshing or contact an administrator.`
+        `Loading mentee data failed. Reason: ${menteesLoadError}. Please try refreshing or contact an administrator.`,
+        { autoClose: 5000 }
       )
     }
   }, [menteesLoadError])
@@ -60,7 +62,8 @@ const SessionForm = () => {
   useEffect(() => {
     if (activitiesLoadError) {
       toast.error(
-        `Loading activity data failed. Reason: ${activitiesLoadError}. Please try refreshing or contact an administrator.`
+        `Loading activity data failed. Reason: ${activitiesLoadError}. Please try refreshing or contact an administrator.`,
+        { autoClose: 5000 }
       )
     }
   }, [activitiesLoadError])
