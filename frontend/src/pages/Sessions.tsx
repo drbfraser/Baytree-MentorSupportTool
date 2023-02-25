@@ -1,16 +1,16 @@
 import {
   SelectInputContainer,
   TimeInputContainer
-} from "@components/sessions/Containers";
+} from '@components/sessions/Containers'
 import {
   getInitialFormValues,
   submitSession
-} from "@components/sessions/session";
-import Loading from "@components/shared/Loading";
-import TitledContainer from "@components/shared/TitledContainer";
-import useActivities from "@hooks/useActivities";
-import useMentees from "@hooks/useMentees";
-import useVenues from "@hooks/useVenues";
+} from '@components/sessions/session'
+import Loading from '@components/shared/Loading'
+import TitledContainer from '@components/shared/TitledContainer'
+import useActivities from '@hooks/useActivities'
+import useMentees from '@hooks/useMentees'
+import useVenues from '@hooks/useVenues'
 import {
   Alert,
   AlertTitle,
@@ -24,51 +24,48 @@ import {
   Select,
   TextField,
   Typography
-} from "@mui/material";
+} from '@mui/material'
 import {
   DatePicker,
   LocalizationProvider,
   TimePicker
-} from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { Form, Formik } from "formik";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
+} from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { Form, Formik } from 'formik'
+import { useEffect } from 'react'
+import { toast } from 'react-toastify'
 
 const SessionForm = () => {
-  const { venues, error: venuesLoadError } = useVenues();
+  const { venues, error: venuesLoadError } = useVenues()
 
   useEffect(() => {
     if (venuesLoadError) {
       toast.error(
-        `Loading venue data failed. Reason: ${venuesLoadError}. Please try refreshing or contact an administrator.`,
-        { autoClose: false }
-      );
+        `Loading venue data failed. Reason: ${venuesLoadError}. Please try refreshing or contact an administrator.`
+      )
     }
-  }, [venuesLoadError]);
+  }, [venuesLoadError])
 
-  const { mentees, error: menteesLoadError } = useMentees();
+  const { mentees, error: menteesLoadError } = useMentees()
 
   useEffect(() => {
     if (menteesLoadError) {
       toast.error(
-        `Loading mentee data failed. Reason: ${menteesLoadError}. Please try refreshing or contact an administrator.`,
-        { autoClose: false }
-      );
+        `Loading mentee data failed. Reason: ${menteesLoadError}. Please try refreshing or contact an administrator.`
+      )
     }
-  }, [menteesLoadError]);
+  }, [menteesLoadError])
 
-  const { activities, error: activitiesLoadError } = useActivities();
+  const { activities, error: activitiesLoadError } = useActivities()
   useEffect(() => {
     if (activitiesLoadError) {
       toast.error(
-        `Loading activity data failed. Reason: ${activitiesLoadError}. Please try refreshing or contact an administrator.`,
-        { autoClose: false }
-      );
+        `Loading activity data failed. Reason: ${activitiesLoadError}. Please try refreshing or contact an administrator.`
+      )
     }
-  }, [activitiesLoadError]);
+  }, [activitiesLoadError])
 
-  useEffect(() => () => toast.dismiss(), []);
+  useEffect(() => () => toast.dismiss(), [])
 
   return (
     <>
@@ -78,18 +75,18 @@ const SessionForm = () => {
             initialValues={{
               ...getInitialFormValues(),
               menteeViewsPersonId:
-                mentees.length > 0 ? mentees[0].viewsPersonId : "",
-              viewsVenueId: venues.length > 0 ? venues[0].id : "",
-              activity: activities.length > 0 ? activities[0] : ""
+                mentees.length > 0 ? mentees[0].viewsPersonId : '',
+              viewsVenueId: venues.length > 0 ? venues[0].id : '',
+              activity: activities.length > 0 ? activities[0] : ''
             }}
             onSubmit={async (data, { setSubmitting, resetForm }) => {
-              setSubmitting(true);
-              toast.info("Submitting your session, please wait.");
-              const success = await submitSession(data);
+              setSubmitting(true)
+              toast.info('Submitting your session, please wait.')
+              const success = await submitSession(data)
               if (success) {
-                resetForm();
+                resetForm()
               }
-              setSubmitting(false);
+              setSubmitting(false)
             }}
           >
             {({ values, handleChange, setFieldValue, isSubmitting }) => {
@@ -98,7 +95,7 @@ const SessionForm = () => {
                   <Divider />
                   {values.cancelled && (
                     <Typography
-                      sx={{ fontWeight: "bold", mt: 3, mb: 1 }}
+                      sx={{ fontWeight: 'bold', mt: 3, mb: 1 }}
                       color="text.secondary"
                     >
                       When was the cancelled session supposed to happen?
@@ -112,7 +109,7 @@ const SessionForm = () => {
                           inputFormat="dd/MM/yyyy"
                           value={values.date}
                           onChange={(value) =>
-                            setFieldValue("date", value, true)
+                            setFieldValue('date', value, true)
                           }
                           renderInput={(params) => <TextField {...params} />}
                         />
@@ -121,7 +118,7 @@ const SessionForm = () => {
                         <TimePicker
                           value={values.clockIn}
                           onChange={(value) =>
-                            setFieldValue("clockIn", value, true)
+                            setFieldValue('clockIn', value, true)
                           }
                           renderInput={(params) => <TextField {...params} />}
                         />
@@ -130,7 +127,7 @@ const SessionForm = () => {
                         <TimePicker
                           value={values.clockOut}
                           onChange={(value) =>
-                            setFieldValue("clockOut", value, true)
+                            setFieldValue('clockOut', value, true)
                           }
                           renderInput={(params) => <TextField {...params} />}
                         />
@@ -141,12 +138,12 @@ const SessionForm = () => {
                   {/* Notes */}
                   <FormControl fullWidth sx={{ py: 2 }}>
                     <Typography
-                      sx={{ fontWeight: "bold", mb: 2 }}
+                      sx={{ fontWeight: 'bold', mb: 2 }}
                       color="text.secondary"
                     >
                       {!values.cancelled
-                        ? "Please enter your notes*"
-                        : "Please enter a reason why the session was cancelled (ex. mentee was sick, holiday)*"}
+                        ? 'Please enter your notes*'
+                        : 'Please enter a reason why the session was cancelled (ex. mentee was sick, holiday)*'}
                     </Typography>
                     <TextField
                       name="notes"
@@ -217,13 +214,13 @@ const SessionForm = () => {
                     fullWidth
                     sx={{
                       py: 2,
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center"
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center'
                     }}
                   >
                     <Typography
-                      sx={{ fontWeight: "bold", marginRight: "3rem" }}
+                      sx={{ fontWeight: 'bold', marginRight: '3rem' }}
                       color="text.secondary"
                     >
                       Was the session cancelled?
@@ -246,7 +243,7 @@ const SessionForm = () => {
                     Submit
                   </Button>
                 </Form>
-              );
+              )
             }}
           </Formik>
         ) : menteesLoadError || venuesLoadError || activitiesLoadError ? (
@@ -263,7 +260,8 @@ const SessionForm = () => {
         )}
       </TitledContainer>
     </>
-  );
-};
+  )
+}
 
-export default SessionForm;
+export default SessionForm
+
