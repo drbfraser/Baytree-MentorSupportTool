@@ -16,8 +16,9 @@ def get_resource(request):
     #     FluentLoggingHandler.error("Logging error level")
     #     FluentLoggingHandler.critical("Logging critical level")
 
-    # FluentLoggingHandler.logRequestSent(request, "Logging request")
+    # FluentLoggingHandler.logRequestReceived(request, "Logging request")
     # response = Response(base_url)
-    # FluentLoggingHandler.logResponseReceived(response, request.path "Logging response")
+    # FluentLoggingHandler.logResponseSent(
+    #     response, request.path, "Logging response")
 
     return Response(base_url)
