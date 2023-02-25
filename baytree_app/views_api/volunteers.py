@@ -45,7 +45,7 @@ staff members since we could retrieve members that aren't actually mentors.
 # GET /api/volunteers
 @api_view(("GET",))
 @permission_classes((AdminPermissions,))
-def get_volunteers_endpoint(request):
+def get_volunteers_endpoint(request, headers):
     """
     Handles a request from the client browser and calls get_volunteers
     to return its response to the client.
@@ -58,28 +58,33 @@ def get_volunteers_endpoint(request):
 
     if searchEmail != None and searchEmail != "":
         response = get_volunteers(
+            headers=headers,
             limit=request.GET.get("limit", None),
             offset=request.GET.get("offset", None),
             searchEmail=searchEmail,
         )
     elif searchFirstName or searchLastName:
         response = get_volunteers(
+            headers=headers,
             limit=request.GET.get("limit", None),
             offset=request.GET.get("offset", None),
             searchFirstName=searchFirstName,
             searchLastName=searchLastName,
         )
     elif id != None:
-        response = get_volunteers(id)
+        response = get_volunteers(id, headers)
     else:
         response = get_volunteers(
-            limit=request.GET.get("limit", None), offset=request.GET.get("offset", None)
+            headers=headers,
+            limit=request.GET.get("limit", None),
+            offset=request.GET.get("offset", None)
         )
 
     return Response(response, status=status.HTTP_200_OK)
 
 def get_volunteers(
     id: Union[List[str], str] = None,
+    headers: str = '',
     limit: int = None,
     offset: int = None,
     searchEmail: str = None,
@@ -108,7 +113,7 @@ def get_volunteers(
             views_request_url += "&offset=" + str(offset)
 
         response = requests.get(
-            views_request_url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD)
+            views_request_url, headers=headers
         )
 
         return parse_volunteers(response)
@@ -129,7 +134,8 @@ def get_volunteers(
             views_request_url += "&Surname={}".format(searchLastName)
 
         response = requests.get(
-            views_request_url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD)
+            views_request_url,
+            headers=headers
         )
 
         return parse_volunteers(response)
@@ -145,7 +151,8 @@ def get_volunteers(
             views_request_url += "&PersonID[]={}".format(id)
 
         response = requests.get(
-            views_request_url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD)
+            views_request_url,
+            headers=headers
         )
 
         return parse_volunteers(response)
@@ -160,12 +167,13 @@ def get_volunteers(
                 + str(limit)
                 + "&offset="
                 + str(offset),
-                auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+                headers=headers
             )
 
         else:
             response = requests.get(
-                volunteers_base_url + "search?q=", auth=(VIEWS_USERNAME, VIEWS_PASSWORD)
+                volunteers_base_url + "search?q=",
+                headers=headers
             )
 
         return parse_volunteers(response)
@@ -204,7 +212,7 @@ def translate_volunteer_fields(volunteers):
 
 # GET /api/views-api/volunteers/volunteer/
 @api_view(("GET", ))
-def get_volunteer_profile(request):
+def get_volunteer_profile(request, headers):
     """
     Fetch the detailed volunteer profile
     based on the requesting user
@@ -213,5 +221,5 @@ def get_volunteer_profile(request):
     if not mentors:
         return Response(status=status.HTTP_404_NOT_FOUND)
     mentorViewsId = mentors.first().viewsPersonId
-    response = get_volunteers(id=str(mentorViewsId))
+    response = get_volunteers(id=str(mentorViewsId), headers=headers)
     return Response(response, status=status.HTTP_200_OK)
