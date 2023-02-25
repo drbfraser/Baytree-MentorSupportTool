@@ -1,13 +1,8 @@
-import json
 from rest_framework.response import Response
 from users.permissions import MentorPermissions
-from users.models import MentorRole
-from users.models import MentorUser
 
-from users.permissions import userIsAdmin, userIsSuperUser
-from .constants import views_base_url, views_username, views_password
+from .constants import views_base_url
 from rest_framework.decorators import permission_classes, api_view
-from rest_framework import status
 from users.permissions import AdminPermissions
 import requests
 import xmltodict
@@ -17,34 +12,33 @@ venues_base_url = views_base_url + "admin/valuelists/sessiongroup/venues"
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_venues_endpoint(request):
-    return Response(get_venues(request), 200)
+def get_venues_endpoint(request, headers):
+    return Response(get_venues(request, headers), 200)
 
 
-def get_venues(request):
+def get_venues(request, headers):
     response = requests.get(
         venues_base_url,
-        auth=(views_username, views_password),
-        headers={
-            "Accept": "application/json",
-            "Cookie": f"access_token={request.COOKIES.get('access_token')}"
-        }
+        headers=headers
     )
 
     return parse_venues(response)
 
 
 def parse_venues(response):
-    data = response.json()
+    decoded = response.text.encode("utf-8").decode("unicode_escape").strip('\"')
+    parsed = xmltodict.parse(decoded)
 
     # Check if no volunteering types were returned from Views:
-    if "items" not in data or data["count"] == data["archivedItems"]:
+    if not "items" in parsed["valuelist"] or not "item" in parsed["valuelist"]["items"]:
         return {
             "count": 0,
             "results": [],
         }
 
-    items = data["items"]
+    items = parsed["valuelist"]["items"]["item"]
+    if not isinstance(items, list):
+        items = [items]
 
     return {
         "count": len(items),
@@ -53,11 +47,4 @@ def parse_venues(response):
 
 
 def translate_venue_fields(venues):
-    data = []
-    for key in venues:
-        strKey = str(key)
-        id = int(strKey[8:].strip('\"'))
-        name = venues[key]
-        data.append({"id": id, "name": name})
-
-    return data
+    return [{"id": int(venue["@id"]), "name": venue["#text"]} for venue in venues]
