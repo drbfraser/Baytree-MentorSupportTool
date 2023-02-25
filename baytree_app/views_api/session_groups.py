@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 
 from .util import get_views_record_count_json
-from .constants import views_base_url, views_username, views_password
+from .constants import views_base_url
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework import status
 from users.permissions import AdminPermissions
@@ -88,8 +88,7 @@ def get_session_groups(
     if id != None:
         response = requests.get(
             session_groups_base_url + id,
-            auth=(views_username, views_password),
-            headers=headers,
+            headers=headers
         )
 
         if response.status_code != 200:
@@ -108,7 +107,7 @@ def get_session_groups(
         if name != None:
             request_url += f"&Title={name}"
 
-        response = requests.get(request_url, auth=(views_username, views_password))
+        response = requests.get(request_url, headers=headers)
 
         parsedJson = json.loads(response.text)
 
