@@ -13,14 +13,15 @@ class FluentLoggingHandler:
         pass
 
     @staticmethod
-    def logRequestSent(request, message="Request has been sent"):
+    def logRequestReceived(request, message="Request has been received"):
         try:
             logJson = {"log": {
                 "requestingUser": request.user,
                 "url": request.path,
                 "meta": request.META,
-                "isRequestSentLog": True,
-                "message": message
+                "isRequest": True,
+                "destination": "baytree",
+                "message": message,
             }}
             FluentLoggingHandler.requestLogger.info(logJson)
 
@@ -28,12 +29,13 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
-    def logViewsRequestSent(url="", data=None, message="Request has been sent to Views"):
+    def logRequestReceivedByViews(url="", data=None, message="Request has been received by Views"):
         try:
             logJson = {"log": {
                 "url": url,
                 "data": data,
-                "isRequestSentLog": True,
+                "isRequest": True,
+                "destination": "views",
                 "message": message
             }}
             FluentLoggingHandler.requestLogger.info(logJson)
@@ -42,12 +44,34 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
-    def logResponseReceived(response, url="", message="Response has been received"):
+    def logResponseSent(response, url="", message="Response has been sent"):
         try:
             logJson = {"log": {
                 "url": url,
                 "meta": response.headers,
-                "isRequestSentLog": False,
+                "isRequest": False,
+                "source": "baytree",
+                "message": message
+            }}
+            if response.status_code < 400:
+                FluentLoggingHandler.requestLogger.info(logJson)
+            elif response.status_code < 600:
+                FluentLoggingHandler.requestLogger.error(logJson)
+            else:
+                # Default is INFO level
+                FluentLoggingHandler.requestLogger.info(logJson)
+
+        except Exception as e:
+            print(e)
+
+    @staticmethod
+    def logResponseSentFromViews(response, url="", message="Response has been sent from Views"):
+        try:
+            logJson = {"log": {
+                "url": url,
+                "meta": response.headers,
+                "isRequest": False,
+                "source": "views",
                 "message": message
             }}
             if response.status_code < 400:
