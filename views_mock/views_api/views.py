@@ -37,10 +37,10 @@ def get_questionnaire_by_id_endpoint(request, questionnaireId: int):
 @api_view(("GET",))
 @permission_classes([AdminPermissions])
 def search_questionnaires_endpoint(request):
-  # Will make use of these once MySQL database is connected
-  pageFold = request.GET.get("pageFold", 0)
-  offset = request.GET.get("offset", 0)
-  title = request.GET.get("Title", "")
+#   # Will make use of these once MySQL database is connected
+#   pageFold = request.GET.get("pageFold", 0)
+#   offset = request.GET.get("offset", 0)
+#   title = request.GET.get("Title", "")
 
   data = {
     "questionnaires count=\"74\"": {
