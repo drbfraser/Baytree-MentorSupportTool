@@ -1,13 +1,8 @@
-import json
 from rest_framework.response import Response
 from users.permissions import MentorPermissions
-from users.models import MentorRole
-from users.models import MentorUser
 
-from users.permissions import userIsAdmin, userIsSuperUser
-from .constants import views_base_url, views_username, views_password
+from .constants import views_base_url
 from rest_framework.decorators import permission_classes, api_view
-from rest_framework import status
 from users.permissions import AdminPermissions
 import requests
 import xmltodict
@@ -31,7 +26,8 @@ def get_venues(headers):
 
 
 def parse_venues(response):
-    parsed = xmltodict.parse(response.text)
+    decoded = response.text.encode("utf-8").decode("unicode_escape").strip('\"')
+    parsed = xmltodict.parse(decoded)
 
     # Check if no volunteering types were returned from Views:
     if not "items" in parsed["valuelist"] or not "item" in parsed["valuelist"]["items"]:
