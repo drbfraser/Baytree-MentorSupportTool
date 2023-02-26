@@ -51,14 +51,11 @@ For instance, if the association is "Mentee", the "master" Person is a Mentee of
 """
 
 
-def get_associations(volunteer_id, access_token=None):
+def get_associations(volunteer_id, headers=None):
 
     response = requests.get(
         staff_associations_base_url.format(volunteer_id),
-        auth=(views_username, views_password),
-        headers = {
-            "Cookie": f"access_token={access_token}"
-        }
+        headers=headers
     )
 
     return parse_associations(response)
@@ -100,7 +97,7 @@ def translate_association_fields(associations):
 
 # GET /api/views-api/mentor-mentees/
 @api_view(("GET",))
-def get_mentees_for_mentor(request):
+def get_mentees_for_mentor(request, headers):
     mentor_user = MentorUser.objects.filter(pk=request.user.id)
     if not mentor_user.exists():
         return Response(
@@ -108,16 +105,15 @@ def get_mentees_for_mentor(request):
             status=status.HTTP_401_UNAUTHORIZED,
         )
     mentor_user = mentor_user.first()
-    access_token = request.COOKIES.get('access_token')
-    menteeIds = get_mentee_ids_from_mentor(mentor_user, active=True, access_token=access_token)
+    menteeIds = get_mentee_ids_from_mentor(mentor_user, active=True, headers=headers)
 
-    participants = get_participants(menteeIds)
+    participants = get_participants(menteeIds, headers=headers)
 
     return Response(participants["results"], status.HTTP_200_OK)
 
 
-def get_mentee_ids_from_mentor(mentor_user, active=False, access_token=None):
-    associations = get_associations(mentor_user.viewsPersonId, access_token=access_token)
+def get_mentee_ids_from_mentor(mentor_user, active=False, headers=None):
+    associations = get_associations(mentor_user.viewsPersonId, headers=headers)
     preferences = Preference.objects
     searchWindow = int(preferences.filter(key="searchingDurationInDays").first().value)
     minimumDays = int(preferences.filter(key="minimumActiveDays").first().value)
