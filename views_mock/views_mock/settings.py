@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "users",
     "sessions",
-    "volunteering_types"
+    "volunteering_types",
+    "views_sessions"
 ]
 
 MIDDLEWARE = [
@@ -86,7 +87,7 @@ DATABASES = {
         "NAME": os.environ["VIEWS_MYSQL_DATABASE"],
         "USER": os.environ["MYSQL_USER"],
         "PASSWORD": os.environ["MYSQL_PASSWORD"],
-        "HOST": os.environ["VIEWS_MYSQL_HOST"],
+        "HOST": "views-mock-db",
         "PORT": 3306,
     }
 }
