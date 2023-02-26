@@ -41,27 +41,27 @@ class CalendarEventUpdateDestroyAPIVIew(
     permission_classes = [AdminPermissions]
 
     def put(self, request, *args, **kwargs):
-        FluentLoggingHandler.logRequestReceived(
+        FluentLoggingHandler.logRequest(
             request, "Requesting calendar event edit")
         response = self.update(request, *args, **kwargs)
         if (response.status_code == 200):
-            FluentLoggingHandler.logResponseSent(
-                response, request.path, "Successfully edited calendar event")
+            FluentLoggingHandler.logResponse(
+                response, "Successfully edited calendar event")
         else:
-            FluentLoggingHandler.logResponseSent(
-                response, request.path, "Unable to edit calendar event")
+            FluentLoggingHandler.logResponse(
+                response, "Unable to edit calendar event")
         return response
 
     def delete(self, request, *args, **kwargs):
         pathInfo = request.path_info.split('/')
         itemId = pathInfo[-2]
-        FluentLoggingHandler.logRequestReceived(
+        FluentLoggingHandler.logRequest(
             request, "Requesting calendar event deletion")
         response = self.destroy(request, *args, **kwargs)
         if (response.status_code == 204):
-            FluentLoggingHandler.logResponseSent(
-                response, request.path, f"Successfully deleted calendar event with ID {itemId}")
+            FluentLoggingHandler.logResponse(
+                response, f"Successfully deleted calendar event with ID {itemId}")
         else:
-            FluentLoggingHandler.logResponseSent(
-                response, request.path, f"Unable to delete calendar event with ID {itemId}")
+            FluentLoggingHandler.logResponse(
+                response, f"Unable to delete calendar event with ID {itemId}")
         return response
