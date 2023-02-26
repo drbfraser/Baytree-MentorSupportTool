@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from users.permissions import MentorPermissions
 import json
 
-from .constants import views_base_url, views_username, views_password
+from .constants import views_base_url
 from rest_framework.decorators import permission_classes, api_view
 from users.permissions import AdminPermissions
 import requests
@@ -12,20 +12,15 @@ activities_base_url = views_base_url + "admin/valuelists/sessiongroup/agencyacti
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_activities_endpoint(request):
-    return Response(get_activities(request), 200)
+def get_activities_endpoint(request, headers):
+    return Response(get_activities(headers), 200)
 
-
-def get_activities(request):
+def get_activities(headers):
+    headers["Accept"] = "application/json"
     response = requests.get(
         activities_base_url,
-        auth=(views_username, views_password),
-        headers={
-            "Accept": "application/json",
-            "Cookie": f"access_token={request.COOKIES.get('access_token')}"
-        },
+        headers=headers,
     )
-
     return parse_activities(response)
 
 
