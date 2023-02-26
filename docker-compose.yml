@@ -34,6 +34,7 @@ services:
       - VIEWS_PASSWORD=${VIEWS_PASSWORD}
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+      - VIEWS_BASE_URL=${VIEWS_BASE_URL:-http://views-mock:5001/}
 
     depends_on:
       - database
