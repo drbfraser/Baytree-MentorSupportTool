@@ -197,7 +197,7 @@ def submit_answer_set(request, headers):
         url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}/answers"
 
     # Send the answer set to View database
-    response = requests.post(url, answerSetXML, headers=headers)
+    response = requests.post(url=url, data=answerSetXML, headers=headers)
     response.status_code
 
     # Construct dictionary response data

@@ -72,7 +72,7 @@ def get_volunteers_endpoint(request, headers):
             searchLastName=searchLastName,
         )
     elif id != None:
-        response = get_volunteers(id, headers)
+        response = get_volunteers(id, headers=headers)
     else:
         response = get_volunteers(
             headers=headers,

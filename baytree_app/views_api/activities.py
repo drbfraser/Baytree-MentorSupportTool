@@ -26,6 +26,8 @@ def get_activities(headers):
         activities_base_url,
         headers=headers,
     )
+    print("ACTIVITIES!!")
+    print(response.text)
 
     return parse_activities(response)
 

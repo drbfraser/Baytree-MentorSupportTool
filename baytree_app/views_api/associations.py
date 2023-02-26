@@ -57,6 +57,7 @@ def get_associations(volunteer_id, headers):
         staff_associations_base_url.format(volunteer_id),
         headers=headers,
     )
+    print('associations response:', response.text)
 
     return parse_associations(response)
 

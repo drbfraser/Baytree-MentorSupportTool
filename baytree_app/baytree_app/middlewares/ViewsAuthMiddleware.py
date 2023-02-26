@@ -18,7 +18,7 @@ class ViewsAuthMiddleware:
 
           elif os.environ["VIEWS_BASE_URL"]=="https://app.viewsapp.net/api/restful/":
             auth=(os.environ["VIEWS_USERNAME"]+":" + os.environ["VIEWS_PASSWORD"]).encode("utf-8")
-            base64_auth=base64.b64encode(auth).decode("utf-8)")
+            base64_auth=base64.b64encode(auth).decode("utf-8")
             headers["Authorization"] = "Basic " + base64_auth
 
           resolved_view = resolve(request.path_info)
