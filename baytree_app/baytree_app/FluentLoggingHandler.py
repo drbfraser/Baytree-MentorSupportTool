@@ -13,7 +13,7 @@ class FluentLoggingHandler:
         pass
 
     @staticmethod
-    def logRequestReceived(request, message="Request has been received"):
+    def logRequestReceived(request, message="Request has been received by server"):
         try:
             logJson = {"log": {
                 "requestingUser": request.user,
@@ -29,7 +29,7 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
-    def logRequestReceivedByViews(url="", data=None, message="Request has been received by Views"):
+    def logRequestSentToViews(url="", data=None, message="Request has been sent to Views"):
         try:
             logJson = {"log": {
                 "url": url,
@@ -44,7 +44,7 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
-    def logResponseSent(response, url="", message="Response has been sent"):
+    def logResponseSent(response, url="", message="Response has been sent from server"):
         try:
             logJson = {"log": {
                 "url": url,
