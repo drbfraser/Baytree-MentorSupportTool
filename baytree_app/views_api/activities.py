@@ -10,24 +10,23 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework import status
 from users.permissions import AdminPermissions
 import requests
-import xmltodict
 
 activities_base_url = views_base_url + "admin/valuelists/sessiongroup/agencyactivities"
 
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_activities_endpoint(request):
-    return Response(get_activities(), 200)
+def get_activities_endpoint(request, headers):
+    # TO DO: This should be removed once we switch to XML.
+    headers["Accept"]= "application/json"
+    return Response(get_activities(headers), 200)
 
 
-def get_activities():
+def get_activities(headers):
     response = requests.get(
         activities_base_url,
-        auth=(views_username, views_password),
-        headers={"Accept": "application/json"},
+        headers=headers,
     )
-
     return parse_activities(response)
 
 

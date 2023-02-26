@@ -10,3 +10,4 @@ class LoggingMiddleware:
         response = self.get_response(request)
         FluentLoggingHandler.logResponseSent(response)
         return response
+
