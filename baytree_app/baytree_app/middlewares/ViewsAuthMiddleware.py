@@ -1,6 +1,8 @@
 import os
 from django.urls import resolve
+from django.http import HttpResponse
 import base64
+from baytree_app.FluentLoggingHandler import FluentLoggingHandler
 
 class ViewsAuthMiddleware:
     def __init__(self, get_response):
@@ -8,12 +10,16 @@ class ViewsAuthMiddleware:
 
     def __call__(self, request):
         path = request.META["PATH_INFO"]
-        access_token = request.COOKIES.get("access_token")
+
         headers = {"Accept": "/"}
 
         # For views requests, determine the appropriate authentication method depending on the destination of the request (Views App or Mock Views)
         if (path.startswith("/api/views-api")):
           if os.environ["VIEWS_BASE_URL"]=="http://views-mock:5001/":
+            access_token = request.COOKIES.get("access_token")
+            if not access_token:
+              FluentLoggingHandler.error("Cannot authorize a request to mock Views due to missing access token!")
+              return HttpResponse('Access token is missing', status=401)
             headers["Cookie"] = "access_token=" + access_token
 
           elif os.environ["VIEWS_BASE_URL"]=="https://app.viewsapp.net/api/restful/":
