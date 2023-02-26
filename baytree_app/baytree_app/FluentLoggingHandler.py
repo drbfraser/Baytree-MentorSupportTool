@@ -44,11 +44,9 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
-    def logResponse(response, message="Logging response"):
-        url = response.url
+    def logResponse(response, url="", message="Logging response"):
         source = ""
         destination = ""
-
         if url.startswith(views_base_url):
             source = "views"
             destination = "baytree"
