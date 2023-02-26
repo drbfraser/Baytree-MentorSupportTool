@@ -31,6 +31,7 @@ class FluentLoggingHandler:
         try:
             logJson = {"log": {
                 "requestingUser": request.user,
+                "method": request.method,
                 "url": url,
                 "meta": request.META,
                 "isRequest": True,
