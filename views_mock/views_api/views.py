@@ -1,6 +1,6 @@
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.response import Response
-
+from xml.etree.ElementTree import Element, SubElement, tostring
 from users.permissions import AdminPermissions, MentorPermissions
 
 @api_view(("GET",))
@@ -22,26 +22,51 @@ def get_volunteering_types_endpoint(request):
 def get_staff_associations(request, staffId):
   # Note that if the staff has a single association, the object is not wrapped in a list
   # Otherwise, associations is a list
-  data = {
-    "associations": {
-      "3": {
-        "AssociationID": "3",
-        "MasterType": "Person",
-        "MasterID": "5",
-        "SlaveType": "Staff",
-        "SlaveID": str(staffId),
-        "Association": "Mentee",
-        "Description": "",
-        "StartDate": "2021-06-15",
-        "EndDate": "0000-00-00",
-        "Created": "2021-09-24 12:47:06",
-        "CreatedBy": "group.customer",
-        "Updated": "2021-11-05 01:07:27",
-        "UpdatedBy": "group.earth"
-      }
-    }
-  }
-  return Response(data, 200)
+  root = Element('staff', {
+    "id": "7"
+  })
+  associations = SubElement(root, "associations")
+  association = SubElement(associations, "associations", {"id": "3"})
+
+  associationID = SubElement(association, "AssociationID")
+  associationID.text = "3"
+
+  masterType = SubElement(association, "MasterType")
+  masterType.text = "Person"
+
+  masterId = SubElement(association, "MasterID")
+  masterId.text = "5"
+
+  slaveType = SubElement(association, "SlaveType")
+  slaveType.text = "Staff"
+
+  slaveId = SubElement(association, "SlaveID")
+  slaveId.text = "7"
+
+  associationField = SubElement(association, "Association")
+  associationField.text = "Mentee"
+
+  description = SubElement(association, "Description")
+
+  startDate = SubElement(association, "StartDate")
+  startDate.text = "2021-06-15"
+
+  endDate = SubElement(association, "EndDate")
+  endDate.text = "0000-00-00"
+
+  created = SubElement(association, "Created")
+  created.text = "2021-09-24 12:47:06"
+
+  createdBy = SubElement(association, "CreatedBy")
+  createdBy.text = "group.customer"
+
+  updated = SubElement(association, "Updated")
+  updated.text = "2021-11-05 01:07:27"
+
+  updatedBy = SubElement(association, "UpdatedBy")
+  updatedBy.text = "group.earth"
+
+  return Response(tostring(root), 200)
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
