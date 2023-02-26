@@ -1,13 +1,12 @@
 from datetime import date, timedelta
 
 import requests
-import json
+import xmltodict
 from preferences.models import Preference
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from users.models import MentorUser
-from users.permissions import userIsAdmin, userIsSuperUser
 
 from .constants import views_base_url, views_password, views_username
 from .participants import get_participants
@@ -58,7 +57,6 @@ def get_associations(volunteer_id, access_token=None):
         staff_associations_base_url.format(volunteer_id),
         auth=(views_username, views_password),
         headers = {
-            "Accept": "application/json",
             "Cookie": f"access_token={access_token}"
         }
     )
@@ -67,12 +65,13 @@ def get_associations(volunteer_id, access_token=None):
 
 
 def parse_associations(response):
-    parsed = json.loads(response.text)
+    decoded = response.text.encode("utf-8").decode("unicode_escape").strip('\"')
+    parsed = xmltodict.parse(decoded)
 
     # Check if no associations were returned from Views:
     if (
-        not parsed["associations"]
-        or len(parsed["associations"]) == 0
+        not parsed["staff"]["associations"]
+        or not "association" in parsed["staff"]["associations"]
     ):
         return {
             "count": 0,
@@ -80,7 +79,7 @@ def parse_associations(response):
         }
 
     # Make sure the associations are wrapped in a list, if there is a single association
-    associations = parsed["associations"]
+    associations = parsed["staff"]["associations"]["association"]
     if not isinstance(associations, list):
         associations = [associations]
 
@@ -91,14 +90,13 @@ def parse_associations(response):
 
 
 def translate_association_fields(associations):
-    data = []
-    for association in associations:
-        dataToAdd = {}
-        associationIndex = list(association.keys())[0]
-        for i, field in enumerate(association_views_response_fields):
-            dataToAdd[association_translated_fields[i]] = try_parse_int(association[associationIndex][field])
-        data.append(dataToAdd)
-    return data
+    return [
+        {
+            association_translated_fields[i]: try_parse_int(association[field])
+            for i, field in enumerate(association_views_response_fields)
+        }
+        for association in associations
+    ]
 
 # GET /api/views-api/mentor-mentees/
 @api_view(("GET",))
