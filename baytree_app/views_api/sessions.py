@@ -389,6 +389,7 @@ def get_session(id: str, headers):
     """
     Gets a session from Views API by its id.
     """
+    print('headers inside getSession?:', headers)
     response = requests.get(
         f"{sessions_base_url}/{id}",
         headers=headers,
@@ -407,7 +408,7 @@ def get_session(id: str, headers):
 
 def get_sessions(
     sessionGroupId: str = None,
-    headers: str = '',
+    headers: dict = None,
     limit: int = None,
     offset: int = None,
     startDateFrom: str = None,

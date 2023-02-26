@@ -84,7 +84,7 @@ def get_volunteers_endpoint(request, headers):
 
 def get_volunteers(
     id: Union[List[str], str] = None,
-    headers: str = '',
+    headers: dict = None,
     limit: int = None,
     offset: int = None,
     searchEmail: str = None,

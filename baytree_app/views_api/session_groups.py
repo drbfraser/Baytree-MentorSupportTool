@@ -38,7 +38,7 @@ MAX_SESSION_GROUPS_PAGE_SIZE = 100
 
 def get_session_groups(
     id: str = None,
-    headers: str ='',
+    headers: dict = None,
     limit: int = None,
     offset: int = None,
     name: str = None,

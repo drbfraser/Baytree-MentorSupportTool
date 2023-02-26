@@ -67,7 +67,7 @@ MAX_QUESTIONNAIRES_PAGE_SIZE = 100
 
 def get_questionnaires(
     id: int = None,
-    headers: str = '',
+    headers: dict = None,
     limit: int = None,
     offset: int = None,
     title: str = None,
