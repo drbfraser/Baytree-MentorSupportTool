@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from users.models import MentorUser
 
-from .constants import views_base_url, views_password, views_username
+from .constants import views_base_url
 from .participants import get_participants
 from .util import try_parse_int
 

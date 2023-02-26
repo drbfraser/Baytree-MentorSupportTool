@@ -1,8 +1,6 @@
-import json
-
 import requests
 import xmltodict
-from baytree_app.constants import VIEWS_BASE_URL, VIEWS_PASSWORD, VIEWS_USERNAME
+from baytree_app.constants import VIEWS_BASE_URL
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -62,7 +60,7 @@ particular session.
 
 # GET, POST /api/views-api/sessions
 class SessionsApiView(APIView):
-    def get(self, request):
+    def get(self, request, headers):
         """
         Handles a request from the client browser and calls get_sessions()
         to return its response to the client.
@@ -82,7 +80,7 @@ class SessionsApiView(APIView):
                     "You do not have permission to access this resource", 401
                 )
 
-            response = get_session(id)
+            response = get_session(id, headers)
 
         elif sessionGroupId != None:
             print("get_sessions", sessionGroupId)
@@ -97,6 +95,7 @@ class SessionsApiView(APIView):
 
             response = get_sessions(
                 sessionGroupId=sessionGroupId,
+                headers=headers,
                 limit=request.GET.get("limit", None),
                 offset=request.GET.get("offset", None),
                 startDateFrom=request.GET.get("startDateFrom", None),
@@ -113,7 +112,7 @@ class SessionsApiView(APIView):
 
         return Response(response, status=status.HTTP_200_OK)
 
-    def post(self, request):
+    def post(self, request, headers):
         # Get mentor user object
         mentor_user = MentorUser.objects.all().filter(pk=request.user.id)
         if not mentor_user.exists():
@@ -179,8 +178,7 @@ class SessionsApiView(APIView):
 
         # get first associated mentee for mentor if not provided in request body
         if not mentee_views_person_id:
-            access_token = request.COOKIES.get('access_token')
-            associations = get_associations(mentor_user.viewsPersonId, access_token=access_token)
+            associations = get_associations(mentor_user.viewsPersonId, headers=headers)
             mentee_association = next(
                 filter(lambda a: a["association"] == "Mentee", associations["results"]),
                 None,
@@ -230,8 +228,7 @@ class SessionsApiView(APIView):
             response = requests.post(
                 session_url,
                 data=viewSessionData,
-                headers={"content-type": "text/xml"},
-                auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+                headers=headers
             )
 
             if response.status_code != 200:
@@ -294,8 +291,7 @@ class SessionsApiView(APIView):
                 response = requests.post(
                     participant_notes_url,
                     data=participantNoteBody,
-                    headers={"content-type": "text/xml"},
-                    auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+                    headers=headers
                 )
             except Exception as e:
                 return Response(
@@ -318,8 +314,7 @@ class SessionsApiView(APIView):
                 response = requests.post(
                     note_url,
                     data=viewNoteData,
-                    headers={"content-type": "text/xml"},
-                    auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+                    headers=headers
                 )
             except Exception as e:
                 return Response(
@@ -346,16 +341,14 @@ class SessionsApiView(APIView):
             response = requests.put(
                 mentor_url,
                 data=viewMentorData,
-                headers={"content-type": "text/xml"},
-                auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+                headers=headers
             )
             if cancelled:
                 # Necessary to make 2 post requests for setting no attendance on Views (weird)
                 response = requests.put(
                     mentor_url,
                     data=viewMentorData,
-                    headers={"content-type": "text/xml"},
-                    auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+                    headers=headers
                 )
         except Exception as e:
             return Response(
@@ -382,8 +375,7 @@ class SessionsApiView(APIView):
             response = requests.post(
                 mentee_url,
                 data=viewMenteeData,
-                headers={"content-type": "text/xml"},
-                auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+                headers=headers
             )
         except Exception as e:
             return Response(
@@ -393,13 +385,14 @@ class SessionsApiView(APIView):
         return Response({"sessionId": try_parse_int(session_id)}, status=200)
 
 
-def get_session(id: str):
+def get_session(id: str, headers):
     """
     Gets a session from Views API by its id.
     """
+    print('headers inside getSession?:', headers)
     response = requests.get(
         f"{sessions_base_url}/{id}",
-        auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+        headers=headers,
     )
 
     if response.status_code != 200:
@@ -415,6 +408,7 @@ def get_session(id: str):
 
 def get_sessions(
     sessionGroupId: str = None,
+    headers: dict = None,
     limit: int = None,
     offset: int = None,
     startDateFrom: str = None,
@@ -460,7 +454,7 @@ def get_sessions(
         dummyResponse = requests.get(
             request_url,
             params=dummyParams,
-            auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+            headers=headers,
         )
         if dummyResponse.status_code != 200:
             return None
@@ -487,7 +481,7 @@ def get_sessions(
     response = requests.get(
         request_url,
         params=params,
-        auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
+        headers=headers,
     )
 
     if response.status_code != 200:
@@ -517,9 +511,9 @@ def get_sessions(
     return {"count": int(parsed["sessions"]["@count"]), "results": sessions}
 
 
-def get_mentee_from_session_by_id(id):
+def get_mentee_from_session_by_id(id, headers):
     url = f"{sessions_base_url}/{id}/participants"
-    response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
+    response = requests.get(url, headers=headers)
     if response.status_code != 200:
         return None
     parsed_mentee = xmltodict.parse(response.content)
@@ -530,9 +524,9 @@ def get_mentee_from_session_by_id(id):
     return {"menteeId": parsed_mentee["@id"], "name": parsed_mentee["Name"]}
 
 
-def get_note_from_session_by_id(id):
+def get_note_from_session_by_id(id, headers):
     url = f"{sessions_base_url}/{id}/notes"
-    response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
+    response = requests.get(url, headers=headers)
     if response.status_code != 200:
         return None
     parsed_note = xmltodict.parse(response.content)
@@ -543,27 +537,25 @@ def get_note_from_session_by_id(id):
     return parsed_note["Note"]
 
 
-def update_session_note_by_session_id(session_id, note):
+def update_session_note_by_session_id(session_id, headers, note):
     xmlData = "<notes>" f"<Note>{note}</Note>" "</notes>"
     url = f"{sessions_base_url}/{session_id}/notes"
     # Check if the note exists
-    response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
+    response = requests.get(url, headers=headers)
     parsed = xmltodict.parse(response.text)
     notes = parsed["session"]["notes"]
     if notes is None:
         response = requests.post(
             url,
             xmlData,
-            auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
-            headers={"content-type": "text/xml"},
+            headers=headers,
         )
     else:
         noteId = notes["note"]["@id"]
         response = requests.put(
             f"{url}/{noteId}",
             xmlData,
-            auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
-            headers={"content-type": "text/xml"},
+            headers=headers
         )
     if response.status_code != 200:
         return False
