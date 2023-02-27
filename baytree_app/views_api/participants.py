@@ -49,12 +49,12 @@ def get_participants_endpoint(request, headers):
     ids = None if ids == [] else ids
 
     if ids != None:
-        response = get_participants(ids, headers)
+        response = get_participants(ids, headers=headers)
     else:
         response = get_participants(
-          headers=headers,
-          limit=request.GET.get("limit", None),
-          offset=request.GET.get("offset", None)
+            limit=request.GET.get("limit", None),
+            offset=request.GET.get("offset", None),
+            headers=headers
         )
 
     return Response(response, status=status.HTTP_200_OK)
@@ -79,7 +79,7 @@ def get_participants(ids=None, headers='', limit: int = 5, offset: int = 0):
 
         response = requests.get(
             participants_base_url + "search?" + id_filter_string,
-            headers=headers,
+            headers=headers
         )
 
     else:
@@ -90,12 +90,12 @@ def get_participants(ids=None, headers='', limit: int = 5, offset: int = 0):
                 + str(limit)
                 + "&offset="
                 + str(offset),
-                headers=headers,
+                headers=headers
             )
         else:
             response = requests.get(
                 participants_base_url + "search?q=",
-                headers=headers,
+                headers=headers
             )
 
     return parse_participants(response)
@@ -114,8 +114,8 @@ def parse_participants(response):
     responseText = response.text.replace(
         "<2Personrelationshipandcontactnumberofpersonauthorised_P_229/>", ""
     )
-
-    parsed = xmltodict.parse(responseText)
+    decoded = responseText.encode("utf-8").decode("unicode_escape").strip('\"')
+    parsed = xmltodict.parse(decoded)
 
     # Make sure the participants are wrapped in a list, if there is a single participant
     if not isinstance(parsed["contacts"]["participants"]["participant"], list):
@@ -130,6 +130,7 @@ def parse_participants(response):
         }
         for participant in parsed["contacts"]["participants"]["participant"]
     ]
+
     return {
         "count": int(parsed["contacts"]["participants"]["@count"]),
         "results": participants,

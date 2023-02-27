@@ -169,7 +169,7 @@ def submit_answer_set(request, headers):
 
         mentor_user = mentor_user.first()
 
-        menteeIds = get_mentee_ids_from_mentor(mentor_user, headers)
+        menteeIds = get_mentee_ids_from_mentor(mentor_user, headers=headers)
 
         menteeId = menteeIds[0]
         # Construct Mentee the answer set XML payload
