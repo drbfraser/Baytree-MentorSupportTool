@@ -17,7 +17,7 @@ class FluentLoggingHandler:
 
     @staticmethod
     def logRequest(request, message="Logging request"):
-        url = request.path
+        url = request.build_absolute_uri()
         source = ""
         destination = ""
 

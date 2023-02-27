@@ -8,5 +8,6 @@ class LoggingMiddleware:
     def __call__(self, request):
         FluentLoggingHandler.logRequest(request)
         response = self.get_response(request)
-        FluentLoggingHandler.logResponse(response, request.path)
+        FluentLoggingHandler.logResponse(
+            response, request.build_absolute_uri())
         return response

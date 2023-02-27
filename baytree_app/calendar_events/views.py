@@ -46,10 +46,10 @@ class CalendarEventUpdateDestroyAPIVIew(
         response = self.update(request, *args, **kwargs)
         if (response.status_code == 200):
             FluentLoggingHandler.logResponse(
-                response, request.path, "Successfully edited calendar event")
+                response, request.build_absolute_uri(), "Successfully edited calendar event")
         else:
             FluentLoggingHandler.logResponse(
-                response, request.path, "Unable to edit calendar event")
+                response, request.build_absolute_uri(), "Unable to edit calendar event")
         return response
 
     def delete(self, request, *args, **kwargs):
@@ -60,8 +60,8 @@ class CalendarEventUpdateDestroyAPIVIew(
         response = self.destroy(request, *args, **kwargs)
         if (response.status_code == 204):
             FluentLoggingHandler.logResponse(
-                response, request.path, f"Successfully deleted calendar event with ID {itemId}")
+                response, request.build_absolute_uri(), f"Successfully deleted calendar event with ID {itemId}")
         else:
             FluentLoggingHandler.logResponse(
-                response, request.path, f"Unable to delete calendar event with ID {itemId}")
+                response, request.build_absolute_uri(), f"Unable to delete calendar event with ID {itemId}")
         return response
