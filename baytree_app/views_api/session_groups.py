@@ -85,6 +85,8 @@ def get_session_groups(
     if limit == None or limit > MAX_SESSION_GROUPS_PAGE_SIZE:
         limit = MAX_SESSION_GROUPS_PAGE_SIZE
 
+    headers["Accept"] = "application/json"
+
     if id != None:
         response = requests.get(
             session_groups_base_url + id,
@@ -98,7 +100,7 @@ def get_session_groups(
         translated_session_group = translate_session_group(parsed_session_group)
         return translated_session_group
     else:
-        request_url = f"{session_groups_base_url}search.json?q="
+        request_url = f"{session_groups_base_url}search?q="
 
         if limit != None:
             request_url += f"&pageFold={limit}"
@@ -152,7 +154,7 @@ def get_session_groups_endpoint(request, headers):
     id = request.GET.get("id", None)
 
     if id != None:
-        response = get_session_groups(id, headers)
+        response = get_session_groups(id, headers=headers)
         if not response:
             return Response("Not Found", status=status.HTTP_404_NOT_FOUND)
     else:
