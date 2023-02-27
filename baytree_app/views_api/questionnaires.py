@@ -8,8 +8,8 @@ from users.permissions import AdminPermissions
 import requests
 import json
 
-questionnaires_search_url = views_base_url + "evidence/questionnaires/search.json"
-questionnaires_id_url = views_base_url + "evidence/questionnaires/{}.json"
+questionnaires_search_url = views_base_url + "evidence/questionnaires/search"
+questionnaires_id_url = views_base_url + "evidence/questionnaires/{}"
 
 questionnaire_views_response_fields = [
     "QuestionnaireID",
@@ -41,7 +41,7 @@ def get_questionnaires_endpoint(request, headers):
     id = request.GET.get("id", None)
 
     if id != None:
-        response = get_questionnaires(id, headers)
+        response = get_questionnaires(id, headers=headers)
         if not response:
             return Response("Not Found", status=status.HTTP_404_NOT_FOUND)
     else:
@@ -76,10 +76,12 @@ def get_questionnaires(
     if limit == None or limit > MAX_QUESTIONNAIRES_PAGE_SIZE:
         limit = MAX_QUESTIONNAIRES_PAGE_SIZE
 
+    headers["Accept"] = "application/json"
+
     if id != None:
         views_response = requests.get(
             questionnaires_id_url.format(id),
-            headers,
+            headers=headers,
         )
 
         if views_response.status_code != 200:
