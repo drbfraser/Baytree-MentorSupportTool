@@ -72,9 +72,9 @@ def get_session_group_by_id_endpoint(request, sessionGroupId):
 @permission_classes([AdminPermissions])
 def search_session_groups_endpoint(request):
   # These will be used once the database is connected
-  pageFold = request.GET.get('pageFold', 2)
-  offset = request.GET.get('offset', 0)
-  title = request.GET.get('Title', '')
+#   pageFold = request.GET.get('pageFold', 2)
+#   offset = request.GET.get('offset', 0)
+#   title = request.GET.get('Title', '')
 
   # Note that pageSize changes with pageFold
   data = {
