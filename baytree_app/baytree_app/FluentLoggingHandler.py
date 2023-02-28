@@ -1,4 +1,7 @@
 import logging
+import os
+
+views_base_url = os.environ["VIEWS_BASE_URL"]
 
 
 class FluentLoggingHandler:
@@ -13,13 +16,28 @@ class FluentLoggingHandler:
         pass
 
     @staticmethod
-    def logRequestReceived(request, message="Request Received"):
+    def logRequest(request, message="Logging request"):
+        url = request.build_absolute_uri()
+        source = ""
+        destination = ""
+
+        if url.startswith(views_base_url):
+            source = "baytree"
+            destination = "views" if views_base_url == "https://app.viewsapp.net/api/restful/" else "mock_views"
+        else:
+            source = "client"
+            destination = "baytree"
+
         try:
             logJson = {"log": {
                 "requestingUser": request.user,
+                "method": request.method,
+                "url": url,
                 "meta": request.META,
-                "isRequestReceivedLog": True,
-                "message": message
+                "isRequest": True,
+                "source": source,
+                "destination": destination,
+                "message": message,
             }}
             FluentLoggingHandler.requestLogger.info(logJson)
 
@@ -27,11 +45,25 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
-    def logResponseSent(response, message="Response Sent"):
+    def logResponse(response, request, message="Logging response"):
+        url = request.build_absolute_uri()
+        source = ""
+        destination = ""
+
+        if url.startswith(views_base_url):
+            source = "views" if views_base_url == "https://app.viewsapp.net/api/restful/" else "mock_views"
+            destination = "baytree"
+        else:
+            source = "baytree"
+            destination = "client"
+
         try:
             logJson = {"log": {
+                "url": url,
                 "meta": response.headers,
-                "isRequestReceivedLog": False,
+                "isRequest": False,
+                "source": source,
+                "destination": destination,
                 "message": message
             }}
             if response.status_code < 400:

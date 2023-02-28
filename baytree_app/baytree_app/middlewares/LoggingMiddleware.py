@@ -6,8 +6,7 @@ class LoggingMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        FluentLoggingHandler.logRequestReceived(request)
+        FluentLoggingHandler.logRequest(request)
         response = self.get_response(request)
-        FluentLoggingHandler.logResponseSent(response)
+        FluentLoggingHandler.logResponse(response, request)
         return response
-
