@@ -23,7 +23,10 @@ class FluentLoggingHandler:
 
         if url.startswith(views_base_url):
             source = "baytree"
-            destination = "views"
+            if views_base_url == "https://app.viewsapp.net/api/restful/":
+                destination = "views"
+            else:
+                destination = "mock-views"
         else:
             source = "client"
             destination = "baytree"
@@ -45,11 +48,16 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
-    def logResponse(response, url="", message="Logging response"):
+    def logResponse(response, request, message="Logging response"):
+        url = request.build_absolute_uri()
         source = ""
         destination = ""
+
         if url.startswith(views_base_url):
-            source = "views"
+            if views_base_url == "https://app.viewsapp.net/api/restful/":
+                source = "views"
+            else:
+                source = "mock-views"
             destination = "baytree"
         else:
             source = "baytree"
