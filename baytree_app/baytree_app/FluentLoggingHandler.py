@@ -23,10 +23,7 @@ class FluentLoggingHandler:
 
         if url.startswith(views_base_url):
             source = "baytree"
-            if views_base_url == "https://app.viewsapp.net/api/restful/":
-                destination = "views"
-            else:
-                destination = "mock-views"
+            destination = "views" if views_base_url == "https://app.viewsapp.net/api/restful/" else "mock_views"
         else:
             source = "client"
             destination = "baytree"
@@ -54,10 +51,7 @@ class FluentLoggingHandler:
         destination = ""
 
         if url.startswith(views_base_url):
-            if views_base_url == "https://app.viewsapp.net/api/restful/":
-                source = "views"
-            else:
-                source = "mock-views"
+            source = "views" if views_base_url == "https://app.viewsapp.net/api/restful/" else "mock_views"
             destination = "baytree"
         else:
             source = "baytree"
