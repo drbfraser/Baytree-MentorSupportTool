@@ -1,13 +1,9 @@
 from rest_framework.response import Response
 from users.permissions import MentorPermissions
-from users.models import MentorRole
-from users.models import MentorUser
 import json
 
-from users.permissions import userIsAdmin, userIsSuperUser
-from .constants import views_base_url, views_username, views_password
+from .constants import views_base_url
 from rest_framework.decorators import permission_classes, api_view
-from rest_framework import status
 from users.permissions import AdminPermissions
 import requests
 
@@ -17,12 +13,10 @@ activities_base_url = views_base_url + "admin/valuelists/sessiongroup/agencyacti
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
 def get_activities_endpoint(request, headers):
-    # TO DO: This should be removed once we switch to XML.
-    headers["Accept"]= "application/json"
     return Response(get_activities(headers), 200)
 
-
 def get_activities(headers):
+    headers["Accept"] = "application/json"
     response = requests.get(
         activities_base_url,
         headers=headers,
