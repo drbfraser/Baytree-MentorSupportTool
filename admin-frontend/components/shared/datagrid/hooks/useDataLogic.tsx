@@ -223,6 +223,30 @@ const validateDataRows = (
     for (const col of cols) {
       const val = dataRow[col.dataField]
 
+      if (col.dataField == 'startDate') {
+        const startDate = new Date(dataRow[col.dataField])
+        const endDate = new Date(dataRow['endDate'])
+        const currentDate = new Date()
+        if (startDate < currentDate || startDate > endDate) {
+          invalidCells.push({
+            primaryKey: dataRow[primaryKeyDataField],
+            dataField: col.dataField
+          })
+        }
+      }
+
+      if (col.dataField == 'endDate') {
+        const endDate = new Date(dataRow[col.dataField])
+        const startDate = new Date(dataRow['startDate'])
+        const currentDate = new Date()
+        if (endDate < currentDate || endDate < startDate) {
+          invalidCells.push({
+            primaryKey: dataRow[primaryKeyDataField],
+            dataField: col.dataField
+          })
+        }
+      }
+
       if (
         (col.isRequired || col.isRequired === undefined) &&
         col.dataType !== 'boolean' &&
