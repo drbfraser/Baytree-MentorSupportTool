@@ -1,9 +1,9 @@
-import { TableBody } from "@mui/material";
-import { FC } from "react";
-import DataGridAddRow from "./datagridAddRow";
-import DataGridBodyCreatedDataRows from "./datagridBodyCreatedDataRows";
-import DataGridBodyDataRows from "./datagridBodyDataRows";
-import DataGridLoadingBody from "./datagridLoadingBody";
+import { TableBody } from '@mui/material'
+import { FC } from 'react'
+import DataGridAddRow from './datagridAddRow'
+import DataGridBodyCreatedDataRows from './datagridBodyCreatedDataRows'
+import DataGridBodyDataRows from './datagridBodyDataRows'
+import DataGridLoadingBody from './datagridLoadingBody'
 import {
   DataGridColumn,
   DataRow,
@@ -11,33 +11,33 @@ import {
   InvalidCell,
   onLoadDataRowsFunc,
   onLoadPagedDataRowsFunc,
-  onSaveDataRowsFunc,
-} from "./datagridTypes";
+  onSaveDataRowsFunc
+} from './datagridTypes'
 
 export interface DataGridBodyProps {
-  isLoadingDataRows: boolean;
-  dataRows: DataRow[];
-  createdDataRows: DataRow[];
-  deletedDataRows: DataRow[];
-  onLoadDataRows: onLoadDataRowsFunc | onLoadPagedDataRowsFunc;
-  onSaveDataRows?: onSaveDataRowsFunc<DataRow>;
-  getOriginalDataRow: (dataRow: DataRow) => DataRow;
-  getChangedDataRow: (changedDataRow: DataRow) => DataRow | undefined;
-  isDataRowDeleted: (dataRow: DataRow) => boolean;
-  setCreatedDataRow: (createdDataRow: DataRow) => void;
-  setChangedDataRow: (changedDataRow: DataRow) => void;
-  setDeletedDataRow: (isDeleted: boolean, dataRow: DataRow) => void;
-  removeCreatedDataRow: (createdRow: DataRow) => void;
-  cols: DataGridColumn[];
-  primaryKeyDataField: string;
-  dataRowActions?: DataRowAction[];
-  isDataGridDeleteable?: boolean;
-  pageSize?: number;
-  disableDataRowCreation?: boolean;
-  isLoadingColValueOptions?: boolean;
-  isSavingDataRows?: boolean;
-  createDataRow: () => void;
-  invalidCells: InvalidCell[];
+  isLoadingDataRows: boolean
+  dataRows: DataRow[]
+  createdDataRows: DataRow[]
+  deletedDataRows: DataRow[]
+  onLoadDataRows: onLoadDataRowsFunc | onLoadPagedDataRowsFunc
+  onSaveDataRows?: onSaveDataRowsFunc<DataRow>
+  getOriginalDataRow: (dataRow: DataRow) => DataRow
+  getChangedDataRow: (changedDataRow: DataRow) => DataRow | undefined
+  isDataRowDeleted: (dataRow: DataRow) => boolean
+  setCreatedDataRow: (createdDataRow: DataRow) => void
+  setChangedDataRow: (changedDataRow: DataRow) => void
+  setDeletedDataRow: (isDeleted: boolean, dataRow: DataRow) => void
+  removeCreatedDataRow: (createdRow: DataRow) => void
+  cols: DataGridColumn[]
+  primaryKeyDataField: string
+  dataRowActions?: DataRowAction[]
+  isDataGridDeleteable?: boolean
+  pageSize?: number
+  disableDataRowCreation?: boolean
+  isLoadingColValueOptions?: boolean
+  isSavingDataRows?: boolean
+  createDataRow: () => void
+  invalidCells: InvalidCell[]
 }
 
 const DataGridBody: FC<DataGridBodyProps> = (props) => {
@@ -93,7 +93,8 @@ const DataGridBody: FC<DataGridBodyProps> = (props) => {
         </>
       )}
     </TableBody>
-  );
-};
+  )
+}
 
-export default DataGridBody;
+export default DataGridBody
+
