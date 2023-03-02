@@ -11,6 +11,7 @@ services:
       MYSQL_DATABASE: baytree
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MOCK_MYSQL_DATABASE: ${MOCK_MYSQL_DATABASE}
     depends_on:
       - database
       - redis
