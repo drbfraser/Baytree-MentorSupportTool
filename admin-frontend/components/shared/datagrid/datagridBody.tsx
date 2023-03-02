@@ -86,7 +86,8 @@ const DataGridBody: FC<DataGridBodyProps> = (props) => {
               enableAddButton={
                 !props.isLoadingDataRows &&
                 !props.isLoadingColValueOptions &&
-                !props.isSavingDataRows
+                !props.isSavingDataRows &&
+                props.createdDataRows.length < 1
               }
             ></DataGridAddRow>
           )}
