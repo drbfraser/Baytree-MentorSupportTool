@@ -20,12 +20,13 @@ class FluentLoggingHandler:
         url = request.build_absolute_uri()
         source = ""
         destination = ""
+        clientUrl = request.META.get('HTTP_REFERER')
 
         if url.startswith(views_base_url):
             source = "baytree"
             destination = "views" if views_base_url == "https://app.viewsapp.net/api/restful/" else "mock_views"
         else:
-            source = "client"
+            source = "admin-frontend" if clientUrl == "http://localhost:3001/" else "frontend"
             destination = "baytree"
 
         try:
@@ -49,13 +50,14 @@ class FluentLoggingHandler:
         url = request.build_absolute_uri()
         source = ""
         destination = ""
+        clientUrl = request.META.get('HTTP_REFERER')
 
         if url.startswith(views_base_url):
             source = "views" if views_base_url == "https://app.viewsapp.net/api/restful/" else "mock_views"
             destination = "baytree"
         else:
             source = "baytree"
-            destination = "client"
+            destination = "admin-frontend" if clientUrl == "http://localhost:3001/" else "frontend"
 
         try:
             logJson = {"log": {
