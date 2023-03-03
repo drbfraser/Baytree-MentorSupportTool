@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'views_mock.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.environ["MYSQL_DATABASE"],
+        "NAME": os.environ["MOCK_MYSQL_DATABASE"],
         "USER": os.environ["MYSQL_USER"],
         "PASSWORD": os.environ["MYSQL_PASSWORD"],
         "HOST": os.environ["MYSQL_HOST"],
