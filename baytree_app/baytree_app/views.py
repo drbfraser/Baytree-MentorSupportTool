@@ -28,6 +28,8 @@ from .FluentLoggingHandler import FluentLoggingHandler
 @api_view(("GET",))
 @permission_classes((AllowAny,))
 def logout_view(request):
+    FluentLoggingHandler.logRequest(
+        request, "Sending request to reset refresh and access tokens")
     response = HttpResponse()
     cookie_max_age = 0
 
@@ -40,6 +42,8 @@ def logout_view(request):
     )
 
     response.status_code = 200
+    FluentLoggingHandler.logResponse(
+        response, request, "Successfully reset refresh and access tokens")
 
     return response
 
@@ -130,6 +134,8 @@ class CookieTokenVerifyView(TokenVerifyView):
     serializer_class = CookieTokenVerifySerializer
 
     def post(self, request, *args, **kwargs):
+        FluentLoggingHandler.logRequest(
+            request, "Sending POST request to verify if user is admin or superuser")
         serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
@@ -145,10 +151,13 @@ class CookieTokenVerifyView(TokenVerifyView):
 
         is_superuser = user.is_superuser
 
-        return Response(
+        response = Response(
             {"is_admin": is_admin, "is_superuser": is_superuser},
             status=status.HTTP_200_OK,
         )
+        FluentLoggingHandler.logResponse(
+            response, request, "Successfully verified if user is admin or superuser")
+        return response
 
 
 class CookieTokenObtainPairView(TokenObtainPairView):
@@ -289,6 +298,8 @@ class GenerateCrudEndpointsForModel(APIView):
     put_override_func = None
 
     def get(self, request):
+        FluentLoggingHandler.logRequest(
+            request, "Sent GET request for retrieving model objects")
         if self.get_override_func:
             return self.get_override_func(self, request)
 
@@ -314,10 +325,15 @@ class GenerateCrudEndpointsForModel(APIView):
                 self.serializer(modelObject).data for modelObject in modelObjects
             ]
 
-            return Response(
+            response = Response(
                 {"total": numModelObjects, "data": serialized},
                 status=status.HTTP_200_OK,
             )
+
+            FluentLoggingHandler.logResponse(
+                response, request, "Successfully retrieved model objects when id is not present")
+
+            return response
         else:
             ids = request.GET.getlist("id", "")
             if not isinstance(ids, list):
@@ -332,11 +348,18 @@ class GenerateCrudEndpointsForModel(APIView):
 
             numModelObjects = self.model.objects.all().count()
 
-            return Response(
+            response = Response(
                 {"total": numModelObjects, "data": objects}, status=status.HTTP_200_OK
             )
 
+            FluentLoggingHandler.logResponse(
+                response, request, "Successfully retrieved model objects when id is present")
+
+            return response
+
     def delete(self, request):
+        FluentLoggingHandler.logRequest(
+            request, "Sent DELETE request for removing model objects")
         if self.delete_override_func:
             return self.delete_override_func(self, request)
 
@@ -346,21 +369,32 @@ class GenerateCrudEndpointsForModel(APIView):
                 if not isinstance(ids, list):
                     ids = [ids]
                 self.model.objects.filter(pk__in=ids).delete()
-                return Response(
+                response = Response(
                     {"status": "Successfully deleted object(s)."},
                     status=status.HTTP_200_OK,
                 )
+                FluentLoggingHandler.logResponse(
+                    response, request, "Successfully deleted model objects")
+                return response
             except Exception as e:
-                return Response(
+                response = Response(
                     {"error": "Failed to delete object"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
+                FluentLoggingHandler.logResponse(
+                    response, request, "Failed to delete model objects")
+                return response
         else:
-            return Response(
+            response = Response(
                 {"error": "No id was given"}, status=status.HTTP_400_BAD_REQUEST
             )
+            FluentLoggingHandler.logResponse(
+                response, request, "Bad request, no id was given")
+            return response
 
     def post(self, request):
+        FluentLoggingHandler.logRequest(
+            request, "Sent POST request to create model objects")
         if self.post_override_func:
             return self.post_override_func(self, request)
 
@@ -373,7 +407,10 @@ class GenerateCrudEndpointsForModel(APIView):
 
                     ids.append(create_object(object, self.model))
 
-                return Response({"ids": ids}, status=status.HTTP_200_OK)
+                response = Response({"ids": ids}, status=status.HTTP_200_OK)
+                FluentLoggingHandler.logResponse(
+                    response, request, "Successfully created model objects")
+                return response
             else:
                 object = request.data
 
@@ -381,15 +418,22 @@ class GenerateCrudEndpointsForModel(APIView):
                     del object["id"]
 
                 ids.append(create_object(request.data, self.model))
-
-                return Response({"ids": ids}, status=status.HTTP_200_OK)
+                response = Response({"ids": ids}, status=status.HTTP_200_OK)
+                FluentLoggingHandler.logResponse(
+                    response, request, "Successfully created model object")
+                return response
         except Exception as e:
-            return Response(
+            response = Response(
                 {"error": "Failed to create object"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+            FluentLoggingHandler.logResponse(
+                response, request, "Failed to create model object")
+            return response
 
     def put(self, request):
+        FluentLoggingHandler.logRequest(
+            request, "Sent PUT request to update model objects")
         if self.put_override_func:
             return self.put_override_func(self, request)
 
@@ -400,31 +444,44 @@ class GenerateCrudEndpointsForModel(APIView):
                         self.model.objects.get(
                             pk=object["id"]), object, self.model
                     )
-                return Response(
+
+                response = Response(
                     {"success": "Successfully updated objects"},
                     status=status.HTTP_200_OK,
                 )
+                FluentLoggingHandler.logResponse(
+                    response, request, "Successfully updated model objects")
+                return response
             else:
                 object = request.data
                 existing_object = self.model.objects.filter(pk=object["id"])
                 if not existing_object.exists():
-                    return Response(
+                    response = Response(
                         {"error": "Failed to update object"},
                         status=status.HTTP_404_NOT_FOUND,
                     )
+                    FluentLoggingHandler.logResponse(
+                        response, request, "Failed to update object, there is no existing object")
+                    return response
 
                 existing_object = existing_object.first()
 
                 update_object(existing_object, object, self.model)
-                return Response(
+                response = Response(
                     {"success": "Successfully updated object"},
                     status=status.HTTP_200_OK,
                 )
+                FluentLoggingHandler.logResponse(
+                    response, request, "Successfully updated model object")
+                return response
         except Exception as e:
-            return Response(
+            response = Response(
                 {"error": "Failed to update object"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+            FluentLoggingHandler.logResponse(
+                response, request, "Failed to update objects due to server error")
+            return response
 
 
 class BatchRestViewSet(viewsets.ModelViewSet):
@@ -443,23 +500,30 @@ class BatchRestViewSet(viewsets.ModelViewSet):
         Changed rows must include the original row id.
         Created rows must not have an id."""
 
+        FluentLoggingHandler.logRequest(
+            request, "Sending POST method for batch updating/creating/deleting model objects")
         if isinstance(request.data, list):
             for data_row in request.data:
                 if "isDeleted" in data_row:
                     # Delete objects
                     if "id" not in data_row:
-                        Response(
+                        response = Response(
                             "No id was found for deleted row.",
                             status=status.HTTP_400_BAD_REQUEST,
                         )
-
+                        FluentLoggingHandler.logResponse(
+                            response, request, "Failed to batch delete model objects, no id was provided for object")
+                        return response
                     object = self.model_class.objects.filter(pk=data_row["id"])
 
                     if not object.exists():
-                        return Response(
+                        response = Response(
                             "object id " + data_row.id + " was not found.",
                             status=status.HTTP_404_NOT_FOUND,
                         )
+                        FluentLoggingHandler.logResponse(
+                            response, request, "Failed to batch delete model objects, object does not exist")
+                        return response
 
                     object.delete()
                 else:
@@ -469,10 +533,17 @@ class BatchRestViewSet(viewsets.ModelViewSet):
                     if serializer.is_valid():
                         serializer.save()
                     else:
-                        return Response(
+                        response = Response(
                             serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST,
                         )
-            return Response("Successfully batch updated.", status=status.HTTP_200_OK)
+                        FluentLoggingHandler.logResponse(
+                            response, request, "Failed to batch create/update model objects, serializer is invalid")
+                        return response
+            response = Response("Successfully batch updated.",
+                                status=status.HTTP_200_OK)
+            FluentLoggingHandler.logResponse(
+                response, request, "Successfully performed batch updates")
+            return response
         else:
             return super(viewsets.ModelViewSet, self).create(request, *args, **kwargs)
