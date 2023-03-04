@@ -1,5 +1,3 @@
-import json
-
 from django.http import HttpResponse
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -23,7 +21,6 @@ from django.db.models import ForeignKey
 
 from datetime import datetime
 from django.utils.timezone import make_aware
-import logging
 
 from .FluentLoggingHandler import FluentLoggingHandler
 
@@ -165,7 +162,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         Flogging = FluentLoggingHandler()
         if request.data["email"]:
             replace_number = 4
-            replace_str = "-"*replace_number + request.data["email"][replace_number:]
+            replace_str = "-"*replace_number + \
+                request.data["email"][replace_number:]
             Flogging.sendInfoLog("login request by: " + str(replace_str))
 
         if response.data.get("refresh"):
@@ -194,7 +192,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         response.data["user_id"] = user.pk
 
         admin_user_model = apps.get_model("users", "AdminUser")
-        response.data["is_admin"] = admin_user_model.objects.filter(pk=user.pk).exists()
+        response.data["is_admin"] = admin_user_model.objects.filter(
+            pk=user.pk).exists()
 
         mentor_user_model = apps.get_model("users", "MentorUser")
         mentor_user_query_set = mentor_user_model.objects.filter(pk=user.pk)
@@ -305,7 +304,7 @@ class GenerateCrudEndpointsForModel(APIView):
             if limit != None:
                 if offset == None:
                     offset = 0
-                modelObjects = self.model.objects.all()[offset : offset + limit]
+                modelObjects = self.model.objects.all()[offset: offset + limit]
             else:
                 modelObjects = self.model.objects.all()
 
@@ -398,7 +397,8 @@ class GenerateCrudEndpointsForModel(APIView):
             if "array" in request.data:
                 for object in request.data["array"]:
                     update_object(
-                        self.model.objects.get(pk=object["id"]), object, self.model
+                        self.model.objects.get(
+                            pk=object["id"]), object, self.model
                     )
                 return Response(
                     {"success": "Successfully updated objects"},
@@ -464,7 +464,8 @@ class BatchRestViewSet(viewsets.ModelViewSet):
                     object.delete()
                 else:
                     # Create and update objects
-                    serializer = self.serializer_class(data=data_row, partial=True)
+                    serializer = self.serializer_class(
+                        data=data_row, partial=True)
                     if serializer.is_valid():
                         serializer.save()
                     else:
