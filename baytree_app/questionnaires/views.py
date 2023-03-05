@@ -12,7 +12,8 @@ import xml.etree.ElementTree as ET
 import threading
 from users.models import MentorUser
 
-extractedQuestionFields = ["QuestionID", "Question", "inputType", "validation", "category", "enabled"]
+extractedQuestionFields = ["QuestionID", "Question",
+                           "inputType", "validation", "category", "enabled"]
 
 
 # Get the mentor info from the requesting user
@@ -24,7 +25,8 @@ def getMentorWithRoleAndQuestionnaireByUserId(id):
         mentorRole__isnull=False,
         mentorRole__viewsQuestionnaireId__isnull=False
     )
-    if not mentors: return None
+    if not mentors:
+        return None
     return mentors.first()
 
 
@@ -64,7 +66,8 @@ def get_questionnaire(request, headers):
 
     # multithreading for multiple request
     for question in questions:
-        running_thread.append(threading.Thread(target=fetch_questions, args=(question, data, index, headers)))
+        running_thread.append(threading.Thread(
+            target=fetch_questions, args=(question, data, index, headers)))
         index += 1
     for thread in running_thread:
         thread.start()
@@ -75,7 +78,6 @@ def get_questionnaire(request, headers):
 
     # sort question base on question order
     data["questions"] = sorted(data["questions"], key=lambda x: x["order"])
-
 
     return Response(data, status=status.HTTP_200_OK)
 
@@ -149,7 +151,8 @@ def submit_answer_set(request, headers):
         "<Answer>{1}</Answer>"
         "</answer>"
     )
-    answersXML = [answerXMLFormat.format(id, data["answerSet"][id]) for id in data["answerSet"]]
+    answersXML = [answerXMLFormat.format(
+        id, data["answerSet"][id]) for id in data["answerSet"]]
 
     url = ""
 
