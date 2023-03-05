@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 import requests
 
+from baytree_app.FluentLoggingHandler import FluentLoggingHandler
 from baytree_app.constants import (
     VIEWS_BASE_URL)
 from rest_framework import status
@@ -36,11 +37,16 @@ def get_questionnaire(request, headers):
     """
     Fetch the questionnaire assigned by the the mentor
     """
+    FluentLoggingHandler.logRequest(
+        request, "Sending GET request to fetch questionnaire assigned by mentor")
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
     if mentor is None:
         # todo: error Logging here
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        response = Response(status=status.HTTP_404_NOT_FOUND)
+        FluentLoggingHandler.logResponse(
+            response, request, "Failed to find the questionnaire id, mentor not found")
+        return response
     qid = mentor.mentorRole.viewsQuestionnaireId
 
     # Fetch questionnaire by id
@@ -48,7 +54,10 @@ def get_questionnaire(request, headers):
 
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        response = Response(status=status.HTTP_404_NOT_FOUND)
+        FluentLoggingHandler.logResponse(
+            response, request, f"Failed to fetch questionnarie by the following id:{qid}")
+        return response
 
     response = response.json()
 
@@ -79,7 +88,10 @@ def get_questionnaire(request, headers):
     # sort question base on question order
     data["questions"] = sorted(data["questions"], key=lambda x: x["order"])
 
-    return Response(data, status=status.HTTP_200_OK)
+    response = Response(data, status=status.HTTP_200_OK)
+    FluentLoggingHandler.logResponse(
+        response, request, "Successfully retrieved questionnaire")
+    return response
 
 
 def fetch_questions(question, data, index, headers):
@@ -102,21 +114,32 @@ def get_questionnaire_value_lists(id, headers):
     Fetch the questionnaire value lists for each question
     doc: https://www.substance.net/views/api/index.php/Rest_-_Admin_-_Value_Lists
     """
-
     value_list_id = id
     if not value_list_id:
         # todo: error Logging here
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        response = Response(status=status.HTTP_404_NOT_FOUND)
+        FluentLoggingHandler.error(
+            "Failed to get questionnarie value lists, value list id not found")
+        return response
 
     url = f"{VIEWS_BASE_URL}admin/valuelists/{value_list_id}.json"
 
     response = requests.get(url, headers=headers)
+    request = response.request
+    FluentLoggingHandler.logRequest(
+        request, "Sending GET request to retrieve questionnaire value lists for each question")
     if response.status_code != 200:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        response = Response(status=status.HTTP_404_NOT_FOUND)
+        FluentLoggingHandler.logResponse(
+            response, request, "Failed to get questionnarie value lists")
+        return response
 
+    loggedResponse = response
     response = response.json()
     data = {}
     data["items"] = response["items"].values()
+    FluentLoggingHandler.logResponse(
+        loggedResponse, request, "Successfully retrieved questionnaire value lists")
     return data
 
 
@@ -126,23 +149,34 @@ def submit_answer_set(request, headers):
     """
     Submit the answer to the remote Views database
     """
+    FluentLoggingHandler.logRequest(
+        request, "Sending POST request to submit questionnaire answers to views")
     # Validate data existence
     data = request.data
     if data["questionnaireId"] is None \
             or data["answerSet"] is None \
             or data["person"] is None:
         # todo: error Logging here
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        response = Response(status=status.HTTP_400_BAD_REQUEST)
+        FluentLoggingHandler.logResponse(
+            response, request, "Failed to submit questionnaire answers, data to be submitted is invalid")
+        return response
 
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
     if mentor is None:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        response = Response(status=status.HTTP_404_NOT_FOUND)
+        FluentLoggingHandler.logResponse(
+            response, request, "Failed to submit questionnaire answers, could not find mentor")
+        return response
 
     # Redundancy check, user won't submit answer set to the wrong question
     qid = mentor.mentorRole.viewsQuestionnaireId
     if data["questionnaireId"] != qid:
-        return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        FluentLoggingHandler.logResponse(
+            response, request, f"Failed to submit questionnaire answers, answer set does not match questionnaire with id: {qid}")
+        return response
 
     # Construct answer XML format payload
     answerXMLFormat = (
@@ -165,10 +199,13 @@ def submit_answer_set(request, headers):
         # menteeUser = MentorUser.objects.filter(pk=request.user.id)
         mentor_user = MentorUser.objects.filter(pk=request.user.id)
         if not mentor_user.exists():
-            return Response(
+            response = Response(
                 "The current requesting user is not a mentor!",
                 status=status.HTTP_401_UNAUTHORIZED,
             )
+            FluentLoggingHandler.logResponse(
+                response, request, "Failed to submit questionnaire answers, the current requesting user is not a mentor")
+            return response
 
         mentor_user = mentor_user.first()
 
@@ -213,4 +250,7 @@ def submit_answer_set(request, headers):
     responseData["submissionId"] = parsedXMLRoot.get("id")
     responseData["viewsResponse"] = response.text
 
-    return Response(responseData, response.status_code)
+    loggedResponse = Response(responseData, response.status_code)
+    FluentLoggingHandler.logResponse(
+        loggedResponse, request, "Successfully submitted questionnaire answers to Views")
+    return loggedResponse
