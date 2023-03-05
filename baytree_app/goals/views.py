@@ -2,6 +2,7 @@ import csv
 import io
 import threading
 
+from baytree_app.FluentLoggingHandler import FluentLoggingHandler
 from django.http import Http404
 from rest_framework import generics
 from rest_framework.response import Response
@@ -158,6 +159,8 @@ class GoalStatisticsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
     queryset = Goal.objects.all()
 
     def get(self, request):
+        FluentLoggingHandler.logRequest(
+            request, "Sending GET request to retreive goal statistics")
         all = self.get_queryset()
         active = all.filter(status="IN PROGRESS")
         complete = all.filter(status="ACHIEVED")
@@ -165,7 +168,10 @@ class GoalStatisticsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
             "active": len(active),
             "complete": len(complete)
         }
-        return Response(result)
+        response = Response(result)
+        FluentLoggingHandler.logResponse(
+            response, request, "Successfully retreived goal statistics")
+        return result
 
 
 # GET /api/goals/export/
@@ -173,6 +179,8 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
     queryset = Goal.objects.all()
 
     def get(self, request):
+        FluentLoggingHandler.logRequest(
+            request, "Sending GET request to export goals to CSV")
         all = self.get_queryset()
         cache = {}
 
@@ -215,4 +223,7 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
                 row = goal_to_csv_row(goal)
                 writer.writerow(row)
 
-            return Response(csvFile.getvalue())
+            response = Response(csvFile.getvalue())
+            FluentLoggingHandler.logResponse(
+                response, request, "Successfully exported goals to CSV")
+            return response
