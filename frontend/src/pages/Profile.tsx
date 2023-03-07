@@ -51,7 +51,7 @@ const Profile = () => {
         </strong>
       </Typography>
       {mentees.map((mentee) => (
-        <Accordion>
+        <Accordion key={mentee.viewsPersonId}>
           <AccordionSummary expandIcon={<MdExpandMore />}>
             <strong>{`${mentee.firstName} ${mentee.lastName}`}</strong>
           </AccordionSummary>
