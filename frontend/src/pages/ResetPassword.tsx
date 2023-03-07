@@ -18,7 +18,7 @@ import { resetPassword, userApi } from '../api/mentorAccount'
 
 const usePasswordResetLink = () => {
   const params = useParams()
-  const id = params.resetPasswordId!
+  const id = params?.resetPasswordId || 'Missing ID'
   const [loading, setLoading] = useState(false)
   const [hardError, setHardError] = useState('')
 
