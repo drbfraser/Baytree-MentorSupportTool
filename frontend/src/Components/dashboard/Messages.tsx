@@ -11,9 +11,9 @@ import { useState } from 'react'
 import { MdMail } from 'react-icons/md'
 
 export default function Messages() {
-  const [anchorEl, setAnchorEl] = useState(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement|null>()
   const open = Boolean(anchorEl)
-  const handleClick = (event: any) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {
@@ -74,7 +74,7 @@ export default function Messages() {
                   color="text.secondary"
                   gutterBottom
                 >
-                  I don't think i can make it for the next ...
+                  I don&apos;t think i can make it for the next ...
                 </Typography>
               </>
             }
