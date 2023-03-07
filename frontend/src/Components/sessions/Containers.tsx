@@ -1,12 +1,13 @@
 import { Grid, Typography, FormControl } from '@mui/material'
+import PropTypes from 'prop-types'
 
-type TimeInputContainerProps = {
-  label: string,
-  children: React.ReactNode
+const inputContainerPropTypes = {
+  label: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
 }
 
 // Reponsive container for time
-export const TimeInputContainer: React.FC<TimeInputContainerProps> = (props) => {
+export const TimeInputContainer: React.FC<InputContainerProps> = (props) => {
   return (
     <Grid container item xs={12} sm={4} alignItems="center">
       <Grid item xs={5} sm={12}>
@@ -21,13 +22,13 @@ export const TimeInputContainer: React.FC<TimeInputContainerProps> = (props) => 
   )
 }
 
-type SelectInputContainerProps = {
+type InputContainerProps = {
   label: string,
   children: React.ReactNode
 }
 
 // Reponsive container for select
-export const SelectInputContainer: React.FC<SelectInputContainerProps> = (props) => {
+export const SelectInputContainer: React.FC<InputContainerProps> = (props) => {
   return (
     <Grid container item xs={12} sm={4} alignItems="center">
       <Grid item xs={5} sm={12}>
@@ -41,3 +42,6 @@ export const SelectInputContainer: React.FC<SelectInputContainerProps> = (props)
     </Grid>
   )
 }
+
+SelectInputContainer.propTypes =  inputContainerPropTypes
+TimeInputContainer.propTypes = inputContainerPropTypes
