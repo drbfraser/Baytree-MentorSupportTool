@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext'
  * error: null if no errors loading mentees, string with reason if an error occurred
  */
 const useMentees = () => {
-  const [mentees, setMentees] = useState<Participant[] | null>(null)
+  const [mentees, setMentees] = useState<Participant[]>([])
   const [error, setError] = useState<OnMenteesFailedToLoadReason | ''>('')
   const { user } = useAuth()
 
@@ -19,14 +19,14 @@ const useMentees = () => {
         return
       }
 
-      const menteesResponse = await getMenteesForMentor()
+      const { data: menteesResponse = [] } = await getMenteesForMentor()
 
-      if (!menteesResponse.data) {
+      if (!menteesResponse) {
         setError('Failed to load mentees data')
         return
       }
 
-      setMentees(menteesResponse.data)
+      setMentees(menteesResponse)
     } catch {
       setError('An error has occurred')
     }
