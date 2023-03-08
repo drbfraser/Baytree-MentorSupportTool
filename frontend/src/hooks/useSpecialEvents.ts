@@ -1,7 +1,7 @@
-import type { EventInput } from "@fullcalendar/react";
-import { useEffect, useMemo, useState } from "react";
-import { fetchSpecialEvents, type SpecialEvent } from "../api/misc";
-import { EVENT_TYPE } from "./useSessionEvents";
+import type { EventInput } from '@fullcalendar/react'
+import { useEffect, useMemo, useState } from 'react'
+import { fetchSpecialEvents, type SpecialEvent } from '../api/misc'
+import { EVENT_TYPE } from './useSessionEvents'
 
 export const toCalendarEvent = (holiday: SpecialEvent) => {
   return {
@@ -12,32 +12,32 @@ export const toCalendarEvent = (holiday: SpecialEvent) => {
     allDay: true,
     rrule: holiday.isAnnual
       ? {
-          freq: "yearly",
+          freq: 'yearly',
           dtstart: holiday.startDate
         }
       : undefined
-  } as EventInput;
-};
+  } as EventInput
+}
 
 const useSpecialEvents = () => {
-  const [loading, setLoading] = useState(true);
-  const [events, setEvents] = useState([] as SpecialEvent[]);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true)
+  const [events, setEvents] = useState([] as SpecialEvent[])
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetchSpecialEvents()
       .then(({ data, error }) => {
-        if (error) setError(error);
-        else setEvents(data);
+        if (error) setError(error)
+        else setEvents(data)
       })
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => setLoading(false))
+  }, [])
 
   return {
     loadingSpecialEvents: loading,
     specialEvents: events,
     specialEventError: error
-  };
-};
+  }
+}
 
-export default useSpecialEvents;
+export default useSpecialEvents

@@ -1,17 +1,17 @@
-import { Toolbar } from "@mui/material";
-import Box from "@mui/material/Box";
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
-import NavigationBar from "../Components/dashboard/NavigationBar";
-import SideMenu from "../Components/dashboard/SideMenu";
+import { Toolbar } from '@mui/material'
+import Box from '@mui/material/Box'
+import { useState } from 'react'
+import { Outlet } from 'react-router-dom'
+import NavigationBar from '../Components/dashboard/NavigationBar'
+import SideMenu from '../Components/dashboard/SideMenu'
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
 const Dashboard = () => {
-  const [isDrawerOpen, setIsMobileOpen] = useState(false);
+  const [isDrawerOpen, setIsMobileOpen] = useState(false)
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: 'flex' }}>
       <NavigationBar
         drawerWidth={drawerWidth}
         openDrawer={() => setIsMobileOpen(true)}
@@ -36,7 +36,7 @@ const Dashboard = () => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

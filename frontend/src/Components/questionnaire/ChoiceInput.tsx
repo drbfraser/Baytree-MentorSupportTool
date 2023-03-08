@@ -4,16 +4,16 @@ import {
   RadioGroup,
   useMediaQuery,
   useTheme
-} from "@mui/material";
-import { useField } from "formik";
-import type { FunctionComponent } from "react";
-import type { Question } from "../../api/misc";
+} from '@mui/material'
+import { useField } from 'formik'
+import type { FunctionComponent } from 'react'
+import type { Question } from '../../api/misc'
 
 export const isChoiceQuestion = (question: Question) => {
   return (
-    question.inputType === "radio"
-  );
-};
+    question.inputType === 'radio'
+  )
+}
 
 // Reponsive choice question
 // Horizontal on large screen
@@ -21,10 +21,10 @@ export const isChoiceQuestion = (question: Question) => {
 export const ChoiceInput: FunctionComponent<{ question: Question }> = ({
   question
 }) => {
-  const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
-  const [field] = useField(question.QuestionID);
-  const Choices = question.valueList.items;
+  const theme = useTheme()
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'))
+  const [field] = useField(question.QuestionID)
+  const Choices = question.valueList.items
 
 
   return (
@@ -32,7 +32,7 @@ export const ChoiceInput: FunctionComponent<{ question: Question }> = ({
       {...field}
       row={isLargeScreen}
       sx={{ mt: 2 }}
-      style={{ justifyContent: isLargeScreen ? "space-between" : "inherit" }}
+      style={{ justifyContent: isLargeScreen ? 'space-between' : 'inherit' }}
     >
       {Choices.map((choice, index) => (
         <FormControlLabel
@@ -40,11 +40,11 @@ export const ChoiceInput: FunctionComponent<{ question: Question }> = ({
           value={`${choice}`}
           control={<Radio />}
           label={choice}
-          labelPlacement={isLargeScreen ? "top" : "end"}
+          labelPlacement={isLargeScreen ? 'top' : 'end'}
         />
       ))}
     </RadioGroup>
-  );
-};
+  )
+}
 
-export default ChoiceInput;
+export default ChoiceInput

@@ -1,11 +1,11 @@
 import {
   Alert, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography, type DialogProps
-} from "@mui/material";
-import { formatInTimeZone } from "date-fns-tz";
-import type { FunctionComponent } from "react";
-import type { SpecialEvent } from "../../api/misc";
-import { TIMEZONE_ID } from "../../Utils/locale";
-import InfoTextField from "../shared/InfoTextField";
+} from '@mui/material'
+import { formatInTimeZone } from 'date-fns-tz'
+import type { FunctionComponent } from 'react'
+import type { SpecialEvent } from '../../api/misc'
+import { TIMEZONE_ID } from '../../Utils/locale'
+import InfoTextField from '../shared/InfoTextField'
 
 type Props = {
   specialEvent?: SpecialEvent | undefined;
@@ -15,12 +15,12 @@ type Props = {
 const SpecialEventDetail: FunctionComponent<Props> = ({ specialEvent, handleClose, ...props }) => {
   const renderHoliday = (event: SpecialEvent) => {
     const formatDate = (date: string) => {
-      return formatInTimeZone(new Date(date), TIMEZONE_ID, "d MMM Y");
-    };
+      return formatInTimeZone(new Date(date), TIMEZONE_ID, 'd MMM Y')
+    }
 
 
     return <>
-      <DialogTitle sx={{ display: "flex", justifyContent: "space-between" }}>
+      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between' }}>
         {event.title}
         {event.isAnnual && <Chip label="ANNUAL" color="secondary" />}
       </DialogTitle>
@@ -36,7 +36,7 @@ const SpecialEventDetail: FunctionComponent<Props> = ({ specialEvent, handleClos
           </Grid>
         </Grid>
         <Typography sx={{ mt: 2, mb: 1 }}><strong>Notes</strong></Typography>
-        <InfoTextField value={event.note || ""} multiline minRows={3} />
+        <InfoTextField value={event.note || ''} multiline minRows={3} />
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" color="secondary" onClick={handleClose}>Close</Button>
@@ -50,4 +50,4 @@ const SpecialEventDetail: FunctionComponent<Props> = ({ specialEvent, handleClos
   </Dialog>
 }
 
-export default SpecialEventDetail;
+export default SpecialEventDetail

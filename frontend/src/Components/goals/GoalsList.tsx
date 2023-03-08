@@ -1,21 +1,21 @@
-import { Alert, AlertTitle, Box, TablePagination, Typography } from "@mui/material";
-import { useState } from "react";
-import { PAGINATION_OPTIONS, useGoalContext } from "../../context/GoalContext";
-import Loading from "../shared/Loading";
-import GoalListItem from "./GoalListItem";
+import { Alert, AlertTitle, Box, TablePagination, Typography } from '@mui/material'
+import { useState } from 'react'
+import { PAGINATION_OPTIONS, useGoalContext } from '../../context/GoalContext'
+import Loading from '../shared/Loading'
+import GoalListItem from './GoalListItem'
 
 const GoalsList = () => {
-  const { loadingGoals, error, goals, query, handleChangeQuery, count } = useGoalContext();
-  const [selected, setSelected] = useState<number | undefined>(undefined);
+  const { loadingGoals, error, goals, query, handleChangeQuery, count } = useGoalContext()
+  const [selected, setSelected] = useState<number | undefined>(undefined)
 
-  if (loadingGoals) return <Loading />;
+  if (loadingGoals) return <Loading />
   if (error) return <Alert sx={{ mt: 3 }} severity="error">
     <AlertTitle>{error}</AlertTitle>
     Please refresh the page or contact the adminstrators.
   </Alert>
 
   if (goals.length === 0)
-    return <Typography variant="h6" sx={{ mt: 3, textAlign: "center" }}>No goals found</Typography>
+    return <Typography variant="h6" sx={{ mt: 3, textAlign: 'center' }}>No goals found</Typography>
 
   return <Box sx={{ mt: 3 }}>
     {goals.map((goal) => {
@@ -45,4 +45,4 @@ const GoalsList = () => {
   </Box>
 }
 
-export default GoalsList;
+export default GoalsList

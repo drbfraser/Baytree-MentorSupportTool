@@ -1,9 +1,9 @@
-import ActiveGoalsSummary from "@components/home/ActiveGoalsSummary";
-import MenteeInfo from "@components/home/MenteeInfo";
-import Scheduler from "@components/home/Scheduler";
-import Statistics from "@components/home/Statistics";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
+import ActiveGoalsSummary from '@components/home/ActiveGoalsSummary'
+import MenteeInfo from '@components/home/MenteeInfo'
+import Scheduler from '@components/home/Scheduler'
+import Statistics from '@components/home/Statistics'
+import Container from '@mui/material/Container'
+import Grid from '@mui/material/Grid'
 
 const Home = () => {
   return (
@@ -19,7 +19,7 @@ const Home = () => {
         </Grid>
       </Grid>
     </Container>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

@@ -1,5 +1,5 @@
-import { Alert, AlertTitle } from "@mui/material";
-import type { FunctionComponent } from "react";
+import { Alert, AlertTitle } from '@mui/material'
+import type { FunctionComponent } from 'react'
 
 const InvalidQuestionnaire: FunctionComponent<{ error: string }> = ({
   error
@@ -11,7 +11,7 @@ const InvalidQuestionnaire: FunctionComponent<{ error: string }> = ({
       issue. <br />
       Reason: {error}
     </Alert>
-  );
-};
+  )
+}
 
-export default InvalidQuestionnaire;
+export default InvalidQuestionnaire

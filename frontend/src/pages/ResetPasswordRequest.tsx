@@ -1,37 +1,37 @@
-import { LoadingButton } from "@mui/lab";
-import { Alert, AlertTitle, TextField, Typography } from "@mui/material";
-import { useState } from "react";
-import { sendPasswordResetEmail } from "../api/mentorAccount";
+import { LoadingButton } from '@mui/lab'
+import { Alert, AlertTitle, TextField, Typography } from '@mui/material'
+import { useState } from 'react'
+import { sendPasswordResetEmail } from '../api/mentorAccount'
 
 const ResetPasswordRequest = () => {
-  const [email, setEmail] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [email, setEmail] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
 
   const requestResetPasswordEmail = () => {
-    setLoading(true);
+    setLoading(true)
     sendPasswordResetEmail(email)
       .then(() => setSuccess(true))
       .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  };
+      .finally(() => setLoading(false))
+  }
 
   if (success) {
     return (
-      <Alert severity="success" sx={{ width: "100%" }}>
+      <Alert severity="success" sx={{ width: '100%' }}>
         <AlertTitle>Password reset email has been sent</AlertTitle>
         Please check your inbox for further instruction
       </Alert>
-    );
+    )
   }
 
   return (
     <form
-      style={{ width: "100%" }}
+      style={{ width: '100%' }}
       onSubmit={(e) => {
-        e.preventDefault();
-        requestResetPasswordEmail();
+        e.preventDefault()
+        requestResetPasswordEmail()
       }}
     >
       <Typography variant="h6">Enter your email</Typography>
@@ -65,7 +65,7 @@ const ResetPasswordRequest = () => {
         Send reset password email
       </LoadingButton>
     </form>
-  );
-};
+  )
+}
 
-export default ResetPasswordRequest;
+export default ResetPasswordRequest

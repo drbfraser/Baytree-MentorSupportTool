@@ -1,8 +1,8 @@
-import InfoTextField from "@components/shared/InfoTextField";
-import Loading from "@components/shared/Loading";
-import TitledContainer from "@components/shared/TitledContainer";
-import useMentees from "@hooks/useMentees";
-import useMentor from "@hooks/useMentor";
+import InfoTextField from '@components/shared/InfoTextField'
+import Loading from '@components/shared/Loading'
+import TitledContainer from '@components/shared/TitledContainer'
+import useMentees from '@hooks/useMentees'
+import useMentor from '@hooks/useMentor'
 import {
   Accordion,
   AccordionDetails,
@@ -11,20 +11,20 @@ import {
   AlertTitle,
   Stack,
   Typography
-} from "@mui/material";
-import { formatDistanceToNowStrict } from "date-fns";
-import { MdExpandMore } from "react-icons/md";
+} from '@mui/material'
+import { formatDistanceToNowStrict } from 'date-fns'
+import { MdExpandMore } from 'react-icons/md'
 
 const Profile = () => {
-  const { loadingMentor, mentor, error: mentorError } = useMentor();
-  let { mentees, loadingMentees } = useMentees();
-  const loading = loadingMentor || loadingMentees;
+  const { loadingMentor, mentor, error: mentorError } = useMentor()
+  const { mentees, loadingMentees } = useMentees()
+  const loading = loadingMentor || loadingMentees
 
-  if (loading) return <Loading />;
-  let error = mentorError;
+  if (loading) return <Loading />
+  let error = mentorError
 
   if (error || !mentees) {
-    if (!error && !mentees) error = "Cannot retrieve active mentees";
+    if (!error && !mentees) error = 'Cannot retrieve active mentees'
     return (
       <TitledContainer title="Profile">
         <Alert severity="error" sx={{ my: 2 }}>
@@ -32,7 +32,7 @@ const Profile = () => {
           Please try again or contact the adminstrator.
         </Alert>
       </TitledContainer>
-    );
+    )
   }
 
   return (
@@ -47,7 +47,7 @@ const Profile = () => {
       <InfoTextField value={mentor.email} />
       <Typography sx={{ mt: 2, mb: 1 }} variant="h6">
         <strong>
-          {mentees.length > 0 ? "Mentees" : "No mentees assigned"}
+          {mentees.length > 0 ? 'Mentees' : 'No mentees assigned'}
         </strong>
       </Typography>
       {mentees.map((mentee) => (
@@ -64,10 +64,10 @@ const Profile = () => {
               <div>
                 <Typography variant="subtitle1">Age</Typography>
                 <Typography variant="subtitle2">
-                  {mentee.dateOfBirth === "0000-00-00"
-                    ? "N/A"
+                  {mentee.dateOfBirth === '0000-00-00'
+                    ? 'N/A'
                     : formatDistanceToNowStrict(new Date(mentee.dateOfBirth)) +
-                      " old"}
+                      ' old'}
                 </Typography>
               </div>
             </Stack>
@@ -75,7 +75,7 @@ const Profile = () => {
         </Accordion>
       ))}
     </TitledContainer>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

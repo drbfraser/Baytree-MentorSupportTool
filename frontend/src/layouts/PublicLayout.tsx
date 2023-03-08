@@ -1,7 +1,7 @@
-import { Box } from "@mui/material";
-import { Outlet } from "react-router-dom";
-import Logo from "../Assets/baytree-logo.png";
-import Photo from "../Assets/baytree-photo.jpg";
+import { Box } from '@mui/material'
+import { Outlet } from 'react-router-dom'
+import Logo from '../Assets/baytree-logo.png'
+import Photo from '../Assets/baytree-photo.jpg'
 
 const PublicLayout = () => {
   return (
@@ -16,8 +16,8 @@ const PublicLayout = () => {
         flexGrow={1}
         sx={{
           backgroundImage: `url(${Photo})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center"
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
         }}
       />
       <Box
@@ -28,9 +28,9 @@ const PublicLayout = () => {
         padding="30px"
         sx={{
           width: {
-            xs: "100%",
-            sm: "100%",
-            md: "450px"
+            xs: '100%',
+            sm: '100%',
+            md: '450px'
           }
         }}
       >
@@ -39,12 +39,12 @@ const PublicLayout = () => {
           alt="Logo"
           width="null"
           height="200"
-          style={{ marginBottom: "30px" }}
+          style={{ marginBottom: '30px' }}
         />
         <Outlet />
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default PublicLayout;
+export default PublicLayout
