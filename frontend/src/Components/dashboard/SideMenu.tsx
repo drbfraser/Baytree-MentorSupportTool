@@ -5,9 +5,9 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText, Toolbar, useMediaQuery
-} from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { type FunctionComponent, useEffect, useState } from "react";
+} from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import { type FunctionComponent, useEffect, useState } from 'react'
 import {
   MdAutoGraph,
   MdBook,
@@ -17,27 +17,27 @@ import {
   MdNotifications,
   MdPermDeviceInformation,
   MdQuestionAnswer
-} from "react-icons/md";
-import { Link, useLocation } from "react-router-dom";
-import { fetchResourcesURL } from "../../api/misc";
-import BaytreeLogoHorizontal from "../../Assets/baytree-logo-horizontal.png";
+} from 'react-icons/md'
+import { Link, useLocation } from 'react-router-dom'
+import { fetchResourcesURL } from '../../api/misc'
+import BaytreeLogoHorizontal from '../../Assets/baytree-logo-horizontal.png'
 
 const navigationLinkItems = [
-  { title: "Home", icon: MdHome, path: "/dashboard/home" },
-  { title: "Create Session", icon: MdCreate, path: "/dashboard/sessions" },
+  { title: 'Home', icon: MdHome, path: '/dashboard/home' },
+  { title: 'Create Session', icon: MdCreate, path: '/dashboard/sessions' },
   {
-    title: "Questionnaires",
+    title: 'Questionnaires',
     icon: MdQuestionAnswer,
-    path: "/dashboard/questionnaires"
+    path: '/dashboard/questionnaires'
   },
-  { title: "Goals", icon: MdAutoGraph, path: "/dashboard/goals" },
-  { title: "Records", icon: MdBook, path: "/dashboard/records" },
+  { title: 'Goals', icon: MdAutoGraph, path: '/dashboard/goals' },
+  { title: 'Records', icon: MdBook, path: '/dashboard/records' },
   {
-    title: "Notifications",
+    title: 'Notifications',
     icon: MdNotifications,
-    path: "/dashboard/notifications"
+    path: '/dashboard/notifications'
   }
-];
+]
 
 type SideMenuProps = {
   drawerWidth: number;
@@ -50,15 +50,15 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
   mobileDrawerOpened,
   closeDrawer
 }) => {
-  const [resourcesURL, setResourcesURL] = useState("");
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const location = useLocation();
+  const [resourcesURL, setResourcesURL] = useState('')
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const location = useLocation()
 
   useEffect(() => {
     // Fetch the resources URL
-    fetchResourcesURL().then(setResourcesURL);
-  }, []);
+    fetchResourcesURL().then(setResourcesURL)
+  }, [])
 
   return (
     <Box
@@ -69,14 +69,14 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
       }}
     >
       <Drawer
-        variant={isMobile ? "temporary" : "permanent"}
+        variant={isMobile ? 'temporary' : 'permanent'}
         sx={{
           width: drawerWidth,
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           display: {
-            xs: !isMobile ? "none" : "block",
-            sm: !isMobile ? "none" : "block",
-            md: isMobile ? "none" : "block"
+            xs: !isMobile ? 'none' : 'block',
+            sm: !isMobile ? 'none' : 'block',
+            md: isMobile ? 'none' : 'block'
           }
         }}
         ModalProps={{
@@ -92,22 +92,22 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
         {/* Navigation inside the website */}
         <List>
           {navigationLinkItems.map(({ title, path, icon }) => {
-            const active = location.pathname === path;
+            const active = location.pathname === path
 
             return (
               <Link
                 key={title}
                 to={path}
-                style={{ textDecoration: "none", color: "inherit" }}
+                style={{ textDecoration: 'none', color: 'inherit' }}
               >
-                <ListItem button onClick={closeDrawer} sx={{ backgroundColor: active ? "rgba(90, 184, 1, 0.15)" : "transparent" }}>
+                <ListItem button onClick={closeDrawer} sx={{ backgroundColor: active ? 'rgba(90, 184, 1, 0.15)' : 'transparent' }}>
                   <ListItemIcon>
-                    <Icon color={active ? "secondary" : "primary"} component={icon} />
+                    <Icon color={active ? 'secondary' : 'primary'} component={icon} />
                   </ListItemIcon>
                   <ListItemText>{title}</ListItemText>
                 </ListItem>
               </Link>
-            );
+            )
           })}
         </List>
         <Divider />
@@ -131,7 +131,7 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
         </ListItem>
       </Drawer>
     </Box>
-  );
-};
+  )
+}
 
-export default SideMenu;
+export default SideMenu

@@ -1,10 +1,10 @@
-import { CardActionArea, CardContent } from "@mui/material";
-import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import type { FunctionComponent } from "react";
-import type { Goal } from "../../api/goals";
-import { useGoalContext } from "../../context/GoalContext";
+import { CardActionArea, CardContent } from '@mui/material'
+import Card from '@mui/material/Card'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import type { FunctionComponent } from 'react'
+import type { Goal } from '../../api/goals'
+import { useGoalContext } from '../../context/GoalContext'
 
 type GoalStatisticsCellType = {
   active?: boolean;
@@ -16,9 +16,9 @@ type GoalStatisticsCellType = {
 }
 
 const GoalStatisticsCell: FunctionComponent<GoalStatisticsCellType> = (props) => {
-  const { loadingStatistics } = useGoalContext();
-  const activeColor = props.activeColor || "rgba(90, 176, 49, 0.2)";
-  const bgColor = props.active ? activeColor : undefined;
+  const { loadingStatistics } = useGoalContext()
+  const activeColor = props.activeColor || 'rgba(90, 176, 49, 0.2)'
+  const bgColor = props.active ? activeColor : undefined
 
   return <Grid item xs={12} sm={4}>
     <Card sx={{ boxShadow: 2, backgroundColor: bgColor }}>
@@ -32,21 +32,21 @@ const GoalStatisticsCell: FunctionComponent<GoalStatisticsCellType> = (props) =>
           >
             {props.title.toUpperCase()}
           </Typography>
-          <Typography component="p" variant="h2" color={props.color || "primary"}>
-            <strong data-testid="goal-count">{loadingStatistics ? "-" : props.count}</strong>
+          <Typography component="p" variant="h2" color={props.color || 'primary'}>
+            <strong data-testid="goal-count">{loadingStatistics ? '-' : props.count}</strong>
           </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
   </Grid>
-};
+}
 
 const GoalsStatistics = () => {
-  const { statistics: { active, complete }, query, handleChangeQuery } = useGoalContext();
-  const isActive = query.status === 'IN PROGRESS';
-  const isComplete = query.status === 'ACHIEVED';
+  const { statistics: { active, complete }, query, handleChangeQuery } = useGoalContext()
+  const isActive = query.status === 'IN PROGRESS'
+  const isComplete = query.status === 'ACHIEVED'
 
-  const setStatus = (status?: Goal["status"]) => () => handleChangeQuery(prev => ({
+  const setStatus = (status?: Goal['status']) => () => handleChangeQuery(prev => ({
     ...prev,
     status,
     offset: 0
@@ -74,7 +74,7 @@ const GoalsStatistics = () => {
         active={isComplete}
         action={setStatus('ACHIEVED')} />
     </Grid>
-  );
+  )
 }
 
-export default GoalsStatistics;
+export default GoalsStatistics

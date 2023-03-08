@@ -1,6 +1,6 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { Dashboard, PrivateRoute, PublicLayout, PublicRoute } from "./layouts";
-import { CreateAccount, Goals, Home, Login, Notifications, Profile, Questionnaire, Records, ResetPassword, ResetPasswordRequest, Sessions } from "./pages";
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { Dashboard, PrivateRoute, PublicLayout, PublicRoute } from './layouts'
+import { CreateAccount, Goals, Home, Login, Notifications, Profile, Questionnaire, Records, ResetPassword, ResetPasswordRequest, Sessions } from './pages'
 
 function App() {
   return (
@@ -33,7 +33,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App

@@ -1,4 +1,4 @@
-import { Container, Divider, Grow, Typography } from "@mui/material";
+import { Container, Divider, Grow, Typography } from '@mui/material'
 
 type TitledContainerProps = {
   title: string,
@@ -22,7 +22,7 @@ const TitledContainer: React.FC<TitledContainerProps> = (props: TitledContainerP
         {props.children}
       </Container>
     </Grow>
-  );
-};
+  )
+}
 
-export default TitledContainer;
+export default TitledContainer
