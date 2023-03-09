@@ -1,15 +1,29 @@
 from baytree_app.FluentLoggingHandler import FluentLoggingHandler
-
-import unittest
 import os
+import unittest
+import logging
 
-serverApplicationLogPath = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '..', 'server_logs', 'server_application.log'))
-serverRequestsLogPath = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '..', 'server_logs', 'server_requests.log'))
+# initial setup for tests
+# we need to setup the log level and file handler because they are not setup automatically for each testcase
+# without this setup, our logging system does not log anything to the log files
+# this behaviour seems to be unique to testcases only
+serverApplicationLogPath = os.path.abspath(
+    "/code/server_logs/server_application.log")
+serverRequestsLogPath = os.path.abspath(
+    "/code/server_logs/server_requests.log")
+FluentLoggingHandler.messageLogger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler(serverApplicationLogPath)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
 
 
 class TestFluentLoggingHandler(unittest.TestCase):
+    def setUp(self):
+        FluentLoggingHandler.messageLogger.addHandler(file_handler)
+
+    def tearDown(self):
+        FluentLoggingHandler.messageLogger.removeHandler(file_handler)
+
     def test_info(self):
         FluentLoggingHandler.info("Testing info level logs")
         with open(serverApplicationLogPath, 'r') as f:
@@ -49,4 +63,4 @@ suite.addTest(TestFluentLoggingHandler('test_critical'))
 suite.addTest(TestFluentLoggingHandler('test_error'))
 
 if __name__ == '__main__':
-    unittest.TextTestRunner.run(suite)
+    unittest.TextTestRunner().run(suite)
