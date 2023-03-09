@@ -1,5 +1,5 @@
 import type { EventInput } from '@fullcalendar/react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { fetchSpecialEvents, type SpecialEvent } from '../api/misc'
 import { EVENT_TYPE } from './useSessionEvents'
 

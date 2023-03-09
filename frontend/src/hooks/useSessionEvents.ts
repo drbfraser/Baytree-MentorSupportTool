@@ -1,5 +1,4 @@
 import type { EventInput, EventSourceFunc } from '@fullcalendar/react'
-import { format } from 'date-fns'
 import { formatInTimeZone } from 'date-fns-tz'
 import { useCallback, useState } from 'react'
 import { fetchSessions, type SessionRecord } from '../api/records'

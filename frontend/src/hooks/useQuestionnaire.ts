@@ -3,7 +3,6 @@ import type { AnswerSet, Question } from '../api/misc'
 import {fetchQuestions, submitAnswerSetForQuestionnaire} from '../api/misc'
 import useMentees from './useMentees'
 import useMentor from './useMentor'
-import {unmountComponentAtNode} from 'react-dom'
 
 export const MENTOR_NAME = /mentor('s)? name/gi
 export const MENTEE_NAME = /mentee('s)? name/gi
@@ -23,13 +22,11 @@ const useQuestionnaire = () => {
   const { mentor, loadingMentor, error: mentorError } = useMentor()
   const { mentees, error: menteeError, loadingMentees } = useMentees()
   const [questions, setQuestions] = useState([] as Question[])
-
-
   const [questionsError, setQuestionnaireError] = useState<string | undefined>(
       undefined
   )
 
-  const [LogMessage, setLogMessage] = useState([])
+  const [LogMessage] = useState([])
   // Fetch the question
   useEffect(() => {
     fetchQuestions()
@@ -37,7 +34,7 @@ const useQuestionnaire = () => {
           setQuestionnaireId(data.questionnaireId)
           setQuestions(data.questions)
         })
-        .catch((_error) =>
+        .catch(() =>
             setQuestionnaireError('Cannot fetch the questionnaire')
         )
         .finally(() => setLoadingQuestionnaire(false))
@@ -84,9 +81,6 @@ const useQuestionnaire = () => {
   // - Must have only one quesrion for mentee's name
   // - All questions must have input of type "text" or "number"
   const isValidQuestionnaire = useMemo(() => {
-    const mentorQuestion = questions.filter(isMentorQuestion)
-    const menteeQuestion = questions.filter(isMenteeQuestion)
-
     return (
         questions.length > 0
     )
