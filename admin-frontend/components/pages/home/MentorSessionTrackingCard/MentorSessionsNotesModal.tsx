@@ -1,7 +1,7 @@
-import { Card, Skeleton, Stack, Typography } from "@mui/material";
-import { FunctionComponent } from "react";
-import { Session } from "../../../../api/backend/views/sessions";
-import useSessionDetails from "../../../../hooks/useSessionDetails";
+import { Card, Skeleton, Stack, Typography } from '@mui/material'
+import { FunctionComponent } from 'react'
+import { Session } from '../../../../api/backend/views/sessions'
+import useSessionDetails from '../../../../hooks/useSessionDetails'
 
 export interface MentorSessionsNotesModalProps {
   session: Session;
@@ -12,7 +12,7 @@ const MentorSessionsNotesModal: React.FunctionComponent<
 > = (props) => {
   const { sessionDetails } = useSessionDetails(
     parseInt(props.session.viewsSessionId)
-  );
+  )
 
   return sessionDetails === undefined ? (
     <Loading />
@@ -26,7 +26,7 @@ const MentorSessionsNotesModal: React.FunctionComponent<
       <Card
         title="Session Details"
         variant="outlined"
-        sx={{ marginTop: "1rem" }}
+        sx={{ marginTop: '1rem' }}
       >
         {/* Date */}
         <Stack flexDirection="row" marginTop="1rem">
@@ -71,7 +71,7 @@ const MentorSessionsNotesModal: React.FunctionComponent<
         {/* Session Group */}
         <Stack flexDirection="row" marginTop="1rem">
           <Typography variant="h6" textAlign="right" minWidth="12rem">
-            Session Group:{" "}
+            Session Group:{' '}
           </Typography>
           <Stack justifyContent="center" marginLeft="1rem" alignItems="center">
             <Typography variant="body1">
@@ -99,7 +99,7 @@ const MentorSessionsNotesModal: React.FunctionComponent<
             <Typography variant="body1">
               {sessionDetails.mentor
                 ? `${sessionDetails.mentor.firstname} ${sessionDetails.mentor.surname}`
-                : "Not Available"}
+                : 'Not Available'}
             </Typography>
           </Stack>
         </Stack>
@@ -113,7 +113,7 @@ const MentorSessionsNotesModal: React.FunctionComponent<
             <Typography variant="body1">
               {sessionDetails.mentee
                 ? sessionDetails.mentee.name
-                : "Not Available"}
+                : 'Not Available'}
             </Typography>
           </Stack>
         </Stack>
@@ -129,11 +129,11 @@ const MentorSessionsNotesModal: React.FunctionComponent<
         Notes:
       </Typography>
       <Typography variant="body1" marginLeft="1rem">
-        {sessionDetails.note ? sessionDetails.note : "None."}
+        {sessionDetails.note ? sessionDetails.note : 'None.'}
       </Typography>
     </>
-  );
-};
+  )
+}
 
 const Loading: FunctionComponent = () => {
   return (
@@ -148,7 +148,7 @@ const Loading: FunctionComponent = () => {
       <Skeleton />
       <Skeleton />
     </Stack>
-  );
-};
+  )
+}
 
-export default MentorSessionsNotesModal;
+export default MentorSessionsNotesModal

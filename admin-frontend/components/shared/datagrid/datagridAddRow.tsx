@@ -1,7 +1,7 @@
-import { TableRow, TableCell, Button, Tooltip } from "@mui/material";
-import { FC } from "react";
-import { MdAdd } from "react-icons/md";
-import styled from "styled-components";
+import { TableRow, TableCell, Button, Tooltip } from '@mui/material'
+import { FC } from 'react'
+import { MdAdd } from 'react-icons/md'
+import styled from 'styled-components'
 
 interface DataGridAddRowProps {
   numColumns: number;
@@ -29,12 +29,12 @@ const DataGridAddRow: FC<DataGridAddRowProps> = (props) => {
         </AddButtonContainer>
       </TableCell>
     </TableRow>
-  );
-};
+  )
+}
 
 const AddButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-`;
+`
 
-export default DataGridAddRow;
+export default DataGridAddRow

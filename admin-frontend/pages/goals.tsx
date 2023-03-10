@@ -1,22 +1,22 @@
-import { Alert, AlertTitle, Grid, TablePagination, Typography } from "@mui/material";
-import Box from "@mui/material/Box";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
-import { NextPage } from "next";
-import { SyntheticEvent, useState } from "react";
-import { Goal } from "../api/backend/goals";
-import GoalExportButton from "../components/pages/goals/GoalExportButton";
-import GoalListItem from "../components/pages/goals/GoalListItem";
-import { GoalCategoryFilter, GoalDateOrdering, GoalSearch } from "../components/pages/goals/GoalQuerying";
-import OverlaySpinner from "../components/shared/overlaySpinner";
-import { DEFAULT_QUERY, PAGINATION_OPTIONS, useGoals } from "../hooks/useGoals";
+import { Alert, AlertTitle, Grid, TablePagination, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
+import { NextPage } from 'next'
+import { SyntheticEvent, useState } from 'react'
+import { Goal } from '../api/backend/goals'
+import GoalExportButton from '../components/pages/goals/GoalExportButton'
+import GoalListItem from '../components/pages/goals/GoalListItem'
+import { GoalCategoryFilter, GoalDateOrdering, GoalSearch } from '../components/pages/goals/GoalQuerying'
+import OverlaySpinner from '../components/shared/overlaySpinner'
+import { DEFAULT_QUERY, PAGINATION_OPTIONS, useGoals } from '../hooks/useGoals'
 
 const Goals: NextPage = () => {
-  const [query, setQuery] = useState(DEFAULT_QUERY);
-  const { goals, loading, error, count } = useGoals(query);
-  const [expanded, setExpanded] = useState<number | undefined>();
+  const [query, setQuery] = useState(DEFAULT_QUERY)
+  const { goals, loading, error, count } = useGoals(query)
+  const [expanded, setExpanded] = useState<number | undefined>()
 
-  const handleChangeTab = (_event: SyntheticEvent, newValue: Goal["status"] | "") => {
+  const handleChangeTab = (_event: SyntheticEvent, newValue: Goal['status'] | '') => {
     setQuery(prev => ({
       ...prev,
       offset: 0,
@@ -26,9 +26,9 @@ const Goals: NextPage = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3, alignItems: "center" }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, alignItems: 'center' }}>
         <Tabs
-          value={query.status || ""}
+          value={query.status || ''}
           onChange={handleChangeTab}
           centered
         >
@@ -61,9 +61,9 @@ const Goals: NextPage = () => {
           <AlertTitle>{error}</AlertTitle>
           Please refresh the page or contact IT for assistance.
         </Alert>}
-        {!loading && !error && goals.length === 0 && <Typography sx={{ textAlign: "center" }} variant="h6">No goals found</Typography>}
+        {!loading && !error && goals.length === 0 && <Typography sx={{ textAlign: 'center' }} variant="h6">No goals found</Typography>}
         {!loading && !error && goals.map(goal => {
-          const handleExpansion = () => (goal.id === expanded) ? setExpanded(undefined) : setExpanded(goal.id);
+          const handleExpansion = () => (goal.id === expanded) ? setExpanded(undefined) : setExpanded(goal.id)
           return <GoalListItem
             key={goal.id}
             goal={goal}
@@ -90,7 +90,7 @@ const Goals: NextPage = () => {
           }))} />
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default Goals;
+export default Goals
