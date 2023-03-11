@@ -10,16 +10,16 @@ import {
   Chip,
   Divider, Icon, Stack,
   Typography
-} from "@mui/material";
-import { format, formatDistanceToNow } from "date-fns";
-import { type FunctionComponent, useEffect } from "react";
-import { MdCheck, MdEdit, MdExpandMore } from "react-icons/md";
-import { useQuery } from 'react-query';
-import { toast } from 'react-toastify';
-import { fetchGoalById, type Goal } from "../../api/goals";
-import { useGoalContext } from '../../context/GoalContext';
-import Loading from '../shared/Loading';
-import GoalStatus from "./GoalStatus";
+} from '@mui/material'
+import { format, formatDistanceToNow } from 'date-fns'
+import { type FunctionComponent, useEffect } from 'react'
+import { MdCheck, MdEdit, MdExpandMore } from 'react-icons/md'
+import { useQuery } from 'react-query'
+import { toast } from 'react-toastify'
+import { fetchGoalById, type Goal } from '../../api/goals'
+import { useGoalContext } from '../../context/GoalContext'
+import Loading from '../shared/Loading'
+import GoalStatus from './GoalStatus'
 
 type Props = {
   goal: Goal;
@@ -34,34 +34,34 @@ type DetailProps = {
 }
 
 const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified }) => {
-  const { handleCompleteGoal, openEdit } = useGoalContext();
-  const { data: goal, isLoading, error } = useQuery(`goal-${goalId}`, async () => fetchGoalById(goalId));
-  const formatDate = (date: Date) => format(date, "eeee, MMMM do yyyy");
+  const { handleCompleteGoal, openEdit } = useGoalContext()
+  const { data: goal, isLoading, error } = useQuery(`goal-${goalId}`, async () => fetchGoalById(goalId))
+  const formatDate = (date: Date) => format(date, 'eeee, MMMM do yyyy')
 
-  useEffect(() => () => toast.dismiss(), []);
+  useEffect(() => () => toast.dismiss(), [])
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading />
   if (error || !goal) return <Alert severity="error">
     <AlertTitle>Cannot fetch the goal detail</AlertTitle>
     Please try again later
   </Alert>
 
-  const menteeName = goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : "N/A";
+  const menteeName = goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : 'N/A'
 
   const handleCompleteButton = async () => {
-    const success = await handleCompleteGoal(goal);
-    if (!success) toast.error("Cannot update the goal");
-    else toast.success("Goal marked as completed");
+    const success = await handleCompleteGoal(goal)
+    if (!success) toast.error('Cannot update the goal')
+    else toast.success('Goal marked as completed')
   }
 
 
   const renderCategories = () => {
-    let categories = goal.categories;
-    const length = categories.length;
+    let categories = goal.categories
+    const length = categories.length
     if (length === 0)
       return <Typography variant="subtitle1">No categories assigned</Typography>
     if (length > 2 && minified)
-      categories = categories.slice(0, 2);
+      categories = categories.slice(0, 2)
     return <Box>
       {categories.map(category => (
         <Chip key={category.id} label={category.name} sx={{ mt: 1, mr: 1 }} />
@@ -100,30 +100,30 @@ const GoalItemDetail: FunctionComponent<DetailProps> = ({ goalId, minified }) =>
       </Stack>
     </AccordionDetails>
     <Divider />
-    {!minified && goal.status === "IN PROGRESS" && <AccordionActions>
+    {!minified && goal.status === 'IN PROGRESS' && <AccordionActions>
       <Button className="edit-button" variant="outlined" disabled={isLoading} startIcon={<Icon component={MdEdit} />} onClick={() => openEdit(goal)}>Edit</Button>
       <Button className="complete-button" variant="contained" disabled={isLoading} startIcon={<Icon component={MdCheck} />} onClick={handleCompleteButton}>Complete</Button>
     </AccordionActions>}
   </>
-};
+}
 
 const GoalListItem: FunctionComponent<Props> = ({ goal, expanded, handleClick, minified }) => {
-  const { query: { orderingDate } } = useGoalContext();
+  const { query: { orderingDate } } = useGoalContext()
 
   return <Accordion expanded={expanded} onClick={handleClick}>
     <AccordionSummary expandIcon={<Icon component={MdExpandMore} />}>
       <Box sx={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        paddingRight: "8px"
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        paddingRight: '8px'
       }}>
-        <Typography variant={minified ? "subtitle2" : "h6"}>{goal.title}</Typography>
-        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+        <Typography variant={minified ? 'subtitle2' : 'h6'}>{goal.title}</Typography>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           {!minified && <Typography variant="subtitle2" sx={{
             display: {
-              xs: "none",
-              sm: "block"
+              xs: 'none',
+              sm: 'block'
             }
           }}>{formatDistanceToNow(new Date(goal[orderingDate]), { addSuffix: true })}</Typography>}
           {!minified && <GoalStatus status={goal.status} />}
@@ -132,6 +132,6 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, expanded, handleClick, m
     </AccordionSummary>
     {expanded && <GoalItemDetail goalId={goal.id} minified={minified} />}
   </Accordion>
-};
+}
 
-export default GoalListItem;
+export default GoalListItem

@@ -4,17 +4,17 @@ import {
   useTheme,
   Checkbox,
   FormGroup,
-} from "@mui/material";
-import { useField } from "formik";
-import type { FunctionComponent} from "react";
-import type { Question } from "../../api/misc";
-import { useState } from "react";
+} from '@mui/material'
+import { useField } from 'formik'
+import type { FunctionComponent} from 'react'
+import type { Question } from '../../api/misc'
+import { useState } from 'react'
 
 export const isCheckBoxQuestion = (question: Question) => {
   return (
-    question.inputType === "checkselect"
-  );
-};
+    question.inputType === 'checkselect'
+  )
+}
 
 
 // Reponsive CheckBox question
@@ -24,10 +24,10 @@ export const CheckBoxInput: FunctionComponent<{ question: Question }> = ({
   question
 }) => {
 
-  const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
-  const [field] = useField(question.QuestionID);
-  const ValueList = question.valueList.items;
+  const theme = useTheme()
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'))
+  const [field] = useField(question.QuestionID)
+  const ValueList = question.valueList.items
 
   let choices:string[] = []
 
@@ -38,13 +38,13 @@ export const CheckBoxInput: FunctionComponent<{ question: Question }> = ({
     else{
       choices = choices.filter( c => c !== event.target.value)
     }
-  };
+  }
   return (
     <FormGroup
       {...field}
       row={isLargeScreen}
       sx={{ mt: 2 }}
-      style={{ justifyContent: isLargeScreen ? "space-between" : "inherit" }}
+      style={{ justifyContent: isLargeScreen ? 'space-between' : 'inherit' }}
     >
       {ValueList.map((value, index) => (
         <FormControlLabel
@@ -52,11 +52,11 @@ export const CheckBoxInput: FunctionComponent<{ question: Question }> = ({
           value={`${choices.toString()}`}
           control={<Checkbox onChange={handleChoicesChange} name={question.QuestionID} value={value}/>}
           label={value}
-          labelPlacement={isLargeScreen ? "top" : "end"}
+          labelPlacement={isLargeScreen ? 'top' : 'end'}
         />
       ))}
     </FormGroup>
-  );
-};
-export default CheckBoxInput;
+  )
+}
+export default CheckBoxInput
 

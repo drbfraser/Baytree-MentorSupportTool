@@ -1,5 +1,5 @@
-import axios from "axios";
-import { API_BASE_URL } from "./url";
+import axios from 'axios'
+import { API_BASE_URL } from './url'
 
 export type User = {
   firstname: string;
@@ -12,40 +12,40 @@ export type User = {
 };
 
 export const dummyUser: User = {
-  firstname: "Super User",
-  surname: "",
+  firstname: 'Super User',
+  surname: '',
   viewsPersonId: -1,
-  email: ""
-};
+  email: ''
+}
 
 export const viewsApi = axios.create({
   baseURL: `${API_BASE_URL}/views-api`,
   withCredentials: true,
   headers: {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json'
   }
-});
+})
 
 export const getMentorProfile = async () => {
   try {
     const apiRes = await viewsApi.get<{ total: number; data: User[] }>(
-      "/volunteers/volunteer/"
-    );
+      '/volunteers/volunteer/'
+    )
     if (apiRes.status === 200 && apiRes.data.total > 0)
-      return { data: apiRes.data.data[0], error: "" };
-    else throw Error;
+      return { data: apiRes.data.data[0], error: '' }
+    else throw Error
   } catch (err) {
-    return { data: undefined, error: "Cannot retrieve mentor profile" };
+    return { data: undefined, error: 'Cannot retrieve mentor profile' }
   }
-};
+}
 
 export type Association = {
   associationId: number;
-  masterType: "Person" | "Staff";
+  masterType: 'Person' | 'Staff';
   masterId: number;
-  slaveType: "Person" | "Staff";
+  slaveType: 'Person' | 'Staff';
   slaveId: number;
-  association: "Mentee" | "Mentor" | "Mother" | "Father";
+  association: 'Mentee' | 'Mentor' | 'Mother' | 'Father';
   description: string | null;
   startDate: string; // ex. 2021-07-07
   endDate: string; // ex. 0000-00-00
@@ -56,18 +56,18 @@ export const getAssociations = async (volunteerId: number) => {
     const apiRes = await viewsApi.get<{
       count: number;
       results: Association[];
-    }>("/associations", {
+    }>('/associations', {
       params: { volunteerId: volunteerId }
-    });
-    if (apiRes.status === 200) return { data: apiRes.data.results, error: "" };
-    else throw Error;
+    })
+    if (apiRes.status === 200) return { data: apiRes.data.results, error: '' }
+    else throw Error
   } catch (err) {
     return {
       data: undefined,
-      error: "Cannot retrieve associations for volunteer."
-    };
+      error: 'Cannot retrieve associations for volunteer.'
+    }
   }
-};
+}
 
 export type Venue = {
   id: number;
@@ -77,14 +77,14 @@ export type Venue = {
 export const getViewsVenues = async () => {
   try {
     const apiRes = await viewsApi.get<{ count: number; results: Venue[] }>(
-      "/venues"
-    );
-    if (apiRes.status === 200) return { data: apiRes.data.results, error: "" };
-    else throw Error;
+      '/venues'
+    )
+    if (apiRes.status === 200) return { data: apiRes.data.results, error: '' }
+    else throw Error
   } catch (err) {
-    return { data: undefined, error: "Cannot retrieve venues" };
+    return { data: undefined, error: 'Cannot retrieve venues' }
   }
-};
+}
 
 export type Participant = {
   firstName: string;
@@ -97,10 +97,10 @@ export type Participant = {
 };
 
 export const getParticipants = async (params?: { ids: number[] }) => {
-  let paramsString = "";
+  let paramsString = ''
   if (params) {
     if (params.ids) {
-      params.ids.forEach((id) => (paramsString += `&id=${id}`));
+      params.ids.forEach((id) => (paramsString += `&id=${id}`))
     }
   }
 
@@ -108,27 +108,27 @@ export const getParticipants = async (params?: { ids: number[] }) => {
     const apiRes = await viewsApi.get<{
       count: number;
       results: Participant[];
-    }>("/participants?" + paramsString);
-    if (apiRes.status === 200) return { data: apiRes.data.results, error: "" };
-    else throw Error;
+    }>('/participants?' + paramsString)
+    if (apiRes.status === 200) return { data: apiRes.data.results, error: '' }
+    else throw Error
   } catch (err) {
-    return { data: undefined, error: "Cannot retrieve participants" };
+    return { data: undefined, error: 'Cannot retrieve participants' }
   }
-};
+}
 
 export const getMenteesForMentor = async () => {
   try {
-    const apiRes = await viewsApi.get<Participant[]>("/mentor-mentees");
+    const apiRes = await viewsApi.get<Participant[]>('/mentor-mentees')
     if (apiRes.status === 200)
       return {
         data: apiRes.data,
-        error: ""
-      };
-    else throw Error;
+        error: ''
+      }
+    else throw Error
   } catch (err) {
     return {
       data: undefined,
-      error: "Cannot retrieve mentees for current logged in mentor."
-    };
+      error: 'Cannot retrieve mentees for current logged in mentor.'
+    }
   }
-};
+}

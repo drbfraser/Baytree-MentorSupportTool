@@ -11,16 +11,16 @@ import {
   TablePagination,
   TableRow,
   Typography
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
-import { type Id, toast } from "react-toastify";
-import useRecords from "../hooks/useRecords";
-import Loading from "@components/shared/Loading";
-import RecordDetail from "@components/records/RecordDetail";
-import RecordRow from "@components/records/RecordRow";
+} from '@mui/material'
+import { useEffect, useState } from 'react'
+import { MdArrowDownward, MdArrowUpward } from 'react-icons/md'
+import { type Id, toast } from 'react-toastify'
+import useRecords from '../hooks/useRecords'
+import Loading from '@components/shared/Loading'
+import RecordDetail from '@components/records/RecordDetail'
+import RecordRow from '@components/records/RecordRow'
 
-const PAGNINATE_OPTIONS = [5, 10, 20];
+const PAGNINATE_OPTIONS = [5, 10, 20]
 
 export default function Records() {
   // Records and pagniation
@@ -28,49 +28,49 @@ export default function Records() {
     page: 0,
     limit: PAGNINATE_OPTIONS[0],
     descending: true
-  });
-  const { count, sessions, loading, error } = useRecords(query);
+  })
+  const { count, sessions, loading, error } = useRecords(query)
 
   const handleChangePage = (
     _: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setQuery((prev) => ({ ...prev, page: newPage }));
-  };
+    setQuery((prev) => ({ ...prev, page: newPage }))
+  }
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setQuery((prev) => ({ ...prev, page: 0, limit: +event.target.value }));
-  };
+    setQuery((prev) => ({ ...prev, page: 0, limit: +event.target.value }))
+  }
 
   const toggleOrdering = () => {
-    setQuery((prev) => ({ ...prev, descending: !prev.descending }));
-  };
+    setQuery((prev) => ({ ...prev, descending: !prev.descending }))
+  }
 
   // Record dialog
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   const [sessionId, setSessionId] = useState<string | number | undefined>(
     undefined
-  );
+  )
 
   // Give the error toast when failure
   useEffect(() => {
-    let toastId: Id;
-    if (error) toastId = toast.error(error);
+    let toastId: Id
+    if (error) toastId = toast.error(error)
     return () => {
-      if (toastId) toast.dismiss(toastId);
-    };
-  }, [error]);
+      if (toastId) toast.dismiss(toastId)
+    }
+  }, [error])
 
   return (
     <>
       <Box
         sx={{
           mb: 2,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between"
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}
       >
         <Typography variant="h4" component="h2">
@@ -84,11 +84,11 @@ export default function Records() {
             />
           }
         >
-          {query.descending ? "Newest to oldest" : "Oldest to newest"}
+          {query.descending ? 'Newest to oldest' : 'Oldest to newest'}
         </Button>
       </Box>
       <Paper>
-        <TableContainer sx={{ overflow: "auto" }}>
+        <TableContainer sx={{ overflow: 'auto' }}>
           <Table sx={{ minWidth: 650, maxHeight: 440 }}>
             <TableHead>
               <TableRow>
@@ -121,11 +121,11 @@ export default function Records() {
                       session={session}
                       key={session.viewsSessionId}
                       handleClick={() => {
-                        setSessionId(session.viewsSessionId);
-                        setOpen(true);
+                        setSessionId(session.viewsSessionId)
+                        setOpen(true)
                       }}
                     />
-                  );
+                  )
                 })}
             </TableBody>
           </Table>
@@ -147,5 +147,5 @@ export default function Records() {
         handleClose={() => setOpen(false)}
       />
     </>
-  );
+  )
 }

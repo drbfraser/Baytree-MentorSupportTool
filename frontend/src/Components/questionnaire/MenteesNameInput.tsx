@@ -1,7 +1,7 @@
-import { FormHelperText, MenuItem, Select } from "@mui/material";
-import { useField } from "formik";
-import type { Question } from "../../api/misc";
-import type { Participant } from "../../api/views";
+import { FormHelperText, MenuItem, Select } from '@mui/material'
+import { useField } from 'formik'
+import type { Question } from '../../api/misc'
+import type { Participant } from '../../api/views'
 
 type Props = {
   question: Question;
@@ -12,8 +12,8 @@ const MenteesNameInput: React.FC<Props> = ({
   question,
   menteeList
 }) => {
-  const [field, meta] = useField(question.QuestionID);
-  const error = meta.touched && field.value === "";
+  const [field, meta] = useField(question.QuestionID)
+  const error = meta.touched && field.value === ''
 
   return (
     <>
@@ -22,23 +22,23 @@ const MenteesNameInput: React.FC<Props> = ({
         {...field}
         defaultValue=""
         displayEmpty
-        error={meta.touched && field.value === ""}
+        error={meta.touched && field.value === ''}
       >
         <MenuItem value="" disabled>
           Please select a mentee
         </MenuItem>
         {menteeList.map((mentee, index) => {
-          const fullName = `${mentee.firstName} ${mentee.lastName}`;
+          const fullName = `${mentee.firstName} ${mentee.lastName}`
           return (
             <MenuItem key={index} value={fullName}>
               {fullName}
             </MenuItem>
-          );
+          )
         })}
       </Select>
       {error && <FormHelperText error>Required</FormHelperText>}
     </>
-  );
-};
+  )
+}
 
-export default MenteesNameInput;
+export default MenteesNameInput
