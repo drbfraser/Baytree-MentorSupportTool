@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     "users",
     "sessions",
     "volunteering_types",
-    "views_sessions"
+    "views_sessions",
+    "views_api"
 ]
 
 MIDDLEWARE = [
