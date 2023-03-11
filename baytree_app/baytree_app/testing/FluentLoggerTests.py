@@ -2,27 +2,71 @@ from baytree_app.FluentLoggingHandler import FluentLoggingHandler
 import os
 import unittest
 import logging
+from unittest.mock import MagicMock
 
 # initial setup for tests
-# we need to setup the log level and file handler because they are not setup automatically for each testcase
+# we need to setup the log level and file handler for each logger because they are not setup automatically in testcases
 # without this setup, our logging system does not log anything to the log files
 # this behaviour seems to be unique to testcases only
+
+# setting paths to log files
 serverApplicationLogPath = os.path.abspath(
     "/code/server_logs/server_application.log")
 serverRequestsLogPath = os.path.abspath(
     "/code/server_logs/server_requests.log")
-FluentLoggingHandler.messageLogger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler(serverApplicationLogPath)
+# log file formatter
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(formatter)
+# message logger setup
+FluentLoggingHandler.messageLogger.setLevel(logging.DEBUG)
+applicationFileHandler = logging.FileHandler(serverApplicationLogPath)
+applicationFileHandler.setFormatter(formatter)
+# request logger setup
+FluentLoggingHandler.requestLogger.setLevel(logging.DEBUG)
+requestsFileHandler = logging.FileHandler(serverRequestsLogPath)
+requestsFileHandler.setFormatter(formatter)
 
 
 class TestFluentLoggingHandler(unittest.TestCase):
     def setUp(self):
-        FluentLoggingHandler.messageLogger.addHandler(file_handler)
+        FluentLoggingHandler.messageLogger.addHandler(applicationFileHandler)
+        FluentLoggingHandler.requestLogger.addHandler(requestsFileHandler)
 
     def tearDown(self):
-        FluentLoggingHandler.messageLogger.removeHandler(file_handler)
+        FluentLoggingHandler.messageLogger.removeHandler(
+            applicationFileHandler)
+        FluentLoggingHandler.requestLogger.removeHandler(requestsFileHandler)
+
+    def test_logRequest(self):
+        # mock request object
+        request = MagicMock()
+        request.build_absolute_uri = MagicMock(
+            return_value='http://baytree.com')
+        request.user = "Arshdeep Chhokar"
+        request.method = "GET"
+        request.META = {'PATH': '/my/system/path',
+                        'HTTP_HOST': "localhost", 'REQUEST_METHOD': 'GET'}
+
+        FluentLoggingHandler.logRequest(request, "Testing logRequest method")
+        with open(serverRequestsLogPath, 'r') as f:
+            log_contents = f.read()
+        self.assertIn("Testing logRequest method", log_contents)
+
+    def test_logResponse(self):
+        # mock response object
+        response = MagicMock()
+        response.headers = {
+            'Content-Type': 'application/json', 'Allow': 'POST, OPTIONS'}
+        response.status_code = 200
+        # mock request object
+        request = MagicMock()
+        request.build_absolute_uri = MagicMock(
+            return_value='http://baytree.com')
+
+        FluentLoggingHandler.logResponse(
+            response, request, "Testing logResponse method")
+        with open(serverRequestsLogPath, 'r') as f:
+            log_contents = f.read()
+        self.assertIn("Testing logResponse method", log_contents)
 
     def test_info(self):
         FluentLoggingHandler.info("Testing info level logs")
@@ -56,6 +100,8 @@ class TestFluentLoggingHandler(unittest.TestCase):
 
 
 suite = unittest.TestSuite()
+suite.addTest(TestFluentLoggingHandler('test_logResponse'))
+suite.addTest(TestFluentLoggingHandler('test_logRequest'))
 suite.addTest(TestFluentLoggingHandler('test_info'))
 suite.addTest(TestFluentLoggingHandler('test_debug'))
 suite.addTest(TestFluentLoggingHandler('test_warning'))
