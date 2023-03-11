@@ -1,7 +1,7 @@
 from users.permissions import MentorPermissions
 from .util import try_parse_int
 from users.permissions import AdminPermissions
-from .constants import views_base_url, views_username, views_password
+from .constants import views_base_url
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -40,7 +40,7 @@ These participant records in Views contain contact and general information about
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_participants_endpoint(request):
+def get_participants_endpoint(request, headers):
     """
     Handles a request from the client browser and calls get_participants
     to return its response to the client.
@@ -49,16 +49,18 @@ def get_participants_endpoint(request):
     ids = None if ids == [] else ids
 
     if ids != None:
-        response = get_participants(ids)
+        response = get_participants(ids, headers=headers)
     else:
         response = get_participants(
-            limit=request.GET.get("limit", None), offset=request.GET.get("offset", None)
+            limit=request.GET.get("limit", None),
+            offset=request.GET.get("offset", None),
+            headers=headers
         )
 
     return Response(response, status=status.HTTP_200_OK)
 
 
-def get_participants(ids=None, limit: int = 5, offset: int = 0):
+def get_participants(ids=None, headers='', limit: int = 5, offset: int = 0):
     """
     Gets participants from Views API.
     If an id argument is provided, the participant with a matching PersonId will be returned.
@@ -77,7 +79,7 @@ def get_participants(ids=None, limit: int = 5, offset: int = 0):
 
         response = requests.get(
             participants_base_url + "search?" + id_filter_string,
-            auth=(views_username, views_password),
+            headers=headers
         )
 
     else:
@@ -88,19 +90,19 @@ def get_participants(ids=None, limit: int = 5, offset: int = 0):
                 + str(limit)
                 + "&offset="
                 + str(offset),
-                auth=(views_username, views_password),
+                headers=headers
             )
         else:
             response = requests.get(
                 participants_base_url + "search?q=",
-                auth=(views_username, views_password),
+                headers=headers
             )
 
     return parse_participants(response)
 
-def get_participant_by_id(id):
+def get_participant_by_id(id, headers):
     url = f"{participants_base_url}{id}.json"
-    response = requests.get(url, auth=(views_username, views_password))
+    response = requests.get(url, headers=headers)
     if response.status_code != 200: return None
     json = response.json()
     data = { newKey: json[oldKey] for (oldKey, newKey) in zip(participantFields, participantTranslateFields)}
@@ -112,8 +114,8 @@ def parse_participants(response):
     responseText = response.text.replace(
         "<2Personrelationshipandcontactnumberofpersonauthorised_P_229/>", ""
     )
-
-    parsed = xmltodict.parse(responseText)
+    decoded = responseText.encode("utf-8").decode("unicode_escape").strip('\"')
+    parsed = xmltodict.parse(decoded)
 
     # Make sure the participants are wrapped in a list, if there is a single participant
     if not isinstance(parsed["contacts"]["participants"]["participant"], list):
@@ -128,6 +130,7 @@ def parse_participants(response):
         }
         for participant in parsed["contacts"]["participants"]["participant"]
     ]
+
     return {
         "count": int(parsed["contacts"]["participants"]["@count"]),
         "results": participants,

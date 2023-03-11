@@ -7,9 +7,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from users.models import MentorUser
-from users.permissions import userIsAdmin, userIsSuperUser
 
-from .constants import views_base_url, views_password, views_username
+from .constants import views_base_url
 from .participants import get_participants
 from .util import try_parse_int
 
@@ -52,18 +51,19 @@ For instance, if the association is "Mentee", the "master" Person is a Mentee of
 """
 
 
-def get_associations(volunteer_id):
+def get_associations(volunteer_id, headers=None):
 
     response = requests.get(
         staff_associations_base_url.format(volunteer_id),
-        auth=(views_username, views_password),
+        headers=headers
     )
 
     return parse_associations(response)
 
 
 def parse_associations(response):
-    parsed = xmltodict.parse(response.text)
+    decoded = response.text.encode("utf-8").decode("unicode_escape").strip('\"')
+    parsed = xmltodict.parse(decoded)
 
     # Check if no associations were returned from Views:
     if (
@@ -95,10 +95,9 @@ def translate_association_fields(associations):
         for association in associations
     ]
 
-
 # GET /api/views-api/mentor-mentees/
 @api_view(("GET",))
-def get_mentees_for_mentor(request):
+def get_mentees_for_mentor(request, headers):
     mentor_user = MentorUser.objects.filter(pk=request.user.id)
     if not mentor_user.exists():
         return Response(
@@ -106,16 +105,15 @@ def get_mentees_for_mentor(request):
             status=status.HTTP_401_UNAUTHORIZED,
         )
     mentor_user = mentor_user.first()
+    menteeIds = get_mentee_ids_from_mentor(mentor_user, active=True, headers=headers)
 
-    menteeIds = get_mentee_ids_from_mentor(mentor_user, active=True)
-
-    participants = get_participants(menteeIds)
+    participants = get_participants(menteeIds, headers=headers)
 
     return Response(participants["results"], status.HTTP_200_OK)
 
 
-def get_mentee_ids_from_mentor(mentor_user, active=False):
-    associations = get_associations(mentor_user.viewsPersonId)
+def get_mentee_ids_from_mentor(mentor_user, active=False, headers=None):
+    associations = get_associations(mentor_user.viewsPersonId, headers=headers)
     preferences = Preference.objects
     searchWindow = int(preferences.filter(key="searchingDurationInDays").first().value)
     minimumDays = int(preferences.filter(key="minimumActiveDays").first().value)

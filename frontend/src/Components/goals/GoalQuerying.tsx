@@ -9,31 +9,31 @@ import {
   Stack,
   TextField,
   Typography
-} from "@mui/material";
-import { type ChangeEvent, useCallback } from 'react';
-import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
-import type { OrderingDate } from "../../api/goals";
-import { useGoalContext } from "../../context/GoalContext";
-import { useGoalCategories } from "../../hooks/useGoalCategories";
+} from '@mui/material'
+import { type ChangeEvent, useCallback } from 'react'
+import { MdArrowDownward, MdArrowUpward } from 'react-icons/md'
+import type { OrderingDate } from '../../api/goals'
+import { useGoalContext } from '../../context/GoalContext'
+import { useGoalCategories } from '../../hooks/useGoalCategories'
 
 const GoalCategoryFilter = () => {
-  const { categories, loading, error } = useGoalCategories();
-  const { query, handleChangeQuery } = useGoalContext();
-  if (loading) return <Skeleton />;
+  const { categories, loading, error } = useGoalCategories()
+  const { query, handleChangeQuery } = useGoalContext()
+  if (loading) return <Skeleton />
   if (error || categories.length === 0)
-    return <Alert severity="error" sx={{ width: "100%" }}>Please try again later</Alert>;
+    return <Alert severity="error" sx={{ width: '100%' }}>Please try again later</Alert>
 
-  const selectedIds = query.categoryIds || [];
+  const selectedIds = query.categoryIds || []
 
   return <Select fullWidth multiple value={selectedIds} displayEmpty
     renderValue={(values) => {
-      if (values.length === 0) return "No categories selected";
-      if (values.length === 1) return "1 categories selected";
-      if (values.length === categories.length) return "All categories selected";
-      return `${values.length} categories selected`;
+      if (values.length === 0) return 'No categories selected'
+      if (values.length === 1) return '1 categories selected'
+      if (values.length === categories.length) return 'All categories selected'
+      return `${values.length} categories selected`
     }}
     onChange={(e) => {
-      const values = e.target.value as number[];
+      const values = e.target.value as number[]
       handleChangeQuery(prev => ({
         ...prev,
         offset: 0,
@@ -51,9 +51,9 @@ const GoalCategoryFilter = () => {
 }
 
 const GoalDateOrdering = () => {
-  const { query, handleChangeQuery } = useGoalContext();
+  const { query, handleChangeQuery } = useGoalContext()
   return <Stack direction="row" spacing={2}>
-    <Select sx={{ flexGrow: 1 }} value={query.orderingDate || "creation_date"} onChange={(ev) => {
+    <Select sx={{ flexGrow: 1 }} value={query.orderingDate || 'creation_date'} onChange={(ev) => {
       handleChangeQuery(prev => ({
         ...prev,
         orderingDate: ev.target.value as OrderingDate
@@ -70,25 +70,25 @@ const GoalDateOrdering = () => {
       }))}
       variant="outlined"
       startIcon={<Icon component={query.ascending ? MdArrowUpward : MdArrowDownward} />}>
-      {query.ascending ? "Ascending" : "Descending"}
+      {query.ascending ? 'Ascending' : 'Descending'}
     </Button>
   </Stack>
 }
 
 export const GoalSearch = () => {
-  const { query, handleChangeQuery } = useGoalContext();
+  const { query, handleChangeQuery } = useGoalContext()
   const updateSearch = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     handleChangeQuery(prev => ({
       ...prev,
       offset: 0,
       search: e.target.value
     }))
-  };
+  }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSearch = useCallback(debounce(updateSearch, 500), []);
+  const debouncedSearch = useCallback(debounce(updateSearch, 500), [])
 
-  return <TextField fullWidth defaultValue={query.search || ""} onChange={debouncedSearch} />
+  return <TextField fullWidth defaultValue={query.search || ''} onChange={debouncedSearch} />
 }
 
 const GoalQuerying = () => {
@@ -108,4 +108,4 @@ const GoalQuerying = () => {
   </Grid>
 }
 
-export default GoalQuerying;
+export default GoalQuerying

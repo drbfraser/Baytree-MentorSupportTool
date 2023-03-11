@@ -1,9 +1,8 @@
 from datetime import datetime, timezone
-from django.http import HttpResponse
-
 import requests
+
 from baytree_app.constants import (
-    VIEWS_BASE_URL, VIEWS_PASSWORD, VIEWS_USERNAME)
+    VIEWS_BASE_URL)
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -31,7 +30,7 @@ def getMentorWithRoleAndQuestionnaireByUserId(id):
 
 # GET /api/questionnaires/questionnaire/
 @api_view(("GET",))
-def get_questionnaire(request):
+def get_questionnaire(request, headers):
     """
     Fetch the questionnaire assigned by the the mentor
     """
@@ -45,7 +44,7 @@ def get_questionnaire(request):
     # Fetch questionnaire by id
     url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}.json"
 
-    response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
+    response = requests.get(url, headers=headers)
     if response.status_code != 200:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -65,7 +64,7 @@ def get_questionnaire(request):
 
     # multithreading for multiple request
     for question in questions:
-        running_thread.append(threading.Thread(target=fetch_questions, args=(question, data, index)))
+        running_thread.append(threading.Thread(target=fetch_questions, args=(question, data, index, headers)))
         index += 1
     for thread in running_thread:
         thread.start()
@@ -81,13 +80,13 @@ def get_questionnaire(request):
     return Response(data, status=status.HTTP_200_OK)
 
 
-def fetch_questions(question, data, index):
+def fetch_questions(question, data, index, headers):
     q = {key: question[key] for key in extractedQuestionFields}
     q["order"] = index
     if (question["valueListID"]):
         value_list_id = question["valueListID"]
         if value_list_id and int(value_list_id) > 0:
-            value_list = get_questionnaire_value_lists(value_list_id)
+            value_list = get_questionnaire_value_lists(value_list_id, headers)
             q["valueList"] = value_list
         else:
             q["valueList"] = []
@@ -96,7 +95,7 @@ def fetch_questions(question, data, index):
     return
 
 
-def get_questionnaire_value_lists(id):
+def get_questionnaire_value_lists(id, headers):
     """
     Fetch the questionnaire value lists for each question
     doc: https://www.substance.net/views/api/index.php/Rest_-_Admin_-_Value_Lists
@@ -109,7 +108,7 @@ def get_questionnaire_value_lists(id):
 
     url = f"{VIEWS_BASE_URL}admin/valuelists/{value_list_id}.json"
 
-    response = requests.get(url, auth=(VIEWS_USERNAME, VIEWS_PASSWORD))
+    response = requests.get(url, headers=headers)
     if response.status_code != 200:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -121,7 +120,7 @@ def get_questionnaire_value_lists(id):
 
 # POST /api/questionnaires/questionnaire/submit/
 @api_view(("POST",))
-def submit_answer_set(request):
+def submit_answer_set(request, headers):
     """
     Submit the answer to the remote Views database
     """
@@ -170,7 +169,7 @@ def submit_answer_set(request):
 
         mentor_user = mentor_user.first()
 
-        menteeIds = get_mentee_ids_from_mentor(mentor_user)
+        menteeIds = get_mentee_ids_from_mentor(mentor_user, headers=headers)
 
         menteeId = menteeIds[0]
         # Construct Mentee the answer set XML payload
@@ -198,8 +197,7 @@ def submit_answer_set(request):
         url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}/answers"
 
     # Send the answer set to View database
-    response = requests.post(url, answerSetXML, auth=(VIEWS_USERNAME, VIEWS_PASSWORD),
-                             headers={"content-type": "text/xml"})
+    response = requests.post(url=url, data=answerSetXML, headers=headers)
     response.status_code
 
     # Construct dictionary response data

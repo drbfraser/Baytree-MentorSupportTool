@@ -45,7 +45,7 @@ LOGGING = {
         "application": {
             "class": "logging.FileHandler",
             "filename": os.path.join(BASE_DIR, "server_logs/server_application.log"),
-            "level": logging.INFO,
+            "level": logging.DEBUG,
             "formatter": "json"
         },
         # console only logs warning and error message
@@ -66,7 +66,7 @@ LOGGING = {
         "requests": {
             "class": "logging.FileHandler",
             "filename": os.path.join(BASE_DIR, "server_logs/server_requests.log"),
-            "level": logging.INFO,
+            "level": logging.DEBUG,
             "formatter": "json"
         },
         # Log security errors to server_security.log
@@ -86,13 +86,13 @@ LOGGING = {
         # Server requests
         "django.request": {
             "handlers": ["requests", "console", "fluent"],
-            "level": logging.INFO,
+            "level": logging.DEBUG,
             "propagate": False
         },
         # Server messages
         "django_message": {
             "handlers": ["application", "fluent"],
-            "level": logging.INFO
+            "level": logging.DEBUG
         },
         # Security
         "django.security.*": {
@@ -143,7 +143,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "baytree_app.middleware.LoggingMiddleware"
+    "baytree_app.middlewares.ViewsAuthMiddleware.ViewsAuthMiddleware",
+    "baytree_app.middlewares.LoggingMiddleware.LoggingMiddleware"
 ]
 
 ROOT_URLCONF = "baytree_app.urls"

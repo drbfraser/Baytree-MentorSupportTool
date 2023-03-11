@@ -5,20 +5,20 @@ import {
   Stack,
   Toolbar,
   Typography
-} from "@mui/material";
-import type { FunctionComponent, MouseEventHandler } from "react";
-import { useEffect, useState } from "react";
+} from '@mui/material'
+import type { FunctionComponent, MouseEventHandler } from 'react'
+import { useEffect, useState } from 'react'
 import {
   MdAccountBox,
   MdLogout,
   MdMenu,
   MdNotifications
-} from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import { fetchUnreadNotificationCountByUserId } from "../../api/notification";
-import Logo from "../../Assets/baytree.png";
-import { useAuth } from "../../context/AuthContext";
-import MobileMenu from "./MobileMenu";
+} from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
+import { fetchUnreadNotificationCountByUserId } from '../../api/notification'
+import Logo from '../../Assets/baytree.png'
+import { useAuth } from '../../context/AuthContext'
+import MobileMenu from './MobileMenu'
 
 type NavigationButtonProps = {
   action?: MouseEventHandler<HTMLButtonElement>,
@@ -28,39 +28,39 @@ type NavigationButtonProps = {
 const NavigationButton: FunctionComponent<NavigationButtonProps> = (props) => {
   return (
     <IconButton
-      sx={{ display: { xs: "none", sm: "inherit" } }}
+      sx={{ display: { xs: 'none', sm: 'inherit' } }}
       children={props.children}
       size="large"
       onClick={props.action}
     />
-  );
-};
+  )
+}
 
 const NavigationBar: FunctionComponent<{
   drawerWidth: number;
   openDrawer: () => void;
 }> = ({ drawerWidth, openDrawer }) => {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
-  const [numNotifications, setNumNotifications] = useState(0);
+  const { user, signOut } = useAuth()
+  const navigate = useNavigate()
+  const [numNotifications, setNumNotifications] = useState(0)
 
   useEffect(() => {
     // Fetch the number of unread notifications
     fetchUnreadNotificationCountByUserId(user!.userId)
       .then(setNumNotifications)
-      .catch((error) => console.error("Error:", error));
-  }, []);
+      .catch((error) => console.error('Error:', error))
+  }, [])
 
   const logout = async () => {
-    await signOut();
-    navigate("/login", { replace: true });
-  };
+    await signOut()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <AppBar
       position="fixed"
       sx={{
-        background: "white",
+        background: 'white',
         width: { md: `calc(100% - ${drawerWidth}px)` },
         ml: { md: `${drawerWidth}px` }
       }}
@@ -70,8 +70,8 @@ const NavigationBar: FunctionComponent<{
         <Box
           sx={{
             mr: 2,
-            display: { xs: "flex", md: "none", sm: "flex" },
-            alignItems: "center"
+            display: { xs: 'flex', md: 'none', sm: 'flex' },
+            alignItems: 'center'
           }}
         >
           <IconButton onClick={openDrawer} sx={{ mr: 2 }}>
@@ -81,7 +81,7 @@ const NavigationBar: FunctionComponent<{
         </Box>
 
         {/* Title */}
-        <Typography variant="h5" sx={{ fontWeight: "bold" }} color="primary">
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }} color="primary">
           Mentor Portal
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
@@ -89,12 +89,12 @@ const NavigationBar: FunctionComponent<{
         {/* Top-right navigation buttons */}
         <Stack direction="row">
           {/* <Messages /> */}
-          <NavigationButton action={() => navigate("/dashboard/notifications")}>
+          <NavigationButton action={() => navigate('/dashboard/notifications')}>
             <Badge badgeContent={numNotifications} color="error">
               <Icon component={MdNotifications} />
             </Badge>
           </NavigationButton>
-          <NavigationButton action={() => navigate("/dashboard/profile")}>
+          <NavigationButton action={() => navigate('/dashboard/profile')}>
             <Icon component={MdAccountBox} />
           </NavigationButton>
           <NavigationButton action={logout}>
@@ -104,7 +104,7 @@ const NavigationBar: FunctionComponent<{
         </Stack>
       </Toolbar>
     </AppBar>
-  );
-};
+  )
+}
 
-export default NavigationBar;
+export default NavigationBar

@@ -1,19 +1,19 @@
-import type { GoalCategory, Goal } from "../../api/goals";
+import type { GoalCategory, Goal } from '../../api/goals'
 
 export const mockGoalCateogories: GoalCategory[] = [
   {
     id: 1,
-    name: "Personal Development"
+    name: 'Personal Development'
   },
   {
     id: 2,
-    name: "Academic Engagement"
+    name: 'Academic Engagement'
   },
   {
     id: 3,
-    name: "Improve Employability"
+    name: 'Improve Employability'
   }
-];
+]
 
 export const mockGoals: Goal[] = [
   {
@@ -22,12 +22,12 @@ export const mockGoals: Goal[] = [
       mockGoalCateogories[0],
       mockGoalCateogories[1]
     ],
-    title: "Improve Maths",
-    description: "Solve complex algebra problems",
-    creation_date: "2022-07-15",
-    goal_review_date: "2022-08-01",
-    last_update_date: "2022-08-01",
-    status: "ACHIEVED"
+    title: 'Improve Maths',
+    description: 'Solve complex algebra problems',
+    creation_date: '2022-07-15',
+    goal_review_date: '2022-08-01',
+    last_update_date: '2022-08-01',
+    status: 'ACHIEVED'
   },
   {
     id: 2,
@@ -35,11 +35,11 @@ export const mockGoals: Goal[] = [
       mockGoalCateogories[0],
       mockGoalCateogories[2]
     ],
-    title: "Improve communication in English",
-    description: "I want to fluently comminucate with others in English",
-    creation_date: "2022-07-15",
-    goal_review_date: "2022-08-15",
-    last_update_date: "2022-08-15",
-    status: "IN PROGRESS"
+    title: 'Improve communication in English',
+    description: 'I want to fluently comminucate with others in English',
+    creation_date: '2022-07-15',
+    goal_review_date: '2022-08-15',
+    last_update_date: '2022-08-15',
+    status: 'IN PROGRESS'
   }
-];
+]
