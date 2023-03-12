@@ -9,32 +9,41 @@ from unittest.mock import MagicMock
 # without this setup, our logging system does not log anything to the log files
 # this behaviour seems to be unique to testcases only
 
-# setting paths to log files
-serverApplicationLogPath = os.path.abspath(
-    "/code/server_logs/server_application.log")
-serverRequestsLogPath = os.path.abspath(
-    "/code/server_logs/server_requests.log")
-# log file formatter
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-# message logger setup
-FluentLoggingHandler.messageLogger.setLevel(logging.DEBUG)
-applicationFileHandler = logging.FileHandler(serverApplicationLogPath)
-applicationFileHandler.setFormatter(formatter)
-# request logger setup
-FluentLoggingHandler.requestLogger.setLevel(logging.DEBUG)
-requestsFileHandler = logging.FileHandler(serverRequestsLogPath)
-requestsFileHandler.setFormatter(formatter)
-
 
 class TestFluentLoggingHandler(unittest.TestCase):
-    def setUp(self):
-        FluentLoggingHandler.messageLogger.addHandler(applicationFileHandler)
-        FluentLoggingHandler.requestLogger.addHandler(requestsFileHandler)
+    @classmethod
+    def setUpClass(cls):
+        # setting paths to log files
+        cls.serverApplicationLogPath = os.path.abspath(
+            "/code/server_logs/server_application.log")
+        cls.serverRequestsLogPath = os.path.abspath(
+            "/code/server_logs/server_requests.log")
 
-    def tearDown(self):
+        # log file formatter
+        formatter = logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s')
+
+        # message logger setup
+        FluentLoggingHandler.messageLogger.setLevel(logging.DEBUG)
+        cls.applicationFileHandler = logging.FileHandler(
+            cls.serverApplicationLogPath)
+        cls.applicationFileHandler.setFormatter(formatter)
+        FluentLoggingHandler.messageLogger.addHandler(
+            cls.applicationFileHandler)
+
+        # request logger setup
+        FluentLoggingHandler.requestLogger.setLevel(logging.DEBUG)
+        cls.requestsFileHandler = logging.FileHandler(
+            cls.serverRequestsLogPath)
+        cls.requestsFileHandler.setFormatter(formatter)
+        FluentLoggingHandler.requestLogger.addHandler(cls.requestsFileHandler)
+
+    @classmethod
+    def tearDownClass(cls):
         FluentLoggingHandler.messageLogger.removeHandler(
-            applicationFileHandler)
-        FluentLoggingHandler.requestLogger.removeHandler(requestsFileHandler)
+            cls.applicationFileHandler)
+        FluentLoggingHandler.requestLogger.removeHandler(
+            cls.requestsFileHandler)
 
     def test_logRequest(self):
         # mock request object
@@ -47,7 +56,7 @@ class TestFluentLoggingHandler(unittest.TestCase):
                         'HTTP_HOST': "localhost", 'REQUEST_METHOD': 'GET'}
 
         FluentLoggingHandler.logRequest(request, "Testing logRequest method")
-        with open(serverRequestsLogPath, 'r') as f:
+        with open(self.serverRequestsLogPath, 'r') as f:
             log_contents = f.read()
         self.assertIn("Testing logRequest method", log_contents)
 
@@ -64,37 +73,37 @@ class TestFluentLoggingHandler(unittest.TestCase):
 
         FluentLoggingHandler.logResponse(
             response, request, "Testing logResponse method")
-        with open(serverRequestsLogPath, 'r') as f:
+        with open(self.serverRequestsLogPath, 'r') as f:
             log_contents = f.read()
         self.assertIn("Testing logResponse method", log_contents)
 
     def test_info(self):
         FluentLoggingHandler.info("Testing info level logs")
-        with open(serverApplicationLogPath, 'r') as f:
+        with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
         self.assertIn("Testing info level logs", log_contents)
 
     def test_debug(self):
         FluentLoggingHandler.debug("Testing debug level logs")
-        with open(serverApplicationLogPath, 'r') as f:
+        with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
         self.assertIn("Testing debug level logs", log_contents)
 
     def test_warning(self):
         FluentLoggingHandler.warning("Testing warning level logs")
-        with open(serverApplicationLogPath, 'r') as f:
+        with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
         self.assertIn("Testing warning level logs", log_contents)
 
     def test_error(self):
         FluentLoggingHandler.error("Testing error level logs")
-        with open(serverApplicationLogPath, 'r') as f:
+        with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
         self.assertIn("Testing error level logs", log_contents)
 
     def test_critical(self):
         FluentLoggingHandler.critical("Testing critical level logs")
-        with open(serverApplicationLogPath, 'r') as f:
+        with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
         self.assertIn("Testing critical level logs", log_contents)
 
