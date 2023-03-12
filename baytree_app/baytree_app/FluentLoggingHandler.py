@@ -78,6 +78,18 @@ class FluentLoggingHandler:
             print(e)
 
     @staticmethod
+    def logAction(request, action, message="Logging Action"):
+        try:
+            logJson = {"log": {
+                "performingUser": request.user,
+                "operation": action,
+                "message": message
+            }}
+            FluentLoggingHandler.messageLogger.info(logJson)
+        except Exception as e:
+            print(e)
+
+    @staticmethod
     def debug(message=""):
         try:
             logJson = {"log": message}
