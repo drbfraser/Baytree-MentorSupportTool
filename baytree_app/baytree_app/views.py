@@ -290,6 +290,8 @@ class GenerateCrudEndpointsForModel(APIView):
     put_override_func = None
 
     def get(self, request):
+        FluentLoggingHandler.logAction(request, "Reading data objects")
+
         if self.get_override_func:
             return self.get_override_func(self, request)
 
@@ -342,6 +344,8 @@ class GenerateCrudEndpointsForModel(APIView):
             return response
 
     def delete(self, request):
+        FluentLoggingHandler.logAction(request, "Deleting data object")
+
         if self.delete_override_func:
             return self.delete_override_func(self, request)
 
@@ -369,6 +373,8 @@ class GenerateCrudEndpointsForModel(APIView):
             return response
 
     def post(self, request):
+        FluentLoggingHandler.logAction(request, "Creating data object")
+
         if self.post_override_func:
             return self.post_override_func(self, request)
 
@@ -400,6 +406,8 @@ class GenerateCrudEndpointsForModel(APIView):
             return response
 
     def put(self, request):
+        FluentLoggingHandler.logAction(request, "Updating data object")
+
         if self.put_override_func:
             return self.put_override_func(self, request)
 
@@ -461,6 +469,8 @@ class BatchRestViewSet(viewsets.ModelViewSet):
         if isinstance(request.data, list):
             for data_row in request.data:
                 if "isDeleted" in data_row:
+                    FluentLoggingHandler.logAction(
+                        request, "Batch deleting data objects")
                     # Delete objects
                     if "id" not in data_row:
                         response = Response(
@@ -479,6 +489,8 @@ class BatchRestViewSet(viewsets.ModelViewSet):
 
                     object.delete()
                 else:
+                    FluentLoggingHandler.logAction(
+                        request, "Batch creating and updating data objects")
                     # Create and update objects
                     serializer = self.serializer_class(
                         data=data_row, partial=True)
