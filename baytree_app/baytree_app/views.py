@@ -31,6 +31,8 @@ def logout_view(request):
     response = HttpResponse()
     cookie_max_age = 0
 
+    FluentLoggingHandler.info("Resetting refresh and access tokens for logout")
+
     response.set_cookie(
         "refresh_token", "", max_age=cookie_max_age, httponly=True, samesite="Strict"
     )
@@ -45,6 +47,7 @@ def logout_view(request):
 
 
 def create_object(object_dict, model):
+    FluentLoggingHandler.info("Calling create_object method")
     object = object_dict
     create_args = {}
 
@@ -77,6 +80,7 @@ def create_object(object_dict, model):
 
 
 def update_object(object, object_dict, model):
+    FluentLoggingHandler.info("Calling update_object method")
     update_args = {}
 
     for key, val in object_dict.items():
@@ -121,8 +125,10 @@ class CookieTokenVerifySerializer(TokenVerifySerializer):
     def validate(self, attrs):
         attrs["token"] = self.context["request"].COOKIES.get("access_token")
         if attrs["token"]:
+            FluentLoggingHandler.info("Access token successfully verified")
             return super().validate(attrs)
         else:
+            FluentLoggingHandler.error("Failed to validate access token")
             raise InvalidToken("No valid token found in cookie")
 
 
@@ -130,6 +136,8 @@ class CookieTokenVerifyView(TokenVerifyView):
     serializer_class = CookieTokenVerifySerializer
 
     def post(self, request, *args, **kwargs):
+        FluentLoggingHandler.info(
+            "Verifying whether user is superuser or admin")
         serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
@@ -158,6 +166,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         # If wrong password, (unauthorized), don't return additional info or cookies
         if response.status_code == 401:
             # login-failures logging
+            FluentLoggingHandler.error(
+                "Failed to login, password is incorrect")
             return super().finalize_response(request, response, *args, **kwargs)
 
         Flogging = FluentLoggingHandler()
@@ -168,6 +178,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
             Flogging.sendInfoLog("login request by: " + str(replace_str))
 
         if response.data.get("refresh"):
+            FluentLoggingHandler.info(
+                "Setting refresh token cookie with max age of 1 day")
             cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
                 "refresh_token",
@@ -178,6 +190,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
             )
             del response.data["refresh"]
         if response.data.get("access"):
+            FluentLoggingHandler.info(
+                "Setting access token cookie with max age of 30 minutes")
             cookie_max_age = 60 * 30  # 30 min
             response.set_cookie(
                 "access_token",
@@ -212,7 +226,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         response.data["is_superuser"] = user.is_superuser
 
         # # login success logging
-        # Flogging.sendInfoLog("login as admin") if user.is_superuser else Flogging.sendInfoLog("login as mentor")
+        FluentLoggingHandler.info(
+            "login as admin") if user.is_superuser else FluentLoggingHandler.info("login as mentor")
 
         response.data["last_login"] = user.last_login
         user.last_login = make_aware(datetime.now())
@@ -228,8 +243,11 @@ class CookieTokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
         attrs["refresh"] = self.context["request"].COOKIES.get("refresh_token")
         if attrs["refresh"]:
+            FluentLoggingHandler.info("Refresh token successfully validated")
             return super().validate(attrs)
         else:
+            FluentLoggingHandler.error(
+                "Failed to validate refresh token, not found")
             raise InvalidToken("No valid token found in cookie")
 
 
@@ -237,10 +255,13 @@ class CookieTokenRefreshView(TokenRefreshView):
     def finalize_response(self, request, response, *args, **kwargs):
         # If wrong password, (unauthorized), don't return additional info or cookies
         if response.status_code == 401:
+            FluentLoggingHandler.info("Failed to login, incorrect password")
             return super().finalize_response(request, response, *args, **kwargs)
 
         access_token_obj = None
         if response.data.get("refresh"):
+            FluentLoggingHandler.info(
+                "Setting refresh token with max age of 1 day")
             cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
                 "refresh_token",
@@ -251,6 +272,8 @@ class CookieTokenRefreshView(TokenRefreshView):
             )
             del response.data["refresh"]
         if response.data.get("access"):
+            FluentLoggingHandler.info(
+                "Setting access token with max age of 30 minutes")
             access_token_obj = AccessToken(response.data["access"])
             cookie_max_age = 60 * 30  # 30 min
             response.set_cookie(
@@ -274,6 +297,9 @@ class CookieTokenRefreshView(TokenRefreshView):
             user = user_model.objects.get(pk=user_id)
 
             response.data["is_superuser"] = user.is_superuser
+
+        FluentLoggingHandler.info(
+            "Logged in as admin") if user.is_superuser else FluentLoggingHandler.info("Logged in as mentor")
 
         return super().finalize_response(request, response, *args, **kwargs)
 
