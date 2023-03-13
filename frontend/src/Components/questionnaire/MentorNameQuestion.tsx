@@ -1,12 +1,12 @@
-import { TextField } from "@mui/material";
-import { useField } from "formik";
-import type { FunctionComponent } from "react";
-import type { Question } from "../../api/misc";
+import { TextField } from '@mui/material'
+import { useField } from 'formik'
+import type { FunctionComponent } from 'react'
+import type { Question } from '../../api/misc'
 
 const MentorNameInput: FunctionComponent<{ question: Question }> = ({
   question
 }) => {
-  const [field] = useField(question.QuestionID);
+  const [field] = useField(question.QuestionID)
   return (
     <TextField
       type={question.inputType}
@@ -15,7 +15,7 @@ const MentorNameInput: FunctionComponent<{ question: Question }> = ({
       disabled
       {...field}
     />
-  );
-};
+  )
+}
 
-export default MentorNameInput;
+export default MentorNameInput

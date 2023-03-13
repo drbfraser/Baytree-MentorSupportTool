@@ -1,72 +1,72 @@
 // fullcalendar bug in react-vite
 // https://github.com/fullcalendar/fullcalendar/issues/6371
 // Beware of formatter
-import '@fullcalendar/react/dist/vdom'; // This must comes first
-import FullCalendar, { type ToolbarInput } from '@fullcalendar/react'; // this must comes second
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interationPlugin from "@fullcalendar/interaction";
-import rrulePlugin from "@fullcalendar/rrule";
-import timeGridPlugin from '@fullcalendar/timegrid';
-import { Box, Checkbox, FormControlLabel, FormGroup, LinearProgress, Paper, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
-import { type Id, toast } from 'react-toastify';
-import useEventDetailPopup from '../../hooks/useEventDetailPopup';
-import useSessionEvents, { EVENT_TYPE, type SessionFilter } from '../../hooks/useSessionEvents';
-import useSpecialEvents, { toCalendarEvent } from '../../hooks/useSpecialEvents';
-import useUkHolidays, { ukHolidayToCalendarEvent } from '../../hooks/useUkHolidays';
-import { TIMEZONE_ID } from '../../Utils/locale';
-import RecordDetail from '../records/RecordDetail';
-import SpecialEventDetail from '../records/SpecialEventDetail';
+import '@fullcalendar/react/dist/vdom' // This must comes first
+import FullCalendar, { type ToolbarInput } from '@fullcalendar/react' // this must comes second
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interationPlugin from '@fullcalendar/interaction'
+import rrulePlugin from '@fullcalendar/rrule'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import { Box, Checkbox, FormControlLabel, FormGroup, LinearProgress, Paper, useMediaQuery, useTheme } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
+import { type Id, toast } from 'react-toastify'
+import useEventDetailPopup from '../../hooks/useEventDetailPopup'
+import useSessionEvents, { EVENT_TYPE, type SessionFilter } from '../../hooks/useSessionEvents'
+import useSpecialEvents, { toCalendarEvent } from '../../hooks/useSpecialEvents'
+import useUkHolidays, { ukHolidayToCalendarEvent } from '../../hooks/useUkHolidays'
+import { TIMEZONE_ID } from '../../Utils/locale'
+import RecordDetail from '../records/RecordDetail'
+import SpecialEventDetail from '../records/SpecialEventDetail'
 
 const Scheduler = () => {
   // Theme states
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   // Checkbox states
   const [filter, setFilter] = useState<SessionFilter>({
     attended: true,
     cancelled: true
-  });
+  })
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(prev => ({
       ...prev,
       [event.target.name]: event.target.checked,
-    }));
-  };
+    }))
+  }
 
   // Calandar states
-  const calendarRef = useRef<FullCalendar | null>(null);
-  const { loadingUkHolidays, ukHolidaysError, ukHolidays } = useUkHolidays();
-  const { loadingSpecialEvents, specialEventError, specialEvents } = useSpecialEvents();
-  const { fetchSessionEvents, error, loadingSession } = useSessionEvents(filter);
+  const calendarRef = useRef<FullCalendar | null>(null)
+  const { loadingUkHolidays, ukHolidaysError, ukHolidays } = useUkHolidays()
+  const { loadingSpecialEvents, specialEventError, specialEvents } = useSpecialEvents()
+  const { fetchSessionEvents, error, loadingSession } = useSessionEvents(filter)
 
   useEffect(() => {
-    let id: Id;
-    if (error) id = toast.error(error);
+    let id: Id
+    if (error) id = toast.error(error)
     return () => {
-      if (id) toast.dismiss(id);
+      if (id) toast.dismiss(id)
     }
-  }, [error]);
+  }, [error])
 
   useEffect(() => {
-    let id: Id;
-    if (ukHolidaysError) id = toast.error(ukHolidaysError);
+    let id: Id
+    if (ukHolidaysError) id = toast.error(ukHolidaysError)
     return () => {
-      if (id) toast.dismiss(id);
+      if (id) toast.dismiss(id)
     }
-  }, [ukHolidaysError]);
+  }, [ukHolidaysError])
 
   useEffect(() => {
-    let id: Id;
-    if (specialEventError) id = toast.error(specialEventError);
+    let id: Id
+    if (specialEventError) id = toast.error(specialEventError)
     return () => {
-      if (id) toast.dismiss(id);
+      if (id) toast.dismiss(id)
     }
-  }, [specialEventError]);
+  }, [specialEventError])
 
   // Dialog states
-  const { open, handleClose, event, handleEventId } = useEventDetailPopup();
+  const { open, handleClose, event, handleEventId } = useEventDetailPopup()
 
   // Configure toolbar based on the views
   const headerToolbar: ToolbarInput = {
@@ -78,14 +78,14 @@ const Scheduler = () => {
   // Change the calender into day views when user enter the mobile mode
   useEffect(() => {
     if (isMobile) {
-      calendarRef.current?.getApi().changeView("timeGridDay");
+      calendarRef.current?.getApi().changeView('timeGridDay')
     }
-  }, [isMobile]);
+  }, [isMobile])
 
   return (
     <>
       <Paper elevation={4} sx={{ mb: 2 }}>
-        {(loadingUkHolidays || loadingSpecialEvents || loadingSession) && <LinearProgress sx={{ mt: "-4px" }} />}
+        {(loadingUkHolidays || loadingSpecialEvents || loadingSession) && <LinearProgress sx={{ mt: '-4px' }} />}
         <Box sx={{ pt: 2, px: 2 }}>
           {/* Calender */}
           <FullCalendar
@@ -102,7 +102,7 @@ const Scheduler = () => {
               fetchSessionEvents // Lazily-fetched holidays
             ]}
             eventClick={({ event }) => {
-              handleEventId(event.id);
+              handleEventId(event.id)
             }}
           />
         </Box>
@@ -122,6 +122,6 @@ const Scheduler = () => {
         <SpecialEventDetail specialEvent={specialEvents.find(selected => selected.id === event.id)} open={open} handleClose={handleClose} />}
     </>
   )
-};
+}
 
-export default Scheduler;
+export default Scheduler
