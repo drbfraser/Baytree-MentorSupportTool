@@ -2,20 +2,20 @@ import {
   useMediaQuery,
   useTheme,
   FormGroup,
-} from "@mui/material";
+} from '@mui/material'
 
-import Select from '@mui/material/Select';
-import type {SelectChangeEvent} from '@mui/material/Select';
-import { useField } from "formik";
-import type { FunctionComponent } from "react";
-import type { Question } from "../../api/misc";
-import {useState} from "react"
+import Select from '@mui/material/Select'
+import type {SelectChangeEvent} from '@mui/material/Select'
+import { useField } from 'formik'
+import type { FunctionComponent } from 'react'
+import type { Question } from '../../api/misc'
+import {useState} from 'react'
 
 export const isSelectorQuestion = (question: Question) => {
   return (
-    question.inputType === "select" || question.inputType === "selectother"
-  );
-};
+    question.inputType === 'select' || question.inputType === 'selectother'
+  )
+}
 
 // Reponsive choice question
 // Horizontal on large screen
@@ -23,24 +23,24 @@ export const isSelectorQuestion = (question: Question) => {
 export const SelectorInput: FunctionComponent<{ question: Question }> = ({
   question
 }) => {
-  const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
-  const [field] = useField(question.QuestionID);
-  const values = question.valueList.items;
-  const [selector, setSelector] = useState("");
+  const theme = useTheme()
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'))
+  const [field] = useField(question.QuestionID)
+  const values = question.valueList.items
+  const [selector, setSelector] = useState('')
 
   //handle for selector change
   const onSelectChange = (event: SelectChangeEvent) => {
-    event.preventDefault();
-    setSelector(event.target.value as string);
-  };
+    event.preventDefault()
+    setSelector(event.target.value as string)
+  }
 
 
   return (
       <FormGroup {...field}
                  row={isLargeScreen}
                  sx={{ mt: 2 }}
-                 style={{ justifyContent: isLargeScreen ? "space-evenly" : "inherit" }}>
+                 style={{ justifyContent: isLargeScreen ? 'space-evenly' : 'inherit' }}>
         <Select
             sx={{ mt: 1 }}
             id={question.QuestionID}
@@ -57,7 +57,7 @@ export const SelectorInput: FunctionComponent<{ question: Question }> = ({
           )) : null}
         </Select>
       </FormGroup>
-  );
-};
+  )
+}
 
-export default SelectorInput;
+export default SelectorInput

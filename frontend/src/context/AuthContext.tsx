@@ -1,6 +1,6 @@
-import { createContext, useContext } from "react";
-import { login, logout, verify } from "../api/auth";
-import useLocalStorage from "../hooks/useLocalStorage";
+import { createContext, useContext } from 'react'
+import { login, logout, verify } from '../api/auth'
+import useLocalStorage from '../hooks/useLocalStorage'
 
 type StorageInfo = {
   userId: number;
@@ -17,50 +17,50 @@ const AuthContext = createContext<AuthContextType>({
   signIn: async (_email: string, _password: string) => false,
   signOut: async () => true,
   verifyClient: async () => false
-});
+})
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = (
   props
 ) => {
-  const [user, setUser] = useLocalStorage<StorageInfo>("user", undefined);
+  const [user, setUser] = useLocalStorage<StorageInfo>('user', undefined)
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await login(email, password);
-    if (data && error === "") {
+    const { data, error } = await login(email, password)
+    if (data && error === '') {
       setUser({
         userId: data.user_id,
         viewsPersonId: data.is_superuser ? undefined : data.viewsPersonId
-      });
-      return true;
+      })
+      return true
     }
-    return false;
-  };
+    return false
+  }
 
   const signOut = async () => {
-    const loggedOut = await logout();
+    const loggedOut = await logout()
     if (loggedOut) {
-      setUser(undefined);
+      setUser(undefined)
     }
-    return loggedOut;
-  };
+    return loggedOut
+  }
 
   const verifyClient = async () => {
-    if (!user) return false;
-    const verified = await verify();
+    if (!user) return false
+    const verified = await verify()
     if (!verified) {
-      setUser(undefined);
+      setUser(undefined)
     }
-    return !!verified;
-  };
+    return !!verified
+  }
 
   return (
     <AuthContext.Provider
       value={{ user, signIn, signOut, verifyClient }}
       {...props}
     />
-  );
-};
+  )
+}
 
 export const useAuth = () => {
-  return useContext(AuthContext);
-};
+  return useContext(AuthContext)
+}

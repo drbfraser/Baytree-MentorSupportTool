@@ -1,5 +1,5 @@
-import { TextField, type TextFieldProps } from "@mui/material";
-import type { FunctionComponent } from "react";
+import { TextField, type TextFieldProps } from '@mui/material'
+import type { FunctionComponent } from 'react'
 
 const InfoTextField: FunctionComponent<TextFieldProps> = (props) => {
   return (
@@ -7,8 +7,8 @@ const InfoTextField: FunctionComponent<TextFieldProps> = (props) => {
       {...props}
       fullWidth
       disabled
-      value={props.value || ""} />
+      value={props.value || ''} />
   )
-};
+}
 
-export default InfoTextField;
+export default InfoTextField
