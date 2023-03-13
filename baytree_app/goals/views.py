@@ -159,8 +159,6 @@ class GoalStatisticsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
     queryset = Goal.objects.all()
 
     def get(self, request):
-        FluentLoggingHandler.logRequest(
-            request, "Sending GET request to retreive goal statistics")
         all = self.get_queryset()
         active = all.filter(status="IN PROGRESS")
         complete = all.filter(status="ACHIEVED")
@@ -169,8 +167,7 @@ class GoalStatisticsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
             "complete": len(complete)
         }
         response = Response(result)
-        FluentLoggingHandler.logResponse(
-            response, request, "Successfully retreived goal statistics")
+
         return result
 
 
@@ -179,8 +176,6 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
     queryset = Goal.objects.all()
 
     def get(self, request):
-        FluentLoggingHandler.logRequest(
-            request, "Sending GET request to export goals to CSV")
         all = self.get_queryset()
         cache = {}
 
@@ -224,6 +219,5 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
                 writer.writerow(row)
 
             response = Response(csvFile.getvalue())
-            FluentLoggingHandler.logResponse(
-                response, request, "Successfully exported goals to CSV")
+
             return response
