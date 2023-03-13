@@ -11,6 +11,23 @@ export const goalsApi = axios.create({
   withCredentials: true
 })
 
+type paramsType = {
+  limit?: number,
+  offset?: number,
+  status?: string,
+  categories?: string,
+  ordering?: string,
+  search?: string
+}
+
+type goalDataType = {
+  title?: string,
+  goal_review_date?: string,
+  description?: string,
+  categories?: number[],
+  mentee_id?: number
+}
+
 export type GoalCategory = {
   id: number;
   name: string;
@@ -62,7 +79,7 @@ export type GoalResult = {
 export const fetchGoals = async (
   query: GoalQuery = { limit: 5, offset: 0, orderingDate: 'creation_date' }
 ) => {
-  const params: any = {
+  const params: paramsType = {
     limit: query.limit,
     offset: query.offset
   }
@@ -108,7 +125,7 @@ export const fetchGoalById = async (id: number) => {
 }
 
 export const submitGoal = async (input: GoalInput, id?: number) => {
-  const data: any = {
+  const data: goalDataType = {
     title: input.title,
     goal_review_date: format(input.goal_review_date, 'yyyy-MM-dd'),
     description: input.description,
