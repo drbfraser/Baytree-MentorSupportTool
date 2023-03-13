@@ -54,6 +54,7 @@ class GoalListCreateAPIView(
     filterset_fields = ['status']
 
     def get_queryset(self, *args, **kwargs):
+        FluentLoggingHandler.logAction(self.request, "Retrieving goals")
         qs = super().get_queryset(*args, **kwargs)
 
         categoryParams = self.request.GET.get('categories', None)
@@ -72,6 +73,7 @@ class GoalListCreateAPIView(
 
     def TitleQueryFilter(self, qs, query):
         # process query base on title
+        FluentLoggingHandler.info("Filtering goals by title")
         if query is not None:
             titles = []
             for goal in qs.all():
@@ -83,6 +85,7 @@ class GoalListCreateAPIView(
 
     def MentorEmailQueryFilter(self, qs, query):
         # process query base on mentor email
+        FluentLoggingHandler.info("Filtering goals by mentor email")
         if query is not None:
             email = []
             for goal in qs.all():
@@ -93,6 +96,7 @@ class GoalListCreateAPIView(
 
     def CategoryParamsQueryFilter(self, qs, query):
         # process query base on category
+        FluentLoggingHandler.info("Filtering goals by category")
         if query is not None:
             ids = [int(x) for x in query.split(',')]
             for id in ids:
@@ -102,6 +106,7 @@ class GoalListCreateAPIView(
 
     def MenteeNameQueryFilter(self, qs, query):
         # process query base on mentor name
+        FluentLoggingHandler.info("Filtering goals by mentor name")
         if query:
             id = []
             running_thread = []
@@ -124,6 +129,7 @@ class GoalListCreateAPIView(
             id.append(goal.mentee_id)
 
     def perform_create(self, serializer):
+        FluentLoggingHandler.logAction(self.request, "Creating a new goal")
         mentors = MentorUser.objects.filter(user_id=self.request.user.id)
         if mentors is None:
             raise Http404()
@@ -140,6 +146,7 @@ class GoalRetrieveUpdateDestroyAPIView(
     lookup_field = 'pk'
 
     def perform_update(self, serializer):
+        FluentLoggingHandler.logAction(self.request, "Updating goal")
         if self.request.method != "PATCH":
             return serializer.save(categories=self.request.data["categories"])
         else:
@@ -159,6 +166,7 @@ class GoalStatisticsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
     queryset = Goal.objects.all()
 
     def get(self, request):
+        FluentLoggingHandler.logAction(request, "Getting goal statistics")
         all = self.get_queryset()
         active = all.filter(status="IN PROGRESS")
         complete = all.filter(status="ACHIEVED")
@@ -179,7 +187,12 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
         all = self.get_queryset()
         cache = {}
 
+        FluentLoggingHandler.logAction(
+            request, "Retrieving goals in the form of a CSV file")
+
         def get_mentee_name(goal):
+            FluentLoggingHandler.info(
+                f"Getting name of mentee associated with goal: {goal}")
             id = goal.mentee_id
             if id is None:
                 return None
@@ -192,6 +205,8 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
             return cache[f"mentee-{id}"]
 
         def goal_to_csv_row(goal):
+            FluentLoggingHandler.info(
+                f"Transforming the following goal into a row for CSV file: {goal}")
             row = {}
             mentor = goal.mentor
             row["Mentor"] = mentor.user.email if mentor is not None else ""
