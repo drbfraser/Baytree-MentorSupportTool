@@ -37,10 +37,14 @@ def get_questionnaire(request, headers):
     """
     Fetch the questionnaire assigned by the the mentor
     """
+    FluentLoggingHandler.logAction(
+        request, "Retrieving questionnaire assigned by mentor")
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
     if mentor is None:
         # todo: error Logging here
+        FluentLoggingHandler.error(
+            f"Failed to get questionnaire, could not find mentor with id: {request.user.id}")
         response = Response(status=status.HTTP_404_NOT_FOUND)
         return response
     qid = mentor.mentorRole.viewsQuestionnaireId
@@ -50,6 +54,8 @@ def get_questionnaire(request, headers):
 
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
+        FluentLoggingHandler.error(
+            f"Failed to get questionnaire by the following id: {qid}")
         response = Response(status=status.HTTP_404_NOT_FOUND)
         return response
 
@@ -87,6 +93,7 @@ def get_questionnaire(request, headers):
 
 
 def fetch_questions(question, data, index, headers):
+    FluentLoggingHandler.info(f"Fetching the following question: {question}")
     q = {key: question[key] for key in extractedQuestionFields}
     q["order"] = index
     if (question["valueListID"]):
@@ -106,23 +113,24 @@ def get_questionnaire_value_lists(id, headers):
     Fetch the questionnaire value lists for each question
     doc: https://www.substance.net/views/api/index.php/Rest_-_Admin_-_Value_Lists
     """
+    FluentLoggingHandler.info(f"Fetching value list with id: {id}")
     value_list_id = id
     if not value_list_id:
         # todo: error Logging here
         response = Response(status=status.HTTP_404_NOT_FOUND)
         FluentLoggingHandler.error(
-            "Failed to get questionnarie value lists, value list id not found")
+            f"Failed to get questionnarie value lists, could not find value list with id: {value_list_id}")
         return response
 
     url = f"{VIEWS_BASE_URL}admin/valuelists/{value_list_id}.json"
 
     response = requests.get(url, headers=headers)
-    request = response.request
     if response.status_code != 200:
+        FluentLoggingHandler.error(
+            f"Failed to get value list with id: {value_list_id}")
         response = Response(status=status.HTTP_404_NOT_FOUND)
         return response
 
-    loggedResponse = response
     response = response.json()
     data = {}
     data["items"] = response["items"].values()
@@ -135,6 +143,8 @@ def submit_answer_set(request, headers):
     """
     Submit the answer to the remote Views database
     """
+    FluentLoggingHandler.logAction(
+        request, "Submitting answer set to remote Views database")
     # Validate data existence
     data = request.data
     if data["questionnaireId"] is None \
@@ -147,6 +157,8 @@ def submit_answer_set(request, headers):
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
     if mentor is None:
+        FluentLoggingHandler.error(
+            f"Failed to submit answer set, could not find mentor with id: {request.user.id}")
         response = Response(status=status.HTTP_404_NOT_FOUND)
         return response
 
@@ -177,6 +189,8 @@ def submit_answer_set(request, headers):
         # menteeUser = MentorUser.objects.filter(pk=request.user.id)
         mentor_user = MentorUser.objects.filter(pk=request.user.id)
         if not mentor_user.exists():
+            FluentLoggingHandler.error(
+                "Failed to submit answer set, requesting user is not a mentor")
             response = Response(
                 "The current requesting user is not a mentor!",
                 status=status.HTTP_401_UNAUTHORIZED,
