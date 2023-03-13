@@ -1,4 +1,4 @@
-import { Grid, Typography, FormControl } from "@mui/material";
+import { Grid, Typography, FormControl } from '@mui/material'
 
 type TimeInputContainerProps = {
   label: string,
@@ -10,7 +10,7 @@ export const TimeInputContainer: React.FC<TimeInputContainerProps> = (props) => 
   return (
     <Grid container item xs={12} sm={4} alignItems="center">
       <Grid item xs={5} sm={12}>
-        <Typography sx={{ fontWeight: "bold" }} color="text.secondary">
+        <Typography sx={{ fontWeight: 'bold' }} color="text.secondary">
           {props.label}
         </Typography>
       </Grid>
@@ -18,8 +18,8 @@ export const TimeInputContainer: React.FC<TimeInputContainerProps> = (props) => 
         <FormControl fullWidth>{props.children}</FormControl>
       </Grid>
     </Grid>
-  );
-};
+  )
+}
 
 type SelectInputContainerProps = {
   label: string,
@@ -31,7 +31,7 @@ export const SelectInputContainer: React.FC<SelectInputContainerProps> = (props)
   return (
     <Grid container item xs={12} sm={4} alignItems="center">
       <Grid item xs={5} sm={12}>
-        <Typography sx={{ fontWeight: "bold" }} color="text.secondary">
+        <Typography sx={{ fontWeight: 'bold' }} color="text.secondary">
           {props.label}
         </Typography>
       </Grid>
@@ -39,5 +39,5 @@ export const SelectInputContainer: React.FC<SelectInputContainerProps> = (props)
         <FormControl fullWidth>{props.children}</FormControl>
       </Grid>
     </Grid>
-  );
-};
+  )
+}

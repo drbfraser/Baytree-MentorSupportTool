@@ -1,11 +1,11 @@
-import axios from "axios";
-import { API_BASE_URL } from "./url";
+import axios from 'axios'
+import { API_BASE_URL } from './url'
 
 export const baseApi = axios.create({
   baseURL: API_BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  headers: { 'Content-Type': 'application/json' },
   withCredentials: true
-});
+})
 
 
 // Questionnaire
@@ -14,7 +14,7 @@ export type Question = {
   Question: string;
   QuestionID: string;
   category: string;
-  inputType: "text" | "textarea" |"number" | "date" | "radio" | "checkselect" | "select" | "selectother" | "phone_number" |"time";
+  inputType: 'text' | 'textarea' |'number' | 'date' | 'radio' | 'checkselect' | 'select' | 'selectother' | 'phone_number' |'time';
   validation: string;
   valueList: { items: string[]}
 };
@@ -29,34 +29,34 @@ export const submitAnswerSetForQuestionnaire = async (
   person: string
 ) => {
   try {
-    const respond = await baseApi.post("questionnaires/questionnaire/submit/", {
+    const respond = await baseApi.post('questionnaires/questionnaire/submit/', {
       answerSet,
       questionnaireId,
       person
-    });
-    if (respond.status === 200) return respond;
-    else throw Error;
+    })
+    if (respond.status === 200) return respond
+    else throw Error
   } catch (error) {
-    return undefined;
+    return undefined
   }
-};
+}
 
 export const fetchQuestions = () => {
   return baseApi
     .get<{ questionnaireId: number; questions: Question[] }>(
-      "questionnaires/questionnaire/"
+      'questionnaires/questionnaire/'
     )
     .then((response) => ({
       questionnaireId: response.data.questionnaireId,
-      questions: response.data.questions.filter((q) => q.enabled === "1")
-    }));
-};
+      questions: response.data.questions.filter((q) => q.enabled === '1')
+    }))
+}
 
 // Resources
 export const fetchResourcesURL = async () => {
-  const { data } = await baseApi.get<string>("resources/");
-  return data;
-};
+  const { data } = await baseApi.get<string>('resources/')
+  return data
+}
 
 // Sessions
 // TODO: Update the session based on the schema frontend
@@ -71,8 +71,8 @@ export type Session = {
 };
 
 export const fetchSessionListByMentorId = async (id: number) => {
-  return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data);
-};
+  return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data)
+}
 
 // Holidays
 export type SpecialEvent = {
@@ -94,49 +94,49 @@ export type UkHoliday = {
 export const fetchUkHolidays = async () => {
   try {
     const apiRes = await baseApi.get<UkHoliday[]>(
-      "calendar_events/uk_holidays/"
-    );
-    if (apiRes.status === 200) return { data: apiRes.data, error: "" };
-    throw Error;
+      'calendar_events/uk_holidays/'
+    )
+    if (apiRes.status === 200) return { data: apiRes.data, error: '' }
+    throw Error
   } catch (err) {
-    return { data: [] as UkHoliday[], error: "Cannot fetch UK holiday data" };
+    return { data: [] as UkHoliday[], error: 'Cannot fetch UK holiday data' }
   }
-};
+}
 
 export const fetchSpecialEvents = async () => {
   try {
-    const apiRes = await baseApi.get<SpecialEvent[]>("calendar_events/");
-    if (apiRes.status === 200) return { data: apiRes.data, error: "" };
-    throw Error;
+    const apiRes = await baseApi.get<SpecialEvent[]>('calendar_events/')
+    if (apiRes.status === 200) return { data: apiRes.data, error: '' }
+    throw Error
   } catch (err) {
-    return { data: [] as SpecialEvent[], error: "Cannot fetch holidays data" };
+    return { data: [] as SpecialEvent[], error: 'Cannot fetch holidays data' }
   }
-};
+}
 export type Activity = string;
 
 export const getActivitiesForMentor = async () => {
   try {
     const apiRes = await baseApi.get<Activity[]>(
-      "users/mentor-roles/activities"
-    );
-    if (apiRes.status === 200) return apiRes.data;
-    else return null;
+      'users/mentor-roles/activities'
+    )
+    if (apiRes.status === 200) return apiRes.data
+    else return null
   } catch {
-    return null;
+    return null
   }
-};
+}
 export type Venue = {
   viewsVenueId: number;
 };
 
 export const fetchVenues = async () => {
   try {
-    const venues = await baseApi.get<Venue[]>(`sessions/venues/`);
+    const venues = await baseApi.get<Venue[]>('sessions/venues/')
     if (venues.status != 200 || !venues.data) {
-      return null;
+      return null
     }
-    return venues.data;
+    return venues.data
   } catch {
-    return null;
+    return null
   }
-};
+}

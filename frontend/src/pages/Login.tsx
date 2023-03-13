@@ -1,31 +1,31 @@
-import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import Alert from '@mui/material/Alert'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 // Main Login Page
 const Login = () => {
-  const navigate = useNavigate();
-  const { signIn } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState(false);
+  const navigate = useNavigate()
+  const { signIn } = useAuth()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const isLoggedIn = await signIn(email, password);
+    e.preventDefault()
+    const isLoggedIn = await signIn(email, password)
 
     if (!isLoggedIn) {
-      setErrors(true);
-      setEmail("");
-      setPassword("");
+      setErrors(true)
+      setEmail('')
+      setPassword('')
     } else {
-      navigate("/dashboard/home", { replace: true });
+      navigate('/dashboard/home', { replace: true })
     }
-  };
+  }
 
   return (
     <form noValidate onSubmit={handleSubmit}>
@@ -76,7 +76,7 @@ const Login = () => {
         <a href="/ResetPassword">Forgot Password?</a>
       </Typography>
     </form>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

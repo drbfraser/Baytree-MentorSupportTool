@@ -1,23 +1,23 @@
-import { useEffect, useState } from "react";
-import { dummyUser, getMentorProfile, type User } from "../api/views";
+import { useEffect, useState } from 'react'
+import { dummyUser, getMentorProfile, type User } from '../api/views'
 
 const useMentor = () => {
-  const [loadingMentor, setLoadingMentor] = useState(false);
-  const [mentor, setMentor] = useState<User>(dummyUser);
-  const [error, setError] = useState("");
+  const [loadingMentor, setLoadingMentor] = useState(false)
+  const [mentor, setMentor] = useState<User>(dummyUser)
+  const [error, setError] = useState('')
 
   // Fetch the mentor
   useEffect(() => {
-    setLoadingMentor(true);
+    setLoadingMentor(true)
     getMentorProfile()
       .then(({ data, error: mentorError }) => {
-        if (data && !mentorError) setMentor(data);
-        else setError(mentorError);
+        if (data && !mentorError) setMentor(data)
+        else setError(mentorError)
       })
-      .finally(() => setLoadingMentor(false));
-  }, []);
+      .finally(() => setLoadingMentor(false))
+  }, [])
 
-  return { loadingMentor, mentor, error };
-};
+  return { loadingMentor, mentor, error }
+}
 
-export default useMentor;
+export default useMentor
