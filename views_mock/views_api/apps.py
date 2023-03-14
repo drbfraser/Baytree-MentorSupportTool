@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class VolunteeringTypesConfig(AppConfig):
+class ViewsApiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'volunteering_types'
+    name = 'views_api'
