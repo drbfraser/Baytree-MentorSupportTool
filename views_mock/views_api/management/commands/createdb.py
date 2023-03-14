@@ -25,11 +25,11 @@ class Command(BaseCommand):
         c.execute("SHOW DATABASES")
         databases = c.fetchall()
 
-        # db_exists = False
-        # for database in databases:
-        #   if database[0] == os.environ["MOCK_MYSQL_DATABASE"]:
-        #       db_exists = True
-        #       break
-        # if not db_exists:
-        c.execute(f"CREATE DATABASE {NAME}")
-        print("{NAME} successfully created")
+        db_exists = False
+        for database in databases:
+          if database[0] == os.environ["MOCK_MYSQL_DATABASE"]:
+              db_exists = True
+              break
+        if not db_exists:
+          c.execute(f"CREATE DATABASE {NAME}")
+          print("{NAME} successfully created")
