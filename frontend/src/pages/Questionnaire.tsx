@@ -1,7 +1,7 @@
 import ChoiceInput, {
   isChoiceQuestion
 } from '@components/questionnaire/ChoiceInput'
-import CheckBoxInput from '@components/questionnaire/CheckBoxInput'
+import CheckBoxInput, { isCheckBoxQuestion } from '@components/questionnaire/CheckBoxInput'
 import SelectorInput,{isSelectorQuestion} from '@components/questionnaire/SelectorInput'
 import InvalidQuestionnaire from '@components/questionnaire/InvalidQuestionnaire'
 import MenteesNameInput from '@components/questionnaire/MenteesNameInput'
@@ -23,18 +23,15 @@ import {
 } from '@mui/material'
 import { Form, Formik } from 'formik'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Logger, logLevel } from '../api/logging'
-import {isCheckBoxQuestion} from '@components/questionnaire/CheckBoxInput'
 import SpecialInput, {isSpecialQuestion} from '@components/questionnaire/SpecialInput'
 
 const Questionnaire = () => {
   const [canSeeAlert, setcanSeeAlert] = useState('none')
   const [submissionErrorMessage, setSubmissionErrorMessage] = useState(<></>)
   const [submissionErrorTitle, setSubmissionErrorTitle] = useState('Error')
-  const {handleSubmit} = useForm()
 
   const {
     loading,
@@ -45,8 +42,6 @@ const Questionnaire = () => {
     errorMessage,
     handleSubmitAnswerSet
   } = useQuestionnaire()
-
-  console.log(questions)
 
   return (
     <TitledContainer title="Monthly Progress Report">
@@ -84,7 +79,7 @@ const Questionnaire = () => {
                     inconsistent.
                     <br />
                     Please contact the administrator to manually remove
-                    inconsistent questionnaire from Participant's profile before
+                    inconsistent questionnaire from Participant&apos;s profile before
                     trying again.
                   </strong>
                 )
@@ -113,10 +108,10 @@ const Questionnaire = () => {
             }
           }}
         >
-          {({ values, isSubmitting, handleChange }) => (
+          {({ values, isSubmitting }) => (
             <Form>
               {/* Questions */}
-              {questions.map((question, index) => {
+              {questions.map((question) => {
                 const required = isRequired(question)
                 return (
                   <FormControl
@@ -140,7 +135,7 @@ const Questionnaire = () => {
                     ) : isMenteeQuestion(question) ? (
                       <MenteesNameInput
                         question={question}
-                        menteeList={mentees!}
+                        menteeList={mentees}
                       />
                     ) : isChoiceQuestion(question) ? (
                       <ChoiceInput question={question} />
