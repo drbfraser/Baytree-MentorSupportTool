@@ -73,7 +73,10 @@ class FluentLoggingHandler:
         try:
             logJson = {"log": {
                 "url": url,
-                "meta": response.headers,
+                "statusCode": response.status_code,
+                "meta": {
+                    "content-type": response.headers["Content-Type"]
+                },
                 "isRequest": False,
                 "source": source,
                 "destination": destination,
