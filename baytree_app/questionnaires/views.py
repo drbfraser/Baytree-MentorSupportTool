@@ -37,8 +37,6 @@ def get_questionnaire(request, headers):
     """
     Fetch the questionnaire assigned by the the mentor
     """
-    FluentLoggingHandler.logAction(
-        request, "Retrieving questionnaire assigned by mentor")
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
     if mentor is None:
@@ -87,6 +85,9 @@ def get_questionnaire(request, headers):
 
     # sort question base on question order
     data["questions"] = sorted(data["questions"], key=lambda x: x["order"])
+
+    FluentLoggingHandler.info(
+        f"{request.user} is getting the following questionnaire: {data}, assigned by this mentor: {mentor}")
 
     response = Response(data, status=status.HTTP_200_OK)
     return response
@@ -143,8 +144,6 @@ def submit_answer_set(request, headers):
     """
     Submit the answer to the remote Views database
     """
-    FluentLoggingHandler.logAction(
-        request, "Submitting answer set to remote Views database")
     # Validate data existence
     data = request.data
     if data["questionnaireId"] is None \
@@ -165,6 +164,8 @@ def submit_answer_set(request, headers):
     # Redundancy check, user won't submit answer set to the wrong question
     qid = mentor.mentorRole.viewsQuestionnaireId
     if data["questionnaireId"] != qid:
+        FluentLoggingHandler.error(
+            f"{request.user} is sending answer set to the wrong question")
         response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         return response
 
@@ -239,6 +240,9 @@ def submit_answer_set(request, headers):
     parsedXMLRoot = ET.fromstring(response.text)
     responseData["submissionId"] = parsedXMLRoot.get("id")
     responseData["viewsResponse"] = response.text
+
+    FluentLoggingHandler.info(
+        f"{request.user} has submitted the following answer set data: {data}")
 
     loggedResponse = Response(responseData, response.status_code)
     return loggedResponse
