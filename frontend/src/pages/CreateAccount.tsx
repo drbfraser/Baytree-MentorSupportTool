@@ -23,7 +23,7 @@ import { createMentorAccount, userApi } from '../api/mentorAccount'
 
 const useAccountCreationLink = () => {
   const params = useParams()
-  const id = params.accountCreationId!
+  const id = params?.accountCreationId ?? 'Missing ID'
   const [isPageLoading, setIsPageLoading] = useState(false)
   const [hardError, setHardError] = useState('')
   const [success, setSuccess] = useState(false)
