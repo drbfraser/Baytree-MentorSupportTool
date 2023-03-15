@@ -59,6 +59,9 @@ class TestFluentLoggingHandler(unittest.TestCase):
         with open(self.serverRequestsLogPath, 'r') as f:
             log_contents = f.read()
         self.assertIn("Testing logRequest method", log_contents)
+        self.assertIn(request.user, log_contents)
+        self.assertIn(request.method, log_contents)
+        self.assertIn(str(request.META), log_contents)
 
     def test_logResponse(self):
         # mock response object
@@ -76,6 +79,9 @@ class TestFluentLoggingHandler(unittest.TestCase):
         with open(self.serverRequestsLogPath, 'r') as f:
             log_contents = f.read()
         self.assertIn("Testing logResponse method", log_contents)
+        self.assertIn(str(response.headers), log_contents)
+        self.assertIn("INFO", log_contents)
+        self.assertIn("http://baytree.com", log_contents)
 
     def test_info(self):
         FluentLoggingHandler.info("Testing info level logs")
