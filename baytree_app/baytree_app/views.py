@@ -316,8 +316,6 @@ class GenerateCrudEndpointsForModel(APIView):
     put_override_func = None
 
     def get(self, request):
-        FluentLoggingHandler.logAction(request, "Reading data objects")
-
         if self.get_override_func:
             return self.get_override_func(self, request)
 
@@ -348,6 +346,9 @@ class GenerateCrudEndpointsForModel(APIView):
                 status=status.HTTP_200_OK,
             )
 
+            FluentLoggingHandler.info(
+                f"{request.user} is getting the following data objects: {serialized}")
+
             return response
         else:
             ids = request.GET.getlist("id", "")
@@ -367,11 +368,12 @@ class GenerateCrudEndpointsForModel(APIView):
                 {"total": numModelObjects, "data": objects}, status=status.HTTP_200_OK
             )
 
+            FluentLoggingHandler.info(
+                f"{request.user} is getting the following data objects: {objects}")
+
             return response
 
     def delete(self, request):
-        FluentLoggingHandler.logAction(request, "Deleting data object")
-
         if self.delete_override_func:
             return self.delete_override_func(self, request)
 
@@ -380,13 +382,18 @@ class GenerateCrudEndpointsForModel(APIView):
             try:
                 if not isinstance(ids, list):
                     ids = [ids]
+                deletedObjects = self.model.objects.filter(pk__in=ids)
                 self.model.objects.filter(pk__in=ids).delete()
+                FluentLoggingHandler.info(
+                    f"{request.user} has deleted the following data object(s): {deletedObjects}")
                 response = Response(
                     {"status": "Successfully deleted object(s)."},
                     status=status.HTTP_200_OK,
                 )
                 return response
             except Exception as e:
+                FluentLoggingHandler.error(
+                    f"{request.user} failed to delete data object(s)")
                 response = Response(
                     {"error": "Failed to delete object"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -399,8 +406,6 @@ class GenerateCrudEndpointsForModel(APIView):
             return response
 
     def post(self, request):
-        FluentLoggingHandler.logAction(request, "Creating data object")
-
         if self.post_override_func:
             return self.post_override_func(self, request)
 
@@ -412,7 +417,9 @@ class GenerateCrudEndpointsForModel(APIView):
                         del object["id"]
 
                     ids.append(create_object(object, self.model))
-
+                objects = request.data["array"]
+                FluentLoggingHandler.info(
+                    f"{request.user} created the following objects: {objects}")
                 response = Response({"ids": ids}, status=status.HTTP_200_OK)
                 return response
             else:
@@ -422,9 +429,13 @@ class GenerateCrudEndpointsForModel(APIView):
                     del object["id"]
 
                 ids.append(create_object(request.data, self.model))
+                FluentLoggingHandler.info(
+                    f"{request.user} created the following object: {object}")
                 response = Response({"ids": ids}, status=status.HTTP_200_OK)
                 return response
         except Exception as e:
+            FluentLoggingHandler.error(
+                f"{request.user} failed to create object")
             response = Response(
                 {"error": "Failed to create object"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -432,8 +443,6 @@ class GenerateCrudEndpointsForModel(APIView):
             return response
 
     def put(self, request):
-        FluentLoggingHandler.logAction(request, "Updating data object")
-
         if self.put_override_func:
             return self.put_override_func(self, request)
 
@@ -495,10 +504,10 @@ class BatchRestViewSet(viewsets.ModelViewSet):
         if isinstance(request.data, list):
             for data_row in request.data:
                 if "isDeleted" in data_row:
-                    FluentLoggingHandler.logAction(
-                        request, "Batch deleting data objects")
                     # Delete objects
                     if "id" not in data_row:
+                        FluentLoggingHandler.error(
+                            f"{request.user} failed to perform batch delete, no id was found for this data row: {data_row}")
                         response = Response(
                             "No id was found for deleted row.",
                             status=status.HTTP_400_BAD_REQUEST,
@@ -507,22 +516,27 @@ class BatchRestViewSet(viewsets.ModelViewSet):
                     object = self.model_class.objects.filter(pk=data_row["id"])
 
                     if not object.exists():
+                        FluentLoggingHandler.error(
+                            f"{request.user} failed to perform batch delete, object id {data_row.id} was not found")
                         response = Response(
                             "object id " + data_row.id + " was not found.",
                             status=status.HTTP_404_NOT_FOUND,
                         )
                         return response
-
+                    FluentLoggingHandler.info(
+                        f"{request.user} has deleted the following object: {object}")
                     object.delete()
                 else:
-                    FluentLoggingHandler.logAction(
-                        request, "Batch creating and updating data objects")
                     # Create and update objects
                     serializer = self.serializer_class(
                         data=data_row, partial=True)
                     if serializer.is_valid():
                         serializer.save()
+                        FluentLoggingHandler.info(
+                            f"{request.user} has created and updated the following object: {data_row}")
                     else:
+                        FluentLoggingHandler.error(
+                            f"{request.user} has failed to create and update, the following object is invalid: {data_row}")
                         response = Response(
                             serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST,
