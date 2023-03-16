@@ -31,7 +31,7 @@ class FluentLoggingHandler:
         params = {}
         if request.method == "GET":
             params = request.GET
-        elif request.method == "POST" or request.method == "PUT":
+        elif request.method == "POST":
             params = request.POST
 
         try:
@@ -43,6 +43,7 @@ class FluentLoggingHandler:
                 "meta": {
                     "content_length": request.META["CONTENT_LENGTH"],
                     "http_accept": request.META["HTTP_ACCEPT"],
+                    "http_referer": request.META["HTTP_REFERER"],
                     "query_string": request.META["QUERY_STRING"],
                     "server_name": request.META["SERVER_NAME"],
                     "server_port": request.META["SERVER_PORT"]
