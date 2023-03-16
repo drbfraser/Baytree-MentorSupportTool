@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "views_api",
     "users",
-    "sessions"
+    "sessions",
+    "questionnaire"
 ]
 
 MIDDLEWARE = [
