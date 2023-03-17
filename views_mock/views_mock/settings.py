@@ -89,7 +89,7 @@ DATABASES = {
         "HOST": os.environ["MYSQL_HOST"],
         "PORT": 3306,
     },
-    "original": {
+    "baytree": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": os.environ["MYSQL_DATABASE"],
         "USER": os.environ["MYSQL_USER"],
