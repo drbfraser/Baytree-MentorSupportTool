@@ -12,7 +12,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    ```text
    SECRET_KEY=something_random
 
-   MYSQL_USER=root
+   MYSQL_USER=dbuser
    MYSQL_PASSWORD=something_random
 
    EMAIL_HOST=smtp.gmail.com
