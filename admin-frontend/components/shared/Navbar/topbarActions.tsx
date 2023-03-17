@@ -1,7 +1,7 @@
-import { IconBaseProps } from "react-icons";
-import { MdLogout } from "react-icons/md";
-import LogoutModal from "./logoutModal";
-import { NavbarModalComponent } from "./navbar";
+import { IconBaseProps } from 'react-icons'
+import { MdLogout } from 'react-icons/md'
+import LogoutModal from './logoutModal'
+import { NavbarModalComponent } from './navbar'
 
 export interface TopbarAction {
   icon: React.FC<IconBaseProps>;
@@ -16,12 +16,12 @@ export interface TopbarAction {
 const topbarActions: TopbarAction[] = [
   {
     icon: MdLogout,
-    title: "Log out",
+    title: 'Log out',
     modalComponent: LogoutModal,
     enableModalCloseButton: false,
-    modalHeight: "auto",
-    iconColor: "#ff0000",
+    modalHeight: 'auto',
+    iconColor: '#ff0000',
   },
-];
+]
 
-export default topbarActions;
+export default topbarActions
