@@ -5,7 +5,7 @@ import {
   useEffect,
   useRef,
   useState,
-} from "react";
+} from 'react'
 import {
   DataGridColumn,
   DataRow,
@@ -13,7 +13,7 @@ import {
   onLoadDataRowsFunc,
   onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
-} from "../datagridTypes";
+} from '../datagridTypes'
 import {
   loadColumnValueOptions,
   saveDataRows,
@@ -27,7 +27,7 @@ import {
   createDataRow,
   isAnyColumnSearchable,
   loadDataRows,
-} from "./useDataLogic";
+} from './useDataLogic'
 
 /** Responsible for loading, accessing, deleting data state and saving it */
 const useData = (
@@ -51,31 +51,31 @@ const useData = (
   pageSize?: number
 ) => {
   const FAIL_LOAD_MESSAGE =
-    "Failed to load data. Please ensure that you have a stable internet connection and refresh the page. Otherwise, contact your administrator.";
+    'Failed to load data. Please ensure that you have a stable internet connection and refresh the page. Otherwise, contact your administrator.'
 
   const FAIL_SAVE_MESSAGE =
-    "Failed to save data. Ensure that all data entered is valid and your internet is stable. Otherwise, try refreshing the page or contacting your administrator.";
+    'Failed to save data. Ensure that all data entered is valid and your internet is stable. Otherwise, try refreshing the page or contacting your administrator.'
 
   const _onLoadDataRows = data
     ? async () => data as DataRow[]
     : onLoadDataRows
     ? onLoadDataRows
-    : async () => [];
+    : async () => []
 
-  const [dataRows, setDataRows] = useState<DataRow[]>([]);
-  const originalDataRowsRef = useRef<DataRow[]>([]);
-  const [changedDataRows, setChangedDataRows] = useState<DataRow[]>([]);
-  const [createdDataRows, setCreatedDataRows] = useState<DataRow[]>([]);
-  const [deletedDataRows, setDeletedDataRows] = useState<DataRow[]>([]);
-  const [cols, setCols] = useState<DataGridColumn[]>(initialCols);
-  const primaryKeyDataFieldRef = useRef(primaryKeyDataField ?? "id");
-  const createRowNextIdRef = useRef(0); // next created row id
-  const [invalidCells, setInvalidCells] = useState<InvalidCell[]>([]);
-  const loadedColumnValueOptionsRef = useRef(false); // prevent double loading
+  const [dataRows, setDataRows] = useState<DataRow[]>([])
+  const originalDataRowsRef = useRef<DataRow[]>([])
+  const [changedDataRows, setChangedDataRows] = useState<DataRow[]>([])
+  const [createdDataRows, setCreatedDataRows] = useState<DataRow[]>([])
+  const [deletedDataRows, setDeletedDataRows] = useState<DataRow[]>([])
+  const [cols, setCols] = useState<DataGridColumn[]>(initialCols)
+  const primaryKeyDataFieldRef = useRef(primaryKeyDataField ?? 'id')
+  const createRowNextIdRef = useRef(0) // next created row id
+  const [invalidCells, setInvalidCells] = useState<InvalidCell[]>([])
+  const loadedColumnValueOptionsRef = useRef(false) // prevent double loading
 
   useEffect(() => {
-    getData();
-  }, [currentPage, searchText]);
+    getData()
+  }, [currentPage, searchText])
 
   const getData = async () => {
     // Is paginated
@@ -96,7 +96,7 @@ const useData = (
             setMaxPageNum: setMaxPageNumber,
           },
         }
-      );
+      )
     } else {
       await loadDataRows(
         _onLoadDataRows,
@@ -106,9 +106,9 @@ const useData = (
         isSearchingRef,
         clearPagerFuncRef,
         cols
-      );
+      )
     }
-  };
+  }
 
   useEffect(() => {
     if (!loadedColumnValueOptionsRef.current) {
@@ -117,10 +117,10 @@ const useData = (
         setCols,
         setIsLoadingColValueOptions,
         FAIL_LOAD_MESSAGE
-      );
-      loadedColumnValueOptionsRef.current = true;
+      )
+      loadedColumnValueOptionsRef.current = true
     }
-  }, [initialCols]);
+  }, [initialCols])
 
   const _saveDataRows = onSaveDataRows
     ? () =>
@@ -140,7 +140,7 @@ const useData = (
           cols,
           setInvalidCells
         )
-    : undefined;
+    : undefined
 
   const isDataGridCurrentlyAbleToSave =
     (changedDataRows.length > 0 ||
@@ -148,7 +148,7 @@ const useData = (
       deletedDataRows.length > 0) &&
     !isLoadingDataRows &&
     !isLoadingColValueOptions &&
-    !isSavingDataRows;
+    !isSavingDataRows
 
   const _removeCreatedDataRow = (createdDataRow: DataRow) =>
     removeCreatedDataRow(
@@ -156,20 +156,20 @@ const useData = (
       createdDataRows,
       primaryKeyDataFieldRef.current,
       setCreatedDataRows
-    );
+    )
 
   const _getOriginalDataRow = (dataRow: DataRow) =>
     getOriginalDataRow(
       dataRow,
       originalDataRowsRef.current,
       primaryKeyDataFieldRef.current
-    );
+    )
 
   const _getChangedDataRow = (dataRow: DataRow) =>
-    getChangedDataRow(dataRow, changedDataRows, primaryKeyDataFieldRef.current);
+    getChangedDataRow(dataRow, changedDataRows, primaryKeyDataFieldRef.current)
 
   const _isDataRowDeleted = (dataRow: DataRow) =>
-    isDataRowDeleted(dataRow, deletedDataRows, primaryKeyDataFieldRef.current);
+    isDataRowDeleted(dataRow, deletedDataRows, primaryKeyDataFieldRef.current)
 
   const _setChangedDataRow = (changedDataRow: DataRow) =>
     setChangedDataRow(
@@ -179,7 +179,7 @@ const useData = (
       changedDataRows,
       setChangedDataRows,
       primaryKeyDataFieldRef.current
-    );
+    )
 
   const _setCreatedDataRow = (createdDataRow: DataRow) =>
     setCreatedDataRow(
@@ -187,7 +187,7 @@ const useData = (
       createdDataRows,
       primaryKeyDataFieldRef.current,
       setCreatedDataRows
-    );
+    )
 
   const _setDeletedDataRow = (isDeleted: boolean, dataRow: DataRow) =>
     setDeletedDataRow(
@@ -196,7 +196,7 @@ const useData = (
       deletedDataRows,
       setDeletedDataRows,
       primaryKeyDataFieldRef.current
-    );
+    )
 
   const _createDataRow = () =>
     createDataRow(
@@ -205,9 +205,9 @@ const useData = (
       setCreatedDataRows,
       cols,
       primaryKeyDataFieldRef.current
-    );
+    )
 
-  const _isAnyColumnSearchable = isAnyColumnSearchable(cols);
+  const _isAnyColumnSearchable = isAnyColumnSearchable(cols)
 
   return {
     dataRows,
@@ -233,7 +233,7 @@ const useData = (
     createDataRow: _createDataRow,
     isAnyColumnSearchable: _isAnyColumnSearchable,
     invalidCells,
-  };
-};
+  }
+}
 
-export default useData;
+export default useData

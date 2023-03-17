@@ -1,23 +1,23 @@
-import { Skeleton, TableCell, TextField, Typography } from "@mui/material";
-import { FC, useRef } from "react";
-import styled from "styled-components";
+import { Skeleton, TableCell, TextField, Typography } from '@mui/material'
+import { FC, useRef } from 'react'
+import styled from 'styled-components'
 import {
   ColumnDataTypes,
   OnLoadPagedColumnValueOptionsFunc,
   ValueOption,
-} from "./datagridTypes";
-import useMobileLayout from "../../../hooks/useMobileLayout";
+} from './datagridTypes'
+import useMobileLayout from '../../../hooks/useMobileLayout'
 import {
   isLoadingSelectOptions,
   shouldRenderBoolComponent,
   shouldRenderDateComponent,
   shouldRenderSelectComponent,
   shouldRenderTextInputComponent,
-} from "./datagridCellLogic";
-import DataGridSelectComponent from "./datagridSelectComponent";
-import DataGridDateComponent from "./datagridDateComponent";
-import DataGridBoolComponent from "./datagridBoolComponent";
-import PaginatedSelect, { PaginatedSelectOption } from "../paginatedSelect";
+} from './datagridCellLogic'
+import DataGridSelectComponent from './datagridSelectComponent'
+import DataGridDateComponent from './datagridDateComponent'
+import DataGridBoolComponent from './datagridBoolComponent'
+import PaginatedSelect, { PaginatedSelectOption } from '../paginatedSelect'
 
 interface DataRowCellProps {
   isSelectCell: boolean;
@@ -40,8 +40,8 @@ interface DataRowCellProps {
 }
 
 const DataRowCell: FC<DataRowCellProps> = (props) => {
-  const selectIdRef = useRef(0);
-  const isOnMobileDevice = useMobileLayout();
+  const selectIdRef = useRef(0)
+  const isOnMobileDevice = useMobileLayout()
 
   /** Renders the correct component for the current column dataType, edit options */
   const renderComponentInCell = () => {
@@ -52,7 +52,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
         isLoadingSelectOptions(props.valueOptions) &&
         !props.onLoadPagedColumnValueOptionsFunc
       ) {
-        return <LoadingDataGridCell></LoadingDataGridCell>;
+        return <LoadingDataGridCell></LoadingDataGridCell>
       } else {
         return (
           <DataGridSelectComponent
@@ -68,7 +68,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
             valueOptions={props.valueOptions as ValueOption[]}
             isMultiSelect={props.isMultiSelect}
           />
-        );
+        )
       }
     } else if (
       shouldRenderDateComponent(
@@ -84,7 +84,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
           primaryKeyVal={props.primaryKeyVal}
           value={props.value}
         ></DataGridDateComponent>
-      );
+      )
     } else if (shouldRenderBoolComponent(props.dataType)) {
       return (
         <DataGridBoolComponent
@@ -95,7 +95,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
           primaryKeyVal={props.primaryKeyVal}
           value={props.value}
         ></DataGridBoolComponent>
-      );
+      )
     } else if (
       shouldRenderTextInputComponent(
         props.isDataGridSaveable,
@@ -108,51 +108,51 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
           defaultValue={props.value}
           onBlur={(event) => props.onChangedValue(event.target.value)}
           inputProps={{
-            style: { fontSize: "0.8rem" },
+            style: { fontSize: '0.8rem' },
           }}
         ></TextField>
-      );
+      )
     } else {
       // Render read-only text component
       return (
         <Typography
           sx={{
-            fontSize: "0.8rem",
-            whiteSpace: "nowrap",
-            wordBreak: "break-word",
+            fontSize: '0.8rem',
+            whiteSpace: 'nowrap',
+            wordBreak: 'break-word',
           }}
         >
           {props.value}
         </Typography>
-      );
+      )
     }
-  };
+  }
 
   const renderDataGridCell = () => {
     return (
       <DataGridCellContainer
-        justifycontent={isOnMobileDevice ? "flex-start" : "center"}
+        justifycontent={isOnMobileDevice ? 'flex-start' : 'center'}
       >
         {renderComponentInCell()}
       </DataGridCellContainer>
-    );
-  };
+    )
+  }
 
   // Use a div to suppress DOM errors on mobile layout
   return props.useDivInsteadOfTableCell ? (
     <div
       style={{
-        width: "100%",
-        height: "100%",
+        width: '100%',
+        height: '100%',
         backgroundColor: props.isCellInvalid
-          ? "lightyellow"
+          ? 'lightyellow'
           : props.isCellDeleted
-          ? "lightpink"
+          ? 'lightpink'
           : props.isCellChanged
-          ? "lightgreen"
+          ? 'lightgreen'
           : props.color
           ? props.color
-          : "unset",
+          : 'unset',
       }}
     >
       {renderDataGridCell()}
@@ -161,40 +161,40 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
     <StyledDataGridCell
       cellbackgroundcolor={
         props.isCellInvalid
-          ? "lightyellow"
+          ? 'lightyellow'
           : props.isCellDeleted
-          ? "lightpink"
+          ? 'lightpink'
           : props.isCellChanged
-          ? "lightgreen"
+          ? 'lightgreen'
           : props.color
           ? props.color
-          : "unset"
+          : 'unset'
       }
     >
       {renderDataGridCell()}
     </StyledDataGridCell>
-  );
-};
+  )
+}
 
 const StyledDataGridCell = styled(TableCell)<{ cellbackgroundcolor: string }>`
   background-color: ${(props) => props.cellbackgroundcolor};
-`;
+`
 
 const DataGridCellContainer = styled.div<{ justifycontent: string }>`
   display: flex;
-  justify-content: ${(props) => props.justifycontent ?? "flex-start"};
-`;
+  justify-content: ${(props) => props.justifycontent ?? 'flex-start'};
+`
 
 const LoadingDataGridCell: FC = () => {
-  const NUM_SKELETON_ROWS = 3;
+  const NUM_SKELETON_ROWS = 3
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div style={{ width: '100%', height: '100%' }}>
       {Array.from(Array(NUM_SKELETON_ROWS).keys()).map((idx) => (
         <Skeleton key={`skeleton_${idx}`}></Skeleton>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default DataRowCell;
+export default DataRowCell
