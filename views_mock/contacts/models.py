@@ -6,7 +6,7 @@ class Person(models.Model):
         PARTICIPANT = 'participant'
         STAFF = 'staff'
 
-    PersonID = models.IntegerField()
+    PersonID = models.IntegerField(primary_key=True)
     TypeName = models.CharField(
         max_length=20,
         choices=TypeNameEnum.choices,
