@@ -6,7 +6,7 @@ class Person(models.Model):
         PARTICIPANT = 'participant'
         STAFF = 'staff'
 
-    PersonID = models.IntegerField(primary_key=True)
+    PersonID = models.AutoField(primary_key=True)
     TypeName = models.CharField(
         max_length=20,
         choices=TypeNameEnum.choices,
@@ -20,13 +20,12 @@ class Person(models.Model):
     Country = models.CharField(max_length=50, null=True)
 
 class Participant(models.Model):
-    PersonID = models.ForeignKey(Person, on_delete=models.CASCADE)
+    PersonID = models.OneToOneField(Person, primary_key=True, on_delete=models.CASCADE, related_name="participant", db_column="PersonID")
     FirstLanguage_P_88 = models.CharField(max_length=20, null=True)
     Ethnicity = models.CharField(max_length=20, null=True)
 
-
-class Volunteer(models.Model):
-    PersonID = models.ForeignKey(Person, on_delete=models.CASCADE)
+class Volunteers(models.Model):
+    PersonID = models.OneToOneField(Person, primary_key=True, on_delete=models.CASCADE, related_name="volunteer", db_column="PersonID")
     Whatisyourfirstlanguage_V_19 = models.CharField(max_length=20, null=True)
     Ethnicity_V_15 = models.CharField(max_length=20, null=True)
 
