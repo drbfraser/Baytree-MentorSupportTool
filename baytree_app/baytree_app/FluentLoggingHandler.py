@@ -26,6 +26,7 @@ class FluentLoggingHandler:
             source = "baytree"
             destination = "views" if views_base_url == "https://app.viewsapp.net/api/restful/" else "mock_views"
         else:
+            # TO-DO: We need to distinguish between admin-frontend and frontend in a non-local environment
             source = "admin-frontend" if clientUrl == "http://localhost:3001/" else "frontend"
             destination = "baytree"
 
@@ -57,6 +58,7 @@ class FluentLoggingHandler:
             destination = "baytree"
         else:
             source = "baytree"
+            # TO-DO: We need to distinguish between admin-frontend and frontend in a non-local environment
             destination = "admin-frontend" if clientUrl == "http://localhost:3001/" else "frontend"
 
         try:
