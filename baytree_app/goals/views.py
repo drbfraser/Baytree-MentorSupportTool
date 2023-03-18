@@ -68,14 +68,10 @@ class GoalListCreateAPIView(
 
         qs = titleQuerySet | mentorQuerySet | menteeQuerySet
 
-        FluentLoggingHandler.info(
-            f"{self.request.user} is getting goals by the following search query: {serachQuery}")
-
         return qs
 
     def TitleQueryFilter(self, qs, query):
         # process query base on title
-        FluentLoggingHandler.info(f"Filtering goals by title: {query}")
         if query is not None:
             titles = []
             for goal in qs.all():
@@ -87,7 +83,6 @@ class GoalListCreateAPIView(
 
     def MentorEmailQueryFilter(self, qs, query):
         # process query base on mentor email
-        FluentLoggingHandler.info(f"Filtering goals by mentor email: {query}")
         if query is not None:
             email = []
             for goal in qs.all():
@@ -98,7 +93,6 @@ class GoalListCreateAPIView(
 
     def CategoryParamsQueryFilter(self, qs, query):
         # process query base on category
-        FluentLoggingHandler.info(f"Filtering goals by category: {query}")
         if query is not None:
             ids = [int(x) for x in query.split(',')]
             for id in ids:
@@ -108,7 +102,6 @@ class GoalListCreateAPIView(
 
     def MenteeNameQueryFilter(self, qs, query):
         # process query base on mentor name
-        FluentLoggingHandler.info(f"Filtering goals by mentor name: {query}")
         if query:
             id = []
             running_thread = []
@@ -182,8 +175,6 @@ class GoalStatisticsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
             "complete": len(complete)
         }
         response = Response(result)
-        FluentLoggingHandler.info(
-            f"{self.request.user} is getting the following goal statistics: {result}")
         return result
 
 
@@ -209,13 +200,9 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
                 cache[key] = f"{mentee['firstName']} {mentee['lastName']}"
 
             mentee = cache[f"mentee-{id}"]
-            FluentLoggingHandler.info(
-                f"{request.user} is getting the following mentee: {mentee} associated with this goal: {goal}")
             return cache[f"mentee-{id}"]
 
         def goal_to_csv_row(goal):
-            FluentLoggingHandler.info(
-                f"Transforming the following goal into a row for CSV file: {goal}")
             row = {}
             mentor = goal.mentor
             row["Mentor"] = mentor.user.email if mentor is not None else ""
