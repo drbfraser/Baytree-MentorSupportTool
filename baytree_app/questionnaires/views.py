@@ -86,15 +86,11 @@ def get_questionnaire(request, headers):
     # sort question base on question order
     data["questions"] = sorted(data["questions"], key=lambda x: x["order"])
 
-    FluentLoggingHandler.info(
-        f"{request.user} is getting the following questionnaire: {data}, assigned by this mentor: {mentor}")
-
     response = Response(data, status=status.HTTP_200_OK)
     return response
 
 
 def fetch_questions(question, data, index, headers):
-    FluentLoggingHandler.info(f"Fetching the following question: {question}")
     q = {key: question[key] for key in extractedQuestionFields}
     q["order"] = index
     if (question["valueListID"]):
@@ -114,7 +110,6 @@ def get_questionnaire_value_lists(id, headers):
     Fetch the questionnaire value lists for each question
     doc: https://www.substance.net/views/api/index.php/Rest_-_Admin_-_Value_Lists
     """
-    FluentLoggingHandler.info(f"Fetching value list with id: {id}")
     value_list_id = id
     if not value_list_id:
         # todo: error Logging here
