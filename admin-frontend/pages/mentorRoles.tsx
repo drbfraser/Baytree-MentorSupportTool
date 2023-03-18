@@ -1,29 +1,29 @@
-import { Paper, Typography } from "@mui/material";
-import { NextPage } from "next";
-import { toast } from "react-toastify";
-import styled from "styled-components";
+import { Paper, Typography } from '@mui/material'
+import { NextPage } from 'next'
+import { toast } from 'react-toastify'
+import styled from 'styled-components'
 import {
   getMentorRoles,
   MentorRole,
   saveMentorRoles,
-} from "../api/backend/mentorRoles";
-import { getActivitiesFromViews } from "../api/backend/views/activities";
+} from '../api/backend/mentorRoles'
+import { getActivitiesFromViews } from '../api/backend/views/activities'
 import {
   getQuestionnaireFromViews,
   getQuestionnairesFromViews,
-} from "../api/backend/views/questionnaires";
+} from '../api/backend/views/questionnaires'
 import {
   getSessionGroupFromViews,
   getSessionGroupsFromViews,
-} from "../api/backend/views/sessionGroups";
-import { getVolunteeringTypesFromViews } from "../api/backend/views/volunteeringTypes";
-import DataGrid from "../components/shared/datagrid/datagrid";
+} from '../api/backend/views/sessionGroups'
+import { getVolunteeringTypesFromViews } from '../api/backend/views/volunteeringTypes'
+import DataGrid from '../components/shared/datagrid/datagrid'
 import {
   onSaveDataRowsFunc,
   onLoadDataRowsFunc,
   OnLoadColumnValueOptionsFunc,
   OnLoadPagedColumnValueOptionsFunc,
-} from "../components/shared/datagrid/datagridTypes";
+} from '../components/shared/datagrid/datagridTypes'
 
 const MentorRoles: NextPage = () => {
   const getMentorRoleData: onLoadDataRowsFunc = async ({
@@ -33,14 +33,14 @@ const MentorRoles: NextPage = () => {
     const mentorRolesPageRes = (await getMentorRoles({
       searchText,
       dataFieldsToSearch,
-    })) as MentorRole[];
+    })) as MentorRole[]
 
     if (mentorRolesPageRes) {
-      return mentorRolesPageRes;
+      return mentorRolesPageRes
     } else {
-      throw "Failed to retrieve mentor role data.";
+      throw 'Failed to retrieve mentor role data.'
     }
-  };
+  }
 
   const saveMentorRoleData: onSaveDataRowsFunc<MentorRole> = async (
     createdRows: MentorRole[],
@@ -51,9 +51,9 @@ const MentorRoles: NextPage = () => {
       ...createdRows,
       ...updatedRows,
       ...deletedRows.map((row) => ({ ...row, isDeleted: true })),
-    ]);
-    return !!result;
-  };
+    ])
+    return !!result
+  }
 
   const getSessionGroupOptions: OnLoadPagedColumnValueOptionsFunc = async ({
     id,
@@ -62,7 +62,7 @@ const MentorRoles: NextPage = () => {
     searchText,
   }) => {
     if (id) {
-      const sessionGroup = await getSessionGroupFromViews(id);
+      const sessionGroup = await getSessionGroupFromViews(id)
       if (sessionGroup) {
         return {
           total: 1,
@@ -72,32 +72,32 @@ const MentorRoles: NextPage = () => {
               name: sessionGroup.name,
             },
           ],
-        };
+        }
       } else {
-        toast.error("Failed to retrieve initial session group option data");
-        return { total: 0, data: [] };
+        toast.error('Failed to retrieve initial session group option data')
+        return { total: 0, data: [] }
       }
     } else {
       const response = await getSessionGroupsFromViews({
         limit,
         offset,
         name: searchText,
-      });
+      })
       if (response) {
-        const sessionGroups = response.data;
+        const sessionGroups = response.data
         return {
           total: response.total,
           data: sessionGroups.map((sessionGroup) => ({
             id: parseInt(sessionGroup.viewsSessionGroupId),
             name: sessionGroup.name,
           })),
-        };
+        }
       } else {
-        toast.error("Failed to retrieve session group option data.");
-        return { total: 0, data: [] };
+        toast.error('Failed to retrieve session group option data.')
+        return { total: 0, data: [] }
       }
     }
-  };
+  }
 
   const getQuestionnaireOptions: OnLoadPagedColumnValueOptionsFunc = async ({
     id,
@@ -106,7 +106,7 @@ const MentorRoles: NextPage = () => {
     searchText,
   }) => {
     if (id) {
-      const questionnaire = await getQuestionnaireFromViews(id);
+      const questionnaire = await getQuestionnaireFromViews(id)
       if (questionnaire) {
         return {
           total: 1,
@@ -116,56 +116,56 @@ const MentorRoles: NextPage = () => {
               name: questionnaire.title,
             },
           ],
-        };
+        }
       } else {
-        toast.error("Failed to retrieve initial questionnaire option data");
-        return { total: 0, data: [] };
+        toast.error('Failed to retrieve initial questionnaire option data')
+        return { total: 0, data: [] }
       }
     } else {
       const response = await getQuestionnairesFromViews({
         limit,
         offset,
         title: searchText,
-      });
+      })
       if (response) {
-        const questionnaires = response.data;
+        const questionnaires = response.data
         return {
           total: response.total,
           data: questionnaires.map((questionnaire) => ({
             id: questionnaire.viewsQuestionnaireId,
             name: questionnaire.title,
           })),
-        };
+        }
       } else {
-        toast.error("Failed to retrieve questionnaires option data.");
-        return { total: 0, data: [] };
+        toast.error('Failed to retrieve questionnaires option data.')
+        return { total: 0, data: [] }
       }
     }
-  };
+  }
 
   const getActivityOptions: OnLoadColumnValueOptionsFunc = async () => {
-    const activities = await getActivitiesFromViews();
+    const activities = await getActivitiesFromViews()
     if (activities) {
       return activities.results.map((activity) => ({
         id: activity,
         name: activity,
-      }));
+      }))
     } else {
-      throw "Failed to retrieve activities option data.";
+      throw 'Failed to retrieve activities option data.'
     }
-  };
+  }
 
   const getVolunteeringOptions: OnLoadColumnValueOptionsFunc = async () => {
-    const volunteeringTypes = await getVolunteeringTypesFromViews();
+    const volunteeringTypes = await getVolunteeringTypesFromViews()
     if (volunteeringTypes) {
       return volunteeringTypes.results.map((volunteeringType) => ({
         id: volunteeringType,
         name: volunteeringType,
-      }));
+      }))
     } else {
-      throw "Failed to retrieve volunteering type option data.";
+      throw 'Failed to retrieve volunteering type option data.'
     }
-  };
+  }
 
   return (
     <MentorRolesCard>
@@ -173,29 +173,29 @@ const MentorRoles: NextPage = () => {
       <DataGrid
         cols={[
           {
-            header: "Mentor Role",
-            dataField: "name",
+            header: 'Mentor Role',
+            dataField: 'name',
             keepColumnOnMobile: true,
           },
           {
-            header: "Session Group",
-            dataField: "viewsSessionGroupId",
+            header: 'Session Group',
+            dataField: 'viewsSessionGroupId',
             onLoadPagedValueOptions: getSessionGroupOptions,
           },
           {
-            header: "Questionnaire",
-            dataField: "viewsQuestionnaireId",
+            header: 'Questionnaire',
+            dataField: 'viewsQuestionnaireId',
             onLoadPagedValueOptions: getQuestionnaireOptions,
           },
           {
-            header: "Activity",
-            dataField: "activity",
+            header: 'Activity',
+            dataField: 'activity',
             onLoadValueOptions: getActivityOptions,
             isMultiSelect: true,
           },
           {
-            header: "Volunteering",
-            dataField: "volunteeringType",
+            header: 'Volunteering',
+            dataField: 'volunteeringType',
             onLoadValueOptions: getVolunteeringOptions,
           },
         ]}
@@ -204,15 +204,15 @@ const MentorRoles: NextPage = () => {
         isDataGridDeleteable={true}
       ></DataGrid>
     </MentorRolesCard>
-  );
-};
+  )
+}
 
 const MentorRolesCard = styled(Paper)`
   padding: 2rem;
-`;
+`
 
 const MentorRolesTitle = styled(Typography)`
   margin-bottom: 1rem;
-`;
+`
 
-export default MentorRoles;
+export default MentorRoles

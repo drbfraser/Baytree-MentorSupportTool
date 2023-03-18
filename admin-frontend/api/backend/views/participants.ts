@@ -16,33 +16,33 @@ export interface Participant extends ParticipantUnparsed {
   dateOfBirth: Date | null;
 }
 
-import { PagedDataRows } from "../../../components/shared/datagrid/datagridTypes";
-import { backendGet } from "../base";
+import { PagedDataRows } from '../../../components/shared/datagrid/datagridTypes'
+import { backendGet } from '../base'
 
-export const participantsEndpoint = `views-api/participants`;
+export const participantsEndpoint = 'views-api/participants'
 
 export const getParticipantsFromViews = async (params?: {
   limit?: number;
   offset?: number;
   filters?: Record<string, string>;
 }): Promise<PagedDataRows<Participant> | null> => {
-  let queryParams: Record<string, any> = {};
+  let queryParams: Record<string, any> = {}
   if (params) {
     if (params.limit) {
-      queryParams["limit"] = params.limit;
+      queryParams['limit'] = params.limit
     }
     if (params.offset) {
-      queryParams["offset"] = params.offset;
+      queryParams['offset'] = params.offset
     }
     if (params.filters) {
-      queryParams = { ...queryParams, ...params.filters };
+      queryParams = { ...queryParams, ...params.filters }
     }
   }
 
   const response = await backendGet<PagedDataRows<ParticipantResponse>>(
     participantsEndpoint,
     queryParams
-  );
+  )
 
   if (response) {
     return {
@@ -53,8 +53,8 @@ export const getParticipantsFromViews = async (params?: {
           ? null
           : new Date(Date.parse(participant.dateOfBirth)),
       })),
-    };
+    }
   } else {
-    return null;
+    return null
   }
-};
+}

@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement } from 'react'
 
 export type onLoadDataRowsFunc = (loadOptions: {
   searchText: string;
@@ -54,7 +54,7 @@ export interface DataGridColumn {
   isRequired?: boolean;
 }
 
-export type ColumnDataTypes = "date" | "boolean";
+export type ColumnDataTypes = 'date' | 'boolean';
 // If column is "date" dataType, value format must be a string in "yyyy-mm-dd" (Javascript Date not working for now)
 
 export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;

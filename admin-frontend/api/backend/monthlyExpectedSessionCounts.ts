@@ -2,8 +2,8 @@
   Endpoints creating/reading/updating/deleting Monthly Expected Session Count(s).
 */
 
-import { generateBackendCrudFuncs } from "./base";
-import { API_BASE_URL } from "./url";
+import { generateBackendCrudFuncs } from './base'
+import { API_BASE_URL } from './url'
 
 export interface MonthlyExpectedSessionCountCreate {
   year: number;
@@ -27,7 +27,7 @@ export type MonthlyExpectedSessionCountResponse =
 export type MonthlyExpectedSessionCountUpdate =
   MonthlyExpectedSessionCountCreate & { id: number };
 
-export const monthlyExpectedSessionCountEndpoint = `${API_BASE_URL}/sessions/monthly-expected-session-counts`;
+export const monthlyExpectedSessionCountEndpoint = `${API_BASE_URL}/sessions/monthly-expected-session-counts`
 
 export const {
   create: addMonthlyExpectedSessionCount,
@@ -38,4 +38,4 @@ export const {
   MonthlyExpectedSessionCountCreate,
   MonthlyExpectedSessionCountResponse,
   MonthlyExpectedSessionCountUpdate
->(monthlyExpectedSessionCountEndpoint);
+>(monthlyExpectedSessionCountEndpoint)

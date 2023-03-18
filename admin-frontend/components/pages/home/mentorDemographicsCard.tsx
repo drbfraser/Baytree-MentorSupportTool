@@ -1,21 +1,21 @@
-import Paper from "@mui/material/Paper";
-import styled from "styled-components";
+import Paper from '@mui/material/Paper'
+import styled from 'styled-components'
 import {
   COLORS,
   HELP_MESSAGE,
   MOBILE_BREAKPOINT,
-} from "../../../constants/constants";
+} from '../../../constants/constants'
 
-import React, { PureComponent, useEffect, useState } from "react";
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
-import { Button, ButtonGroup, Skeleton, Typography } from "@mui/material";
+import React, { PureComponent, useEffect, useState } from 'react'
+import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts'
+import { Button, ButtonGroup, Skeleton, Typography } from '@mui/material'
 import {
   getVolunteersFromViews,
   Volunteer,
-} from "../../../api/backend/views/volunteers";
-import moment from "moment";
-import { toast } from "react-toastify";
-import { stringify } from "querystring";
+} from '../../../api/backend/views/volunteers'
+import moment from 'moment'
+import { toast } from 'react-toastify'
+import { stringify } from 'querystring'
 
 interface MentorDemographicsData {
   age: {
@@ -29,17 +29,17 @@ interface MentorDemographicsData {
   firstLanguage: Record<string, number>;
 }
 
-type DemographicCategory = "age" | "ethnicity" | "firstLanguage";
+type DemographicCategory = 'age' | 'ethnicity' | 'firstLanguage';
 
 const MentorDemographicsCard: React.FC<{}> = () => {
-  const [loadingData, setLoadingData] = useState(false);
-  const [data, setData] = useState<MentorDemographicsData | null>(null);
+  const [loadingData, setLoadingData] = useState(false)
+  const [data, setData] = useState<MentorDemographicsData | null>(null)
   const [selectedDemographicCategory, setSelectedDemographicCategory] =
-    useState<DemographicCategory>("age");
+    useState<DemographicCategory>('age')
 
   const getAgeInYearsFromBirthDate = (birthDate: Date | null) => {
-    return moment().diff(birthDate, "years");
-  };
+    return moment().diff(birthDate, 'years')
+  }
 
   const getVolunteersInAgeRange = (
     volunteers: Volunteer[],
@@ -49,52 +49,52 @@ const MentorDemographicsCard: React.FC<{}> = () => {
     return volunteers.filter((volunteer) => {
       const volunteerAgeInYears = getAgeInYearsFromBirthDate(
         volunteer.dateOfBirth
-      );
+      )
       return (
         volunteerAgeInYears >= minAge &&
         (!maxAge || volunteerAgeInYears <= maxAge)
-      );
-    });
-  };
+      )
+    })
+  }
 
   const getVolunteersAgeNotEntered = (volunteers: Volunteer[]) => {
     return volunteers.filter((volunteer) => {
-      return !volunteer.dateOfBirth;
-    });
-  };
+      return !volunteer.dateOfBirth
+    })
+  }
 
   const getVolunteerEthnicityCounts = (volunteers: Volunteer[]) => {
-    let ethnicityCounts: Record<string, number> = {};
+    const ethnicityCounts: Record<string, number> = {}
     for (const volunteer of volunteers) {
-      const ethnicity = volunteer.ethnicity ?? "Not Entered";
+      const ethnicity = volunteer.ethnicity ?? 'Not Entered'
       if (ethnicity in ethnicityCounts) {
-        ethnicityCounts[ethnicity] += 1;
+        ethnicityCounts[ethnicity] += 1
       } else {
-        ethnicityCounts[ethnicity] = 1;
+        ethnicityCounts[ethnicity] = 1
       }
     }
 
-    return ethnicityCounts;
-  };
+    return ethnicityCounts
+  }
 
   const getVolunteerFirstLanguageCounts = (volunteers: Volunteer[]) => {
-    let firstLanguageCounts: Record<string, number> = {};
+    const firstLanguageCounts: Record<string, number> = {}
     for (const volunteer of volunteers) {
-      const firstLanguage = volunteer.firstLanguage ?? "Not Entered";
+      const firstLanguage = volunteer.firstLanguage ?? 'Not Entered'
       if (firstLanguage in firstLanguageCounts) {
-        firstLanguageCounts[firstLanguage] += 1;
+        firstLanguageCounts[firstLanguage] += 1
       } else {
-        firstLanguageCounts[firstLanguage] = 1;
+        firstLanguageCounts[firstLanguage] = 1
       }
     }
 
-    return firstLanguageCounts;
-  };
+    return firstLanguageCounts
+  }
 
   useEffect(() => {
     async function getMentorDemographicsData() {
-      setLoadingData(true);
-      const volunteers = await getVolunteersFromViews();
+      setLoadingData(true)
+      const volunteers = await getVolunteersFromViews()
       if (volunteers && volunteers.data) {
         const mentorDemographicsData: MentorDemographicsData = {
           age: {
@@ -106,18 +106,18 @@ const MentorDemographicsCard: React.FC<{}> = () => {
           },
           ethnicity: getVolunteerEthnicityCounts(volunteers.data),
           firstLanguage: getVolunteerFirstLanguageCounts(volunteers.data),
-        };
+        }
 
-        setData(mentorDemographicsData);
+        setData(mentorDemographicsData)
       } else {
-        toast.error(HELP_MESSAGE);
+        toast.error(HELP_MESSAGE)
       }
 
-      setLoadingData(false);
+      setLoadingData(false)
     }
 
-    getMentorDemographicsData();
-  }, []);
+    getMentorDemographicsData()
+  }, [])
 
   return (
     <StyledMentorDemographicsCard>
@@ -153,8 +153,8 @@ const MentorDemographicsCard: React.FC<{}> = () => {
         </>
       )}
     </StyledMentorDemographicsCard>
-  );
-};
+  )
+}
 
 const StyledMentorDemographicsCard = styled(Paper)`
   width: 100%;
@@ -167,7 +167,7 @@ const StyledMentorDemographicsCard = styled(Paper)`
   grid-template-areas:
     "header header"
     "chart legend";
-`;
+`
 
 const Header: React.FC<{
   selectedDemographicCategory: DemographicCategory;
@@ -184,8 +184,8 @@ const Header: React.FC<{
         setSelectedDemographicCategory={props.setSelectedDemographicCategory}
       ></Options>
     </StyledHeader>
-  );
-};
+  )
+}
 
 const StyledHeader = styled.div`
   width: 100%;
@@ -197,19 +197,19 @@ const StyledHeader = styled.div`
   grid-template-areas:
     "title moreInfo"
     "options options";
-`;
+`
 
 const Title: React.FC<{}> = () => {
   return (
     <StyledTitle>
       <Typography variant="h5">Mentor Demographics</Typography>
     </StyledTitle>
-  );
-};
+  )
+}
 
 const StyledTitle = styled.div`
   grid-area: title;
-`;
+`
 
 const MoreInfoButton: React.FC<{}> = () => {
   return (
@@ -218,22 +218,22 @@ const MoreInfoButton: React.FC<{}> = () => {
         More
       </Button>
     </StyledMoreInfoButton>
-  );
-};
+  )
+}
 
 const StyledMoreInfoButton = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
   grid-area: moreInfo;
-`;
+`
 
 const StyledMoreInfoText = styled(Typography)`
   text-decoration: underline;
   :hover {
     cursor: pointer;
   }
-`;
+`
 
 const Options: React.FC<{
   selectedDemographicCategory: DemographicCategory;
@@ -246,49 +246,49 @@ const Options: React.FC<{
       <ButtonGroup variant="outlined" color="success">
         <Button
           variant={
-            props.selectedDemographicCategory === "age"
-              ? "contained"
-              : "outlined"
+            props.selectedDemographicCategory === 'age'
+              ? 'contained'
+              : 'outlined'
           }
           onClick={() => {
-            props.setSelectedDemographicCategory("age");
+            props.setSelectedDemographicCategory('age')
           }}
         >
           Age
         </Button>
         <Button
           variant={
-            props.selectedDemographicCategory === "ethnicity"
-              ? "contained"
-              : "outlined"
+            props.selectedDemographicCategory === 'ethnicity'
+              ? 'contained'
+              : 'outlined'
           }
           onClick={() => {
-            props.setSelectedDemographicCategory("ethnicity");
+            props.setSelectedDemographicCategory('ethnicity')
           }}
         >
           Ethnicity
         </Button>
         <Button
           variant={
-            props.selectedDemographicCategory === "firstLanguage"
-              ? "contained"
-              : "outlined"
+            props.selectedDemographicCategory === 'firstLanguage'
+              ? 'contained'
+              : 'outlined'
           }
           onClick={() => {
-            props.setSelectedDemographicCategory("firstLanguage");
+            props.setSelectedDemographicCategory('firstLanguage')
           }}
         >
           First Language
         </Button>
       </ButtonGroup>
     </StyledOptions>
-  );
-};
+  )
+}
 
 const StyledOptions = styled.div`
   grid-area: options;
   padding-top: 0.3rem;
-`;
+`
 
 const Chart: React.FC<{
   data: MentorDemographicsData | null;
@@ -301,42 +301,42 @@ const Chart: React.FC<{
     selectedDemographicCategory: DemographicCategory
   ) => {
     if (demographicData === null) {
-      return [];
+      return []
     }
 
     switch (selectedDemographicCategory) {
-      case "age":
+      case 'age':
         return [
-          { name: "Age15To19", value: demographicData.age.age15To19 },
-          { name: "Age20To30", value: demographicData.age.age20To30 },
-          { name: "Age30To40", value: demographicData.age.age30To40 },
-          { name: "Age40Plus", value: demographicData.age.age40Plus },
-          { name: "AgeNotEntered", value: demographicData.age.notEntered },
-        ];
-        case "firstLanguage":
-          let firstLanguageData: { name: string; value: number }[] = [];
+          { name: 'Age15To19', value: demographicData.age.age15To19 },
+          { name: 'Age20To30', value: demographicData.age.age20To30 },
+          { name: 'Age30To40', value: demographicData.age.age30To40 },
+          { name: 'Age40Plus', value: demographicData.age.age40Plus },
+          { name: 'AgeNotEntered', value: demographicData.age.notEntered },
+        ]
+        case 'firstLanguage':
+          const firstLanguageData: { name: string; value: number }[] = []
   
           for (const firstLanguage in demographicData.firstLanguage) {
             firstLanguageData.push({
               name: firstLanguage,
               value: demographicData.firstLanguage[firstLanguage],
-            });
+            })
           }
-          return firstLanguageData;
-      case "ethnicity":
-        let ethnicityData: { name: string; value: number }[] = [];
+          return firstLanguageData
+      case 'ethnicity':
+        const ethnicityData: { name: string; value: number }[] = []
 
         for (const ethnicity in demographicData.ethnicity) {
           ethnicityData.push({
             name: ethnicity,
             value: demographicData.ethnicity[ethnicity],
-          });
+          })
         }
-        return ethnicityData;
+        return ethnicityData
     }
-  };
+  }
 
-  const RADIAN = Math.PI / 180;
+  const RADIAN = Math.PI / 180
   const renderCustomizedLabel = ({
     cx,
     cy,
@@ -354,22 +354,22 @@ const Chart: React.FC<{
     percent: number;
     index: number;
   }) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+    const x = cx + radius * Math.cos(-midAngle * RADIAN)
+    const y = cy + radius * Math.sin(-midAngle * RADIAN)
 
     return (
       <text
         x={x}
         y={y}
         fill="black"
-        textAnchor={x > cx ? "start" : "end"}
+        textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
       >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
-    );
-  };
+    )
+  }
 
   return (
     <StyledChart>
@@ -402,13 +402,13 @@ const Chart: React.FC<{
         </PieChart>
       </ResponsiveContainer>
     </StyledChart>
-  );
-};
+  )
+}
 
 const StyledChart = styled.div`
   grid-area: chart;
   overflow: hidden; // fixes resizing issues***
-`;
+`
 
 interface LegendEntry {
   title: string;
@@ -420,81 +420,81 @@ const Legend: React.FC<{
   data: MentorDemographicsData | null;
 }> = (props) => {
   const getUniqueColor = (n: number) => {
-    return COLORS[n % COLORS.length];
-  };
+    return COLORS[n % COLORS.length]
+  }
 
   return (
     <StyledLegend>
-      {props.data && props.selectedCategory === "age" && (
+      {props.data && props.selectedCategory === 'age' && (
         <>
           <LegendListItem
             key={`MentorLegendListItem_${0}`}
-            legendEntry={{ title: "15 to 19", color: getUniqueColor(0) }}
+            legendEntry={{ title: '15 to 19', color: getUniqueColor(0) }}
           ></LegendListItem>
           <LegendListItem
             key={`MentorLegendListItem_${1}`}
-            legendEntry={{ title: "20 to 30", color: getUniqueColor(1) }}
+            legendEntry={{ title: '20 to 30', color: getUniqueColor(1) }}
           ></LegendListItem>
           <LegendListItem
             key={`MentorLegendListItem_${2}`}
-            legendEntry={{ title: "30 to 40", color: getUniqueColor(2) }}
+            legendEntry={{ title: '30 to 40', color: getUniqueColor(2) }}
           ></LegendListItem>
           <LegendListItem
             key={`MentorLegendListItem_${3}`}
-            legendEntry={{ title: "40+", color: getUniqueColor(3) }}
+            legendEntry={{ title: '40+', color: getUniqueColor(3) }}
           ></LegendListItem>
           <LegendListItem
             key={`MentorLegendListItem_${4}`}
-            legendEntry={{ title: "Not Entered", color: getUniqueColor(4) }}
+            legendEntry={{ title: 'Not Entered', color: getUniqueColor(4) }}
           ></LegendListItem>
         </>
       )}
       {props.data &&
-        props.selectedCategory === "ethnicity" &&
+        props.selectedCategory === 'ethnicity' &&
         (() => {
-          let legendListItems: React.ReactElement[] = [];
+          const legendListItems: React.ReactElement[] = []
 
-          let i = 0;
+          let i = 0
           for (const ethnicity in props.data.ethnicity) {
             legendListItems.push(
               <LegendListItem
                 key={`MentorLegendListItem_${i}`}
                 legendEntry={{ title: ethnicity, color: getUniqueColor(i) }}
               ></LegendListItem>
-            );
-            ++i;
+            )
+            ++i
           }
 
-          return legendListItems;
+          return legendListItems
         })()}
       {props.data &&
-        props.selectedCategory === "firstLanguage" &&
+        props.selectedCategory === 'firstLanguage' &&
         (() => {
-          let legendListItems: React.ReactElement[] = [];
+          const legendListItems: React.ReactElement[] = []
 
-          let i = 0;
+          let i = 0
           for (const firstLanguage in props.data.firstLanguage) {
             legendListItems.push(
               <LegendListItem
                 key={`MentorLegendListItem_${i}`}
                 legendEntry={{ title: firstLanguage, color: getUniqueColor(i) }}
               ></LegendListItem>
-            );
-            ++i;
+            )
+            ++i
           }
 
-          return legendListItems;
+          return legendListItems
         })()}
     </StyledLegend>
-  );
-};
+  )
+}
 
 const StyledLegend = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   grid-area: legend;
-`;
+`
 
 const LegendListItem: React.FC<{ legendEntry: LegendEntry }> = (props) => {
   return (
@@ -506,22 +506,22 @@ const LegendListItem: React.FC<{ legendEntry: LegendEntry }> = (props) => {
         {props.legendEntry.title}
       </LegendListItemTitle>
     </StyledLegendListItem>
-  );
-};
+  )
+}
 
 const StyledLegendListItem = styled.div`
   display: flex;
-`;
+`
 
 const LegendListItemColorBlock = styled.div<{ color: string }>`
   background-color: ${(props) => props.color};
   width: 1rem;
   height: 1rem;
   margin-right: 1rem;
-`;
+`
 
 const LegendListItemTitle = styled(Typography)`
   flex: 1;
-`;
+`
 
-export default MentorDemographicsCard;
+export default MentorDemographicsCard
