@@ -255,7 +255,7 @@ class CookieTokenRefreshView(TokenRefreshView):
     def finalize_response(self, request, response, *args, **kwargs):
         # If wrong password, (unauthorized), don't return additional info or cookies
         if response.status_code == 401:
-            FluentLoggingHandler.info("Failed to login, incorrect password")
+            FluentLoggingHandler.error("Failed to login, incorrect password")
             return super().finalize_response(request, response, *args, **kwargs)
 
         access_token_obj = None
@@ -346,9 +346,6 @@ class GenerateCrudEndpointsForModel(APIView):
                 status=status.HTTP_200_OK,
             )
 
-            FluentLoggingHandler.info(
-                f"{request.user} is getting the following data objects: {serialized}")
-
             return response
         else:
             ids = request.GET.getlist("id", "")
@@ -367,9 +364,6 @@ class GenerateCrudEndpointsForModel(APIView):
             response = Response(
                 {"total": numModelObjects, "data": objects}, status=status.HTTP_200_OK
             )
-
-            FluentLoggingHandler.info(
-                f"{request.user} is getting the following data objects: {objects}")
 
             return response
 
@@ -453,7 +447,9 @@ class GenerateCrudEndpointsForModel(APIView):
                         self.model.objects.get(
                             pk=object["id"]), object, self.model
                     )
-
+                objects = request.data["array"]
+                FluentLoggingHandler.info(
+                    f"{request.user} successfully updated the following objects: {objects}")
                 response = Response(
                     {"success": "Successfully updated objects"},
                     status=status.HTTP_200_OK,
@@ -463,6 +459,8 @@ class GenerateCrudEndpointsForModel(APIView):
                 object = request.data
                 existing_object = self.model.objects.filter(pk=object["id"])
                 if not existing_object.exists():
+                    FluentLoggingHandler.error(
+                        f"{request.user} failed to update object: {object}, object does not exist")
                     response = Response(
                         {"error": "Failed to update object"},
                         status=status.HTTP_404_NOT_FOUND,
@@ -472,6 +470,9 @@ class GenerateCrudEndpointsForModel(APIView):
                 existing_object = existing_object.first()
 
                 update_object(existing_object, object, self.model)
+
+                FluentLoggingHandler.info(
+                    f"{request.user} successfully updated the following object: {object}")
                 response = Response(
                     {"success": "Successfully updated object"},
                     status=status.HTTP_200_OK,
