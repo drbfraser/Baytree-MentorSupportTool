@@ -1,4 +1,4 @@
-import { Checkbox as MatCheckBox, styled } from "@mui/material";
+import { Checkbox as MatCheckBox, styled } from '@mui/material'
 
 interface CheckBoxWrapperProps {
   color?: string;
@@ -11,14 +11,14 @@ const CheckBox: React.FC<CheckBoxWrapperProps> = (props) => {
       checked={props.isChecked ?? false}
       checkBoxColor={props.color}
     ></StyledCheckBoxWrapper>
-  );
-};
+  )
+}
 
 const StyledCheckBoxWrapper = styled(MatCheckBox)<{
   checkBoxColor?: string;
 }>`
-  color: ${(props) => props.checkBoxColor ?? ""};
+  color: ${(props) => props.checkBoxColor ?? ''};
 
-`;
+`
 
-export default CheckBox;
+export default CheckBox

@@ -1,16 +1,16 @@
-import { Typography } from "@mui/material";
-import React from "react";
-import { useState } from "react";
-import { IconBaseProps } from "react-icons";
-import { MdMenu } from "react-icons/md";
-import { useSelector } from "react-redux";
-import styled from "styled-components";
-import { NAVBAR_Z_INDEX, TOPBAR_HEIGHT } from "../../../constants/constants";
-import { RootState } from "../../../stores/store";
-import Modal from "../Modal";
-import Logo from "./logo";
-import { NavbarModalComponent, NAVBAR_ICON_SIZE } from "./navbar";
-import { TopbarAction } from "./topbarActions";
+import { Typography } from '@mui/material'
+import React from 'react'
+import { useState } from 'react'
+import { IconBaseProps } from 'react-icons'
+import { MdMenu } from 'react-icons/md'
+import { useSelector } from 'react-redux'
+import styled from 'styled-components'
+import { NAVBAR_Z_INDEX, TOPBAR_HEIGHT } from '../../../constants/constants'
+import { RootState } from '../../../stores/store'
+import Modal from '../Modal'
+import Logo from './logo'
+import { NavbarModalComponent, NAVBAR_ICON_SIZE } from './navbar'
+import { TopbarAction } from './topbarActions'
 
 interface TopBarProps {
   logoUrl: string;
@@ -26,8 +26,8 @@ interface TopBarProps {
 const Topbar: React.FC<TopBarProps> = (props) => {
   return (
     <StyledTopBar>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", flex: 1 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', flex: 1 }}>
           <Logo
             src={props.logoUrl}
             width="7rem"
@@ -38,10 +38,10 @@ const Topbar: React.FC<TopBarProps> = (props) => {
           )}
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              paddingLeft: "1rem",
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingLeft: '1rem',
             }}
           >
             {!props.useMobileLayout && (
@@ -49,7 +49,7 @@ const Topbar: React.FC<TopBarProps> = (props) => {
             )}
           </div>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
           {props.useMobileLayout ? (
             <TopbarActionButton
               Ref={props.hamburgerMenuRef}
@@ -72,8 +72,8 @@ const Topbar: React.FC<TopBarProps> = (props) => {
         </div>
       </div>
     </StyledTopBar>
-  );
-};
+  )
+}
 
 const StyledTopBar = styled.div`
   background: white;
@@ -82,7 +82,7 @@ const StyledTopBar = styled.div`
   box-shadow: 0 0 0.4rem 0.2rem lightgrey;
   position: fixed;
   z-index: ${NAVBAR_Z_INDEX};
-`;
+`
 
 interface TopbarActionProps {
   icon: React.FC<IconBaseProps>;
@@ -96,21 +96,21 @@ interface TopbarActionProps {
 }
 
 const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const primaryColor = useSelector<RootState, string>(
     (state) => state.theme.colors.primaryColor
-  );
+  )
 
   const onOutsideModalClick = () => {
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
 
   return (
     <>
       <StyledTopbarActionButton
         hoverColor={`${props.color ?? primaryColor}30`}
         onClick={() => {
-          props.onClick ? props.onClick() : setIsModalOpen(!isModalOpen);
+          props.onClick ? props.onClick() : setIsModalOpen(!isModalOpen)
         }}
         ref={props.Ref}
       >
@@ -132,8 +132,8 @@ const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
         ></Modal>
       )}
     </>
-  );
-};
+  )
+}
 
 const StyledTopbarActionButton = styled.div<{ hoverColor: string }>`
   display: flex;
@@ -150,6 +150,6 @@ const StyledTopbarActionButton = styled.div<{ hoverColor: string }>`
       user-select: none;
     }
   }
-`;
+`
 
-export default Topbar;
+export default Topbar
