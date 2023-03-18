@@ -1,18 +1,18 @@
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { getVolunteersFromViews } from "../../../api/backend/views/volunteers";
-import { HELP_MESSAGE } from "../../../constants/constants";
-import DataGrid from "../../shared/datagrid/datagrid";
-import { ModalComponent } from "../../shared/Modal";
-import OverlaySpinner from "../../shared/overlaySpinner";
-import { sendMentorAccountCreationEmail } from "../../../api/backend/mentorUsers";
-import { MdCheck } from "react-icons/md";
-import styled from "styled-components";
-import { onLoadPagedDataRowsFunc } from "../../shared/datagrid/datagridTypes";
+import { useState } from 'react'
+import { toast } from 'react-toastify'
+import { getVolunteersFromViews } from '../../../api/backend/views/volunteers'
+import { HELP_MESSAGE } from '../../../constants/constants'
+import DataGrid from '../../shared/datagrid/datagrid'
+import { ModalComponent } from '../../shared/Modal'
+import OverlaySpinner from '../../shared/overlaySpinner'
+import { sendMentorAccountCreationEmail } from '../../../api/backend/mentorUsers'
+import { MdCheck } from 'react-icons/md'
+import styled from 'styled-components'
+import { onLoadPagedDataRowsFunc } from '../../shared/datagrid/datagridTypes'
 
 const AddMentorModal: ModalComponent = (props) => {
-  const [isSendingMentorEmail, setIsSendingMentorEmail] = useState(false);
-  const PAGE_LIMIT = 5;
+  const [isSendingMentorEmail, setIsSendingMentorEmail] = useState(false)
+  const PAGE_LIMIT = 5
 
   const getVolunteerDataRows: onLoadPagedDataRowsFunc = async ({
     searchText,
@@ -21,24 +21,24 @@ const AddMentorModal: ModalComponent = (props) => {
   }) => {
     const mentorsData = await getVolunteersFromViews(limit, offset, {
       searchEmail: searchText,
-    });
+    })
 
     if (mentorsData && mentorsData.data !== null) {
       return {
         count: mentorsData.total,
         results: mentorsData.data,
-      };
+      }
     } else {
-      throw HELP_MESSAGE;
+      throw HELP_MESSAGE
     }
-  };
+  }
 
   return (
     <>
       <OverlaySpinner
         active={isSendingMentorEmail}
         onClick={() => {
-          setIsSendingMentorEmail(false);
+          setIsSendingMentorEmail(false)
         }}
       ></OverlaySpinner>
       <DataGridContainer>
@@ -46,23 +46,23 @@ const AddMentorModal: ModalComponent = (props) => {
           onLoadDataRows={getVolunteerDataRows}
           cols={[
             {
-              header: "Email",
-              dataField: "email",
+              header: 'Email',
+              dataField: 'email',
               enableSearching: true,
               keepColumnOnMobile: true,
             },
-            { header: "First Name", dataField: "firstname" },
-            { header: "Last Name", dataField: "surname" },
+            { header: 'First Name', dataField: 'firstname' },
+            { header: 'Last Name', dataField: 'surname' },
           ]}
           dataRowActions={[
             {
               actionFunction: async (dataRow) => {
-                setIsSendingMentorEmail(true);
+                setIsSendingMentorEmail(true)
 
                 if (!dataRow.email) {
-                  setIsSendingMentorEmail(false);
-                  toast.error("Error: user doesn't have valid email in views!");
-                  return;
+                  setIsSendingMentorEmail(false)
+                  toast.error('Error: user doesn\'t have valid email in views!')
+                  return
                 }
 
                 const sendAccountCreationEmailRes =
@@ -70,25 +70,25 @@ const AddMentorModal: ModalComponent = (props) => {
                     dataRow.viewsPersonId,
                     dataRow.firstname,
                     dataRow.email
-                  );
+                  )
 
                 if (
                   sendAccountCreationEmailRes &&
                   sendAccountCreationEmailRes.status === 200
                 ) {
                   toast.success(
-                    "Email has been sent to mentor for account creation."
-                  );
-                  props.onOutsideClick();
+                    'Email has been sent to mentor for account creation.'
+                  )
+                  props.onOutsideClick()
                 } else {
                   toast.error(
-                    "Failed to send account creation email to mentor."
-                  );
-                  props.onOutsideClick();
+                    'Failed to send account creation email to mentor.'
+                  )
+                  props.onOutsideClick()
                 }
-                setIsSendingMentorEmail(false);
+                setIsSendingMentorEmail(false)
               },
-              name: "Create",
+              name: 'Create',
               icon: <MdCheck />,
             },
           ]}
@@ -97,11 +97,11 @@ const AddMentorModal: ModalComponent = (props) => {
         ></DataGrid>
       </DataGridContainer>
     </>
-  );
-};
+  )
+}
 
 const DataGridContainer = styled.div`
   margin-top: 2rem;
-`;
+`
 
-export default AddMentorModal;
+export default AddMentorModal

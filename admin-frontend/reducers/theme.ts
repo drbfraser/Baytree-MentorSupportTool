@@ -1,4 +1,4 @@
-import { BAYTREE_PRIMARY_COLOR, BAYTREE_SECONDARY_COLOR } from "../constants/constants";
+import { BAYTREE_PRIMARY_COLOR, BAYTREE_SECONDARY_COLOR } from '../constants/constants'
 
 export interface ThemeState {
   colors: {
@@ -15,24 +15,24 @@ const initialState: ThemeState = {
   colors: {
     primaryColor: BAYTREE_PRIMARY_COLOR,
     secondaryColor: BAYTREE_SECONDARY_COLOR,
-    borderColor: "#303030",
+    borderColor: '#303030',
   },
   formatters: {
     dateTimeFormatter: (dateTime: Date) => {
-      return dateTime.toDateString();
+      return dateTime.toDateString()
     },
   },
-};
+}
 
 const themeReducer = (
   state: ThemeState = initialState,
   action: any
 ): ThemeState => {
-  const { type } = action;
+  const { type } = action
   switch (type) {
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default themeReducer;
+export default themeReducer

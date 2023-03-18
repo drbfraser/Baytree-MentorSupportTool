@@ -1,8 +1,8 @@
-import { Button, TextField, Tooltip, Typography } from "@mui/material";
-import React, { MutableRefObject, useEffect, useRef } from "react";
-import { MdArrowLeft, MdArrowRight } from "react-icons/md";
-import { toast } from "react-toastify";
-import useMobileLayout from "../../hooks/useMobileLayout";
+import { Button, TextField, Tooltip, Typography } from '@mui/material'
+import React, { MutableRefObject, useEffect, useRef } from 'react'
+import { MdArrowLeft, MdArrowRight } from 'react-icons/md'
+import { toast } from 'react-toastify'
+import useMobileLayout from '../../hooks/useMobileLayout'
 
 export interface PagerProps {
   onChangePage: (newPage: number) => void;
@@ -12,28 +12,28 @@ export interface PagerProps {
 }
 
 const Pager: React.FC<PagerProps> = (props) => {
-  const onMobileDevice = useMobileLayout();
-  const currentPageNumberInputRef = useRef<HTMLInputElement>(null);
+  const onMobileDevice = useMobileLayout()
+  const currentPageNumberInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (props.clearPagerFuncRef) {
       props.clearPagerFuncRef.current = () => {
         if (currentPageNumberInputRef.current) {
-          currentPageNumberInputRef.current.value = "";
+          currentPageNumberInputRef.current.value = ''
         }
-      };
+      }
     }
-  }, [currentPageNumberInputRef.current]);
+  }, [currentPageNumberInputRef.current])
 
   const renderPageNumberPicker = () => {
     return (
       <>
         <div
           style={{
-            margin: "0 1rem",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            margin: '0 1rem',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
           <Typography>Page Number:</Typography>
@@ -42,14 +42,14 @@ const Pager: React.FC<PagerProps> = (props) => {
           inputRef={currentPageNumberInputRef}
           margin="normal"
           placeholder={`${props.currentPageNumber}`}
-          style={{ maxWidth: "6rem" }}
+          style={{ maxWidth: '6rem' }}
         />
         <div
           style={{
-            margin: "0 1rem",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            margin: '0 1rem',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
           <Typography>of {props.maxPageNumber}</Typography>
@@ -57,9 +57,9 @@ const Pager: React.FC<PagerProps> = (props) => {
         <Tooltip title="Go To Page Number">
           <Button
             style={{
-              padding: "0.8rem 0.6rem",
-              height: "fit-content",
-              margin: "0.6rem 0.6rem 0px 0px",
+              padding: '0.8rem 0.6rem',
+              height: 'fit-content',
+              margin: '0.6rem 0.6rem 0px 0px',
             }}
             color="primary"
             variant="contained"
@@ -67,7 +67,7 @@ const Pager: React.FC<PagerProps> = (props) => {
               if (currentPageNumberInputRef.current) {
                 const parsedCurrentPageNumber = parseInt(
                   currentPageNumberInputRef.current.value
-                );
+                )
 
                 if (parsedCurrentPageNumber) {
                   if (
@@ -76,14 +76,14 @@ const Pager: React.FC<PagerProps> = (props) => {
                   ) {
                     toast.error(
                       `Page number must be between 1 and ${props.maxPageNumber}`
-                    );
+                    )
                   } else {
-                    props.onChangePage(parsedCurrentPageNumber);
+                    props.onChangePage(parsedCurrentPageNumber)
                   }
                 } else {
                   toast.error(
                     `Page number must be between 1 and ${props.maxPageNumber}`
-                  );
+                  )
                 }
               }
             }}
@@ -92,37 +92,37 @@ const Pager: React.FC<PagerProps> = (props) => {
           </Button>
         </Tooltip>
       </>
-    );
-  };
+    )
+  }
 
   return (
     <>
       <div
         style={{
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex",
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'center',
+          display: 'flex',
         }}
       >
         <Tooltip title="Previous Page">
           <span>
             <Button
               style={{
-                padding: "0 0.6rem",
-                height: "fit-content",
-                margin: "0.6rem 0.6rem 0px 0px",
+                padding: '0 0.6rem',
+                height: 'fit-content',
+                margin: '0.6rem 0.6rem 0px 0px',
               }}
               color="primary"
               variant="contained"
               disabled={props.currentPageNumber <= 1}
               onClick={() => {
                 if (currentPageNumberInputRef.current) {
-                  currentPageNumberInputRef.current.value = "";
+                  currentPageNumberInputRef.current.value = ''
                   if (props.currentPageNumber > 1) {
-                    props.onChangePage(props.currentPageNumber - 1);
+                    props.onChangePage(props.currentPageNumber - 1)
                   } else {
-                    toast.error("There are no more previous pages!");
+                    toast.error('There are no more previous pages!')
                   }
                 }
               }}
@@ -135,21 +135,21 @@ const Pager: React.FC<PagerProps> = (props) => {
           <span>
             <Button
               style={{
-                padding: "0 0.6rem",
-                height: "fit-content",
-                margin: "0.6rem 0.6rem 0px 0px",
+                padding: '0 0.6rem',
+                height: 'fit-content',
+                margin: '0.6rem 0.6rem 0px 0px',
               }}
               color="primary"
               variant="contained"
               disabled={props.currentPageNumber >= props.maxPageNumber}
               onClick={() => {
                 if (currentPageNumberInputRef.current) {
-                  currentPageNumberInputRef.current.value = "";
+                  currentPageNumberInputRef.current.value = ''
                 }
                 if (props.currentPageNumber < props.maxPageNumber) {
-                  props.onChangePage(props.currentPageNumber + 1);
+                  props.onChangePage(props.currentPageNumber + 1)
                 } else {
-                  toast.error("There are no more pages left!");
+                  toast.error('There are no more pages left!')
                 }
               }}
             >
@@ -162,17 +162,17 @@ const Pager: React.FC<PagerProps> = (props) => {
       {onMobileDevice && (
         <div
           style={{
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "center",
-            display: "flex",
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            display: 'flex',
           }}
         >
           {renderPageNumberPicker()}
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default Pager;
+export default Pager

@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
   baytreeLogoUrl,
   changingAspirationsUrl,
-} from "../../../public/images/imageUrls";
-import Sidebar from "./sidebar";
-import { SidebarLink } from "./sidebarLinks";
-import Topbar from "./topbar";
-import { TopbarAction } from "./topbarActions";
+} from '../../../public/images/imageUrls'
+import Sidebar from './sidebar'
+import { SidebarLink } from './sidebarLinks'
+import Topbar from './topbar'
+import { TopbarAction } from './topbarActions'
 
-export const NAVBAR_ICON_SIZE = "1.6rem";
+export const NAVBAR_ICON_SIZE = '1.6rem'
 
 export type NavbarModalComponent = React.FC<{
   onOutsideClick: () => void;
@@ -26,14 +26,14 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = (props) => {
   useEffect(() => {
     if (props.useMobileLayout) {
-      props.setSidebarActive(false);
+      props.setSidebarActive(false)
     } else {
-      props.setSidebarActive(true);
+      props.setSidebarActive(true)
     }
-  }, [props.useMobileLayout]);
+  }, [props.useMobileLayout])
 
-  const sidebarElementRef = useRef<HTMLDivElement>(null);
-  const hamburgerMenuButtonElementRef = useRef<HTMLDivElement>(null);
+  const sidebarElementRef = useRef<HTMLDivElement>(null)
+  const hamburgerMenuButtonElementRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -42,15 +42,15 @@ const Navbar: React.FC<NavbarProps> = (props) => {
         props.pageContentDivRef.current.contains(event.target as Node) &&
         hamburgerMenuButtonElementRef.current
       ) {
-        props.setSidebarActive(false);
+        props.setSidebarActive(false)
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   return (
     <>
@@ -62,7 +62,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
         title="Admin Portal"
         actions={props.topbarActions ?? []}
         toggleSidebarMenu={() => {
-          props.setSidebarActive(!props.sidebarActive);
+          props.setSidebarActive(!props.sidebarActive)
         }}
         hamburgerMenuRef={hamburgerMenuButtonElementRef}
       ></Topbar>
@@ -76,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
         ></Sidebar>
       )}
     </>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
