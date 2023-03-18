@@ -1,9 +1,9 @@
-import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import { type FunctionComponent, useEffect, useState } from "react";
-import { getSessionCount, type SessionsCount } from "../../api/mentorAccount";
-import { useAuth } from "../../context/AuthContext";
+import Card from '@mui/material/Card'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import { type FunctionComponent, useEffect, useState } from 'react'
+import { getSessionCount, type SessionsCount } from '../../api/mentorAccount'
+import { useAuth } from '../../context/AuthContext'
 
 const Count: FunctionComponent<{
   title: string;
@@ -15,9 +15,9 @@ const Count: FunctionComponent<{
       <Card
         sx={{
           p: 2,
-          display: "flex",
-          alignItem: "center",
-          justifyContent: "space-between"
+          display: 'flex',
+          alignItem: 'center',
+          justifyContent: 'space-between'
         }}
       >
         <Typography
@@ -25,35 +25,35 @@ const Count: FunctionComponent<{
           component="h6"
           color="text.secondary"
           // align="center"
-          sx={{marginLeft: "5%", width: "60%",display: 'flex', alignItems: 'center'}}
+          sx={{marginLeft: '5%', width: '60%',display: 'flex', alignItems: 'center'}}
         >
           {props.title}
         </Typography>
         <Typography
           component="p"
           variant="h3"
-          color={props.color || "primary"}
-          sx={{ fontWeight: "bold", width:"20%" }}
+          color={props.color || 'primary'}
+          sx={{ fontWeight: 'bold', width:'20%' }}
         >
           {props.count}
         </Typography>
       </Card>
     </Grid>
-  );
-};
+  )
+}
 
 export default function Statistics() {
-  const { user } = useAuth();
+  const { user } = useAuth()
   const [data, setData] = useState<SessionsCount>({
     sessions_attended: 0,
     sessions_missed: 0,
     sessions_remaining: 0,
     sessions_total: 0
-  });
+  })
 
   useEffect(() => {
-    getSessionCount(user!.userId).then((data) => data && setData(data));
-  }, []);
+    getSessionCount(user!.userId).then((data) => data && setData(data))
+  }, [])
 
   return (
     <Grid container spacing={1}>
@@ -70,5 +70,5 @@ export default function Statistics() {
       {/*  color="orange"*/}
       {/*/>*/}
     </Grid>
-  );
+  )
 }

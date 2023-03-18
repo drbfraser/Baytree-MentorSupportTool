@@ -1,9 +1,9 @@
-import { Button } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-import ReactDOM from "react-dom";
-import { MdClose } from "react-icons/md";
-import styled from "styled-components";
-import useMobileLayout from "../../hooks/useMobileLayout";
+import { Button } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
+import ReactDOM from 'react-dom'
+import { MdClose } from 'react-icons/md'
+import styled from 'styled-components'
+import useMobileLayout from '../../hooks/useMobileLayout'
 
 export type ModalComponent = React.FC<{
   onOutsideClick: () => void;
@@ -19,17 +19,17 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = (props) => {
-  const modalElementRef = useRef<HTMLDivElement>(null);
-  const onMobileDevice = useMobileLayout();
-  const onMobileDeviceRef = useRef(false);
+  const modalElementRef = useRef<HTMLDivElement>(null)
+  const onMobileDevice = useMobileLayout()
+  const onMobileDeviceRef = useRef(false)
 
   useEffect(() => {
-    const isOnMobileDevice = onMobileDeviceRef.current;
+    const isOnMobileDevice = onMobileDeviceRef.current
 
     function handleClickOutside(event: MouseEvent) {
       const clickedTargetElementNotInsideModal =
         modalElementRef.current &&
-        !modalElementRef.current.contains(event.target as Node);
+        !modalElementRef.current.contains(event.target as Node)
 
       const didClickOutsideModal =
         (!isOnMobileDevice &&
@@ -37,51 +37,51 @@ const Modal: React.FC<ModalProps> = (props) => {
           notClickedOnToastifyMessage(event) &&
           notClickedOnPopoverOptionInModal(event) &&
           !clickedOnAnotherModal(modalElementRef.current, event)) ||
-        clickedOnOverlay(event);
+        clickedOnOverlay(event)
 
       if (didClickOutsideModal) {
-        props.onOutsideClick();
+        props.onOutsideClick()
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   useEffect(() => {
-    onMobileDeviceRef.current = onMobileDevice;
-  }, [onMobileDevice]);
+    onMobileDeviceRef.current = onMobileDevice
+  }, [onMobileDevice])
 
   useEffect(() => {
     if (props.isOpen) {
-      document.body.style.overflowY = "hidden";
+      document.body.style.overflowY = 'hidden'
     } else {
-      document.body.style.overflowY = "auto";
+      document.body.style.overflowY = 'auto'
     }
-  });
+  })
 
   return props.isOpen
     ? ReactDOM.createPortal(
         <Overlay id="ModalOverlay">
           <div></div>
           <StyledModal
-            id={"Modal"}
+            id={'Modal'}
             ref={modalElementRef}
             width={props.width}
             height={props.height}
             useMobileLayout={onMobileDevice}
           >
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               {props.enableCloseButton !== false && (
                 <Button
                   variant="contained"
                   color="error"
                   style={{
-                    padding: "0.3rem 0.6rem 0.3rem 0.6rem",
-                    height: "fit-content",
-                    margin: "0.6rem 0.6rem 0 0",
+                    padding: '0.3rem 0.6rem 0.3rem 0.6rem',
+                    height: 'fit-content',
+                    margin: '0.6rem 0.6rem 0 0',
                   }}
                   onClick={() => props.onOutsideClick()}
                 >
@@ -93,10 +93,10 @@ const Modal: React.FC<ModalProps> = (props) => {
             {props.modalComponent}
           </StyledModal>
         </Overlay>,
-        document.getElementById("modalContainer") as HTMLElement
+        document.getElementById('modalContainer') as HTMLElement
       )
-    : null;
-};
+    : null
+}
 
 const Overlay = styled.div`
   background: #00000050;
@@ -106,7 +106,7 @@ const Overlay = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: 500;
-`;
+`
 
 interface StyledModalProps {
   width?: string;
@@ -119,59 +119,59 @@ const StyledModal = styled.div<StyledModalProps>`
   background: white;
   border-radius: 12px;
   width: ${(props) =>
-    props.useMobileLayout ? "100vw" : props.width ?? "80vw"};
+    props.useMobileLayout ? '100vw' : props.width ?? '80vw'};
   height: ${(props) =>
-    props.useMobileLayout ? "100vh" : props.height ?? "80vh"};
+    props.useMobileLayout ? '100vh' : props.height ?? '80vh'};
   top: ${(props) =>
     props.useMobileLayout
-      ? "0"
+      ? '0'
       : props.height &&
-        props.height !== "auto" &&
-        props.height !== "fit-content"
+        props.height !== 'auto' &&
+        props.height !== 'fit-content'
       ? `calc((100vh - ${props.height}) / 2)`
-      : "10vh"};
+      : '10vh'};
   left: ${(props) =>
     props.useMobileLayout
-      ? "0"
+      ? '0'
       : props.width
       ? `calc((100vw - ${props.width}) / 2)`
-      : "10vw"};
+      : '10vw'};
   z-index: 501;
   padding: 2rem;
   overflow-y: auto;
-`;
+`
 
-export default Modal;
+export default Modal
 
 function notClickedOnToastifyMessage(event: MouseEvent) {
   return (
-    document.getElementsByClassName("Toastify").length == 0 ||
+    document.getElementsByClassName('Toastify').length == 0 ||
     !document
-      .getElementsByClassName("Toastify")[0]
+      .getElementsByClassName('Toastify')[0]
       .contains(event.target as Node)
-  );
+  )
 }
 
 function notClickedOnPopoverOptionInModal(event: MouseEvent) {
   return (
-    document.getElementsByClassName("MuiPopover-root").length == 0 ||
+    document.getElementsByClassName('MuiPopover-root').length == 0 ||
     !document
-      .getElementsByClassName("MuiPopover-root")[0]
+      .getElementsByClassName('MuiPopover-root')[0]
       .contains(event.target as Node)
-  );
+  )
 }
 
 function clickedOnOverlay(event: MouseEvent): boolean | null {
-  return (event.target as any).id === "ModalOverlay";
+  return (event.target as any).id === 'ModalOverlay'
 }
 
 function clickedOnAnotherModal(
   modalElement: HTMLDivElement,
   event: MouseEvent
 ): boolean {
-  let currentPar = event.target as any;
-  while (currentPar && !currentPar.id.includes("Modal")) {
-    currentPar = currentPar.parentElement;
+  let currentPar = event.target as any
+  while (currentPar && !currentPar.id.includes('Modal')) {
+    currentPar = currentPar.parentElement
   }
-  return currentPar && currentPar !== modalElement;
+  return currentPar && currentPar !== modalElement
 }

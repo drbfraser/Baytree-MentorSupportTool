@@ -1,5 +1,5 @@
-import { Dispatch } from "react";
-import { API_BASE_URL } from "../../api/backend/url";
+import { Dispatch } from 'react'
+import { API_BASE_URL } from '../../api/backend/url'
 import {
   LoginFailureActionType,
   LoginSuccessfulActionType,
@@ -8,16 +8,16 @@ import {
   VerifyFailureActionType,
   VerifyInProgressActionType,
   VerifySuccessActionType,
-} from "./actionTypes";
+} from './actionTypes'
 
 interface AuthResponse {
   is_admin: boolean;
   is_superuser: boolean;
 }
 
-interface LoginResponse extends AuthResponse {}
-interface VerifyResponse extends AuthResponse {}
-interface RefreshResponse extends AuthResponse {}
+type LoginResponse = AuthResponse
+type VerifyResponse = AuthResponse
+type RefreshResponse = AuthResponse
 
 /** async function that attempts to login the admin user with their email and password.
  If the login is successful, a value of true will be returned, and an action of
@@ -33,36 +33,36 @@ export const login =
     const body = JSON.stringify({
       email,
       password,
-    });
+    })
 
     try {
       const apiRes = await fetch(
         `${API_BASE_URL}/token/`,
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
-          credentials: "include",
+          credentials: 'include',
           body: body,
         }
-      );
+      )
 
-      const data: LoginResponse = await apiRes.json();
+      const data: LoginResponse = await apiRes.json()
 
       if (apiRes.status === 200 && (data.is_admin || data.is_superuser)) {
-        dispatch({ type: "LOGIN_SUCCESSFUL" });
-        return true;
+        dispatch({ type: 'LOGIN_SUCCESSFUL' })
+        return true
       } else {
-        dispatch({ type: "LOGIN_FAILURE" });
-        return false;
+        dispatch({ type: 'LOGIN_FAILURE' })
+        return false
       }
     } catch (err) {
-      dispatch({ type: "LOGIN_FAILURE" });
-      return false;
+      dispatch({ type: 'LOGIN_FAILURE' })
+      return false
     }
-  };
+  }
 
 /** async function that attempts to logout the admin user.
  If the logout is successful, a value of true will be returned, and an action of
@@ -79,26 +79,26 @@ export const logout =
       const apiRes = await fetch(
         `${API_BASE_URL}/token/logout/`,
         {
-          method: "GET",
+          method: 'GET',
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
-          credentials: "include",
+          credentials: 'include',
         }
-      );
+      )
       if (apiRes.status === 200) {
-        dispatch({ type: "LOGOUT_SUCCESSFUL" });
-        return true;
+        dispatch({ type: 'LOGOUT_SUCCESSFUL' })
+        return true
       } else {
-        dispatch({ type: "LOGOUT_FAILURE" });
-        return false;
+        dispatch({ type: 'LOGOUT_FAILURE' })
+        return false
       }
     } catch (err) {
-      await dispatch({ type: "LOGOUT_FAILURE" });
-      return false;
+      await dispatch({ type: 'LOGOUT_FAILURE' })
+      return false
     }
-  };
+  }
 
 /** async function that attempts to refresh the admin user's access token.
  if the refresh is successful, this function will return the successful fetch response which contains
@@ -110,22 +110,22 @@ export const refreshAccessToken = async () => {
     const apiRes = await fetch(
       `${API_BASE_URL}/token/refresh/`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
       }
-    );
+    )
 
-    const data: RefreshResponse = await apiRes.json();
+    const data: RefreshResponse = await apiRes.json()
 
-    return data;
+    return data
   } catch (err) {
-    return null;
+    return null
   }
-};
+}
 
 /** async function that attempts to make a request to the backend to verify the user's
  access token. if the verification is successful, this function will return the successful
@@ -135,22 +135,22 @@ export const verifyFetch = async () => {
     const apiRes = await fetch(
       `${API_BASE_URL}/token/verify/`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
       }
-    );
+    )
 
-    const data: VerifyResponse = await apiRes.json();
+    const data: VerifyResponse = await apiRes.json()
 
-    return data;
+    return data
   } catch (err) {
-    return null;
+    return null
   }
-};
+}
 
 /** async function that attempts to make a request to the backend to verify the user's
  access token. if the verification is successful, this function will dispatch an action
@@ -168,27 +168,27 @@ export const verify =
     >
   ) => {
     try {
-      await dispatch({ type: "VERIFY_IN_PROGRESS" });
-      const verifyResData = await verifyFetch();
+      await dispatch({ type: 'VERIFY_IN_PROGRESS' })
+      const verifyResData = await verifyFetch()
 
       if (
         verifyResData &&
         (verifyResData.is_admin || verifyResData.is_superuser)
       ) {
-        await dispatch({ type: "VERIFY_SUCCESS" });
+        await dispatch({ type: 'VERIFY_SUCCESS' })
       } else {
-        const refreshResData = await refreshAccessToken();
+        const refreshResData = await refreshAccessToken()
 
         if (
           refreshResData &&
           (refreshResData.is_admin || refreshResData.is_superuser)
         ) {
-          await dispatch({ type: "VERIFY_SUCCESS" });
+          await dispatch({ type: 'VERIFY_SUCCESS' })
         } else {
-          await dispatch({ type: "VERIFY_FAILURE" });
+          await dispatch({ type: 'VERIFY_FAILURE' })
         }
       }
     } catch (err) {
-      await dispatch({ type: "VERIFY_FAILURE" });
+      await dispatch({ type: 'VERIFY_FAILURE' })
     }
-  };
+  }

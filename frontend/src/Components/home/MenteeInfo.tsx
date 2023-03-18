@@ -1,19 +1,19 @@
-import Divider from "@mui/material/Divider";
-import Typography from "@mui/material/Typography";
-import { useEffect, useState } from "react";
-import { fetchMenteeListByMentorId } from "../../api/mentorAccount";
-import { useAuth } from "../../context/AuthContext";
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
+import { useEffect, useState } from 'react'
+import { fetchMenteeListByMentorId } from '../../api/mentorAccount'
+import { useAuth } from '../../context/AuthContext'
 
 export default function MenteeInfo() {
-  const { user } = useAuth();
-  const [menteeInfo, setMenteeInfo] = useState([] as any[]);
-  const [currentMentee, setCurrentMentee] = useState(0);
+  const { user } = useAuth()
+  const [menteeInfo, setMenteeInfo] = useState([] as any[])
+  const [currentMentee, setCurrentMentee] = useState(0)
 
   useEffect(() => {
     fetchMenteeListByMentorId(user!.userId)
       .then(setMenteeInfo)
-      .catch((error: any) => console.error("Error:", error));
-  }, []);
+      .catch((error: any) => console.error('Error:', error))
+  }, [])
 
   return (
     <>
@@ -70,5 +70,5 @@ export default function MenteeInfo() {
         )}
       <Divider />
     </>
-  );
+  )
 }

@@ -10,19 +10,19 @@ import {
   Skeleton,
   InputLabel,
   FormControl,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { MdOutlineFileDownload, MdSearch } from "react-icons/md";
-import { toast } from "react-toastify";
-import styled from "styled-components";
+} from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { MdOutlineFileDownload, MdSearch } from 'react-icons/md'
+import { toast } from 'react-toastify'
+import styled from 'styled-components'
 import {
   getMentorRoles,
   MentorRole,
-} from "../../../../api/backend/mentorRoles";
-import { getSessionGroupFromViews } from "../../../../api/backend/views/sessionGroups";
-import { MOBILE_BREAKPOINT } from "../../../../constants/constants";
-import PaginatedSelect from "../../../shared/paginatedSelect";
-import { SessionGroup } from "./MentorSessionTrackingCard/MentorSessionTrackingCard";
+} from '../../../../api/backend/mentorRoles'
+import { getSessionGroupFromViews } from '../../../../api/backend/views/sessionGroups'
+import { MOBILE_BREAKPOINT } from '../../../../constants/constants'
+import PaginatedSelect from '../../../shared/paginatedSelect'
+import { SessionGroup } from './MentorSessionTrackingCard/MentorSessionTrackingCard'
 
 interface HeaderProps {
   onSessionGroupSelectOptionChange: (newSessionGroupId: any) => void;
@@ -65,8 +65,8 @@ const Header: React.FunctionComponent<HeaderProps> = (props) => {
         </Button>
       </HeaderLayout>
     </>
-  );
-};
+  )
+}
 
 const HeaderLayout = styled.div`
   display: grid;
@@ -89,19 +89,19 @@ const HeaderLayout = styled.div`
       "searchBox searchBox"
       "exportButton exportButton";
   }
-`;
+`
 
 const HeaderTitle: React.FunctionComponent<{}> = () => {
   return (
     <StyledHeaderTitle>
       <Typography variant="h5">Sessions</Typography>
     </StyledHeaderTitle>
-  );
-};
+  )
+}
 
 const StyledHeaderTitle = styled.div`
   grid-area: title;
-`;
+`
 interface SelectSessionGroupProps {
   onSessionGroupSelectOptionChange: (newSessionGroup: SessionGroup) => void;
 }
@@ -115,41 +115,41 @@ const SelectSessionGroup: React.FunctionComponent<SelectSessionGroupProps> = (
   }
   const [sessionGroupOptions, setSessionGroupOptions] = useState<
     sessionGroupOption[] | null
-  >(null);
+  >(null)
 
   useEffect(() => {
     // Get the current mentor roles in the database
     getMentorRoles().then(async (response) => {
       if (response) {
         // Once the mentor roles are fetched, fetch the session group information for each mentor role
-        const mentorRoles = response as MentorRole[];
+        const mentorRoles = response as MentorRole[]
         const sessionGroups = await Promise.all(
           mentorRoles.map(async (mentorRole) => {
             const sessionGroup = await getSessionGroupFromViews(
               mentorRole.viewsSessionGroupId
-            );
+            )
 
             if (sessionGroup) {
               // For each mentor role session group, we will need the id and name for select options
               return {
                 id: sessionGroup.viewsSessionGroupId,
                 name: sessionGroup.name,
-              };
+              }
             } else {
               toast.error(
-                "Failed to get session group information for a mentor role."
-              );
+                'Failed to get session group information for a mentor role.'
+              )
             }
           })
-        );
+        )
         if (sessionGroups.every((sessionGroup) => !!sessionGroup)) {
-          setSessionGroupOptions(sessionGroups as any);
+          setSessionGroupOptions(sessionGroups as any)
         }
       } else {
-        toast.error("Failed to get mentor roles for session statistics.");
+        toast.error('Failed to get mentor roles for session statistics.')
       }
-    });
-  }, []);
+    })
+  }, [])
 
   return (
     <StyledSessionGroup>
@@ -187,8 +187,8 @@ const SelectSessionGroup: React.FunctionComponent<SelectSessionGroupProps> = (
         </FormControl>
       )}
     </StyledSessionGroup>
-  );
-};
+  )
+}
 
 const StyledSessionGroup = styled.div`
   width: 20rem;
@@ -198,13 +198,13 @@ const StyledSessionGroup = styled.div`
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     padding-left: 0;
   }
-`;
+`
 
 const SelectDate = styled.div`
   display: flex;
   grid-area: selectDate;
   align-items: center;
-`;
+`
 
 interface SelectYearProps {
   onSetYear: (year: number) => void;
@@ -212,17 +212,17 @@ interface SelectYearProps {
 }
 
 const SelectYear: React.FunctionComponent<SelectYearProps> = (props) => {
-  const PAST_YEARS_RANGE = 3;
+  const PAST_YEARS_RANGE = 3
 
   const getPastYears = () => {
-    const currentYear = new Date().getFullYear();
-    const startYear = currentYear - PAST_YEARS_RANGE;
-    let pastYears = [];
+    const currentYear = new Date().getFullYear()
+    const startYear = currentYear - PAST_YEARS_RANGE
+    const pastYears = []
     for (let year = startYear; year <= currentYear; ++year) {
-      pastYears.push(year);
+      pastYears.push(year)
     }
-    return pastYears;
-  };
+    return pastYears
+  }
 
   return (
     <StyledSelectYear>
@@ -232,7 +232,7 @@ const SelectYear: React.FunctionComponent<SelectYearProps> = (props) => {
         value={props.curYear.toString()}
         label="Year"
         onChange={(event: SelectChangeEvent) => {
-          props.onSetYear(parseInt(event.target.value));
+          props.onSetYear(parseInt(event.target.value))
         }}
       >
         {getPastYears().map((year, i) => (
@@ -242,13 +242,13 @@ const SelectYear: React.FunctionComponent<SelectYearProps> = (props) => {
         ))}
       </Select>
     </StyledSelectYear>
-  );
-};
+  )
+}
 
 const StyledSelectYear = styled.div`
   grid-area: selectYear;
   width: auto;
-`;
+`
 
 interface SearchBoxProps {
   mentorFilter: string;
@@ -266,7 +266,7 @@ const SearchBox: React.FunctionComponent<SearchBoxProps> = (props) => {
         id="mentorFilter"
         value={props.mentorFilter}
         onChange={(e: any) => props.setMentorFilter(e.target.value)}
-        sx={{ maxWidth: "24rem" }}
+        sx={{ maxWidth: '24rem' }}
         InputProps={{
           endAdornment: (
             <InputAdornment position="start">
@@ -278,8 +278,8 @@ const SearchBox: React.FunctionComponent<SearchBoxProps> = (props) => {
         }}
       />
     </StyledSearchBox>
-  );
-};
+  )
+}
 
 const StyledSearchBox = styled.div`
   grid-area: searchBox;
@@ -289,6 +289,6 @@ const StyledSearchBox = styled.div`
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     margin-left: 0;
   }
-`;
+`
 
-export default Header;
+export default Header

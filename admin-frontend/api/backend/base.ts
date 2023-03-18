@@ -3,8 +3,8 @@
  *  capabilities for pagination and filtering/sorting (in the future).
  */
 
-import { refreshAccessToken } from "../../actions/auth/actionCreators";
-import { API_BASE_URL } from "./url";
+import { refreshAccessToken } from '../../actions/auth/actionCreators'
+import { API_BASE_URL } from './url'
 
 /** Make paginated get requests to the backend to obtain model objects
  * which are implemented in the backend using the GenerateCrudEndpointsForModel
@@ -18,32 +18,32 @@ const backendGetFetch = async (
   offset?: string,
   filters?: Record<string, string>
 ) => {
-  let queryParams = [];
+  const queryParams = []
   if (filters) {
     for (const filterField in filters) {
-      queryParams.push(`${filterField}=${filters[filterField]}`);
+      queryParams.push(`${filterField}=${filters[filterField]}`)
     }
   }
 
   if (limit) {
-    queryParams.push(`limit=${limit}`);
+    queryParams.push(`limit=${limit}`)
   }
 
   if (offset) {
-    queryParams.push(`offset=${offset}`);
+    queryParams.push(`offset=${offset}`)
   }
 
-  const queryParamString = "?" + queryParams.join("&");
+  const queryParamString = '?' + queryParams.join('&')
 
   return await fetch(`${backendEndpoint}${queryParamString}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    credentials: "include",
-  });
-};
+    credentials: 'include',
+  })
+}
 
 export type BackendGetResponse<ResponseObject> =
   | {
@@ -78,42 +78,42 @@ export const generateBackendGetFunc =
     filters?: Record<string, string>
   ): Promise<BackendGetResponse<ResponseObject>> => {
     try {
-      const limitStr = limit ? limit.toString() : undefined;
-      const offsetStr = offset ? offset.toString() : undefined;
+      const limitStr = limit ? limit.toString() : undefined
+      const offsetStr = offset ? offset.toString() : undefined
 
       let apiRes = await backendGetFetch(
         backendEndpoint,
         limitStr,
         offsetStr,
         filters
-      );
+      )
 
       if (apiRes.status === 401) {
-        const refreshRes = await refreshAccessToken();
+        const refreshRes = await refreshAccessToken()
         if (refreshRes) {
           apiRes = await backendGetFetch(
             backendEndpoint,
             limitStr,
             offsetStr,
             filters
-          );
+          )
         } else {
-          return { total: -1, status: apiRes.status, data: null };
+          return { total: -1, status: apiRes.status, data: null }
         }
       }
 
       const res = (await apiRes.json()) as {
         total: number;
         data: ResponseObject[];
-      };
+      }
 
-      const resWithStatus = { ...res, status: apiRes.status };
+      const resWithStatus = { ...res, status: apiRes.status }
 
-      return resWithStatus;
+      return resWithStatus
     } catch {
-      return null;
+      return null
     }
-  };
+  }
 
 /** Make post requests to the backend to create model object(s)
  * which are implemented in the backend using the GenerateCrudEndpointsForModel
@@ -128,17 +128,17 @@ const backendPostFetch = async (
   requestObject: any
 ) => {
   const apiRes = await fetch(`${backendEndpoint}`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    credentials: "include",
+    credentials: 'include',
     body: JSON.stringify(requestObject),
-  });
+  })
 
-  return apiRes;
-};
+  return apiRes
+}
 
 /** Generates a function to make post requests to the backend to create model object(s)
  * which are implemented in the backend using the GenerateCrudEndpointsForModel
@@ -151,30 +151,30 @@ export const generateBackendPostFunc =
     try {
       const postFetchObject = Array.isArray(requestObject)
         ? { array: requestObject }
-        : requestObject;
+        : requestObject
 
-      let apiRes = await backendPostFetch(backendEndpoint, postFetchObject);
+      let apiRes = await backendPostFetch(backendEndpoint, postFetchObject)
 
       if (apiRes.status === 401) {
-        const refreshResponse = await refreshAccessToken();
+        const refreshResponse = await refreshAccessToken()
         if (refreshResponse) {
-          apiRes = await backendPostFetch(backendEndpoint, postFetchObject);
+          apiRes = await backendPostFetch(backendEndpoint, postFetchObject)
         } else {
-          return { ids: null, status: apiRes.status };
+          return { ids: null, status: apiRes.status }
         }
       }
 
       const res = (await apiRes.json()) as {
         ids: number[];
-      };
+      }
 
-      const resWithStatus = { ...res, status: apiRes.status };
+      const resWithStatus = { ...res, status: apiRes.status }
 
-      return resWithStatus;
+      return resWithStatus
     } catch {
-      return null;
+      return null
     }
-  };
+  }
 
 /** Make put requests to the backend to update model object(s)
  * which are implemented in the backend using the GenerateCrudEndpointsForModel
@@ -187,17 +187,17 @@ export const generateBackendPostFunc =
  */
 const backendPutFetch = async (backendEndpoint: string, body: any) => {
   const apiRes = await fetch(`${backendEndpoint}`, {
-    method: "PUT",
+    method: 'PUT',
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    credentials: "include",
+    credentials: 'include',
     body: JSON.stringify(body),
-  });
+  })
 
-  return apiRes;
-};
+  return apiRes
+}
 
 /** Generates a function to make put requests to the backend to update model object(s)
  * which are implemented in the backend using the GenerateCrudEndpointsForModel
@@ -211,26 +211,26 @@ export const generateBackendPutFunc =
     try {
       const putFetchObject = Array.isArray(requestObject)
         ? { array: requestObject }
-        : requestObject;
+        : requestObject
 
-      let apiRes = await backendPutFetch(backendEndpoint, putFetchObject);
+      let apiRes = await backendPutFetch(backendEndpoint, putFetchObject)
 
       if (apiRes.status === 401) {
-        const refreshResponse = await refreshAccessToken();
+        const refreshResponse = await refreshAccessToken()
         if (refreshResponse) {
-          apiRes = await backendPutFetch(backendEndpoint, putFetchObject);
+          apiRes = await backendPutFetch(backendEndpoint, putFetchObject)
         } else {
-          return { status: apiRes.status };
+          return { status: apiRes.status }
         }
       }
 
-      const resStatus = { status: apiRes.status };
+      const resStatus = { status: apiRes.status }
 
-      return resStatus;
+      return resStatus
     } catch {
-      return null;
+      return null
     }
-  };
+  }
 
 /** Make delete requests to the backend to delete model object(s)
  * which are implemented in the backend using the GenerateCrudEndpointsForModel
@@ -244,17 +244,17 @@ const backendDeleteFetch = async (
   const apiRes = await fetch(
     `${backendEndpoint}?${objectIds.map((id) => `id=${id}&`)}`.slice(0, -1),
     {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
-      credentials: "include",
+      credentials: 'include',
     }
-  );
+  )
 
-  return apiRes;
-};
+  return apiRes
+}
 
 /** Generates a function to make delete requests to the backend to delete model object(s)
  * which are implemented in the backend using the GenerateCrudEndpointsForModel
@@ -266,27 +266,27 @@ export const generateBackendDeleteFunc =
   (backendEndpoint: string) => async (objectIds: number | number[]) => {
     try {
       if (!Array.isArray(objectIds)) {
-        objectIds = [objectIds];
+        objectIds = [objectIds]
       }
 
-      let apiRes = await backendDeleteFetch(backendEndpoint, objectIds);
+      let apiRes = await backendDeleteFetch(backendEndpoint, objectIds)
 
       if (apiRes.status === 401) {
-        const refreshResponse = await refreshAccessToken();
+        const refreshResponse = await refreshAccessToken()
         if (refreshResponse) {
-          apiRes = await backendDeleteFetch(backendEndpoint, objectIds);
+          apiRes = await backendDeleteFetch(backendEndpoint, objectIds)
         } else {
-          return { status: apiRes.status };
+          return { status: apiRes.status }
         }
       }
 
-      const resStatus = { status: apiRes.status };
+      const resStatus = { status: apiRes.status }
 
-      return resStatus;
+      return resStatus
     } catch {
-      return null;
+      return null
     }
-  };
+  }
 
 /** Generates all strongly-typed functions necessary for CRUD operations on any Django
  * Model object implemented with GenerateCrudEndpointsForModel in the Python
@@ -309,51 +309,51 @@ export const generateBackendCrudFuncs = <
     read: generateBackendGetFunc<ResponseObject>(backendEndpoint),
     update: generateBackendPutFunc<UpdateObject>(backendEndpoint),
     delete: generateBackendDeleteFunc(backendEndpoint),
-  };
-};
+  }
+}
 
 const backendFetch = async (
   relativeEndpointUrl: string,
-  method: "GET" | "POST" | "PUT" | "DELETE",
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   body?: any,
   queryParams?: Record<string, any>
 ) => {
-  const queryParamString = buildQueryParamString(queryParams);
+  const queryParamString = buildQueryParamString(queryParams)
 
   try {
-    let response = await fetch(
+    const response = await fetch(
       `${API_BASE_URL}/${relativeEndpointUrl}${queryParamString}`,
       {
         method: method,
         body: JSON.stringify(body),
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
       }
-    );
-    return response;
+    )
+    return response
   } catch {
-    return null;
+    return null
   }
-};
+}
 
 const buildQueryParamString = (queryParams?: Record<string, any>) => {
   if (!queryParams || Object.keys(queryParams).length === 0) {
-    return "";
+    return ''
   }
 
-  let queryParamStrings = [];
+  const queryParamStrings = []
   if (queryParams) {
     for (const filterField in queryParams) {
-      queryParamStrings.push(`${filterField}=${queryParams[filterField]}`);
+      queryParamStrings.push(`${filterField}=${queryParams[filterField]}`)
     }
   }
 
-  const queryParamString = "?" + queryParamStrings.join("&");
-  return queryParamString;
-};
+  const queryParamString = '?' + queryParamStrings.join('&')
+  return queryParamString
+}
 
 export const backendGet = async <ResponseObject>(
   relativeEndpointUrl: string,
@@ -361,82 +361,82 @@ export const backendGet = async <ResponseObject>(
 ) => {
   let response = await backendFetch(
     relativeEndpointUrl,
-    "GET",
+    'GET',
     undefined,
     queryParams
-  );
+  )
 
   if (!response) {
-    return null;
+    return null
   } else if (response.ok) {
     try {
-      const object: ResponseObject = await response.json();
-      return object;
+      const object: ResponseObject = await response.json()
+      return object
     } catch {
-      return null;
+      return null
     }
   } else if (response.status === 401) {
-    const refreshRes = await refreshAccessToken();
+    const refreshRes = await refreshAccessToken()
     if (refreshRes) {
       response = await backendFetch(
         relativeEndpointUrl,
-        "GET",
+        'GET',
         undefined,
         queryParams
-      );
+      )
 
       if (!response) {
-        return null;
+        return null
       } else if (response.ok) {
         try {
-          const object: ResponseObject = await response.json();
-          return object;
+          const object: ResponseObject = await response.json()
+          return object
         } catch {
-          return null;
+          return null
         }
       } else {
-        return null;
+        return null
       }
     } else {
-      return null;
+      return null
     }
   } else {
-    return null;
+    return null
   }
-};
+}
 
 export const backendPost = async (relativeEndpointUrl: string, body: any) => {
-  let response = await backendFetch(relativeEndpointUrl, "POST", body);
+  let response = await backendFetch(relativeEndpointUrl, 'POST', body)
   if (!response) {
-    return null;
+    return null
   } else if (response.ok) {
     try {
-      return await response.json();
+      return await response.json()
     } catch {
-      return null;
+      return null
     }
   } else if (response.status === 401) {
-    const refreshRes = await refreshAccessToken();
+    const refreshRes = await refreshAccessToken()
     if (refreshRes) {
-      response = await backendFetch(relativeEndpointUrl, "POST", body);
+      response = await backendFetch(relativeEndpointUrl, 'POST', body)
       if (!response) {
-        return null;
+        return null
       } else if (response.ok) {
         try {
-          return await response.json();
+          return await response.json()
         } catch {
-          return null;
+          return null
         }
       } else {
-        return null;
+        return null
       }
     } else {
-      return null;
+      return null
     }
   } else {
-    return null;
+    return null
   }
-};
+}
 
 export const backendDelete = async (
   relativeEndpointUrl: string,
@@ -444,81 +444,81 @@ export const backendDelete = async (
 ) => {
   let response = await backendFetch(
     relativeEndpointUrl,
-    "DELETE",
+    'DELETE',
     undefined,
     params
-  );
+  )
   if (!response) {
-    return null;
+    return null
   } else if (response.ok) {
     try {
       if (response.status === 204) {
-        return "Success";
+        return 'Success'
       }
-      return await response.json();
+      return await response.json()
     } catch {
-      return null;
+      return null
     }
   } else if (response.status === 401) {
-    const refreshRes = await refreshAccessToken();
+    const refreshRes = await refreshAccessToken()
     if (refreshRes) {
       response = await backendFetch(
         relativeEndpointUrl,
-        "DELETE",
+        'DELETE',
         undefined,
         params
-      );
+      )
       if (!response) {
-        return null;
+        return null
       } else if (response.ok) {
         try {
-          return await response.json();
+          return await response.json()
         } catch {
-          return null;
+          return null
         }
       } else {
-        return null;
+        return null
       }
     } else {
-      return null;
+      return null
     }
   } else {
-    return null;
+    return null
   }
-};
+}
 
 export const backendPut = async (relativeEndpointUrl: string, body: any) => {
-  let response = await backendFetch(relativeEndpointUrl, "PUT", body);
+  let response = await backendFetch(relativeEndpointUrl, 'PUT', body)
   if (!response) {
-    return null;
+    return null
   } else if (response.ok) {
     try {
-      return await response.json();
+      return await response.json()
     } catch {
-      return null;
+      return null
     }
   } else if (response.status === 401) {
-    const refreshRes = await refreshAccessToken();
+    const refreshRes = await refreshAccessToken()
     if (refreshRes) {
-      response = await backendFetch(relativeEndpointUrl, "PUT", body);
+      response = await backendFetch(relativeEndpointUrl, 'PUT', body)
       if (!response) {
-        return null;
+        return null
       } else if (response.ok) {
         try {
-          return await response.json();
+          return await response.json()
         } catch {
-          return null;
+          return null
         }
       } else {
-        return null;
+        return null
       }
     } else {
-      return null;
+      return null
     }
   } else {
-    return null;
+    return null
   }
-};
+}
 
 export type ApiOptions = {
   searchText?: string;

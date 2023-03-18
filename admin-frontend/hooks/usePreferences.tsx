@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
-import { Preference, fetchPreferences, updatePreferences } from "../api/backend/perferences";
+import { useEffect, useState } from 'react'
+import { Preference, fetchPreferences, updatePreferences } from '../api/backend/perferences'
 
 const usePreferences = () => {
-    const [loadingPreferences, setLoadingPreferences] = useState(true);
-    const [preferences, setPreferences] = useState([] as Preference[] | null);
+    const [loadingPreferences, setLoadingPreferences] = useState(true)
+    const [preferences, setPreferences] = useState([] as Preference[] | null)
   
     // Fetch the preferences
     useEffect(() => {
       fetchPreferences()
         .then((data) => {
-          setPreferences(data);
+          setPreferences(data)
         })
         .catch((_error) =>
-          console.log("Cannot fetch the questionnaire")
+          console.log('Cannot fetch the questionnaire')
         )
-        .finally(() => setLoadingPreferences(false));
-    }, []);
+        .finally(() => setLoadingPreferences(false))
+    }, [])
   
   
     // Update preferences
@@ -23,32 +23,32 @@ const usePreferences = () => {
       searchingDurationInDays: string;
       minimumActiveDays: string;
   }) => {
-      let searchingDurationInDaysPreference: Preference = {key:"searchingDurationInDays", value: updatedPreferences.searchingDurationInDays}
-      let minimumActiveDaysPreference: Preference = {key:"minimumActiveDays", value: updatedPreferences.minimumActiveDays}
+      const searchingDurationInDaysPreference: Preference = {key:'searchingDurationInDays', value: updatedPreferences.searchingDurationInDays}
+      const minimumActiveDaysPreference: Preference = {key:'minimumActiveDays', value: updatedPreferences.minimumActiveDays}
       return await updatePreferences(searchingDurationInDaysPreference)
       .then(async (result) => {
-        let newPreferences: Preference[] = [searchingDurationInDaysPreference];
+        const newPreferences: Preference[] = [searchingDurationInDaysPreference]
         return await updatePreferences(minimumActiveDaysPreference)
         .then((result)=>{
-          newPreferences.push(minimumActiveDaysPreference);
-          setPreferences(newPreferences);
+          newPreferences.push(minimumActiveDaysPreference)
+          setPreferences(newPreferences)
           return result
         })
         .catch((_error) =>
-          console.log("Could not update 'Minimum Active Days'")
+          console.log('Could not update \'Minimum Active Days\'')
         )
       }).catch((_error) =>
-          console.log("Could not update 'Searching Duration in Days'")
+          console.log('Could not update \'Searching Duration in Days\'')
       )
-    };
+    }
   
-    const loading = loadingPreferences;
+    const loading = loadingPreferences
   
     return {
       loading,
       preferences,
       handleUpdatePreferences,
-    };
-  };
+    }
+  }
 
-export default usePreferences;
+export default usePreferences

@@ -1,4 +1,4 @@
-import { backendGet } from "../base";
+import { backendGet } from '../base'
 
 export interface Questionnaire {
   viewsQuestionnaireId: number;
@@ -10,7 +10,7 @@ export interface Questionnaire {
   updatedBy: string;
 }
 
-export const questionnairesFromViewsBackendEndpoint = `views-api/questionnaires`;
+export const questionnairesFromViewsBackendEndpoint = 'views-api/questionnaires'
 export const getQuestionnairesFromViews = async (params?: {
   limit?: number;
   offset?: number;
@@ -19,16 +19,16 @@ export const getQuestionnairesFromViews = async (params?: {
   const response = await backendGet<{ total: number; data: Questionnaire[] }>(
     questionnairesFromViewsBackendEndpoint,
     params
-  );
+  )
 
-  return response;
-};
+  return response
+}
 
 export const getQuestionnaireFromViews = async (id: number) => {
   const response = await backendGet<Questionnaire>(
     questionnairesFromViewsBackendEndpoint,
     { id }
-  );
+  )
 
-  return response;
-};
+  return response
+}

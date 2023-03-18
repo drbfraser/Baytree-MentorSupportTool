@@ -5,30 +5,30 @@ import {
   Icon,
   IconButton, ListItemText, Menu,
   MenuItem, Typography
-} from "@mui/material";
-import { deepOrange, deepPurple, green } from "@mui/material/colors";
-import { useState } from "react";
-import { MdMail } from "react-icons/md";
+} from '@mui/material'
+import { deepOrange, deepPurple, green } from '@mui/material/colors'
+import { useState } from 'react'
+import { MdMail } from 'react-icons/md'
 
 export default function Messages() {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement|null>()
+  const open = Boolean(anchorEl)
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   return (
-    <div style={{ textDecoration: "none", color: "black" }}>
+    <div style={{ textDecoration: 'none', color: 'black' }}>
       <IconButton
         size="large"
         color="inherit"
         onClick={handleClick}
         aria-controls="basic-menu"
         aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
+        aria-expanded={open ? 'true' : undefined}
       >
         <Badge badgeContent={3} color="error">
           <Icon component={MdMail} />
@@ -40,7 +40,7 @@ export default function Messages() {
         open={open}
         onClose={handleClose}
         MenuListProps={{
-          "aria-labelledby": "basic-button"
+          'aria-labelledby': 'basic-button'
         }}
       >
         <MenuItem onClick={handleClose}>
@@ -50,7 +50,7 @@ export default function Messages() {
             secondary={
               <>
                 <Typography
-                  sx={{ display: "inline" }}
+                  sx={{ display: 'inline' }}
                   variant="caption"
                   color="text.secondary"
                   gutterBottom
@@ -69,12 +69,12 @@ export default function Messages() {
             secondary={
               <>
                 <Typography
-                  sx={{ display: "inline" }}
+                  sx={{ display: 'inline' }}
                   variant="caption"
                   color="text.secondary"
                   gutterBottom
                 >
-                  I don't think i can make it for the next ...
+                  I don&apos;t think i can make it for the next ...
                 </Typography>
               </>
             }
@@ -88,7 +88,7 @@ export default function Messages() {
             secondary={
               <>
                 <Typography
-                  sx={{ display: "inline" }}
+                  sx={{ display: 'inline' }}
                   variant="caption"
                   color="text.secondary"
                   gutterBottom
@@ -101,5 +101,5 @@ export default function Messages() {
         </MenuItem>
       </Menu>
     </div>
-  );
+  )
 }

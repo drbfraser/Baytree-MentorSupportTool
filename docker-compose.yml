@@ -6,11 +6,12 @@ services:
       context: ./
       dockerfile: ./views_mock/Dockerfile
     environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - MYSQL_HOST=baytree_database
-      - MYSQL_DATABASE=baytree
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+      MYSQL_HOST: baytree_database
+      MYSQL_DATABASE: baytree
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MOCK_MYSQL_DATABASE: ${MOCK_MYSQL_DATABASE}
     depends_on:
       - database
       - redis
@@ -21,20 +22,20 @@ services:
       context: ./
       dockerfile: ./baytree_app/Dockerfile
     environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - MYSQL_HOST=baytree_database
-      - MYSQL_DATABASE=baytree
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_PORT=${EMAIL_PORT}
-      - EMAIL_USER=${EMAIL_USER}
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
-      - VIEWS_USERNAME=${VIEWS_USERNAME}
-      - VIEWS_PASSWORD=${VIEWS_PASSWORD}
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      - VIEWS_BASE_URL=${VIEWS_BASE_URL:-http://views-mock:5001/}
+      SECRET_KEY: ${SECRET_KEY}
+      MYSQL_HOST: baytree_database
+      MYSQL_DATABASE: baytree
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      VIEWS_USERNAME: ${VIEWS_USERNAME}
+      VIEWS_PASSWORD: ${VIEWS_PASSWORD}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+      VIEWS_BASE_URL: ${VIEWS_BASE_URL:-http://views-mock:5001/}
 
     depends_on:
       - database
@@ -44,10 +45,10 @@ services:
     container_name: baytree_database
     image: mariadb:10.9.4
     environment:
-      - MYSQL_DATABASE=baytree
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      MYSQL_DATABASE: baytree
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - baytree_database_data:/var/lib/mysql
 

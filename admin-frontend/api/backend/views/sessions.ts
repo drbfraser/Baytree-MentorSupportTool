@@ -1,6 +1,6 @@
-import { MentorSessionsModalProps } from "../../../components/pages/home/MentorSessionTrackingCard/MentorSessionsModal";
-import { PagedDataRows } from "../../../components/shared/datagrid/datagridTypes";
-import { backendGet } from "../base";
+import { MentorSessionsModalProps } from '../../../components/pages/home/MentorSessionTrackingCard/MentorSessionsModal'
+import { PagedDataRows } from '../../../components/shared/datagrid/datagridTypes'
+import { backendGet } from '../base'
 
 export interface SessionResponse {
   viewsSessionId: string;
@@ -33,7 +33,7 @@ export interface Session {
   updatedDate: Date;
 }
 
-export const sessionsEndpoint = `views-api/sessions`;
+export const sessionsEndpoint = 'views-api/sessions'
 
 export const getSessionsFromViews = async (
   viewsSessionGroupId: string,
@@ -45,29 +45,29 @@ export const getSessionsFromViews = async (
     startDateTo?: string;
   }
 ): Promise<PagedDataRows<Session> | null> => {
-  let queryParams: Record<string, any> = {
+  const queryParams: Record<string, any> = {
     sessionGroupId: viewsSessionGroupId,
-  };
+  }
 
   if (params) {
     if (params.limit) {
-      queryParams["limit"] = params.limit;
+      queryParams['limit'] = params.limit
     }
     if (params.offset) {
-      queryParams["offset"] = params.offset;
+      queryParams['offset'] = params.offset
     }
     if (params.startDateFrom) {
-      queryParams["startDateFrom"] = params.startDateFrom;
+      queryParams['startDateFrom'] = params.startDateFrom
     }
     if (params.startDateTo) {
-      queryParams["startDateTo"] = params.startDateTo;
+      queryParams['startDateTo'] = params.startDateTo
     }
   }
 
   const response = await backendGet<PagedDataRows<SessionResponse>>(
     sessionsEndpoint,
     queryParams
-  );
+  )
 
   if (response) {
     return {
@@ -84,18 +84,18 @@ export const getSessionsFromViews = async (
         ),
         duration: session.duration,
         durationInMinutes:
-          parseInt(session.duration.split(":")[0]) * 60 +
-          parseInt(session.duration.split(":")[1]),
-        cancelled: session.cancelled === "1",
+          parseInt(session.duration.split(':')[0]) * 60 +
+          parseInt(session.duration.split(':')[1]),
+        cancelled: session.cancelled === '1',
         venueId: parseInt(session.venueId),
         createdDate: new Date(Date.parse(`${session.created}`)),
         updatedDate: new Date(Date.parse(`${session.created}`)),
       })),
-    };
+    }
   } else {
-    return null;
+    return null
   }
-};
+}
 
 export interface SessionDetails {
   viewsSessionId: string;
@@ -172,7 +172,7 @@ interface Mentee {
  */
 
 export const getSessionDetails = async (viewsSessionId: number) => {
-  const sessionDetailsEndpoint = `records/${viewsSessionId}/`;
-  const response = await backendGet<SessionDetails>(sessionDetailsEndpoint);
-  return response;
-};
+  const sessionDetailsEndpoint = `records/${viewsSessionId}/`
+  const response = await backendGet<SessionDetails>(sessionDetailsEndpoint)
+  return response
+}

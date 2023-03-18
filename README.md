@@ -19,6 +19,8 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    EMAIL_PORT=587
    EMAIL_USER=the_account@gmail.com
    EMAIL_PASSWORD=the_password
+   MOCK_MYSQL_DATABASE=views_mock_db
+
 
    VIEWS_USERNAME=the_username
    VIEWS_PASSWORD=the_password
@@ -146,6 +148,12 @@ To stop the Celery worker, you should use the following command:
 
 ```
 docker exec baytree_server python manage.py stop_celery
+```
+
+### Creating views mock db
+
+```bash
+docker exec -it views-mock python manage.py createdb
 ```
 
 ### Install backend Packages

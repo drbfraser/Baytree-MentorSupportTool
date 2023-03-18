@@ -1,33 +1,33 @@
-import "../styles/globals.css";
-import type { AppProps } from "next/app";
-import Head from "next/head";
-import Navbar from "../components/shared/Navbar/navbar";
-import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import '../styles/globals.css'
+import type { AppProps } from 'next/app'
+import Head from 'next/head'
+import Navbar from '../components/shared/Navbar/navbar'
+import { useRouter } from 'next/router'
+import { useEffect, useRef, useState } from 'react'
 import {
   BODY_BACKGROUND,
   SIDEBAR_WIDTH,
   TOPBAR_HEIGHT,
-} from "../constants/constants";
-import sidebarLinks from "../components/shared/Navbar/sidebarLinks";
-import topbarActions from "../components/shared/Navbar/topbarActions";
-import useMobileLayout from "../hooks/useMobileLayout";
-import { RootState, useStore } from "../stores/store";
-import { Provider, useDispatch, useSelector } from "react-redux";
-import { NextComponentType, NextPageContext } from "next";
-import React from "react";
-import { ThemeProvider, Typography } from "@mui/material";
-import { logout, verify } from "../actions/auth/actionCreators";
-import styled from "styled-components";
-import { basePath } from "../next.config";
-import { ToastContainer } from "react-toastify";
+} from '../constants/constants'
+import sidebarLinks from '../components/shared/Navbar/sidebarLinks'
+import topbarActions from '../components/shared/Navbar/topbarActions'
+import useMobileLayout from '../hooks/useMobileLayout'
+import { RootState, useStore } from '../stores/store'
+import { Provider, useDispatch, useSelector } from 'react-redux'
+import { NextComponentType, NextPageContext } from 'next'
+import React from 'react'
+import { ThemeProvider, Typography } from '@mui/material'
+import { logout, verify } from '../actions/auth/actionCreators'
+import styled from 'styled-components'
+import { basePath } from '../next.config'
+import { ToastContainer } from 'react-toastify'
 
-export const BODY_PADDING = "1rem";
-import "react-toastify/dist/ReactToastify.css";
-import theme from "../styles/theme";
+export const BODY_PADDING = '1rem'
+import 'react-toastify/dist/ReactToastify.css'
+import theme from '../styles/theme'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const store = useStore(pageProps.initialReduxState);
+  const store = useStore(pageProps.initialReduxState)
 
   return (
     <>
@@ -41,51 +41,51 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Provider>
       </ThemeProvider>
     </>
-  );
+  )
 }
 
 const PageChooser: React.FC<{
   pageProps: any;
   component: NextComponentType<NextPageContext, any, {}>;
 }> = ({ pageProps, component }) => {
-  const router = useRouter();
-  const dispatch = useDispatch();
+  const router = useRouter()
+  const dispatch = useDispatch()
   const isAuthenticated = useSelector<RootState, boolean>(
     (state) => state.auth.isAuthenticated
-  );
+  )
   const isVerifyInProgress = useSelector<RootState, boolean>(
     (state) => state.auth.isVerifyInProgress
-  );
+  )
 
   useEffect(() => {
-    if (router.pathname !== "/" && router.pathname !== "/index") {
-      dispatch(verify());
+    if (router.pathname !== '/' && router.pathname !== '/index') {
+      dispatch(verify())
     }
-  }, [router.pathname]);
+  }, [router.pathname])
 
   useEffect(() => {
     if (!isAuthenticated && !isVerifyInProgress) {
-      router.push("/");
+      router.push('/')
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated])
 
   useEffect(() => {
     if (
       !isAuthenticated &&
       !isVerifyInProgress &&
-      router.pathname !== "/" &&
-      router.pathname !== ""
+      router.pathname !== '/' &&
+      router.pathname !== ''
     ) {
       setTimeout(() => {
-        router.push("/");
-      }, 3000);
+        router.push('/')
+      }, 3000)
     }
-  }, [isVerifyInProgress]);
+  }, [isVerifyInProgress])
 
   return (
     <>
       <HeadTags />
-      {router.pathname !== "/" && router.pathname !== "/index" ? (
+      {router.pathname !== '/' && router.pathname !== '/index' ? (
         !isVerifyInProgress && !isAuthenticated ? (
           <>
             <Typography variant="h4" padding="4rem">
@@ -105,24 +105,24 @@ const PageChooser: React.FC<{
         <LoginPage component={component} pageProps={pageProps}></LoginPage>
       )}
     </>
-  );
-};
+  )
+}
 
 const NonLoginPage: React.FC<{
   component: NextComponentType<NextPageContext, any, {}>;
   pageProps: any;
 }> = ({ component, pageProps }) => {
-  const pageContentDivRef = useRef<HTMLDivElement>(null);
-  const mobileLayout = useMobileLayout();
-  const [sidebarActive, setSidebarActive] = useState(!useMobileLayout);
+  const pageContentDivRef = useRef<HTMLDivElement>(null)
+  const mobileLayout = useMobileLayout()
+  const [sidebarActive, setSidebarActive] = useState(!useMobileLayout)
 
   return (
     <>
       <div
         style={{
           background: BODY_BACKGROUND,
-          width: "100%",
-          height: "100%",
+          width: '100%',
+          height: '100%',
         }}
       >
         <Navbar
@@ -133,10 +133,10 @@ const NonLoginPage: React.FC<{
           topbarActions={topbarActions}
           pageContentDivRef={pageContentDivRef}
         ></Navbar>
-        <div style={{ display: "flex", justifyContent: "left" }}>
+        <div style={{ display: 'flex', justifyContent: 'left' }}>
           <div
             style={{
-              width: sidebarActive && !mobileLayout ? SIDEBAR_WIDTH : "0",
+              width: sidebarActive && !mobileLayout ? SIDEBAR_WIDTH : '0',
             }}
           ></div>
           <PageContent ref={pageContentDivRef}>
@@ -146,8 +146,8 @@ const NonLoginPage: React.FC<{
       </div>
       <div id="modalContainer"></div>
     </>
-  );
-};
+  )
+}
 
 const PageContent = styled.div`
   min-height: ${`calc(100vh - ${TOPBAR_HEIGHT})`};
@@ -155,14 +155,14 @@ const PageContent = styled.div`
   padding: ${BODY_PADDING};
   margin-top: ${TOPBAR_HEIGHT};
   overflow-x: hidden;
-`;
+`
 
 const LoginPage: React.FC<{
   component: NextComponentType<NextPageContext, any, {}>;
   pageProps: any;
 }> = ({ component, pageProps }) => {
-  return React.createElement(component, { ...pageProps });
-};
+  return React.createElement(component, { ...pageProps })
+}
 
 const HeadTags: React.FC<{}> = () => {
   return (
@@ -198,7 +198,7 @@ const HeadTags: React.FC<{}> = () => {
       <meta name="msapplication-TileColor" content="#da532c" />
       <meta name="theme-color" content="#ffffff"></meta>
     </Head>
-  );
-};
+  )
+}
 
-export default MyApp;
+export default MyApp

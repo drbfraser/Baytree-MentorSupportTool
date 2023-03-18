@@ -1,4 +1,4 @@
-import { MdDelete, MdRestoreFromTrash } from "react-icons/md";
+import { MdDelete, MdRestoreFromTrash } from 'react-icons/md'
 import {
   DataRow,
   DataRowAction,
@@ -7,7 +7,7 @@ import {
   setCreatedDataRowFunc,
   setDeletedDataRowFunc,
   InvalidCell,
-} from "./datagridTypes";
+} from './datagridTypes'
 
 export const changeDataRowValue = (
   newValue: any,
@@ -21,32 +21,32 @@ export const changeDataRowValue = (
   if (createdDataRow) {
     createdDataRow = cloneDataRow(createdDataRow);
     (createdDataRow as DataRow)[dataField] = newValue;
-    (setCreatedDataRow as setCreatedDataRowFunc)(createdDataRow as DataRow);
+    (setCreatedDataRow as setCreatedDataRowFunc)(createdDataRow as DataRow)
   } else if (changedDataRow) {
     changedDataRow = cloneDataRow(changedDataRow);
     (changedDataRow as DataRow)[dataField] = newValue;
-    (setChangedDataRow as setChangedDataRowFunc)(changedDataRow as DataRow);
+    (setChangedDataRow as setChangedDataRowFunc)(changedDataRow as DataRow)
   } else {
     if ((dataRow as DataRow)[dataField] === newValue) {
-      return;
+      return
     }
 
     dataRow = cloneDataRow(dataRow);
     (dataRow as DataRow)[dataField] = newValue;
-    (setChangedDataRow as setChangedDataRowFunc)(dataRow as DataRow);
+    (setChangedDataRow as setChangedDataRowFunc)(dataRow as DataRow)
   }
-};
+}
 
 export const cloneDataRow = (dataRow?: DataRow) => {
-  return JSON.parse(JSON.stringify(dataRow));
-};
+  return JSON.parse(JSON.stringify(dataRow))
+}
 
 // https://stackoverflow.com/a/52869830
 export const isIsoDate = (str: string) => {
-  if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
-  var d = new Date(str);
-  return d.toISOString() === str;
-};
+  if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false
+  const d = new Date(str)
+  return d.toISOString() === str
+}
 
 export const isCellChanged = (
   dataField: string,
@@ -55,34 +55,34 @@ export const isCellChanged = (
   isCreatedDataRow?: boolean
 ) => {
   if (isCreatedDataRow) {
-    return true;
+    return true
   } else if (originalDataRow && changedDataRow) {
     if (Array.isArray(originalDataRow[dataField])) {
       return !arraysEqual(
         originalDataRow[dataField],
         changedDataRow[dataField]
-      );
+      )
     } else {
-      return originalDataRow[dataField] !== changedDataRow[dataField];
+      return originalDataRow[dataField] !== changedDataRow[dataField]
     }
   } else {
-    return false;
+    return false
   }
-};
+}
 
 // Doesn't work for nested arrays, objects, shallow equality is used
 // Side effect: sorts the arrays
 const arraysEqual = (a1: Array<any>, a2: Array<any>) => {
   if (a1 === a2) {
-    return true;
+    return true
   } else if (a1.length === a2.length) {
-    a1.sort();
-    a2.sort();
-    return a1.every((val, i) => val === a2[i]);
+    a1.sort()
+    a2.sort()
+    return a1.every((val, i) => val === a2[i])
   } else {
-    return false;
+    return false
   }
-};
+}
 
 export const getDataRowActions = (
   dataRowActions: DataRowAction[],
@@ -106,20 +106,20 @@ export const getDataRowActions = (
           ) : (
             <MdDelete color="red"></MdDelete>
           ),
-          name: isDeleted ? "Restore" : "Delete",
+          name: isDeleted ? 'Restore' : 'Delete',
         },
       ]
-    : dataRowActions;
+    : dataRowActions
 
 export const shouldKeepColumnOnMobile = (
   col: DataGridColumn,
   cols: DataGridColumn[]
 ) => {
-  return col.keepColumnOnMobile || cols.every((col) => !col.keepColumnOnMobile);
-};
+  return col.keepColumnOnMobile || cols.every((col) => !col.keepColumnOnMobile)
+}
 
 export const someExpandableColumnExists = (cols: DataGridColumn[]) =>
-  cols.some((col) => col.expandableColumn);
+  cols.some((col) => col.expandableColumn)
 
 export const checkCellInvalid = (
   primaryKeyDataField: string,
@@ -137,5 +137,5 @@ export const checkCellInvalid = (
           : changedDataRow
           ? changedDataRow[primaryKeyDataField]
           : createdDataRow) && invalidCell.dataField === col.dataField
-  );
-};
+  )
+}

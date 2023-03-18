@@ -1,14 +1,14 @@
-import axios from "axios";
-import { API_BASE_URL } from "./url";
+import axios from 'axios'
+import { API_BASE_URL } from './url'
 
 export const recordsApi = axios.create({
   baseURL: `${API_BASE_URL}/records/`,
   withCredentials: true,
   headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json"
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
   }
-});
+})
 
 export type SessionRecord = {
   viewsSessionId: string;
@@ -33,15 +33,15 @@ export const fetchSessions = async (params: Params = { descending: 0 }) => {
     const response = await recordsApi.get<{
       count: number;
       results: SessionRecord[];
-    }>("", { params });
-    if (response.status === 200) return { data: response.data, error: "" };
+    }>('', { params })
+    if (response.status === 200) return { data: response.data, error: '' }
     if (response.status === 404)
-      return { data: undefined, error: "Cannot find any records" };
-    else throw Error;
+      return { data: undefined, error: 'Cannot find any records' }
+    else throw Error
   } catch (_) {
-    return { data: undefined, error: "Cannot retrieve any records" };
+    return { data: undefined, error: 'Cannot retrieve any records' }
   }
-};
+}
 
 export type SessionDetail = SessionRecord & {
   activity: string;
