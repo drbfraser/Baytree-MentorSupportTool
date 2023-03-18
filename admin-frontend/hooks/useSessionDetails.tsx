@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 import {
   getSessionDetails,
   SessionDetails,
-} from "../api/backend/views/sessions";
+} from '../api/backend/views/sessions'
 
 const useSessionDetails = (viewsSessionId: number) => {
   const [sessionDetails, setSessionDetails] = useState<
     SessionDetails | null | undefined
-  >(undefined);
+  >(undefined)
 
   useEffect(() => {
     getSessionDetails(viewsSessionId).then((sessionDetails) => {
-      setSessionDetails(sessionDetails);
-    });
-  }, []);
+      setSessionDetails(sessionDetails)
+    })
+  }, [])
 
-  return { sessionDetails };
-};
+  return { sessionDetails }
+}
 
-export default useSessionDetails;
+export default useSessionDetails

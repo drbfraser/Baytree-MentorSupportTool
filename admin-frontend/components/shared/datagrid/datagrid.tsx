@@ -1,9 +1,9 @@
-import { FC } from "react";
-import { Table } from "@mui/material";
-import DataGridBody from "./datagridBody";
-import DataGridHeaderRow from "./datagridHeaderRow";
-import Pager from "../pager";
-import DataGridSearchBar from "./datagridSearchBar";
+import { FC } from 'react'
+import { Table } from '@mui/material'
+import DataGridBody from './datagridBody'
+import DataGridHeaderRow from './datagridHeaderRow'
+import Pager from '../pager'
+import DataGridSearchBar from './datagridSearchBar'
 import {
   DataRow,
   DataGridColumn,
@@ -11,11 +11,11 @@ import {
   onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
   DataRowAction,
-} from "./datagridTypes";
-import useLoading from "./hooks/useLoading";
-import useData from "./hooks/useData";
-import useSearch from "./hooks/useSearch";
-import usePagination from "./hooks/usePagination";
+} from './datagridTypes'
+import useLoading from './hooks/useLoading'
+import useData from './hooks/useData'
+import useSearch from './hooks/useSearch'
+import usePagination from './hooks/usePagination'
 
 export interface DataGridProps {
   onLoadDataRows?: onLoadDataRowsFunc | onLoadPagedDataRowsFunc;
@@ -37,7 +37,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
     setIsLoadingColValueOptions,
     isSavingDataRows,
     setIsSavingDataRows,
-  } = useLoading();
+  } = useLoading()
 
   const {
     currentPage,
@@ -45,9 +45,9 @@ const DataGrid: FC<DataGridProps> = (props) => {
     maxPageNumber,
     setMaxPageNumber,
     clearPagerFuncRef,
-  } = usePagination();
+  } = usePagination()
 
-  const { isSearchingRef, searchText, setSearchText } = useSearch();
+  const { isSearchingRef, searchText, setSearchText } = useSearch()
 
   const {
     dataRows,
@@ -87,7 +87,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
     props.onLoadDataRows,
     props.data,
     props.pageSize
-  );
+  )
 
   return (
     <>
@@ -101,14 +101,14 @@ const DataGrid: FC<DataGridProps> = (props) => {
       )}
       <Table
         sx={{
-          tableLayout: "fixed",
+          tableLayout: 'fixed',
         }}
       >
         <DataGridHeaderRow
           cols={cols}
           onSaveButtonClick={() => {
             if (saveDataRows) {
-              saveDataRows();
+              saveDataRows()
             }
           }}
           isDataGridSaveable={!!props.onSaveDataRows}
@@ -148,7 +148,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
         ></Pager>
       )}
     </>
-  );
-};
+  )
+}
 
-export default DataGrid;
+export default DataGrid

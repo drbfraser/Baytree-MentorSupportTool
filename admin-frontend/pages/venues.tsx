@@ -1,28 +1,28 @@
-import { Paper, Typography } from "@mui/material";
-import { NextPage } from "next";
-import styled from "styled-components";
-import { getVenues, saveVenues, Venue } from "../api/backend/sessions";
-import { getVenuesFromViews } from "../api/backend/views/venues";
-import DataGrid from "../components/shared/datagrid/datagrid";
+import { Paper, Typography } from '@mui/material'
+import { NextPage } from 'next'
+import styled from 'styled-components'
+import { getVenues, saveVenues, Venue } from '../api/backend/sessions'
+import { getVenuesFromViews } from '../api/backend/views/venues'
+import DataGrid from '../components/shared/datagrid/datagrid'
 import {
   onSaveDataRowsFunc,
   onLoadDataRowsFunc,
   OnLoadColumnValueOptionsFunc,
-} from "../components/shared/datagrid/datagridTypes";
+} from '../components/shared/datagrid/datagridTypes'
 
 const MentorRoles: NextPage = () => {
   const getVenueData: onLoadDataRowsFunc = async () => {
-    const venuesRes = (await getVenues()) as Venue[];
+    const venuesRes = (await getVenues()) as Venue[]
 
     if (venuesRes) {
       return venuesRes.map((venue) => ({
         id: venue.viewsVenueId, // need a separate id field for the grid primary key
         viewsVenueId: venue.viewsVenueId,
-      }));
+      }))
     } else {
-      throw "Failed to retrieve venue data. Please refresh the page or contact IT if the issue persists.";
+      throw 'Failed to retrieve venue data. Please refresh the page or contact IT if the issue persists.'
     }
-  };
+  }
 
   // Necessary since the venue primary key is editable and the grid won't work
   type venueWithIdPrimaryKey = { id: number } & Venue;
@@ -42,21 +42,21 @@ const MentorRoles: NextPage = () => {
         isDeleted: true,
       })),
       ...deletedRows.map((row) => ({ ...row, isDeleted: true })),
-    ]);
-    return !!result;
-  };
+    ])
+    return !!result
+  }
 
   const getVenueOptions: OnLoadColumnValueOptionsFunc = async () => {
-    const viewsVenues = await getVenuesFromViews();
+    const viewsVenues = await getVenuesFromViews()
     if (viewsVenues) {
       return viewsVenues.results.map((viewsVenue) => ({
         id: viewsVenue.id,
         name: viewsVenue.name,
-      }));
+      }))
     } else {
-      throw "Failed to retrieve venue data from views. Please refresh the page or contact IT if the issue persists.";
+      throw 'Failed to retrieve venue data from views. Please refresh the page or contact IT if the issue persists.'
     }
-  };
+  }
 
   return (
     <VenuesCard>
@@ -64,8 +64,8 @@ const MentorRoles: NextPage = () => {
       <DataGrid
         cols={[
           {
-            header: "Venue",
-            dataField: "viewsVenueId",
+            header: 'Venue',
+            dataField: 'viewsVenueId',
             onLoadValueOptions: getVenueOptions,
           },
         ]}
@@ -73,15 +73,15 @@ const MentorRoles: NextPage = () => {
         onSaveDataRows={saveVenueData}
       ></DataGrid>
     </VenuesCard>
-  );
-};
+  )
+}
 
 const VenuesCard = styled(Paper)`
   padding: 2rem;
-`;
+`
 
 const VenuesTitle = styled(Typography)`
   margin-bottom: 1rem;
-`;
+`
 
-export default MentorRoles;
+export default MentorRoles

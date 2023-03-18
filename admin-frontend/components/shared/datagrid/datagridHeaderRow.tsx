@@ -1,10 +1,10 @@
-import { TableHead, TableRow, TableCell, Button } from "@mui/material";
-import { FC } from "react";
-import { MdSave } from "react-icons/md";
-import styled from "styled-components";
-import useMobileLayout from "../../../hooks/useMobileLayout";
-import { someExpandableColumnExists } from "./datagridRowLogic";
-import { DataGridColumn } from "./datagridTypes";
+import { TableHead, TableRow, TableCell, Button } from '@mui/material'
+import { FC } from 'react'
+import { MdSave } from 'react-icons/md'
+import styled from 'styled-components'
+import useMobileLayout from '../../../hooks/useMobileLayout'
+import { someExpandableColumnExists } from './datagridRowLogic'
+import { DataGridColumn } from './datagridTypes'
 
 interface DataGridHeaderRowProps {
   onSaveButtonClick?: () => void;
@@ -15,8 +15,8 @@ interface DataGridHeaderRowProps {
 }
 
 const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
-  const isOnMobileDevice = useMobileLayout();
-  const SAVE_BUTTON_CELL_WIDTH_PERCENT = isOnMobileDevice ? 30 : 10;
+  const isOnMobileDevice = useMobileLayout()
+  const SAVE_BUTTON_CELL_WIDTH_PERCENT = isOnMobileDevice ? 30 : 10
 
   return (
     <TableHead>
@@ -33,7 +33,7 @@ const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
               <TableCell
                 key={`headerCell_${col.dataField}`}
                 sx={{
-                  textAlign: isOnMobileDevice ? "left" : "center",
+                  textAlign: isOnMobileDevice ? 'left' : 'center',
                   width: `${
                     (100 - SAVE_BUTTON_CELL_WIDTH_PERCENT) /
                     (!someExpandableColumnExists(props.cols) && isOnMobileDevice
@@ -62,8 +62,8 @@ const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
         ) : null}
       </TableRow>
     </TableHead>
-  );
-};
+  )
+}
 
 interface DataGridSaveButtonHeaderCellProps {
   onClick: () => void;
@@ -87,12 +87,12 @@ const DataGridSaveButtonHeaderCell: FC<DataGridSaveButtonHeaderCellProps> = (
         </Button>
       </AddButtonContainer>
     </TableCell>
-  );
-};
+  )
+}
 
 const AddButtonContainer = styled.div`
   display: flex;
   justify-content: end;
-`;
+`
 
-export default DataGridHeaderRow;
+export default DataGridHeaderRow

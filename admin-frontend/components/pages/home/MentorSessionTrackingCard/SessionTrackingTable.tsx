@@ -1,18 +1,18 @@
-import { Skeleton } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
-import styled from "styled-components";
-import { Session as ViewsSession } from "../../../../api/backend/views/sessions";
-import DataGrid from "../../../shared/datagrid/datagrid";
-import Modal from "../../../shared/Modal";
-import Pager from "../../../shared/pager";
-import MentorSessionsModal from "./MentorSessionsModal";
-import { Mentor } from "../../../../pages/home";
-import { MdSchedule } from "react-icons/md";
+import { Skeleton } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
+import styled from 'styled-components'
+import { Session as ViewsSession } from '../../../../api/backend/views/sessions'
+import DataGrid from '../../../shared/datagrid/datagrid'
+import Modal from '../../../shared/Modal'
+import Pager from '../../../shared/pager'
+import MentorSessionsModal from './MentorSessionsModal'
+import { Mentor } from '../../../../pages/home'
+import { MdSchedule } from 'react-icons/md'
 import {
   getMentorSessionCounts,
   MentorSessionCount,
-} from "./MentorSessionTrackingCard/Logic";
+} from './MentorSessionTrackingCard/Logic'
 
 interface SessionTrackingTableProps {
   sessionsForCurYear: ViewsSession[];
@@ -24,32 +24,32 @@ interface SessionTrackingTableProps {
 const SessionTrackingTable: React.FunctionComponent<
   SessionTrackingTableProps
 > = (props) => {
-  const mentorSessionCountsRef = useRef<MentorSessionCount[]>([]);
+  const mentorSessionCountsRef = useRef<MentorSessionCount[]>([])
   const [pagedMentorSessionCounts, setPagedMentorSessionCounts] = useState<
     MentorSessionCount[]
-  >([]);
+  >([])
 
   const [isMentorSessionsModalOpen, setIsMentorSessionsModalOpen] =
-    useState(false);
+    useState(false)
   const [mentorSessionsModalMentor, setMentorSessionsModalMentor] =
-    useState<Mentor | null>(null);
+    useState<Mentor | null>(null)
 
-  const PAGE_SIZE = 20;
-  const [pageNum, setPageNum] = useState(1);
-  const [maxPageNum, setMaxPageNum] = useState(1);
+  const PAGE_SIZE = 20
+  const [pageNum, setPageNum] = useState(1)
+  const [maxPageNum, setMaxPageNum] = useState(1)
 
   useEffect(() => {
     mentorSessionCountsRef.current = getMentorSessionCounts(
       props.mentors,
       props.sessionsForCurYear
-    );
+    )
 
-    setMaxPageNum(Math.ceil(mentorSessionCountsRef.current.length / PAGE_SIZE));
-    setPageNum(1);
+    setMaxPageNum(Math.ceil(mentorSessionCountsRef.current.length / PAGE_SIZE))
+    setPageNum(1)
     setPagedMentorSessionCounts(
       mentorSessionCountsRef.current.slice(0, PAGE_SIZE)
-    );
-  }, [props.mentors, props.sessionsForCurYear]);
+    )
+  }, [props.mentors, props.sessionsForCurYear])
 
   return props.isLoading ? (
     <LoadingSessionTrackingTable></LoadingSessionTrackingTable>
@@ -59,57 +59,57 @@ const SessionTrackingTable: React.FunctionComponent<
         <DataGrid
           cols={[
             {
-              header: "Name",
-              dataField: "fullName",
+              header: 'Name',
+              dataField: 'fullName',
               keepColumnOnMobile: true,
             },
             {
-              header: "Sep",
-              dataField: "septemberSessions",
+              header: 'Sep',
+              dataField: 'septemberSessions',
             },
             {
-              header: "Oct",
-              dataField: "octoberSessions",
+              header: 'Oct',
+              dataField: 'octoberSessions',
             },
             {
-              header: "Nov",
-              dataField: "novemberSessions",
+              header: 'Nov',
+              dataField: 'novemberSessions',
             },
             {
-              header: "Dec",
-              dataField: "decemberSessions",
+              header: 'Dec',
+              dataField: 'decemberSessions',
             },
             {
-              header: "Jan",
-              dataField: "januarySessions",
+              header: 'Jan',
+              dataField: 'januarySessions',
             },
             {
-              header: "Feb",
-              dataField: "februarySessions",
+              header: 'Feb',
+              dataField: 'februarySessions',
             },
             {
-              header: "Mar",
-              dataField: "marchSessions",
+              header: 'Mar',
+              dataField: 'marchSessions',
             },
             {
-              header: "Apr",
-              dataField: "aprilSessions",
+              header: 'Apr',
+              dataField: 'aprilSessions',
             },
             {
-              header: "May",
-              dataField: "maySessions",
+              header: 'May',
+              dataField: 'maySessions',
             },
             {
-              header: "Jun",
-              dataField: "juneSessions",
+              header: 'Jun',
+              dataField: 'juneSessions',
             },
             {
-              header: "Jul",
-              dataField: "julySessions",
+              header: 'Jul',
+              dataField: 'julySessions',
             },
             {
-              header: "Aug",
-              dataField: "augustSessions",
+              header: 'Aug',
+              dataField: 'augustSessions',
             },
           ]}
           primaryKeyDataField="viewsPersonId"
@@ -119,19 +119,19 @@ const SessionTrackingTable: React.FunctionComponent<
               actionFunction: (dataRow) => {
                 const mentor = props.mentors.find(
                   (mentor) => mentor.viewsPersonId === dataRow.viewsPersonId
-                );
+                )
 
                 if (mentor) {
-                  setMentorSessionsModalMentor(mentor);
-                  setIsMentorSessionsModalOpen(true);
+                  setMentorSessionsModalMentor(mentor)
+                  setIsMentorSessionsModalOpen(true)
                 } else {
                   toast.error(
-                    "Something went wrong! Please contact technical support for further assistance."
-                  );
+                    'Something went wrong! Please contact technical support for further assistance.'
+                  )
                 }
               },
               icon: <MdSchedule></MdSchedule>,
-              name: "Sessions",
+              name: 'Sessions',
             },
           ]}
           isDataGridDeleteable={false}
@@ -140,12 +140,12 @@ const SessionTrackingTable: React.FunctionComponent<
           currentPageNumber={pageNum}
           maxPageNumber={maxPageNum}
           onChangePage={(newPage) => {
-            const offset = (newPage - 1) * PAGE_SIZE;
-            const limit = PAGE_SIZE;
-            setPageNum(newPage);
+            const offset = (newPage - 1) * PAGE_SIZE
+            const limit = PAGE_SIZE
+            setPageNum(newPage)
             setPagedMentorSessionCounts(
               mentorSessionCountsRef.current.slice(offset, offset + limit)
-            );
+            )
           }}
         ></Pager>
       </SessionTrackingTableLayout>
@@ -164,13 +164,13 @@ const SessionTrackingTable: React.FunctionComponent<
         }
       ></Modal>
     </>
-  );
-};
+  )
+}
 
 const SessionTrackingTableLayout = styled.div`
   grid-area: "SessionTrackingTable";
   margin-top: 1rem;
-`;
+`
 
 const LoadingSessionTrackingTable: React.FunctionComponent<{}> = () => {
   return (
@@ -183,7 +183,7 @@ const LoadingSessionTrackingTable: React.FunctionComponent<{}> = () => {
       <Skeleton />
       <Skeleton />
     </>
-  );
-};
+  )
+}
 
-export default SessionTrackingTable;
+export default SessionTrackingTable
