@@ -23,16 +23,20 @@ PARTICIPANT_FIELDS = [
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
 def search_participants(request):
+    person_ids = request.GET.getlist('PersonID[]')
+    participant_objects = Participant.objects.filter(id__in=person_ids) if person_ids else Participant.objects.all()
+    xml_element = create_xml_element(participant_objects)
+    return Response(data=tostring(xml_element), status=200)
 
-    participant_objects = Participant.objects.all()
+def create_xml_element(participant_objects):
     root = Element("contacts")
     participants = SubElement(root, "participants", {"count": str(len(participant_objects))})
 
     for participant_object in participant_objects:
         # Append PersonID element
         participant = SubElement(participants, "participant", {"id": str(participant_object.person.PersonID)})
-        personIDField = SubElement(participant, "PersonID")
-        personIDField.text = str(participant_object.person.PersonID)
+        person_id_element = SubElement(participant, "PersonID")
+        person_id_element.text = str(participant_object.person.PersonID)
 
         # Append the remaining fields to the participant element
         person_object = Person.objects.get(PersonID=participant_object.person.PersonID)
@@ -46,12 +50,10 @@ def search_participants(request):
             object_fields=participant_object.__dict__,
             model_fields=PARTICIPANT_FIELDS
           )
-    return Response(data=tostring(root), status=200)
-
+    return root
 
 def append_sub_elements(root, object_fields, model_fields):
     for field in model_fields:
-        xmlField = SubElement(root, str(field))
-        xmlField.text = str(object_fields.get(field))
+        field_element = SubElement(root, str(field))
+        field_element.text = str(object_fields.get(field))
     return root
-
