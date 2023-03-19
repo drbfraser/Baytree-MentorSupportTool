@@ -1,34 +1,57 @@
 from users.permissions import MentorPermissions
 from users.permissions import AdminPermissions
 from rest_framework.decorators import permission_classes, api_view
-from contacts.models import Participant
+from contacts.models import Participant, Person
 from rest_framework.response import Response
 
 from xml.etree.ElementTree import Element, SubElement, tostring
 
-
-participantFields = [
+PERSON_FIELDS = [
     "Forename",
     "Surname",
+    "TypeName",
     "Email",
     "DateOfBirth",
-    "Ethnicity",
-    "Country",
-    "FirstLanguage_P_88"
+    "Countryofbirth_P_87",
+]
+
+PARTICIPANT_FIELDS = [
+    "FirstLanguage_P_88",
+    "Ethnicity"
 ]
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def search_participants_endpoint(request):
-    participantObjects = Participant.objects.all()
-    root = Element("contacts")
-    participants = SubElement(root, "participants", {"count": str(len(participantObjects))})
+def search_participants(request):
 
-    for participantObject in participantObjects:
-        participant = SubElement(participants, "participant", {"id": str(participantObject.person.PersonID)})
+    participant_objects = Participant.objects.all()
+    root = Element("contacts")
+    participants = SubElement(root, "participants", {"count": str(len(participant_objects))})
+
+    for participant_object in participant_objects:
+        # Append PersonID element
+        participant = SubElement(participants, "participant", {"id": str(participant_object.person.PersonID)})
         personIDField = SubElement(participant, "PersonID")
-        personIDField.text = str(participantObject.person.PersonID)
-        for field in participantFields:
-            xmlField = SubElement(participant, str(field))
-            xmlField.text = str(participantObject.__dict__.get(field))
+        personIDField.text = str(participant_object.person.PersonID)
+
+        # Append the remaining fields to the participant element
+        person_object = Person.objects.get(PersonID=participant_object.person.PersonID)
+        participant = append_sub_elements(
+            root=participant,
+            object_fields=person_object.__dict__,
+            model_fields=PERSON_FIELDS
+          )
+        participant = append_sub_elements(
+            root=participant,
+            object_fields=participant_object.__dict__,
+            model_fields=PARTICIPANT_FIELDS
+          )
     return Response(data=tostring(root), status=200)
+
+
+def append_sub_elements(root, object_fields, model_fields):
+    for field in model_fields:
+        xmlField = SubElement(root, str(field))
+        xmlField.text = str(object_fields.get(field))
+    return root
+

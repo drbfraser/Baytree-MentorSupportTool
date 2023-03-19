@@ -17,7 +17,7 @@ participantFields = [
     "Email",
     "DateOfBirth",
     "Ethnicity",
-    "Country",
+    "Countryofbirth_P_87",
     "FirstLanguage_P_88",
 ]
 participantTranslateFields = [
