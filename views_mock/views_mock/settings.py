@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "views_api",
     "users",
-    "sessions"
+    "sessions",
+    "admin_valuelists"
 ]
 
 MIDDLEWARE = [
@@ -99,7 +100,7 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS  = ['views_mock.dbRouter.DBRouter']
+DATABASE_ROUTERS = ['views_mock.dbRouter.DBRouter']
 
 AUTH_PASSWORD_VALIDATORS = [
     {
