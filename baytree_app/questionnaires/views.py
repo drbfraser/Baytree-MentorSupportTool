@@ -42,7 +42,7 @@ def get_questionnaire(request, headers):
     if mentor is None:
         # todo: error Logging here
         FluentLoggingHandler.error(
-            f"Failed to get questionnaire, could not find mentor with id: {request.user.id}")
+            f"Failed to get questionnaire - Could not find mentor with id: {request.user.id}")
         response = Response(status=status.HTTP_404_NOT_FOUND)
         return response
     qid = mentor.mentorRole.viewsQuestionnaireId
@@ -86,8 +86,7 @@ def get_questionnaire(request, headers):
     # sort question base on question order
     data["questions"] = sorted(data["questions"], key=lambda x: x["order"])
 
-    response = Response(data, status=status.HTTP_200_OK)
-    return response
+    return Response(data, status=status.HTTP_200_OK)
 
 
 def fetch_questions(question, data, index, headers):
@@ -115,7 +114,7 @@ def get_questionnaire_value_lists(id, headers):
         # todo: error Logging here
         response = Response(status=status.HTTP_404_NOT_FOUND)
         FluentLoggingHandler.error(
-            f"Failed to get questionnarie value lists, could not find value list with id: {value_list_id}")
+            f"Failed to get questionnarie value lists - Could not find value list with id: {value_list_id}")
         return response
 
     url = f"{VIEWS_BASE_URL}admin/valuelists/{value_list_id}.json"
@@ -145,14 +144,13 @@ def submit_answer_set(request, headers):
             or data["answerSet"] is None \
             or data["person"] is None:
         # todo: error Logging here
-        response = Response(status=status.HTTP_400_BAD_REQUEST)
-        return response
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
     if mentor is None:
         FluentLoggingHandler.error(
-            f"Failed to submit answer set, could not find mentor with id: {request.user.id}")
+            f"Failed to submit answer set - Could not find mentor with id: {request.user.id}")
         response = Response(status=status.HTTP_404_NOT_FOUND)
         return response
 
@@ -186,7 +184,7 @@ def submit_answer_set(request, headers):
         mentor_user = MentorUser.objects.filter(pk=request.user.id)
         if not mentor_user.exists():
             FluentLoggingHandler.error(
-                "Failed to submit answer set, requesting user is not a mentor")
+                f"Failed to submit answer set - Requesting user with id {request.user.id} is not a mentor")
             response = Response(
                 "The current requesting user is not a mentor!",
                 status=status.HTTP_401_UNAUTHORIZED,
