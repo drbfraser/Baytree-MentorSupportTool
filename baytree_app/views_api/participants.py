@@ -101,7 +101,8 @@ def get_participants(ids=None, headers='', limit: int = 5, offset: int = 0):
     return parse_participants(response)
 
 def get_participant_by_id(id, headers):
-    url = f"{participants_base_url}{id}.json"
+    headers["Accept"] = "application/json"
+    url = f"{participants_base_url}{id}"
     response = requests.get(url, headers=headers)
     if response.status_code != 200: return None
     json = response.json()

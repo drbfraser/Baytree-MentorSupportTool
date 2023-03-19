@@ -1,7 +1,7 @@
-import { PagedDataRows } from "../../../components/shared/datagrid/datagridTypes";
-import { backendGet } from "../base";
+import { PagedDataRows } from '../../../components/shared/datagrid/datagridTypes'
+import { backendGet } from '../base'
 
-export const venuesEndpoint = `views-api/venues`;
+export const venuesEndpoint = 'views-api/venues'
 
 export interface Venue {
   id: number;
@@ -10,5 +10,5 @@ export interface Venue {
 
 export const getVenuesFromViews =
   async (): Promise<PagedDataRows<Venue> | null> => {
-    return await backendGet(venuesEndpoint);
-  };
+    return await backendGet(venuesEndpoint)
+  }

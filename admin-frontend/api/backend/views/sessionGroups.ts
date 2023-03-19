@@ -1,4 +1,4 @@
-import { backendGet } from "../base";
+import { backendGet } from '../base'
 
 export interface SessionGroupResponse {
   viewsSessionGroupId: string;
@@ -7,7 +7,7 @@ export interface SessionGroupResponse {
   leadStaff: string; // ex. 1
   otherStaff: string; // ex. 13|2|3
 }
-export const sessionGroupsFromViewsBackendEndpoint = `views-api/session-groups`;
+export const sessionGroupsFromViewsBackendEndpoint = 'views-api/session-groups'
 
 export const getSessionGroupsFromViews = async (params?: {
   limit?: number;
@@ -17,16 +17,16 @@ export const getSessionGroupsFromViews = async (params?: {
   const response = await backendGet<{
     total: number;
     data: SessionGroupResponse[];
-  }>(sessionGroupsFromViewsBackendEndpoint, params);
+  }>(sessionGroupsFromViewsBackendEndpoint, params)
 
-  return response;
-};
+  return response
+}
 
 export const getSessionGroupFromViews = async (id: number) => {
   const response = await backendGet<SessionGroupResponse>(
     sessionGroupsFromViewsBackendEndpoint,
     { id }
-  );
+  )
 
-  return response;
-};
+  return response
+}

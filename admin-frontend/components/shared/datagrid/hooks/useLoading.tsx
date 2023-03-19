@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState } from 'react'
 
 /** Responsible for providing loading states to update UI */
 const useLoading = () => {
-  const [isLoadingDataRows, setIsLoadingDataRows] = useState(false);
+  const [isLoadingDataRows, setIsLoadingDataRows] = useState(false)
   const [isLoadingColValueOptions, setIsLoadingColValueOptions] =
-    useState(false);
-  const [isSavingDataRows, setIsSavingDataRows] = useState(false);
+    useState(false)
+  const [isSavingDataRows, setIsSavingDataRows] = useState(false)
 
   return {
     isLoadingDataRows,
@@ -14,7 +14,7 @@ const useLoading = () => {
     setIsLoadingColValueOptions,
     isSavingDataRows,
     setIsSavingDataRows,
-  };
-};
+  }
+}
 
-export default useLoading;
+export default useLoading

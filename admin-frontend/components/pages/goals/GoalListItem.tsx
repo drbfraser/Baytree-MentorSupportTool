@@ -1,10 +1,10 @@
-import TimelineDot from '@mui/lab/TimelineDot';
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Chip, CircularProgress, Stack, Typography } from "@mui/material";
-import { format, formatDistanceToNow } from "date-fns";
-import { FunctionComponent, useEffect, useState } from "react";
-import { MdExpandMore } from "react-icons/md";
-import { backendGet } from '../../../api/backend/base';
-import { Goal, OrderingDate } from "../../../api/backend/goals";
+import TimelineDot from '@mui/lab/TimelineDot'
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Chip, CircularProgress, Stack, Typography } from '@mui/material'
+import { format, formatDistanceToNow } from 'date-fns'
+import { FunctionComponent, useEffect, useState } from 'react'
+import { MdExpandMore } from 'react-icons/md'
+import { backendGet } from '../../../api/backend/base'
+import { Goal, OrderingDate } from '../../../api/backend/goals'
 
 type GoalDetail = Goal & {
   mentee?: {
@@ -14,23 +14,23 @@ type GoalDetail = Goal & {
 }
 
 const GoalItemDetail: FunctionComponent<{ goalId: number }> = ({ goalId }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [goal, setGoal] = useState<GoalDetail | null>(null);
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [goal, setGoal] = useState<GoalDetail | null>(null)
   const formatDate = (date: string) => {
-    return format(new Date(date), "eeee, MMMM do yyyy");
+    return format(new Date(date), 'eeee, MMMM do yyyy')
   }
 
   useEffect(() => {
-    setLoading(true);
+    setLoading(true)
     backendGet<GoalDetail>(`goals/${goalId}/`)
       .then(setGoal).catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [goalId]);
+      .finally(() => setLoading(false))
+  }, [goalId])
 
   const renderCategories = (goal: Goal) => {
-    let categories = goal.categories;
-    const length = categories.length;
+    const categories = goal.categories
+    const length = categories.length
     if (length === 0)
       return <Typography variant="body2">No categories assigned</Typography>
     return <div>
@@ -41,15 +41,15 @@ const GoalItemDetail: FunctionComponent<{ goalId: number }> = ({ goalId }) => {
   }
 
   const renderDetails = () => {
-    if (loading) return <div style={{display: "flex", width: "100%", justifyContent: "center"}}>
+    if (loading) return <div style={{display: 'flex', width: '100%', justifyContent: 'center'}}>
       <CircularProgress sx={{my: 2}} />;
     </div>
-    if (error || !goal) return <Alert severity="error">Cannot fetch goal detail</Alert>;
-    const menteeName = goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : "N/A";
+    if (error || !goal) return <Alert severity="error">Cannot fetch goal detail</Alert>
+    const menteeName = goal.mentee ? `${goal.mentee.firstName} ${goal.mentee.lastName}` : 'N/A'
     return <Stack spacing={1}>
       <div>
         <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Mentor Email</Typography>
-        <Typography variant="body2">{goal.mentor?.user.email || "N/A"}</Typography>
+        <Typography variant="body2">{goal.mentor?.user.email || 'N/A'}</Typography>
       </div>
       <div>
           <Typography sx={{ fontSize: 14, mt: 2 }} color="text.secondary" gutterBottom>Mentee Name</Typography>
@@ -81,7 +81,7 @@ const GoalItemDetail: FunctionComponent<{ goalId: number }> = ({ goalId }) => {
   return <AccordionDetails>
     {renderDetails()}
   </AccordionDetails>
-};
+}
 
 type Props = {
   goal: Goal;
@@ -92,15 +92,15 @@ type Props = {
 
 const GoalListItem: FunctionComponent<Props> = ({ goal, expanded, handleExpansion, orderingDate }) => {
   const formatDate = (date: string) => {
-    return format(new Date(date), "eeee, MMMM do yyyy");
+    return format(new Date(date), 'eeee, MMMM do yyyy')
   }
 
-  const mentorEmail = goal.mentor?.user.email || "N/A";
+  const mentorEmail = goal.mentor?.user.email || 'N/A'
 
   return <Accordion
     expanded={expanded}
     onChange={handleExpansion}
-    style={{ width: "100%" }}
+    style={{ width: '100%' }}
   >
     <AccordionSummary
       expandIcon={<MdExpandMore />}
@@ -112,22 +112,22 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, expanded, handleExpansio
         <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', paddingRight: '8px' }}>
           <Typography
             sx={{
-              color: "text.secondary",
-              margin: "8px",
+              color: 'text.secondary',
+              margin: '8px',
               paddingRight: '8px'
             }}
           >
             {formatDistanceToNow(new Date(goal[orderingDate]), { addSuffix: true })}
           </Typography>
-          <Typography sx={{ color: "text.secondary", margin: "6px" }}>
+          <Typography sx={{ color: 'text.secondary', margin: '6px' }}>
             {goal.status}
           </Typography>
-          {goal.status === "IN PROGRESS" ? (
-            <TimelineDot color="error" sx={{ backgroundColor: "red", alignSelf: 'center' }} />
-          ) : goal.status === "ACHIEVED" ? (
-            <TimelineDot color="success" sx={{ backgroundColor: "green", alignSelf: 'center' }} />
+          {goal.status === 'IN PROGRESS' ? (
+            <TimelineDot color="error" sx={{ backgroundColor: 'red', alignSelf: 'center' }} />
+          ) : goal.status === 'ACHIEVED' ? (
+            <TimelineDot color="success" sx={{ backgroundColor: 'green', alignSelf: 'center' }} />
           ) : (
-            <TimelineDot color="success" sx={{ backgroundColor: "blue", alignSelf: 'center' }} />
+            <TimelineDot color="success" sx={{ backgroundColor: 'blue', alignSelf: 'center' }} />
           )}
         </div>
       </div>
@@ -136,4 +136,4 @@ const GoalListItem: FunctionComponent<Props> = ({ goal, expanded, handleExpansio
   </Accordion>
 }
 
-export default GoalListItem;
+export default GoalListItem

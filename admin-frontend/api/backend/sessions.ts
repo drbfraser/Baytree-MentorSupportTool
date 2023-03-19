@@ -1,6 +1,6 @@
-import { PagedDataRows } from "../../components/shared/datagrid/datagridTypes";
-import { ApiOptions, backendGet, backendPost } from "./base";
-import { API_BASE_URL } from "./url";
+import { PagedDataRows } from '../../components/shared/datagrid/datagridTypes'
+import { ApiOptions, backendGet, backendPost } from './base'
+import { API_BASE_URL } from './url'
 
 /**
   Endpoints for Mentor Sessions and Allowable Venues
@@ -20,50 +20,50 @@ export interface SessionResponse {
   viewsSessionId: string; // Matching session id in views
 }
 
-export const sessionsBackendEndpoint = `${API_BASE_URL}/sessions/`;
+export const sessionsBackendEndpoint = `${API_BASE_URL}/sessions/`
 
 export const getSessions = async () => {
   try {
     const response = await fetch(`${sessionsBackendEndpoint}`, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
-      credentials: "include",
-    });
+      credentials: 'include',
+    })
 
-    return (await response.json()) as SessionResponse[];
+    return (await response.json()) as SessionResponse[]
   } catch {
-    return null;
+    return null
   }
-};
+}
 
 export interface Venue {
   viewsVenueId: number;
 }
 
-export const venuesBackendEndpoint = `sessions/venues/`;
+export const venuesBackendEndpoint = 'sessions/venues/'
 
 export const getVenues = async (options?: ApiOptions) => {
-  const queryParams: Record<string, any> = {};
+  const queryParams: Record<string, any> = {}
 
   if (options) {
-    const { limit, offset } = options;
+    const { limit, offset } = options
     if (limit) {
-      queryParams["limit"] = limit;
+      queryParams['limit'] = limit
     }
     if (offset) {
-      queryParams["offset"] = offset;
+      queryParams['offset'] = offset
     }
   }
 
   return await backendGet<Venue[] | PagedDataRows<Venue>>(
     venuesBackendEndpoint,
     queryParams
-  );
-};
+  )
+}
 
 export const saveVenues = async (venueDataRows: Record<string, any>[]) => {
-  return await backendPost(venuesBackendEndpoint, venueDataRows);
-};
+  return await backendPost(venuesBackendEndpoint, venueDataRows)
+}
