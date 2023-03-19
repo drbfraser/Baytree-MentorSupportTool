@@ -190,7 +190,7 @@ class GoalExportsAPIView(MentorGoalQuerySetMixin, generics.GenericAPIView):
             id = goal.mentee_id
             if id is None:
                 FluentLoggingHandler.error(
-                    f"{request.user} failed to get a mentee with id: {id}, this mentee does not exist")
+                    f"{request.user} failed to get a mentee with id {id} because this mentee does not exist")
                 return None
             key = f"mentee-{id}"
             if key not in cache:
