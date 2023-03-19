@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 interface LogoProps {
   width: string;
@@ -8,8 +8,8 @@ interface LogoProps {
 
 const Logo = styled.img<LogoProps>`
   width: ${(props) => props.width};
-  height: ${(props) => props.height ?? "5rem"};
+  height: ${(props) => props.height ?? '5rem'};
   padding: ${(props) => (props.padding ? props.padding : null)};
-`;
+`
 
-export default Logo;
+export default Logo

@@ -1,7 +1,7 @@
-import { TableCell, Button, Tooltip } from "@mui/material";
-import { Dispatch, SetStateAction, FC } from "react";
-import { MdExpandLess, MdExpandMore } from "react-icons/md";
-import styled from "styled-components";
+import { TableCell, Button, Tooltip } from '@mui/material'
+import { Dispatch, SetStateAction, FC } from 'react'
+import { MdExpandLess, MdExpandMore } from 'react-icons/md'
+import styled from 'styled-components'
 
 interface ExpandButtonCellProps {
   backgroundColor: string;
@@ -13,7 +13,7 @@ const ExpandButtonCell: FC<ExpandButtonCellProps> = (props) => {
   return (
     <TableCell sx={{ backgroundColor: props.backgroundColor }}>
       <ExpandButtonContainer color={props.backgroundColor}>
-        <Tooltip title={props.isRowExpanded ? "Less Info" : "More Info"}>
+        <Tooltip title={props.isRowExpanded ? 'Less Info' : 'More Info'}>
           <Button
             color="inherit"
             variant="contained"
@@ -28,13 +28,13 @@ const ExpandButtonCell: FC<ExpandButtonCellProps> = (props) => {
         </Tooltip>
       </ExpandButtonContainer>
     </TableCell>
-  );
-};
+  )
+}
 
 const ExpandButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
+`
 
-export default ExpandButtonCell;
+export default ExpandButtonCell

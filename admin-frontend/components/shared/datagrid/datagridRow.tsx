@@ -1,10 +1,10 @@
-import { Divider, TableCell, TableRow, Typography } from "@mui/material";
-import { FC, Fragment, useState } from "react";
-import useMobileLayout from "../../../hooks/useMobileLayout";
-import DataRowCell from "./datagridCell";
-import DataRowDeleteCell from "./datagridDeleteCell";
-import ExpandButtonCell from "./datagridExpandButton";
-import DataRowActionsCell from "./datagridRowActionsCell";
+import { Divider, TableCell, TableRow, Typography } from '@mui/material'
+import { FC, Fragment, useState } from 'react'
+import useMobileLayout from '../../../hooks/useMobileLayout'
+import DataRowCell from './datagridCell'
+import DataRowDeleteCell from './datagridDeleteCell'
+import ExpandButtonCell from './datagridExpandButton'
+import DataRowActionsCell from './datagridRowActionsCell'
 import {
   changeDataRowValue,
   checkCellInvalid,
@@ -12,7 +12,7 @@ import {
   isCellChanged,
   shouldKeepColumnOnMobile,
   someExpandableColumnExists,
-} from "./datagridRowLogic";
+} from './datagridRowLogic'
 import {
   DataRow,
   DataGridColumn,
@@ -21,7 +21,7 @@ import {
   setCreatedDataRowFunc,
   setDeletedDataRowFunc,
   InvalidCell,
-} from "./datagridTypes";
+} from './datagridTypes'
 
 interface DataGridRowProps {
   dataRow?: DataRow;
@@ -42,9 +42,9 @@ interface DataGridRowProps {
 }
 
 const DataGridRow: FC<DataGridRowProps> = (props) => {
-  const [isRowExpanded, setIsRowExpanded] = useState(false);
-  const isOnMobileDevice = useMobileLayout();
-  const HEADER_ROW_COLOR = "#f8f8f8";
+  const [isRowExpanded, setIsRowExpanded] = useState(false)
+  const isOnMobileDevice = useMobileLayout()
+  const HEADER_ROW_COLOR = '#f8f8f8'
 
   return (
     <>
@@ -252,7 +252,7 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
                           props.createdDataRow
                         )}
                       ></DataRowCell>
-                      <Divider sx={{ margin: "0.5rem 0" }} />
+                      <Divider sx={{ margin: '0.5rem 0' }} />
                     </Fragment>
                   )
               )}
@@ -289,27 +289,27 @@ const DataGridRow: FC<DataGridRowProps> = (props) => {
           </TableRow>
         )}
     </>
-  );
-};
+  )
+}
 
 const ColHeader: FC<ColHeaderProps> = (props) => {
-  const isOnMobileDevice = useMobileLayout();
+  const isOnMobileDevice = useMobileLayout()
 
   return (
     <div
       style={{
-        marginTop: "0.5rem",
-        display: "flex",
-        justifyContent: isOnMobileDevice ? "left" : "center",
+        marginTop: '0.5rem',
+        display: 'flex',
+        justifyContent: isOnMobileDevice ? 'left' : 'center',
       }}
     >
-      <Typography sx={{ fontSize: "0.8rem" }}>{props.header}</Typography>
+      <Typography sx={{ fontSize: '0.8rem' }}>{props.header}</Typography>
     </div>
-  );
-};
+  )
+}
 
 interface ColHeaderProps {
   header: string;
 }
 
-export default DataGridRow;
+export default DataGridRow

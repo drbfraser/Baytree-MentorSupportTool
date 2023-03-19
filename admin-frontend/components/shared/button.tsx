@@ -1,8 +1,8 @@
-import { Button as MatButton } from "@mui/material";
-import { useSelector } from "react-redux";
-import styled from "styled-components";
-import { ThemeState } from "../../reducers/theme";
-import { RootState } from "../../stores/store";
+import { Button as MatButton } from '@mui/material'
+import { useSelector } from 'react-redux'
+import styled from 'styled-components'
+import { ThemeState } from '../../reducers/theme'
+import { RootState } from '../../stores/store'
 
 interface ButtonWrapperProps {
   backgroundColor?: string;
@@ -14,7 +14,7 @@ interface ButtonWrapperProps {
 const Button: React.FC<
   React.ComponentProps<typeof MatButton> & ButtonWrapperProps
 > = (props) => {
-  const theme = useSelector<RootState, ThemeState>((state) => state.theme);
+  const theme = useSelector<RootState, ThemeState>((state) => state.theme)
 
   return (
     <StyledButtonWrapper
@@ -22,8 +22,8 @@ const Button: React.FC<
       backgroundColor={props.backgroundColor ?? theme.colors.primaryColor}
       hoverColor={props.hoverColor ?? theme.colors.secondaryColor}
     ></StyledButtonWrapper>
-  );
-};
+  )
+}
 
 interface StyledButtonWrapperProps {
   backgroundColor: string;
@@ -36,8 +36,8 @@ const StyledButtonWrapper = styled(MatButton)<
     StyledButtonWrapperProps
 >`
   background-color: ${(props) => props.backgroundColor};
-  width: ${(props) => props.width ?? ""};
-  height: ${(props) => props.height ?? ""};
+  width: ${(props) => props.width ?? ''};
+  height: ${(props) => props.height ?? ''};
   @media (hover: hover) {
     :hover {
       cursor: pointer;
@@ -46,6 +46,6 @@ const StyledButtonWrapper = styled(MatButton)<
   }
 
   margin-bottom: 0 !important;
-`;
+`
 
-export default Button;
+export default Button

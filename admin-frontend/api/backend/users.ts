@@ -7,8 +7,8 @@
   User object that was first created.
 */
 
-import { generateBackendCrudFuncs } from "./base";
-import { API_BASE_URL } from "./url";
+import { generateBackendCrudFuncs } from './base'
+import { API_BASE_URL } from './url'
 
 export interface UserCreate {
   email: string;
@@ -26,7 +26,7 @@ export interface UserResponse {
 
 export type UserUpdate = Partial<UserCreate> & { id: number };
 
-export const usersBackendEndpoint = `${API_BASE_URL}/users/`;
+export const usersBackendEndpoint = `${API_BASE_URL}/users/`
 
 export const {
   create: addUsers,
@@ -35,4 +35,4 @@ export const {
   delete: deleteUsers,
 } = generateBackendCrudFuncs<UserCreate, UserResponse, UserUpdate>(
   usersBackendEndpoint
-);
+)
