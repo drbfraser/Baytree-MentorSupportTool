@@ -1,13 +1,13 @@
-import { API_BASE_URL } from "./url";
+import { API_BASE_URL } from './url'
 
 export type MentorUserStatus =
-  | "Active"
-  | "Withdrawn"
-  | "On Hold"
-  | "Temporarily Withdrawn"
-  | "Future Leaver"
-  | "Staff"
-  | "Inactive";
+  | 'Active'
+  | 'Withdrawn'
+  | 'On Hold'
+  | 'Temporarily Withdrawn'
+  | 'Future Leaver'
+  | 'Staff'
+  | 'Inactive';
 
 export type User = {
   id: number;
@@ -16,9 +16,9 @@ export type User = {
   last_name: string;
 };
 
-import { PagedDataRows } from "../../components/shared/datagrid/datagridTypes";
-import { ApiOptions, backendGet, backendPost } from "./base";
-import { MentorRole } from "./mentorRoles";
+import { PagedDataRows } from '../../components/shared/datagrid/datagridTypes'
+import { ApiOptions, backendGet, backendPost } from './base'
+import { MentorRole } from './mentorRoles'
 
 export type MentorUser =
   | (MentorUserBackendFields & MentorUserViewsFields) // if includeDataFromViews == true
@@ -38,10 +38,10 @@ export interface MentorUserViewsFields {
   lastName: string;
 }
 
-export const mentorsBackendEndpoint = `users/mentors/`;
+export const mentorsBackendEndpoint = 'users/mentors/'
 
 export const getMentorUsers = async (options?: ApiOptions) => {
-  const queryParams: Record<string, any> = {};
+  const queryParams: Record<string, any> = {}
 
   if (options) {
     const {
@@ -50,53 +50,53 @@ export const getMentorUsers = async (options?: ApiOptions) => {
       limit,
       offset,
       includeDataFromViews,
-    } = options;
+    } = options
     if (limit) {
-      queryParams["limit"] = limit;
+      queryParams['limit'] = limit
     }
 
     if (offset) {
-      queryParams["offset"] = offset;
+      queryParams['offset'] = offset
     }
 
     if (searchText && dataFieldsToSearch) {
       dataFieldsToSearch.forEach((dataField) => {
-        if (dataField === "email") {
-          queryParams[`user__email__icontains`] = searchText;
-        } else if (dataField === "firstName") {
-          const firstAndLast = searchText.split(" ");
+        if (dataField === 'email') {
+          queryParams['user__email__icontains'] = searchText
+        } else if (dataField === 'firstName') {
+          const firstAndLast = searchText.split(' ')
           if (firstAndLast.length > 1) {
-            queryParams["searchFirstName"] = firstAndLast[0];
+            queryParams['searchFirstName'] = firstAndLast[0]
           } else {
-            queryParams["searchName"] = searchText;
+            queryParams['searchName'] = searchText
           }
-        } else if (dataField === "lastName") {
-          const firstAndLast = searchText.split(" ");
+        } else if (dataField === 'lastName') {
+          const firstAndLast = searchText.split(' ')
           if (firstAndLast.length > 1) {
-            queryParams["searchLastName"] = firstAndLast[1];
+            queryParams['searchLastName'] = firstAndLast[1]
           } else {
-            queryParams["searchName"] = searchText;
+            queryParams['searchName'] = searchText
           }
         } else {
-          queryParams[`${dataField}__icontains`] = searchText;
+          queryParams[`${dataField}__icontains`] = searchText
         }
-      });
+      })
     }
 
     if (includeDataFromViews) {
-      queryParams["joinViews"] = "true";
+      queryParams['joinViews'] = 'true'
     }
   }
 
   return await backendGet<PagedDataRows<MentorUser>>(
     mentorsBackendEndpoint,
     queryParams
-  );
-};
+  )
+}
 
 export const saveMentorUsers = async (mentorUserDataRows: MentorUser[]) => {
-  return await backendPost(mentorsBackendEndpoint, mentorUserDataRows);
-};
+  return await backendPost(mentorsBackendEndpoint, mentorUserDataRows)
+}
 
 export const sendMentorAccountCreationEmail = async (
   viewsPersonId: string,
@@ -107,23 +107,23 @@ export const sendMentorAccountCreationEmail = async (
     const apiRes = await fetch(
       `${API_BASE_URL}/users/sendAccountCreationEmail`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify({
           viewsPersonId,
           mentorFirstName,
           email,
-          accountType: "Mentor",
+          accountType: 'Mentor',
         }),
       }
-    );
+    )
 
-    return apiRes;
+    return apiRes
   } catch {
-    return null;
+    return null
   }
-};
+}

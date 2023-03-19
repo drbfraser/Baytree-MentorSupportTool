@@ -1,5 +1,6 @@
 FROM python:3.9.1-buster
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/code
 WORKDIR /code
 
 # # Install dependencies

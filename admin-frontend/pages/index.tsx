@@ -1,58 +1,58 @@
-import { Alert, Button, Grid, TextField, Typography } from "@mui/material";
-import { NextPage } from "next";
-import { useRouter } from "next/router";
-import { useState } from "react";
-import styled from "styled-components";
-import { BODY_BACKGROUND } from "../constants/constants";
-import useMobileLayout from "../hooks/useMobileLayout";
-import { useSelector, useDispatch } from "react-redux";
-import { login } from "../actions/auth/actionCreators";
-import { RootState } from "../stores/store";
-import { FRONTEND_BASE_URL } from "../api/backend/url";
-import { basePath } from "../next.config";
+import { Alert, Button, Grid, TextField, Typography } from '@mui/material'
+import { NextPage } from 'next'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import styled from 'styled-components'
+import { BODY_BACKGROUND } from '../constants/constants'
+import useMobileLayout from '../hooks/useMobileLayout'
+import { useSelector, useDispatch } from 'react-redux'
+import { login } from '../actions/auth/actionCreators'
+import { RootState } from '../stores/store'
+import { FRONTEND_BASE_URL } from '../api/backend/url'
+import { basePath } from '../next.config'
 
 const Login: NextPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState(false);
-  const router = useRouter();
-  const mobileLayout = useMobileLayout();
-  const dispatch = useDispatch();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState(false)
+  const router = useRouter()
+  const mobileLayout = useMobileLayout()
+  const dispatch = useDispatch()
   const isAuthenticated = useSelector<RootState, boolean>(
     (state) => state.auth.isAuthenticated
-  );
+  )
 
   const onSignIn = async () => {
     if (dispatch && dispatch !== null && dispatch !== undefined) {
-      await dispatch(login(email, password));
+      await dispatch(login(email, password))
       if (!isAuthenticated) {
-        setErrors(true);
+        setErrors(true)
       }
     }
-  };
+  }
 
   if (isAuthenticated) {
-    router.push("/home");
+    router.push('/home')
   }
 
   return (
     <div
       style={{
-        width: "100%",
-        height: "100vh",
-        background: mobileLayout ? "white" : BODY_BACKGROUND,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        width: '100%',
+        height: '100vh',
+        background: mobileLayout ? 'white' : BODY_BACKGROUND,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
       {mobileLayout ? (
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            height: "100vh",
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100vh',
           }}
         >
           <BackgroundPhoto></BackgroundPhoto>
@@ -70,33 +70,33 @@ const Login: NextPage = () => {
         <Grid
           container
           style={{
-            width: "95vw",
-            height: "95vh",
-            background: "white",
-            borderRadius: "20px",
-            boxShadow: "0 0 0.3rem grey",
+            width: '95vw',
+            height: '95vh',
+            background: 'white',
+            borderRadius: '20px',
+            boxShadow: '0 0 0.3rem grey',
           }}
         >
           <Grid
             item
             xs={8}
             style={{
-              display: "flex",
-              alignItems: "center",
-              height: "100%",
-              width: "100%",
-              padding: "2rem",
+              display: 'flex',
+              alignItems: 'center',
+              height: '100%',
+              width: '100%',
+              padding: '2rem',
             }}
           >
             <img
               src={`${basePath}/images/login/photo.jpg`}
               style={{
-                objectFit: "cover",
-                maxHeight: "95vh",
-                height: "auto",
-                width: "100%",
-                borderRadius: "20px",
-                boxShadow: "0 0 0.3rem grey",
+                objectFit: 'cover',
+                maxHeight: '95vh',
+                height: 'auto',
+                width: '100%',
+                borderRadius: '20px',
+                boxShadow: '0 0 0.3rem grey',
               }}
               alt="Login background photo"
             ></img>
@@ -104,14 +104,14 @@ const Login: NextPage = () => {
           <Grid item xs={4} padding="2rem">
             <div
               style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
               <img
                 src={`${basePath}/images/baytree-logo.svg`}
-                style={{ width: "200px", height: "200px" }}
+                style={{ width: '200px', height: '200px' }}
                 alt="Baytree logo"
               ></img>
             </div>
@@ -158,8 +158,8 @@ const Login: NextPage = () => {
         </Grid>
       )}
     </div>
-  );
-};
+  )
+}
 
 const BackgroundPhoto: React.FC<{}> = () => {
   return (
@@ -168,16 +168,16 @@ const BackgroundPhoto: React.FC<{}> = () => {
         src={`${basePath}/images/login/photo.jpg`}
       ></StyledBackgroundPhoto>
     </BackgroundPhotoContainer>
-  );
-};
+  )
+}
 
-const BackgroundPhotoContainer = styled.div``;
+const BackgroundPhotoContainer = styled.div``
 
 const StyledBackgroundPhoto = styled.img`
   object-fit: fill;
   height: auto;
   width: 100%;
-`;
+`
 
 const BaytreeLogo: React.FC<{}> = () => {
   return (
@@ -188,15 +188,15 @@ const BaytreeLogo: React.FC<{}> = () => {
         ></StyledBaytreeLogo>
       </LogoCircleContainer>
     </BaytreeLogoContainer>
-  );
-};
+  )
+}
 
 const BaytreeLogoContainer = styled.div`
   background: white;
   display: flex;
   justify-content: center;
   height: 2rem;
-`;
+`
 
 const LogoCircleContainer = styled.div`
   display: flex;
@@ -210,12 +210,12 @@ const LogoCircleContainer = styled.div`
   height: 10rem;
   padding: 1rem;
   border: 2px solid lightgrey;
-`;
+`
 
 const StyledBaytreeLogo = styled.img`
   width: 7rem;
   height: 7rem;
-`;
+`
 
 interface LoginFormProps {
   errors: boolean;
@@ -267,8 +267,8 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
         Sign In
       </Button>
     </StyledLoginForm>
-  );
-};
+  )
+}
 
 const StyledLoginForm = styled.div`
   display: flex;
@@ -276,6 +276,6 @@ const StyledLoginForm = styled.div`
   justify-content: center;
   align-items: center;
   padding: 2rem;
-`;
+`
 
-export default Login;
+export default Login

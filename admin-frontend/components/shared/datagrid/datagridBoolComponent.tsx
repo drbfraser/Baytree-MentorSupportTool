@@ -1,5 +1,5 @@
-import { Checkbox } from "@mui/material";
-import { FC, useState } from "react";
+import { Checkbox } from '@mui/material'
+import { FC, useState } from 'react'
 
 export interface DataGridBoolComponentProps {
   isDataGridSaveable?: boolean;
@@ -13,7 +13,7 @@ export interface DataGridBoolComponentProps {
 const DataGridBoolComponent: FC<DataGridBoolComponentProps> = (props) => {
   const [checkBoxChecked, setCheckBoxChecked] = useState<boolean | null>(
     props.value ? props.value : null
-  );
+  )
 
   return (
     <Checkbox
@@ -21,12 +21,12 @@ const DataGridBoolComponent: FC<DataGridBoolComponentProps> = (props) => {
       key={`checkbox_${props.primaryKeyVal}_col_${props.dataField}`}
       checked={!!checkBoxChecked}
       onChange={(event) => {
-        setCheckBoxChecked(event.target.checked);
-        props.onChangedValue(event.target.checked);
+        setCheckBoxChecked(event.target.checked)
+        props.onChangedValue(event.target.checked)
       }}
-      size={"large" as any} // Need to supress typescript error
+      size={'large' as any} // Need to supress typescript error
     ></Checkbox>
-  );
-};
+  )
+}
 
-export default DataGridBoolComponent;
+export default DataGridBoolComponent

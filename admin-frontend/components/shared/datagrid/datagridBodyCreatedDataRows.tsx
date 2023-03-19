@@ -1,5 +1,5 @@
-import { FC } from "react";
-import DataGridRow from "./datagridRow";
+import { FC } from 'react'
+import DataGridRow from './datagridRow'
 import {
   DataRow,
   DataGridColumn,
@@ -7,7 +7,7 @@ import {
   setCreatedDataRowFunc,
   setDeletedDataRowFunc,
   InvalidCell,
-} from "./datagridTypes";
+} from './datagridTypes'
 
 interface DataGridBodyCreatedDataRowsProps {
   primaryKeyDataField: string;
@@ -45,7 +45,7 @@ const DataGridBodyCreatedDataRows: FC<DataGridBodyCreatedDataRowsProps> = (
         ></DataGridRow>
       ))}
     </>
-  );
-};
+  )
+}
 
-export default DataGridBodyCreatedDataRows;
+export default DataGridBodyCreatedDataRows

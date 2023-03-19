@@ -8,11 +8,11 @@ import {
   Popover,
   TableCell,
   Tooltip,
-} from "@mui/material";
-import { FC, useRef, useState } from "react";
-import { MdMoreVert } from "react-icons/md";
-import styled from "styled-components";
-import { DataRow, DataRowAction } from "./datagridTypes";
+} from '@mui/material'
+import { FC, useRef, useState } from 'react'
+import { MdMoreVert } from 'react-icons/md'
+import styled from 'styled-components'
+import { DataRow, DataRowAction } from './datagridTypes'
 
 interface DataRowActionsCellProps {
   actions: DataRowAction[];
@@ -21,8 +21,8 @@ interface DataRowActionsCellProps {
 }
 
 const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
-  const [isActionsPopoverOpened, setIsActionsPopoverOpened] = useState(false);
-  const actionButtonRef = useRef(null);
+  const [isActionsPopoverOpened, setIsActionsPopoverOpened] = useState(false)
+  const actionButtonRef = useRef(null)
 
   return (
     <TableCell>
@@ -54,8 +54,8 @@ const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
           <Popover
             open={isActionsPopoverOpened}
             anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
+              vertical: 'bottom',
+              horizontal: 'left',
             }}
             onClose={() => setIsActionsPopoverOpened(false)}
             anchorEl={actionButtonRef.current}
@@ -70,8 +70,8 @@ const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
                 >
                   <ListItemButton
                     onClick={() => {
-                      setIsActionsPopoverOpened(false);
-                      action.actionFunction(props.dataRow);
+                      setIsActionsPopoverOpened(false)
+                      action.actionFunction(props.dataRow)
                     }}
                   >
                     <ListItemIcon>{action.icon}</ListItemIcon>
@@ -84,12 +84,12 @@ const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
         )}
       </ActionButtonContainer>
     </TableCell>
-  );
-};
+  )
+}
 
 const ActionButtonContainer = styled.div`
   display: flex;
   justify-content: end;
-`;
+`
 
-export default DataRowActionsCell;
+export default DataRowActionsCell
