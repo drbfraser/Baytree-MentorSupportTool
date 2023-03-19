@@ -10,7 +10,5 @@ class ValueList(models.Model):
 
 
 class ValueListItem(models.Model):
-    id = models.AutoField(primary_key=True)
-    valueList = models.OneToOneField(
-        ValueList, on_delete=models.CASCADE, related_name="ValueListItem", db_column="ValueListID")
+    valueList = models.ForeignKey(ValueList, on_delete=models.CASCADE)
     value = models.CharField(max_length=50)
