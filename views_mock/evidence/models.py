@@ -26,4 +26,4 @@ class AnswerSet(models.Model):
     Answer = models.CharField(max_length=1000)
     EntityType = models.CharField(max_length=100)
     EntityID = models.IntegerField()
-    Date = models.DateTimeField()
+    Date = models.DateTimeField(auto_now_add=True)
