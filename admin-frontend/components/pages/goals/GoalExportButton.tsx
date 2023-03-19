@@ -1,25 +1,25 @@
-import { MdFileDownload } from "react-icons/md";
-import { LoadingButton } from "@mui/lab";
-import { useState } from "react";
-import { toast } from 'react-toastify';
-import { downloadBlob } from '../../../util/misc';
-import { backendGet } from "../../../api/backend/base";
+import { MdFileDownload } from 'react-icons/md'
+import { LoadingButton } from '@mui/lab'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
+import { downloadBlob } from '../../../util/misc'
+import { backendGet } from '../../../api/backend/base'
 
 
 const GoalExportButton = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const download = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const data = await backendGet<string>("goals/export/");
-      if (!data) throw new Error();
-      downloadBlob(data, "goal", "text/csv;charset=utf-8;");
+      const data = await backendGet<string>('goals/export/')
+      if (!data) throw new Error()
+      downloadBlob(data, 'goal', 'text/csv;charset=utf-8;')
     } catch (_err) {
-      toast.error("Cannot export goals. Please try again later")
+      toast.error('Cannot export goals. Please try again later')
     }
     finally {
-      setLoading(false);
+      setLoading(false)
     }
     
   }
@@ -33,6 +33,6 @@ const GoalExportButton = () => {
     loadingPosition="start">
     Export
   </LoadingButton>
-};
+}
 
-export default GoalExportButton;
+export default GoalExportButton

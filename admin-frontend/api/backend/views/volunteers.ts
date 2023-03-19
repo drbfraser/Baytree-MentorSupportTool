@@ -1,5 +1,5 @@
-import { BackendGetFunction, generateBackendGetFunc } from "../base";
-import { API_BASE_URL } from "../url";
+import { BackendGetFunction, generateBackendGetFunc } from '../base'
+import { API_BASE_URL } from '../url'
 
 interface VolunteerUnparsed {
   firstname: string;
@@ -19,11 +19,11 @@ export interface Volunteer extends VolunteerUnparsed {
   dateOfBirth: Date | null;
 }
 
-export const volunteersFromViewsBackendEndpoint = `${API_BASE_URL}/views-api/volunteers`;
+export const volunteersFromViewsBackendEndpoint = `${API_BASE_URL}/views-api/volunteers`
 
 const getVolunteersBackendFunc = generateBackendGetFunc<VolunteerResponse>(
   volunteersFromViewsBackendEndpoint
-);
+)
 
 export const getVolunteersFromViews: BackendGetFunction<Volunteer> = async (
   limit?: number,
@@ -34,7 +34,7 @@ export const getVolunteersFromViews: BackendGetFunction<Volunteer> = async (
     limit,
     offset,
     filters
-  );
+  )
 
   if (backendResponse && backendResponse.data) {
     return {
@@ -45,8 +45,8 @@ export const getVolunteersFromViews: BackendGetFunction<Volunteer> = async (
           ? null
           : new Date(Date.parse(volunteer.dateOfBirth)),
       })),
-    };
+    }
   }
 
-  return backendResponse;
-};
+  return backendResponse
+}

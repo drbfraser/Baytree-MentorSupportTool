@@ -1,7 +1,7 @@
-import { Skeleton, Typography } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import { useState } from "react";
-import { toast } from "react-toastify";
+import { Skeleton, Typography } from '@mui/material'
+import Paper from '@mui/material/Paper'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 import {
   ResponsiveContainer,
   BarChart,
@@ -11,27 +11,27 @@ import {
   YAxis,
   XAxis,
   LabelList,
-} from "recharts";
-import styled from "styled-components";
-import { getSessionGroupsFromViews } from "../../../api/backend/views/sessionGroups";
+} from 'recharts'
+import styled from 'styled-components'
+import { getSessionGroupsFromViews } from '../../../api/backend/views/sessionGroups'
 import {
   getSessionsFromViews,
   Session,
-} from "../../../api/backend/views/sessions";
+} from '../../../api/backend/views/sessions'
 import {
   COLORS,
   HELP_MESSAGE,
   MOBILE_BREAKPOINT,
-} from "../../../constants/constants";
+} from '../../../constants/constants'
 import PaginatedSelect, {
   PaginatedSelectOption,
-} from "../../shared/paginatedSelect";
+} from '../../shared/paginatedSelect'
 
 const SessionStatsCard: React.FC<{}> = () => {
-  const [loadingData, setLoadingData] = useState(false);
+  const [loadingData, setLoadingData] = useState(false)
   const [selectedSessionGroups, setSelectedSessionGroups] = useState<
     PaginatedSelectOption<string>[]
-  >([]);
+  >([])
 
   interface DataEntryFormat {
     name: string;
@@ -40,20 +40,20 @@ const SessionStatsCard: React.FC<{}> = () => {
 
   const initialData = [
     {
-      name: "Please select a session group(s) above.",
+      name: 'Please select a session group(s) above.',
     },
-  ];
+  ]
 
-  const [data, setData] = useState<DataEntryFormat[]>(initialData);
+  const [data, setData] = useState<DataEntryFormat[]>(initialData)
 
   const loadSessionGroupOptions = async (search: any, prevOptions: any) => {
-    const SESSION_GROUPS_SELECT_PAGE_SIZE = 30;
+    const SESSION_GROUPS_SELECT_PAGE_SIZE = 30
 
     const sessionGroups = await getSessionGroupsFromViews({
       limit: SESSION_GROUPS_SELECT_PAGE_SIZE,
       offset: prevOptions.length,
       name: search,
-    });
+    })
 
     if (sessionGroups && sessionGroups.data) {
       const selectboxOptions = {
@@ -64,112 +64,112 @@ const SessionStatsCard: React.FC<{}> = () => {
         hasMore:
           prevOptions.length + SESSION_GROUPS_SELECT_PAGE_SIZE <
           sessionGroups.total,
-      };
+      }
 
-      return selectboxOptions;
+      return selectboxOptions
     } else {
-      toast.error(HELP_MESSAGE);
-      return { options: [], hasMore: false };
+      toast.error(HELP_MESSAGE)
+      return { options: [], hasMore: false }
     }
-  };
+  }
 
   const getNumCancelledSessions = (sessions: Session[]) => {
     return sessions.reduce(
       (prevVal, curVal) => prevVal + (curVal.cancelled ? 1 : 0),
       0
-    );
-  };
+    )
+  }
 
   const getNumCompletedSessions = (sessions: Session[]) => {
     return sessions.reduce(
       (prevVal, curVal) =>
         prevVal + (new Date() > curVal.startDate && !curVal.cancelled ? 1 : 0),
       0
-    );
-  };
+    )
+  }
 
   const getNumPendingSessions = (sessions: Session[]) => {
     return sessions.reduce(
       (prevVal, curVal) =>
         prevVal + (new Date() > curVal.startDate && !curVal.cancelled ? 1 : 0),
       0
-    );
-  };
+    )
+  }
 
   const getNumUpcomingSessions = (sessions: Session[]) => {
     return sessions.reduce(
       (prevVal, curVal) => prevVal + (new Date() < curVal.startDate ? 1 : 0),
       0
-    );
-  };
+    )
+  }
 
   const onSessionGroupSelectOptionChange = async (newSessionGroups: any) => {
     const selectedSessionGroups = newSessionGroups as
-      | PaginatedSelectOption<string>[];
+      | PaginatedSelectOption<string>[]
 
-    setSelectedSessionGroups(selectedSessionGroups);
+    setSelectedSessionGroups(selectedSessionGroups)
 
     if (selectedSessionGroups.length === 0) {
-      return;
+      return
     }
 
-    setLoadingData(true);
+    setLoadingData(true)
 
-    let sessionDataResponses = [];
+    const sessionDataResponses = []
     for (const sessionGroup of selectedSessionGroups) {
       const sessionDataResponse = await getSessionsFromViews(
         sessionGroup.value
-      );
+      )
 
       if (!sessionDataResponse) {
-        setLoadingData(false);
-        toast.error(HELP_MESSAGE);
-        return;
+        setLoadingData(false)
+        toast.error(HELP_MESSAGE)
+        return
       }
 
       sessionDataResponses.push({
         name: sessionGroup.label,
         data: sessionDataResponse.results,
-      });
+      })
     }
 
-    let completedSessionsForSessionGroups: Record<string, number> = {};
-    let upcomingSessionsForSessionGroups: Record<string, number> = {};
-    let pendingSessionsForSessionGroups: Record<string, number> = {};
-    let cancelledSessionsForSessionGroups: Record<string, number> = {};
+    const completedSessionsForSessionGroups: Record<string, number> = {}
+    const upcomingSessionsForSessionGroups: Record<string, number> = {}
+    const pendingSessionsForSessionGroups: Record<string, number> = {}
+    const cancelledSessionsForSessionGroups: Record<string, number> = {}
 
     for (const sessionDataResponse of sessionDataResponses) {
       completedSessionsForSessionGroups[sessionDataResponse.name] =
-        getNumCompletedSessions(sessionDataResponse.data);
+        getNumCompletedSessions(sessionDataResponse.data)
       upcomingSessionsForSessionGroups[sessionDataResponse.name] =
-        getNumUpcomingSessions(sessionDataResponse.data);
+        getNumUpcomingSessions(sessionDataResponse.data)
       pendingSessionsForSessionGroups[sessionDataResponse.name] =
-        getNumPendingSessions(sessionDataResponse.data);
+        getNumPendingSessions(sessionDataResponse.data)
       cancelledSessionsForSessionGroups[sessionDataResponse.name] =
-        getNumCancelledSessions(sessionDataResponse.data);
+        getNumCancelledSessions(sessionDataResponse.data)
     }
 
     setData([
       {
-        name: "Completed",
+        name: 'Completed',
         ...completedSessionsForSessionGroups,
       },
       {
-        name: "Upcoming",
+        name: 'Upcoming',
         ...upcomingSessionsForSessionGroups,
       },
       {
-        name: "Pending to Report",
+        name: 'Pending to Report',
         ...pendingSessionsForSessionGroups,
       },
       {
-        name: "Cancelled",
+        name: 'Cancelled',
         ...cancelledSessionsForSessionGroups,
       },
-    ]);
+    ])
 
-    setLoadingData(false);
-  };
+    setLoadingData(false)
+  }
 
   return (
     <>
@@ -185,8 +185,8 @@ const SessionStatsCard: React.FC<{}> = () => {
         ></Chart>
       </StyledSessionStatsCard>
     </>
-  );
-};
+  )
+}
 
 const StyledSessionStatsCard = styled(Paper)`
   width: 100%;
@@ -199,7 +199,7 @@ const StyledSessionStatsCard = styled(Paper)`
   grid-template-areas:
     "header"
     "chart";
-`;
+`
 
 interface HeaderProps {
   loadSessionGroupOptions: (
@@ -227,8 +227,8 @@ const Header: React.FC<HeaderProps> = (props) => {
         placeholder="Select a session group..."
       ></PaginatedSelect>
     </StyledHeader>
-  );
-};
+  )
+}
 
 const StyledHeader = styled.div`
   grid-area: header;
@@ -239,7 +239,7 @@ const StyledHeader = styled.div`
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     display: block;
   }
-`;
+`
 
 const HeaderTitle = styled(Typography)`
   white-space: nowrap;
@@ -249,7 +249,7 @@ const HeaderTitle = styled(Typography)`
     white-space: unset;
     margin-right: 0rem;
   }
-`;
+`
 
 const Chart: React.FC<{
   data: any;
@@ -257,13 +257,13 @@ const Chart: React.FC<{
   selectedSessionGroups: PaginatedSelectOption<string>[];
 }> = (props) => {
   const getUniqueColor = (n: number) => {
-    return COLORS[n % COLORS.length];
-  };
+    return COLORS[n % COLORS.length]
+  }
 
   return (
     <StyledChart>
       {props.loading ? (
-        <div style={{ marginLeft: "2rem" }}>
+        <div style={{ marginLeft: '2rem' }}>
           <Skeleton />
           <Skeleton />
           <Skeleton />
@@ -291,7 +291,7 @@ const Chart: React.FC<{
                 ></LabelList>
               </Bar>
             ))}
-            <XAxis dataKey={"name"}></XAxis>
+            <XAxis dataKey={'name'}></XAxis>
             <YAxis />
             <Legend
               formatter={(value, entry, payload) => (
@@ -302,16 +302,16 @@ const Chart: React.FC<{
         </ResponsiveContainer>
       )}
     </StyledChart>
-  );
-};
+  )
+}
 
 const StyledChart = styled.div`
   grid-area: chart;
   overflow: hidden;
-`;
+`
 
 const LegendText = styled.span`
   color: #000000;
-`;
+`
 
-export default SessionStatsCard;
+export default SessionStatsCard
