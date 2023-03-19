@@ -67,6 +67,7 @@ services:
       - ./fluent-bit/inputs/:/fluent-bit/etc/inputs/
       - ./fluent-bit/outputs/:/fluent-bit/etc/outputs/
       - ./fluent-bit/filters/:/fluent-bit/etc/filters/
+      - ./fluent-bit/scripts/:/fluent-bit/etc/scripts/
       - ./baytree_app/server_logs/:/baytree_app/etc/server_logs
     ports:
       - "24224:24224/tcp"

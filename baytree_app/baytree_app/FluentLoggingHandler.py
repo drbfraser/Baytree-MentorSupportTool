@@ -30,12 +30,26 @@ class FluentLoggingHandler:
             source = "admin-frontend" if clientUrl == "http://localhost:3001/" else "frontend"
             destination = "baytree"
 
+        params = {}
+        if request.method == "GET":
+            params = request.GET
+        elif request.method == "POST":
+            params = request.POST
+
         try:
             logJson = {"log": {
                 "requestingUser": request.user,
                 "method": request.method,
                 "url": url,
-                "meta": request.META,
+                "params": params,
+                "meta": {
+                    "content_length": request.META["CONTENT_LENGTH"],
+                    "http_accept": request.META["HTTP_ACCEPT"],
+                    "http_referer": request.META["HTTP_REFERER"],
+                    "query_string": request.META["QUERY_STRING"],
+                    "server_name": request.META["SERVER_NAME"],
+                    "server_port": request.META["SERVER_PORT"]
+                },
                 "isRequest": True,
                 "source": source,
                 "destination": destination,
