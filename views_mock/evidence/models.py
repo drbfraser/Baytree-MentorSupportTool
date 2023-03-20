@@ -21,9 +21,16 @@ class Question(models.Model):
     enabled = models.IntegerField()
 
 class AnswerSet(models.Model):
-    QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="questionIdOfQuestion")
-    AnswerID = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answerIdOfQuestion")
-    Answer = models.CharField(max_length=1000)
+    AnswerSetID = models.AutoField(primary_key=True)
+    QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE)
+    Answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     EntityType = models.CharField(max_length=100)
     EntityID = models.IntegerField()
     Date = models.DateTimeField(auto_now_add=True)
+
+class Answer(models.Model):
+    AnswerID = models.AutoField(primary_key=True)
+    AnswerSetID = models.ForeignKey(AnswerSet, on_delete=models.CASCADE)
+    QuestionnaireID = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
+    QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE)
+    Answer = models.CharField(max_length=1000)
