@@ -1,32 +1,17 @@
 from django.db import models
 
+
 class SessionGroup(models.Model):
     SessionGroupID = models.PositiveIntegerField(primary_key=True)
-    Title = models.CharField(max_length=255, null=True)
-    Created = models.CharField(max_length=255, null=True)
-    CreatedBy = models.CharField(max_length=255, null=True)
-    Updated = models.CharField(max_length=255, null=True)
-    UpdatedBy = models.CharField(max_length=255, null=True)
-    Archived = models.CharField(max_length=255, null=True)
-    ArchivedBy = models.CharField(max_length=255, null=True)
-    RestrictedRecord = models.PositiveIntegerField(null=True)
-    Type = models.CharField(max_length=255, null=True)
-    Projects = models.PositiveIntegerField(null=True)
-    BookingMode = models.CharField(max_length=255, null=True)
-    AllowSessionTypes = models.CharField(max_length=255, null=True)
+    Title = models.CharField(max_length=255)
     Description = models.TextField(blank=True)
-    LeadStaff = models.PositiveIntegerField(null=True)
-    VenueID = models.PositiveIntegerField()
-    StartDate = models.DateTimeField(null=True)
-    EndDate = models.DateTimeField(null=True)
-    PlannedSessions = models.PositiveIntegerField(null=True)
-    AgeGroupFrom = models.PositiveIntegerField(null=True)
-    AgeGroupTo = models.PositiveIntegerField(null=True)
-    NumberOfPlaces = models.PositiveIntegerField(null=True)
+    LeadStaff = models.PositiveIntegerField()
+    OtherStaff = models.PositiveIntegerField(null=True)
+
 
 
 class StaffSession(models.Model):
-    SessionID = models.PositiveIntegerField()
+    SessionID = models.OneToOneField("Session", on_delete=models.CASCADE)
     ContactType = models.CharField(max_length=255, null=True)
     ContactID = models.PositiveIntegerField(null=True)
     Attended = models.PositiveSmallIntegerField(null=True)
@@ -37,19 +22,12 @@ class StaffSession(models.Model):
 
 class Session(models.Model):
     SessionID = models.PositiveIntegerField(primary_key=True)
-    SessionGroupID = models.PositiveIntegerField(null=True)
+    SessionGroupID = models.ForeignKey("SessionGroup", on_delete=models.CASCADE)
     Created = models.DateTimeField(null=True)
-    CreatedBy = models.CharField(max_length=255, default="", null=True)
     Updated = models.DateTimeField(null=True)
-    UpdatedBy = models.CharField(max_length=255, default="", null=True)
-    RestrictedRecord =  models.PositiveIntegerField(null=True)
-    SessionType = models.CharField(max_length=255, default="", null=True)
     Name = models.CharField(max_length=255, default="", null=True)
     Activity = models.CharField(max_length=255, default="", null=True)
     LeadStaff = models.PositiveIntegerField()
-    ContactType = models.CharField(max_length=255, default="", null=True)
-    StartDate = models.DateField(null=True)
-    StartTime = models.TimeField(null=True)
     Duration = models.CharField(max_length=255, default="", null=True)
     Cancelled = models.PositiveSmallIntegerField(null=True)
     VenueID = models.PositiveIntegerField(null=True)
