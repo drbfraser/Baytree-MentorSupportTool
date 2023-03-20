@@ -1,5 +1,3 @@
-import json
-
 from django.http import HttpResponse
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -23,7 +21,6 @@ from django.db.models import ForeignKey
 
 from datetime import datetime
 from django.utils.timezone import make_aware
-import logging
 
 from .FluentLoggingHandler import FluentLoggingHandler
 
@@ -33,6 +30,8 @@ from .FluentLoggingHandler import FluentLoggingHandler
 def logout_view(request):
     response = HttpResponse()
     cookie_max_age = 0
+
+    FluentLoggingHandler.info("Resetting refresh and access tokens for logout")
 
     response.set_cookie(
         "refresh_token", "", max_age=cookie_max_age, httponly=True, samesite="Strict"
@@ -48,6 +47,7 @@ def logout_view(request):
 
 
 def create_object(object_dict, model):
+    FluentLoggingHandler.info("Calling create_object method")
     object = object_dict
     create_args = {}
 
@@ -80,6 +80,7 @@ def create_object(object_dict, model):
 
 
 def update_object(object, object_dict, model):
+    FluentLoggingHandler.info("Calling update_object method")
     update_args = {}
 
     for key, val in object_dict.items():
@@ -124,8 +125,10 @@ class CookieTokenVerifySerializer(TokenVerifySerializer):
     def validate(self, attrs):
         attrs["token"] = self.context["request"].COOKIES.get("access_token")
         if attrs["token"]:
+            FluentLoggingHandler.info("Access token successfully verified")
             return super().validate(attrs)
         else:
+            FluentLoggingHandler.error("Failed to validate access token")
             raise InvalidToken("No valid token found in cookie")
 
 
@@ -133,6 +136,8 @@ class CookieTokenVerifyView(TokenVerifyView):
     serializer_class = CookieTokenVerifySerializer
 
     def post(self, request, *args, **kwargs):
+        FluentLoggingHandler.info(
+            "Verifying whether user is superuser or admin")
         serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
@@ -148,10 +153,11 @@ class CookieTokenVerifyView(TokenVerifyView):
 
         is_superuser = user.is_superuser
 
-        return Response(
+        response = Response(
             {"is_admin": is_admin, "is_superuser": is_superuser},
             status=status.HTTP_200_OK,
         )
+        return response
 
 
 class CookieTokenObtainPairView(TokenObtainPairView):
@@ -160,15 +166,20 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         # If wrong password, (unauthorized), don't return additional info or cookies
         if response.status_code == 401:
             # login-failures logging
+            FluentLoggingHandler.error(
+                "Failed to login, password is incorrect")
             return super().finalize_response(request, response, *args, **kwargs)
 
         Flogging = FluentLoggingHandler()
         if request.data["email"]:
             replace_number = 4
-            replace_str = "-"*replace_number + request.data["email"][replace_number:]
+            replace_str = "-"*replace_number + \
+                request.data["email"][replace_number:]
             Flogging.sendInfoLog("login request by: " + str(replace_str))
 
         if response.data.get("refresh"):
+            FluentLoggingHandler.info(
+                "Setting refresh token cookie with max age of 1 day")
             cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
                 "refresh_token",
@@ -179,6 +190,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
             )
             del response.data["refresh"]
         if response.data.get("access"):
+            FluentLoggingHandler.info(
+                "Setting access token cookie with max age of 30 minutes")
             cookie_max_age = 60 * 30  # 30 min
             response.set_cookie(
                 "access_token",
@@ -194,7 +207,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         response.data["user_id"] = user.pk
 
         admin_user_model = apps.get_model("users", "AdminUser")
-        response.data["is_admin"] = admin_user_model.objects.filter(pk=user.pk).exists()
+        response.data["is_admin"] = admin_user_model.objects.filter(
+            pk=user.pk).exists()
 
         mentor_user_model = apps.get_model("users", "MentorUser")
         mentor_user_query_set = mentor_user_model.objects.filter(pk=user.pk)
@@ -212,7 +226,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         response.data["is_superuser"] = user.is_superuser
 
         # # login success logging
-        # Flogging.sendInfoLog("login as admin") if user.is_superuser else Flogging.sendInfoLog("login as mentor")
+        FluentLoggingHandler.info(
+            "login as admin") if user.is_superuser else FluentLoggingHandler.info("login as mentor")
 
         response.data["last_login"] = user.last_login
         user.last_login = make_aware(datetime.now())
@@ -228,8 +243,11 @@ class CookieTokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
         attrs["refresh"] = self.context["request"].COOKIES.get("refresh_token")
         if attrs["refresh"]:
+            FluentLoggingHandler.info("Refresh token successfully validated")
             return super().validate(attrs)
         else:
+            FluentLoggingHandler.error(
+                "Failed to validate refresh token, not found")
             raise InvalidToken("No valid token found in cookie")
 
 
@@ -237,10 +255,13 @@ class CookieTokenRefreshView(TokenRefreshView):
     def finalize_response(self, request, response, *args, **kwargs):
         # If wrong password, (unauthorized), don't return additional info or cookies
         if response.status_code == 401:
+            FluentLoggingHandler.error("Failed to login, incorrect password")
             return super().finalize_response(request, response, *args, **kwargs)
 
         access_token_obj = None
         if response.data.get("refresh"):
+            FluentLoggingHandler.info(
+                "Setting refresh token with max age of 1 day")
             cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
                 "refresh_token",
@@ -251,6 +272,8 @@ class CookieTokenRefreshView(TokenRefreshView):
             )
             del response.data["refresh"]
         if response.data.get("access"):
+            FluentLoggingHandler.info(
+                "Setting access token with max age of 30 minutes")
             access_token_obj = AccessToken(response.data["access"])
             cookie_max_age = 60 * 30  # 30 min
             response.set_cookie(
@@ -274,6 +297,9 @@ class CookieTokenRefreshView(TokenRefreshView):
             user = user_model.objects.get(pk=user_id)
 
             response.data["is_superuser"] = user.is_superuser
+
+        FluentLoggingHandler.info(
+            "Logged in as admin") if user.is_superuser else FluentLoggingHandler.info("Logged in as mentor")
 
         return super().finalize_response(request, response, *args, **kwargs)
 
@@ -305,7 +331,7 @@ class GenerateCrudEndpointsForModel(APIView):
             if limit != None:
                 if offset == None:
                     offset = 0
-                modelObjects = self.model.objects.all()[offset : offset + limit]
+                modelObjects = self.model.objects.all()[offset: offset + limit]
             else:
                 modelObjects = self.model.objects.all()
 
@@ -315,10 +341,12 @@ class GenerateCrudEndpointsForModel(APIView):
                 self.serializer(modelObject).data for modelObject in modelObjects
             ]
 
-            return Response(
+            response = Response(
                 {"total": numModelObjects, "data": serialized},
                 status=status.HTTP_200_OK,
             )
+
+            return response
         else:
             ids = request.GET.getlist("id", "")
             if not isinstance(ids, list):
@@ -333,9 +361,11 @@ class GenerateCrudEndpointsForModel(APIView):
 
             numModelObjects = self.model.objects.all().count()
 
-            return Response(
+            response = Response(
                 {"total": numModelObjects, "data": objects}, status=status.HTTP_200_OK
             )
+
+            return response
 
     def delete(self, request):
         if self.delete_override_func:
@@ -346,20 +376,28 @@ class GenerateCrudEndpointsForModel(APIView):
             try:
                 if not isinstance(ids, list):
                     ids = [ids]
+                deletedObjects = self.model.objects.filter(pk__in=ids)
                 self.model.objects.filter(pk__in=ids).delete()
-                return Response(
+                FluentLoggingHandler.info(
+                    f"{request.user} has deleted the following data object(s): {deletedObjects}")
+                response = Response(
                     {"status": "Successfully deleted object(s)."},
                     status=status.HTTP_200_OK,
                 )
+                return response
             except Exception as e:
-                return Response(
+                FluentLoggingHandler.error(
+                    f"{request.user} failed to delete data object(s)")
+                response = Response(
                     {"error": "Failed to delete object"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
+                return response
         else:
-            return Response(
+            response = Response(
                 {"error": "No id was given"}, status=status.HTTP_400_BAD_REQUEST
             )
+            return response
 
     def post(self, request):
         if self.post_override_func:
@@ -373,8 +411,11 @@ class GenerateCrudEndpointsForModel(APIView):
                         del object["id"]
 
                     ids.append(create_object(object, self.model))
-
-                return Response({"ids": ids}, status=status.HTTP_200_OK)
+                objects = request.data["array"]
+                FluentLoggingHandler.info(
+                    f"{request.user} created the following objects: {objects}")
+                response = Response({"ids": ids}, status=status.HTTP_200_OK)
+                return response
             else:
                 object = request.data
 
@@ -382,13 +423,18 @@ class GenerateCrudEndpointsForModel(APIView):
                     del object["id"]
 
                 ids.append(create_object(request.data, self.model))
-
-                return Response({"ids": ids}, status=status.HTTP_200_OK)
+                FluentLoggingHandler.info(
+                    f"{request.user} created the following object: {object}")
+                response = Response({"ids": ids}, status=status.HTTP_200_OK)
+                return response
         except Exception as e:
-            return Response(
+            FluentLoggingHandler.error(
+                f"{request.user} failed to create object")
+            response = Response(
                 {"error": "Failed to create object"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+            return response
 
     def put(self, request):
         if self.put_override_func:
@@ -398,33 +444,46 @@ class GenerateCrudEndpointsForModel(APIView):
             if "array" in request.data:
                 for object in request.data["array"]:
                     update_object(
-                        self.model.objects.get(pk=object["id"]), object, self.model
+                        self.model.objects.get(
+                            pk=object["id"]), object, self.model
                     )
-                return Response(
+                objects = request.data["array"]
+                FluentLoggingHandler.info(
+                    f"{request.user} successfully updated the following objects: {objects}")
+                response = Response(
                     {"success": "Successfully updated objects"},
                     status=status.HTTP_200_OK,
                 )
+                return response
             else:
                 object = request.data
                 existing_object = self.model.objects.filter(pk=object["id"])
                 if not existing_object.exists():
-                    return Response(
+                    FluentLoggingHandler.error(
+                        f"{request.user} failed to update object: {object}, object does not exist")
+                    response = Response(
                         {"error": "Failed to update object"},
                         status=status.HTTP_404_NOT_FOUND,
                     )
+                    return response
 
                 existing_object = existing_object.first()
 
                 update_object(existing_object, object, self.model)
-                return Response(
+
+                FluentLoggingHandler.info(
+                    f"{request.user} successfully updated the following object: {object}")
+                response = Response(
                     {"success": "Successfully updated object"},
                     status=status.HTTP_200_OK,
                 )
+                return response
         except Exception as e:
-            return Response(
+            response = Response(
                 {"error": "Failed to update object"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+            return response
 
 
 class BatchRestViewSet(viewsets.ModelViewSet):
@@ -448,30 +507,44 @@ class BatchRestViewSet(viewsets.ModelViewSet):
                 if "isDeleted" in data_row:
                     # Delete objects
                     if "id" not in data_row:
-                        Response(
+                        FluentLoggingHandler.error(
+                            f"{request.user} failed to perform batch delete, no id was found for this data row: {data_row}")
+                        response = Response(
                             "No id was found for deleted row.",
                             status=status.HTTP_400_BAD_REQUEST,
                         )
-
+                        return response
                     object = self.model_class.objects.filter(pk=data_row["id"])
 
                     if not object.exists():
-                        return Response(
+                        FluentLoggingHandler.error(
+                            f"{request.user} failed to perform batch delete, object id {data_row.id} was not found")
+                        response = Response(
                             "object id " + data_row.id + " was not found.",
                             status=status.HTTP_404_NOT_FOUND,
                         )
-
+                        return response
+                    FluentLoggingHandler.info(
+                        f"{request.user} has deleted the following object: {object}")
                     object.delete()
                 else:
                     # Create and update objects
-                    serializer = self.serializer_class(data=data_row, partial=True)
+                    serializer = self.serializer_class(
+                        data=data_row, partial=True)
                     if serializer.is_valid():
                         serializer.save()
+                        FluentLoggingHandler.info(
+                            f"{request.user} has created and updated the following object: {data_row}")
                     else:
-                        return Response(
+                        FluentLoggingHandler.error(
+                            f"{request.user} has failed to create and update, the following object is invalid: {data_row}")
+                        response = Response(
                             serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST,
                         )
-            return Response("Successfully batch updated.", status=status.HTTP_200_OK)
+                        return response
+            response = Response("Successfully batch updated.",
+                                status=status.HTTP_200_OK)
+            return response
         else:
             return super(viewsets.ModelViewSet, self).create(request, *args, **kwargs)
