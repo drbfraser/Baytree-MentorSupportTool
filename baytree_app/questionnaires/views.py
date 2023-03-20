@@ -47,8 +47,9 @@ def get_questionnaire(request, headers):
         return response
     qid = mentor.mentorRole.viewsQuestionnaireId
 
+    headers["Accept"] = "application/json"
     # Fetch questionnaire by id
-    url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}.json"
+    url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}"
 
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
@@ -117,7 +118,8 @@ def get_questionnaire_value_lists(id, headers):
             f"Failed to get questionnarie value lists - Could not find value list with id: {value_list_id}")
         return response
 
-    url = f"{VIEWS_BASE_URL}admin/valuelists/{value_list_id}.json"
+    headers["Accept"] = "application/json"
+    url = f"{VIEWS_BASE_URL}admin/valuelists/{value_list_id}"
 
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
