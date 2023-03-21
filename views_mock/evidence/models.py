@@ -23,7 +23,6 @@ class Question(models.Model):
 class AnswerSet(models.Model):
     AnswerSetID = models.AutoField(primary_key=True)
     QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE)
-    Answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     EntityType = models.CharField(max_length=100)
     EntityID = models.IntegerField()
     Date = models.DateTimeField(auto_now_add=True)
