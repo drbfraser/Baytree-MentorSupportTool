@@ -69,6 +69,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 
    ```bash
    docker exec baytree_server python manage.py migrate
+   docker exec views-mock python manage.py migrate
    docker exec -it baytree_server python manage.py createsuperuser
    ```
 7. install default preference:
@@ -110,13 +111,13 @@ The recommended way to run the backend is within Docker (using the instructions 
 After a model change, run the following to make database migrations:
 
 ```bash
-docker exec baytree_server python manage.py makemigrations
+docker exec <baytree_server/views-mock> python manage.py makemigrations
 ```
 
 To migrate your database, either because you or someone else made database migrations, run:
 
 ```bash
-docker exec baytree_server python manage.py migrate
+docker exec <baytree_server/views-mock> python manage.py migrate
 ```
 
 To install default preference:
@@ -197,7 +198,7 @@ The frontends can either be run in Docker (using the instructions above) or outs
 1. Install [Node.js](https://nodejs.org/en/)
 2. Run `npm install` in both frontend folders
 3. Use the command `docker compose up server` to run only the backend + database
-4. Use the command `docker compose up mock-views-app` to run the node server for mocking Views APIs.
+4. Use the command `docker compose up views-mock` to run the node server for mocking Views APIs.
 5. Use the following commands to run the frontends:
    - frontend: `npm start`
    - admin-frontend: `npm run dev`
