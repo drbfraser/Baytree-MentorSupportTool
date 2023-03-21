@@ -17,7 +17,7 @@ participantFields = [
     "Email",
     "DateOfBirth",
     "Ethnicity",
-    "County",
+    "Countryofbirth_P_87",
     "FirstLanguage_P_88",
 ]
 participantTranslateFields = [
@@ -75,7 +75,7 @@ def get_participants(ids=None, headers='', limit: int = 5, offset: int = 0):
     if ids != None:
         id_filter_string = ""
         for id in ids:
-            id_filter_string += "&PersonID[]={}".format(id)
+            id_filter_string += "PersonID[]={}".format(id) +"&"
 
         response = requests.get(
             participants_base_url + "search?" + id_filter_string,
