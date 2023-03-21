@@ -11,7 +11,7 @@ class Questionnaire(models.Model):
 
 class Question(models.Model):
     QuestionID = models.AutoField(primary_key=True)
-    QuestionnaireID = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
+    QuestionnaireID = models.ForeignKey(Questionnaire, on_delete=models.CASCADE, db_column="QuestionnaireID")
     SourceID = models.IntegerField()
     Question = models.CharField(max_length=500, null=False)
     valueListID = models.IntegerField()
@@ -22,14 +22,14 @@ class Question(models.Model):
 
 class AnswerSet(models.Model):
     AnswerSetID = models.AutoField(primary_key=True)
-    QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE)
+    QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE, db_column="QuestionID")
     EntityType = models.CharField(max_length=100, null=False)
     EntityID = models.IntegerField(null=False)
     Date = models.DateTimeField(auto_now_add=True, null=False)
 
 class Answer(models.Model):
     AnswerID = models.AutoField(primary_key=True)
-    AnswerSetID = models.ForeignKey(AnswerSet, on_delete=models.CASCADE)
+    AnswerSetID = models.ForeignKey(AnswerSet, on_delete=models.CASCADE, db_column="AnswerSetID")
     QuestionnaireID = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
-    QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE)
+    QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE, db_column="QuestionID")
     Answer = models.CharField(max_length=1000)
