@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 
 class SessionGroup(models.Model):
     SessionGroupID = models.PositiveIntegerField(primary_key=True)
@@ -9,11 +9,9 @@ class SessionGroup(models.Model):
     OtherStaff = models.PositiveIntegerField(null=True)
 
 
-
 class StaffSession(models.Model):
     SessionID = models.OneToOneField("Session", on_delete=models.CASCADE)
-    ContactType = models.CharField(max_length=255, null=True)
-    ContactID = models.PositiveIntegerField(null=True)
+    ContactID = models.ForeignKey("contacts.Person", on_delete=models.CASCADE)
     Attended = models.PositiveSmallIntegerField(null=True)
     Role = models.CharField(max_length=255)
     ReasonforNotAttending = models.TextField(null=True)
@@ -25,10 +23,12 @@ class Session(models.Model):
     SessionGroupID = models.ForeignKey("SessionGroup", on_delete=models.CASCADE)
     Created = models.DateTimeField(null=True)
     Updated = models.DateTimeField(null=True)
-    Name = models.CharField(max_length=255, default="", null=True)
-    Activity = models.CharField(max_length=255, default="", null=True)
+    Name = models.CharField(max_length=255)
+    Activity = models.CharField(max_length=255, null=True)
     LeadStaff = models.PositiveIntegerField()
-    Duration = models.CharField(max_length=255, default="", null=True)
-    Cancelled = models.PositiveSmallIntegerField(null=True)
-    VenueID = models.PositiveIntegerField(null=True)
-    VenueName = models.CharField(max_length=255, default="", null=True)
+    Duration = models.CharField(max_length=255)
+    Cancelled = models.PositiveSmallIntegerField()
+    VenueID = models.PositiveIntegerField()
+    VenueName = models.CharField(max_length=255)
+    StartDate = models.DateField(default=timezone.now)
+    StartTime = models.TimeField(default=timezone.now)
