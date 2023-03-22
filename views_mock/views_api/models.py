@@ -5,7 +5,7 @@ class SessionGroup(models.Model):
     SessionGroupID = models.PositiveIntegerField(primary_key=True)
     Title = models.CharField(max_length=255)
     Description = models.TextField(blank=True)
-    LeadStaff = models.PositiveIntegerField()
+    LeadStaff = models.PositiveIntegerField(null=True)
     OtherStaff = models.PositiveIntegerField(null=True)
 
 
