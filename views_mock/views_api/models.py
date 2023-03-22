@@ -14,14 +14,14 @@ class StaffSession(models.Model):
     ContactID = models.ForeignKey("contacts.Person", on_delete=models.CASCADE)
     Attended = models.PositiveSmallIntegerField(null=True)
     Role = models.CharField(max_length=255)
-    ReasonforNotAttending = models.TextField(null=True)
-    Name = models.CharField(max_length=255, null=True)
+    ReasonforNotAttending = models.TextField(blank=True)
+    Name = models.CharField(max_length=255)
 
 
 class Session(models.Model):
     SessionID = models.PositiveIntegerField(primary_key=True)
     SessionGroupID = models.ForeignKey("SessionGroup", on_delete=models.CASCADE)
-    Created = models.DateTimeField(null=True)
+    Created = models.DateTimeField(default=timezone.now)
     Updated = models.DateTimeField(null=True)
     Name = models.CharField(max_length=255)
     Activity = models.CharField(max_length=255, null=True)
