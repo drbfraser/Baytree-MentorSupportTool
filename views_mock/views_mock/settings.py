@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     "users",
     "sessions",
     "evidence",
-    "contacts"
+    "contacts",
+    "views_sessions"
 ]
 
 MIDDLEWARE = [
