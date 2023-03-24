@@ -10,7 +10,7 @@ class SessionGroup(models.Model):
 
 
 class StaffSession(models.Model):
-    SessionID = models.OneToOneField("Session", on_delete=models.CASCADE)
+    SessionID = models.OneToOneField("Session", on_delete=models.CASCADE, db_column="SessionID")
     ContactID = models.ForeignKey("contacts.Person", on_delete=models.CASCADE)
     Attended = models.PositiveSmallIntegerField(null=True)
     Role = models.CharField(max_length=255)
@@ -20,7 +20,7 @@ class StaffSession(models.Model):
 
 class Session(models.Model):
     SessionID = models.PositiveIntegerField(primary_key=True)
-    SessionGroupID = models.ForeignKey("SessionGroup", on_delete=models.CASCADE)
+    SessionGroupID = models.ForeignKey("SessionGroup", on_delete=models.CASCADE, db_column="SessionGroupID")
     Created = models.DateTimeField(default=timezone.now)
     Updated = models.DateTimeField(null=True)
     Name = models.CharField(max_length=255)
