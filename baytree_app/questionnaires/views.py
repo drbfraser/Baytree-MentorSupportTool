@@ -60,8 +60,6 @@ def get_questionnaire(request, headers):
 
     response = response.json()
 
-    print(response)
-
     # Construct the data
     data = {}
     data["questionnaireId"] = qid
@@ -73,8 +71,6 @@ def get_questionnaire(request, headers):
 
     # identity the order of the questions
     index = 0
-
-    print(questions)
 
     # multithreading for multiple request
     for question in questions:
