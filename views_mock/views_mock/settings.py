@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "views_api",
     "users",
     "sessions",
-    "admin_valuelists"
+    "admin_valuelists",
     "evidence",
     "contacts",
     "views_sessions"
