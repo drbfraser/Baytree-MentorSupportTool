@@ -208,20 +208,6 @@ def search_session_groups_endpoint(request):
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions])
-def get_questionnaire_by_id_endpoint(request, questionnaireId: int):
-  data = {
-    "QuestionnaireID": str(questionnaireId),
-    "Title": "All: Covid-19 Diary",
-    "Description": "This is for managers and/or practitioners to share updates on their department in response to Covid-19 on a weekly basis.",
-    "Created": "2020-05-05 11:08:50",
-    "Updated": "2021-03-12 19:27:32",
-    "CreatedBy": "suching.lee",
-    "UpdatedBy": "joyce.castaneda"
-  }
-  return Response(data, 200)
-
-@api_view(("GET",))
-@permission_classes([AdminPermissions])
 def search_questionnaires_endpoint(request):
 #   # Will make use of these once MySQL database is connected
 #   pageFold = request.GET.get("pageFold", 0)
