@@ -38,14 +38,15 @@ def get_questionnaire(request, headers):
     Fetch the questionnaire assigned by the the mentor
     """
     # Find the questionnaire id from the requesting user
-    mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
-    if mentor is None:
-        # todo: error Logging here
-        FluentLoggingHandler.error(
-            f"Failed to get questionnaire - Could not find mentor with id: {request.user.id}")
-        response = Response(status=status.HTTP_404_NOT_FOUND)
-        return response
-    qid = mentor.mentorRole.viewsQuestionnaireId
+    # mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
+    # if mentor is None:
+    #     # todo: error Logging here
+    #     FluentLoggingHandler.error(
+    #         f"Failed to get questionnaire - Could not find mentor with id: {request.user.id}")
+    #     response = Response(status=status.HTTP_404_NOT_FOUND)
+    #     return response
+    # qid = mentor.mentorRole.viewsQuestionnaireId
+    qid = "1"
 
     headers["Accept"] = "application/json"
     # Fetch questionnaire by id
@@ -60,6 +61,8 @@ def get_questionnaire(request, headers):
 
     response = response.json()
 
+    print(response)
+
     # Construct the data
     data = {}
     data["questionnaireId"] = qid
@@ -71,6 +74,8 @@ def get_questionnaire(request, headers):
 
     # identity the order of the questions
     index = 0
+
+    print(questions)
 
     # multithreading for multiple request
     for question in questions:
