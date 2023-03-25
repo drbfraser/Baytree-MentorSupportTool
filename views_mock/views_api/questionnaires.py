@@ -2,6 +2,7 @@ from users.permissions import AdminPermissions
 from rest_framework.decorators import permission_classes, api_view
 from evidence.models import Questionnaire, Question, AnswerSet, Answer
 from rest_framework.response import Response
+from django.core.paginator import Paginator
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions])
@@ -36,5 +37,34 @@ def get_questionnaire_by_id(request, questionnaireId: int):
     questionsData[question.QuestionID] = questionInfo
 
   data["questions"] = questionsData
+
+  return Response(data, 200)
+
+@api_view(("GET",))
+@permission_classes([AdminPermissions])
+def search_questionnaires(request):
+  limit = request.GET.get("pageFold", 100)
+  offset = request.GET.get("offset", 0)
+  title = request.GET.get("Title", "")
+
+  data = {}
+  dataQuestionnaire = {}
+
+  questionnaires = Questionnaire.objects.filter(Title__contains=title)[offset:limit]
+  count = len(questionnaires)
+
+  for questionnaire in questionnaires:
+    questionnaireInfo = {}
+    questionnaireInfo["QuestionnaireID"] = str(questionnaire.QuestionnaireID)
+    questionnaireInfo["Title"] = questionnaire.Title
+    questionnaireInfo["Description"] = questionnaire.Description
+    questionnaireInfo["Created"] = questionnaire.Created
+    questionnaireInfo["Updated"] = questionnaire.Updated
+    questionnaireInfo["CreatedBy"] = questionnaire.CreatedBy
+    questionnaireInfo["UpdatedBy"] = questionnaire.UpdatedBy
+
+    dataQuestionnaire[f"questionnaire id=\"{questionnaire.QuestionnaireID}\""] = questionnaireInfo
+
+  data[f"questionnaires count=\"{count}\""] = dataQuestionnaire
 
   return Response(data, 200)
