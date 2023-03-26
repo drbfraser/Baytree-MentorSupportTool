@@ -10,7 +10,6 @@ api_patterns = [
     path('records/', include('records.urls')),
     path('resources/', include('resources.urls')),
     path('users/', include('users.urls')),
-    path('questionnaires/', include('questionnaires.urls')),
     path('views-api/', include('views_api.urls')),
     path('goals', include('goals.urls')),
     path('calendar_events/', include('calendar_events.urls')),
