@@ -167,7 +167,6 @@ def get_questions(request, headers):
     """
     Fetch the questionnaire assigned by the the mentor
     """
-    print("Testing get_questions\n\n\n")
 
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
@@ -271,7 +270,7 @@ def submit_answer_set(request, headers):
     """
     Submit the answer to the remote Views database
     """
-    print("Testing submit_answer_set\n\n\n")
+    
     # Validate data existence
     data = request.data
     if data["questionnaireId"] is None \
