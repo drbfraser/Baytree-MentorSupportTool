@@ -9,7 +9,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from views_api.associations import get_mentee_ids_from_mentor
 import xml.etree.ElementTree as ET
-from baytree_app.middlewares.ViewsAuthMiddleware import addAuthToHeader
 
 import threading
 from users.models import MentorUser
@@ -34,7 +33,7 @@ def getMentorWithRoleAndQuestionnaireByUserId(id):
 
 # GET /api/questionnaires/questionnaire/
 @api_view(("GET",))
-def get_questionnaire(request):
+def get_questionnaire(request, headers):
     """
     Fetch the questionnaire assigned by the the mentor
     """
@@ -48,8 +47,6 @@ def get_questionnaire(request):
         return response
     qid = mentor.mentorRole.viewsQuestionnaireId
 
-    headers = {}
-    addAuthToHeader(headers, request)
     headers["Accept"] = "application/json"
     # Fetch questionnaire by id
     url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}"
