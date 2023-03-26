@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "views_api",
     "users",
     "sessions",
+    "admin_valuelists",
     "evidence",
     "contacts",
     "views_sessions"
@@ -102,7 +103,7 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS  = ['views_mock.dbRouter.DBRouter']
+DATABASE_ROUTERS = ['views_mock.dbRouter.DBRouter']
 
 AUTH_PASSWORD_VALIDATORS = [
     {
