@@ -24,11 +24,12 @@ def get_questionnaire_by_id(request, questionnaireId: int):
 
   questionsData = {}
 
-  associatedQuestions = Question.objects.filter(questionnaireId=questionnaireId)
+  associatedQuestions = Question.objects.filter(QuestionnaireID=questionnaireId)
   for question in associatedQuestions:
     questionInfo = {}
     questionInfo["QuestionID"] = str(question.QuestionID)
     questionInfo["Question"] = question.Question
+    questionInfo["valueListID"] = question.valueListID
     questionInfo["inputType"] = question.inputType
     questionInfo["validation"] = question.validation
     questionInfo["category"] = question.category
