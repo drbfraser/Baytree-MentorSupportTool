@@ -87,7 +87,7 @@ class TestFluentLoggingHandler(unittest.TestCase):
         FluentLoggingHandler.info("Testing info level logs")
         with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing info level logs", log_contents)
+        self.assertIn("Abracadabra", log_contents)
 
     def test_debug(self):
         FluentLoggingHandler.debug("Testing debug level logs")
