@@ -10,7 +10,7 @@ services:
     ports:
       - "5001:5001"
   server:
-    command: sh -c "python baytree_app/testing/FluentLoggerTests.py && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python -m unittest baytree_app/testing/FluentLoggerTests.py && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     volumes:
