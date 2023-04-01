@@ -1,7 +1,7 @@
 import logging
-import os
+from django.conf import settings
 
-views_base_url = os.environ["VIEWS_BASE_URL"]
+views_base_url = settings.VIEWS_BASE_URL
 
 
 class FluentLoggingHandler:

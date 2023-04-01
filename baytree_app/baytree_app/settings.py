@@ -259,7 +259,7 @@ EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASSWORD"]
 EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
 DEFAULT_FROM_EMAIL = os.environ["EMAIL_USER"]
 SERVER_EMAIL = os.environ["EMAIL_USER"]
-os.environ.setdefault("VIEWS_BASE_URL", "http://views-mock:5001/")
+#os.environ.setdefault("VIEWS_BASE_URL", "http://views-mock:5001/")
 
 DATABASES = {
     "default": {
@@ -274,3 +274,7 @@ DATABASES = {
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND_URL", "")
+
+VIEWS_BASE_URL = 'https://app.viewsapp.net/api/restful/'
+VIEWS_USERNAME = os.environ["VIEWS_USERNAME"]
+VIEWS_PASSWORD = os.environ["VIEWS_PASSWORD"]
