@@ -29,7 +29,7 @@ export const submitAnswerSetForQuestionnaire = async (
   person: string
 ) => {
   try {
-    const respond = await baseApi.post('questionnaires/questionnaire/submit/', {
+    const respond = await baseApi.post('views-api/questionnaires/answers/submit/', {
       answerSet,
       questionnaireId,
       person
@@ -44,7 +44,7 @@ export const submitAnswerSetForQuestionnaire = async (
 export const fetchQuestions = () => {
   return baseApi
     .get<{ questionnaireId: number; questions: Question[] }>(
-      'questionnaires/questionnaire/'
+      'views-api/questionnaires/questions/'
     )
     .then((response) => ({
       questionnaireId: response.data.questionnaireId,
