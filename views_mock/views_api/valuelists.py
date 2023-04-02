@@ -5,6 +5,11 @@ from rest_framework.response import Response
 from admin_valuelists.models import ValueList, ValueListItem
 from xml.etree.ElementTree import Element, SubElement, tostring
 
+def populateObjectWithValueListItems(containingObject, id):
+  valueItems = ValueListItem.objects.filter(valueList=id)
+  for item in valueItems:
+    containingObject[item.value] = item.value
+
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
 def get_valuelists_endpoint(request, valueListID):
@@ -40,11 +45,6 @@ def get_volunteering_types_endpoint(request):
   data["items"] = items
 
   return Response(data, status=200)
-
-def populateObjectWithValueListItems(containingObject, id):
-  valueItems = ValueListItem.objects.filter(valueList=id)
-  for item in valueItems:
-    containingObject[item.value] = item.value
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
