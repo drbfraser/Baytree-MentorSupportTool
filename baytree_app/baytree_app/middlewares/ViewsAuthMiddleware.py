@@ -37,7 +37,6 @@ class ViewsAuthMiddleware:
            "https://app.viewsapp.net/api/restful/": authorize_views_app
         }
 
-        # For views requests, run the
         if (path.startswith("/api/views-api")):
           authorization_handlers[os.environ["VIEWS_BASE_URL"]](request)
           response = self.middleware(request)
