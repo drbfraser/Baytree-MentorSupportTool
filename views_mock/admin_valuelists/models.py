@@ -21,9 +21,9 @@ class ValueList(models.Model):
         REPORT = "Report"
 
     class NameEnum(models.TextChoices):
-        AGENCY_ACTIVITIES = "agencyactivities"
-        VENUES = "venues"
-        VOLUNTEERING_TYPES = "volunteeringtypes"
+        AGENCY_ACTIVITIES = "AgencyActivities"
+        VENUES = "Venues"
+        VOLUNTEERING_TYPES = "VolunteeringTypes"
 
     ValueListID = models.IntegerField(primary_key=True)
     Type = models.CharField(
