@@ -12,11 +12,16 @@ activities_base_url = views_base_url + "admin/valuelists/sessiongroup/agencyacti
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_activities_endpoint(request, headers):
+
+def get_activities_endpoint(request):
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/json"
+    }
     return Response(get_activities(headers), 200)
 
 def get_activities(headers):
-    headers["Accept"] = "application/json"
+
     response = requests.get(
         activities_base_url,
         headers=headers,

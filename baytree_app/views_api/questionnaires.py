@@ -42,11 +42,16 @@ questionnaire_translated_fields = [
 
 @api_view(("GET",))
 @permission_classes((AdminPermissions,))
-def get_questionnaires_endpoint(request, headers):
+def get_questionnaires_endpoint(request):
     """
     Controller that handles a request from the client browser and calls
     get_questionnaires to return its response to the client.
     """
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/json"
+    }
+
     id = request.GET.get("id", None)
 
     if id != None:
@@ -84,8 +89,6 @@ def get_questionnaires(
     # limit page size to prevent out of memory errors returned from Views
     if limit == None or limit > MAX_QUESTIONNAIRES_PAGE_SIZE:
         limit = MAX_QUESTIONNAIRES_PAGE_SIZE
-
-    headers["Accept"] = "application/json"
 
     if id != None:
         views_response = requests.get(
@@ -163,11 +166,14 @@ def getMentorWithRoleAndQuestionnaireByUserId(id):
 
 # GET /api/views-api/questionnaires/questions/
 @api_view(("GET",))
-def get_questions(request, headers):
+def get_questions(request):
     """
     Fetch the questionnaire assigned by the the mentor
     """
-
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/json"
+    }
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
     if mentor is None:
@@ -266,11 +272,15 @@ def get_questionnaire_value_lists(id, headers):
 
 # POST /api/views-api/questionnaires/answers/submit/
 @api_view(("POST",))
-def submit_answer_set(request, headers):
+def submit_answer_set(request):
     """
     Submit the answer to the remote Views database
     """
-    
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/xml"
+    }
+
     # Validate data existence
     data = request.data
     if data["questionnaireId"] is None \
