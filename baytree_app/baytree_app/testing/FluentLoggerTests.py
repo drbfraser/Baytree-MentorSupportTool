@@ -70,10 +70,14 @@ class TestFluentLoggingHandler(unittest.TestCase):
         FluentLoggingHandler.logRequest(request, "Testing logRequest method")
         with open(self.serverRequestsLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing logRequest method", log_contents)
-        self.assertIn(request.user, log_contents)
-        self.assertIn(request.method, log_contents)
-        self.assertIn(stringified_meta, log_contents)
+        self.assertIn("Testing logRequest method", log_contents,
+                      "Expected log 'Testing logRequest method' not found in log file")
+        self.assertIn(request.user, log_contents,
+                      f"Expected log '{request.user}' not found in log file")
+        self.assertIn(request.method, log_contents,
+                      f"Expected log '{request.method}' not found in log file")
+        self.assertIn(stringified_meta, log_contents,
+                      f"Expected log '{stringified_meta}' not found in log file")
 
     def test_logResponse(self):
         # mock response object
@@ -92,41 +96,56 @@ class TestFluentLoggingHandler(unittest.TestCase):
             response, request, "Testing logResponse method")
         with open(self.serverRequestsLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("frontend", log_contents)
-        self.assertIn("Testing logResponse method", log_contents)
-        self.assertIn("INFO", log_contents)
-        self.assertIn("http://baytree.com", log_contents)
-        self.assertIn(stringified_meta, log_contents)
+        self.assertIn("frontend", log_contents,
+                      "Expected log 'frontend' not found in log file")
+        self.assertIn("Testing logResponse method", log_contents,
+                      "Expected log 'Testing logResponse method' not found in log file")
+        self.assertIn("INFO", log_contents,
+                      "Expected log 'INFO' not found in log file")
+        self.assertIn("http://baytree.com", log_contents,
+                      "Expected log 'http://baytree.com' not found in log file")
+        self.assertIn(stringified_meta, log_contents,
+                      f"Expected log '{stringified_meta}' not found in log file")
 
     def test_info(self):
         FluentLoggingHandler.info("Testing info level logs")
         with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing info level logs", log_contents)
+        expected_log = "Testing info level logs"
+        self.assertIn(expected_log, log_contents,
+                      f"Expected log '{expected_log}' not found in log file")
 
     def test_debug(self):
         FluentLoggingHandler.debug("Testing debug level logs")
         with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing debug level logs", log_contents)
+        expected_log = "Testing debug level logs"
+        self.assertIn(expected_log, log_contents,
+                      f"Expected log '{expected_log}' not found in log file")
 
     def test_warning(self):
         FluentLoggingHandler.warning("Testing warning level logs")
         with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing warning level logs", log_contents)
+        expected_log = "Testing warning level logs"
+        self.assertIn(expected_log, log_contents,
+                      f"Expected log '{expected_log}' not found in log file")
 
     def test_error(self):
         FluentLoggingHandler.error("Testing error level logs")
         with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing error level logs", log_contents)
+        expected_log = "Testing error level logs!"
+        self.assertIn(expected_log, log_contents,
+                      f"Expected log '{expected_log}' not found in log file")
 
     def test_critical(self):
         FluentLoggingHandler.critical("Testing critical level logs")
         with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing critical level logs", log_contents)
+        expected_log = "Testing critical level logs"
+        self.assertIn(expected_log, log_contents,
+                      f"Expected log '{expected_log}' not found in log file")
 
 
 suite = unittest.TestSuite()
