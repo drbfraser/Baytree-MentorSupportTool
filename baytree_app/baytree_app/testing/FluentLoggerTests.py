@@ -67,10 +67,10 @@ class TestFluentLoggingHandler(unittest.TestCase):
                                 "server_name": "",
                                 "server_port": ""})
 
-        FluentLoggingHandler.logRequest(request, "Testing")
+        FluentLoggingHandler.logRequest(request, "Testing logRequest method")
         with open(self.serverRequestsLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing", log_contents)
+        self.assertIn("Testing logRequest method", log_contents)
         self.assertIn(request.user, log_contents)
         self.assertIn(request.method, log_contents)
         self.assertIn(stringified_meta, log_contents)
@@ -89,10 +89,11 @@ class TestFluentLoggingHandler(unittest.TestCase):
         stringified_meta = str({"content-type": ""})
 
         FluentLoggingHandler.logResponse(
-            response, request, "Testing")
+            response, request, "Testing logResponse method")
         with open(self.serverRequestsLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing", log_contents)
+        self.assertIn("frontend", log_contents)
+        self.assertIn("Testing logResponse method", log_contents)
         self.assertIn("INFO", log_contents)
         self.assertIn("http://baytree.com", log_contents)
         self.assertIn(stringified_meta, log_contents)
