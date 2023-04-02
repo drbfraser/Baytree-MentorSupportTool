@@ -52,42 +52,56 @@ class TestFluentLoggingHandler(unittest.TestCase):
             return_value='http://baytree.com')
         request.user = "Arshdeep Chhokar"
         request.method = "GET"
-        request.META = {'PATH': '/my/system/path',
-                        'HTTP_HOST': "localhost", 'REQUEST_METHOD': 'GET'}
+        request.GET = {}
+        request.META = {"CONTENT_LENGTH": "",
+                        "HTTP_ACCEPT": "",
+                        "HTTP_REFERER": "",
+                        "QUERY_STRING": "",
+                        "SERVER_NAME": "",
+                        "SERVER_PORT": ""}
 
-        FluentLoggingHandler.logRequest(request, "Testing logRequest method")
+        stringified_meta = str({"content_length": "",
+                                "http_accept": "",
+                                "http_referer": "",
+                                "query_string": "",
+                                "server_name": "",
+                                "server_port": ""})
+
+        FluentLoggingHandler.logRequest(request, "Testing")
         with open(self.serverRequestsLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing logRequest method", log_contents)
+        self.assertIn("Testing", log_contents)
         self.assertIn(request.user, log_contents)
         self.assertIn(request.method, log_contents)
-        self.assertIn(str(request.META), log_contents)
+        self.assertIn(stringified_meta, log_contents)
 
     def test_logResponse(self):
         # mock response object
         response = MagicMock()
-        response.headers = {
-            'Content-Type': 'application/json', 'Allow': 'POST, OPTIONS'}
+        response.headers = {'Content-Type': ''}
         response.status_code = 200
         # mock request object
         request = MagicMock()
         request.build_absolute_uri = MagicMock(
             return_value='http://baytree.com')
+        request.META = {'HTTP_REFERER': ''}
+
+        stringified_meta = str({"content-type": ""})
 
         FluentLoggingHandler.logResponse(
-            response, request, "Testing logResponse method")
+            response, request, "Testing")
         with open(self.serverRequestsLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Testing logResponse method", log_contents)
-        self.assertIn(str(response.headers), log_contents)
+        self.assertIn("Testing", log_contents)
         self.assertIn("INFO", log_contents)
         self.assertIn("http://baytree.com", log_contents)
+        self.assertIn(stringified_meta, log_contents)
 
     def test_info(self):
         FluentLoggingHandler.info("Testing info level logs")
         with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
-        self.assertIn("Abracadabra", log_contents)
+        self.assertIn("Testing info level logs", log_contents)
 
     def test_debug(self):
         FluentLoggingHandler.debug("Testing debug level logs")
