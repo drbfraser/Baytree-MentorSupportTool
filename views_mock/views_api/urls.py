@@ -7,7 +7,7 @@ urlpatterns = [
     path('admin/valuelists/sessiongroup/volunteeringtypes', get_volunteering_types_endpoint, name='volunteer_types'),
     path('admin/valuelists/sessiongroup/agencyactivities', get_activities_endpoint, name='activities'),
     path('admin/valuelists/sessiongroup/venues', get_venues_endpoint, name='venues'),
-    path('admin/valuelists/sessiongroup/<int:valueListID>', get_valuelists_endpoint, name='valuelists'),
+    path('admin/valuelists/<int:valueListID>', get_valuelists_endpoint, name='valuelists'),
 
     path('contacts/staff/<int:staffId>/associations', views.get_staff_associations, name='staff_associations'),
     path('contacts/participants/search', search_participants, name='search_participants'),
