@@ -19,7 +19,6 @@ def get_volunteering_types_endpoint(request, headers):
 
 def get_volunteering_types(headers):
 
-  # TO DO: This should be removed once we switch to XML.
   headers["Accept"]= "application/json"
 
   try:
