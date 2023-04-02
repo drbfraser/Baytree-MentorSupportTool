@@ -30,7 +30,7 @@ def get_volunteering_types(headers):
     parsed_data = parse_volunteering_types(response)
     return parsed_data
   except Exception as e:
-    FluentLoggingHandler.warning("An error occurred while getting volunteering types:", e)
+    FluentLoggingHandler.warning(f"An error occurred while getting volunteering types:{e}")
 
 def parse_volunteering_types(response):
     parsed = json.loads(response.text)
