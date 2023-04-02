@@ -50,63 +50,21 @@ def populateObjectWithValueListItems(containingObject, id):
 @permission_classes([AdminPermissions | MentorPermissions])
 def get_venues_endpoint(request):
 
-  root = Element('valuelist', {
-    "id": "43",
-    "items": "10",
-    "archived-items": "5"
-  })
-  valueListId = SubElement(root, "valueListId")
-  valueListId.text = "43"
-
-  sourceId = SubElement(root, "SourceID")
-
-  type = SubElement(root, "Type")
-  type.text = "SessionGroup"
-
-  name = SubElement(root, "Name")
-  name.text = "Venues"
-
-  displayName = SubElement(root, "DisplayName")
-  displayName.text = "Venues"
-
-  system = SubElement(root, "System")
-  system.text = "1"
-
-  calculated = SubElement(root, "Calculated")
-  calculated.text = "1"
-
-  extendable = SubElement(root, "Extendable")
-  extendable.text = "0"
-
-  active = SubElement(root, "Active")
-  active.text = "1"
-
-  alphabetical = SubElement(root, "Alphabetical")
-  alphabetical.text = "0"
-
-  # Items
+  root = Element('valuelist')
   items = SubElement(root, "items")
 
-  item1 = SubElement(items, "item", {"id": "6"})
-  item1.text = "Baytree Centre"
+  try:
+    valueList = ValueList.objects.get(Type=ValueList.TypeEnum.SESSION_GROUP.value, Name=ValueList.NameEnum.VENUES.value)
+  except Exception as e:
+    print(f"Exception: {e}")
+    return Response(tostring(root), status=404)
+  
+  valueListItems = ValueListItem.objects.filter(valueList=valueList.ValueListID)
 
-  item2 = SubElement(items, "item", {"id": "4"})
-  item2.text = "Jupiter Venue"
-
-  item3 = SubElement(items, "item", {"id": "3"})
-  item3.text = "Sfu Surrey"
-
-  item4 = SubElement(items, "item", {"id": "2"})
-  item4.text = "Some Venue"
-
-  item5 = SubElement(items, "item", {"id": "5"})
-  item5.text = "Virtual"
-
-  count = SubElement(root, "count")
-  count.text = "10"
-
-  archivedItems = SubElement(root, "archivedItems")
-  archivedItems.text = "5"
+  for venueItem in valueListItems:
+    item = SubElement(items, "item", {"id": str(venueItem.pk)})
+    item.text = venueItem.value
+  
   return Response(tostring(root), 200)
 
 @api_view(("GET",))
