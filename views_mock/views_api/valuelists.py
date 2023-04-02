@@ -8,8 +8,19 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
 def get_valuelists_endpoint(request, valueListID):
-
   data = {}
+  items = {}
+
+  try:
+    valueList = ValueList.objects.get(ValueListID=valueListID)
+  except Exception as e:
+    print(f"Exception: {e}")
+    return Response(data, status=404)
+  
+  populateObjectWithValueListItems(items, valueList.ValueListID)
+
+  data["items"] = items
+
   return Response(data, 200)
 
 @api_view(("GET",))
@@ -21,16 +32,19 @@ def get_volunteering_types_endpoint(request):
   try:
     valueList = ValueList.objects.get(Type=ValueList.TypeEnum.SESSION_GROUP.value, Name=ValueList.NameEnum.VOLUNTEERING_TYPES)
   except Exception as e:
-    print(f"Exception: No data exists for {ValueList.TypeEnum.SESSION_GROUP.value} type and {ValueList.NameEnum.VOLUNTEERING_TYPES} name: {e}")
+    print(f"Exception: {e}")
     return Response(data, status=404)
   
-  valueItems = ValueListItem.objects.filter(valueList=valueList.ValueListID)
-  for item in valueItems:
-    items[item.value] = item.value
+  populateObjectWithValueListItems(items, valueList.ValueListID)
 
   data["items"] = items
 
   return Response(data, status=200)
+
+def populateObjectWithValueListItems(containingObject, id):
+  valueItems = ValueListItem.objects.filter(valueList=id)
+  for item in valueItems:
+    containingObject[item.value] = item.value
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
