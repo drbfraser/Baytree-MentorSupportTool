@@ -28,7 +28,7 @@ class ValueList(models.Model):
     ValueListID = models.IntegerField(primary_key=True)
     Type = models.CharField(
         max_length=50, choices=TypeEnum.choices, blank=False, null=False, default=TypeEnum.STAFF)
-    Name = models.CharField(max_length=50, choices=NameEnum.choices)
+    Name = models.CharField(max_length=50, choices=NameEnum.choices, blank=False, null=False, default=NameEnum.AGENCY_ACTIVITIES)
 
     class Meta:
         unique_together = (("Type", "Name"),)
