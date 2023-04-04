@@ -60,11 +60,16 @@ particular session.
 
 # GET, POST /api/views-api/sessions
 class SessionsApiView(APIView):
-    def get(self, request, headers):
+    def get(self, request):
         """
         Handles a request from the client browser and calls get_sessions()
         to return its response to the client.
         """
+        headers = {
+          "Authorization": request.META["VIEWS_AUTHORIZATION"],
+          "Accept": "application/xml"
+        }
+
         id = request.GET.get("id", None)
         sessionGroupId = request.GET.get("sessionGroupId", None)
 
@@ -112,7 +117,12 @@ class SessionsApiView(APIView):
 
         return Response(response, status=status.HTTP_200_OK)
 
-    def post(self, request, headers):
+    def post(self, request):
+
+        headers = {
+          "Authorization": request.META["VIEWS_AUTHORIZATION"],
+          "Accept": "application/xml"
+        }
         # Get mentor user object
         mentor_user = MentorUser.objects.all().filter(pk=request.user.id)
         if not mentor_user.exists():

@@ -40,11 +40,16 @@ These participant records in Views contain contact and general information about
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_participants_endpoint(request, headers):
+def get_participants_endpoint(request):
     """
     Handles a request from the client browser and calls get_participants
     to return its response to the client.
     """
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/xml"
+    }
+
     ids = request.GET.getlist("id")
     ids = None if ids == [] else ids
 

@@ -95,9 +95,14 @@ def translate_association_fields(associations):
         for association in associations
     ]
 
-# GET /api/views-api/mentor-mentees/
+# GET /api/views-api/mentor-mentees
+
 @api_view(("GET",))
-def get_mentees_for_mentor(request, headers):
+def get_mentees_for_mentor(request):
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/xml"
+    }
     mentor_user = MentorUser.objects.filter(pk=request.user.id)
     if not mentor_user.exists():
         return Response(
