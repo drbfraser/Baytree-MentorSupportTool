@@ -1,13 +1,11 @@
 from django.urls import path
 from . import views
 from .contacts import search_participants
-from .valuelists import get_volunteering_types_endpoint, get_activities_endpoint, get_venues_endpoint, get_valuelists_endpoint
+from .valuelists import get_valuelists_type_name_endpoint, get_valuelists_by_id_endpoint
 
 urlpatterns = [
-    path('admin/valuelists/sessiongroup/volunteeringtypes', get_volunteering_types_endpoint, name='volunteer_types'),
-    path('admin/valuelists/sessiongroup/agencyactivities', get_activities_endpoint, name='activities'),
-    path('admin/valuelists/sessiongroup/venues', get_venues_endpoint, name='venues'),
-    path('admin/valuelists/<int:valueListID>', get_valuelists_endpoint, name='valuelists'),
+    path('admin/valuelists/<str:typeOfValueList>/<str:name>', get_valuelists_type_name_endpoint, name='valuelists_type_name'),
+    path('admin/valuelists/<int:valueListID>', get_valuelists_by_id_endpoint, name='valuelists_id'),
 
     path('contacts/staff/<int:staffId>/associations', views.get_staff_associations, name='staff_associations'),
     path('contacts/participants/search', search_participants, name='search_participants'),
