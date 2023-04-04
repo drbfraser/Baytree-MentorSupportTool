@@ -1,22 +1,19 @@
 from django.urls import include, path
 
 from baytree_app.views import GenerateCrudEndpointsForModel
-from .models import AdminUser, CustomUser, MenteeUser, MentorUser
+from .models import AdminUser, CustomUser, MenteeUser
 from .permissions import (
     AdminPermissions,
     MenteesViewPermissions,
-    MentorsViewPermissions,
 )
 from .serializers import (
     AdminSerializer,
     MenteeSerializer,
-    MentorSerializer,
     UserSerializer,
 )
 
 from .views import (
     MentorRoleViewSet,
-    MentorUserViewSet,
     StatisticViews,
     getActivitiesForMentor,
     postUser,
@@ -32,7 +29,6 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r"mentor-roles", MentorRoleViewSet)
-router.register(r"mentors", MentorUserViewSet)
 
 urlpatterns = [
     path(
