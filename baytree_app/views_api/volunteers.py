@@ -45,11 +45,16 @@ staff members since we could retrieve members that aren't actually mentors.
 # GET /api/volunteers
 @api_view(("GET",))
 @permission_classes((AdminPermissions,))
-def get_volunteers_endpoint(request, headers):
+def get_volunteers_endpoint(request):
     """
     Handles a request from the client browser and calls get_volunteers
     to return its response to the client.
     """
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/xml"
+    }
+
     id = request.GET.getlist("id")
     id = None if id == [] else id
     searchEmail = request.GET.get("searchEmail", None)
@@ -212,11 +217,15 @@ def translate_volunteer_fields(volunteers):
 
 # GET /api/views-api/volunteers/volunteer/
 @api_view(("GET", ))
-def get_volunteer_profile(request, headers):
+def get_volunteer_profile(request):
     """
     Fetch the detailed volunteer profile
     based on the requesting user
     """
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/xml"
+    }
     mentors = MentorUser.objects.filter(user_id=request.user.id)
     if not mentors:
         return Response(status=status.HTTP_404_NOT_FOUND)

@@ -14,12 +14,14 @@ volunteering_types_base_url = (
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_volunteering_types_endpoint(request, headers):
+def get_volunteering_types_endpoint(request):
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/json"
+    }
     return Response(get_volunteering_types(headers), 200)
 
 def get_volunteering_types(headers):
-
-  headers["Accept"]= "application/json"
 
   try:
     response = requests.get(
