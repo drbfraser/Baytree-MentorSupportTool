@@ -2,6 +2,9 @@ from django.db import models
 
 # Create your models here.
 
+class LowerCaseCharField(models.CharField):
+    def get_prep_value(self, value):
+        return str(value).lower()
 
 class ValueList(models.Model):
     class TypeEnum(models.TextChoices):
@@ -23,7 +26,7 @@ class ValueList(models.Model):
     ValueListID = models.IntegerField(primary_key=True)
     Type = models.CharField(
         max_length=50, choices=TypeEnum.choices, blank=False, null=False, default=TypeEnum.STAFF)
-    Name = models.CharField(max_length=50, blank=False, null=False)
+    Name = LowerCaseCharField(max_length=50, blank=False, null=False)
 
     class Meta:
         unique_together = (("Type", "Name"),)

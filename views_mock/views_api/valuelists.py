@@ -8,7 +8,7 @@ from django.db.models.manager import BaseManager
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_valuelists_by_id_endpoint(request, valueListID):
+def get_valuelists_by_id(request, valueListID):
   try:
     valueList = ValueList.objects.get(ValueListID=valueListID)
   except Exception as e:
@@ -23,7 +23,7 @@ def get_valuelists_by_id_endpoint(request, valueListID):
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_valuelists_type_name_endpoint(request, typeOfValueList: str, name: str):
+def get_valuelists_type_name(request, typeOfValueList: str, name: str):
 
   if request.META["HTTP_ACCEPT"] == "application/json":
     jsonResponseRequired = True
@@ -38,7 +38,7 @@ def get_valuelists_type_name_endpoint(request, typeOfValueList: str, name: str):
       data = {}
     else:
       data = tostring(Element('valuelist'))
-    return Response(data, status=404)
+    return Response(data, status=200)
   
   valueListItems = ValueListItem.objects.filter(valueList=valueList.ValueListID)
 
