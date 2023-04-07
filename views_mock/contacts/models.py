@@ -29,5 +29,24 @@ class Volunteer(models.Model):
     Whatisyourfirstlanguage_V_19 = models.CharField(max_length=20)
     Ethnicity_V_15 = models.CharField(max_length=20)
 
+class Note(models.Model):
+    class Visibility(models.IntegerChoices):
+        PUBLIC = 0,
+        PRIVATE = 1
 
+    class NoteType(models.TextChoices):
+        PERSON = "Person",
+        SESSION = "Session"
 
+    NoteID = models.AutoField(primary_key=True)
+    Created = models.DateTimeField(auto_now_add=True, null=False)
+    Updated = models.DateTimeField(auto_now=True, null=False)
+    CreatedBy = models.CharField(max_length=50, null=False)
+    UpdatedBy = models.CharField(max_length=50, null=False)
+    Note = models.CharField(max_length=500, blank=False, null=False)
+    Private = models.IntegerField(choices=Visibility.choices)
+    Type = models.CharField(max_length=10, choices=NoteType.choices, default=NoteType.PERSON, null=False, blank=False)
+
+class PersonNote(models.Model):
+    note = models.OneToOneField(Note, on_delete=models.CASCADE, related_name="personNote", db_column="NoteID")
+    TypeID = models.ForeignKey(Person, on_delete=models.CASCADE, db_column="PersonID")

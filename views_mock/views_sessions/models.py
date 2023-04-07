@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from contacts.models import Note
 
 class SessionGroup(models.Model):
     SessionGroupID = models.PositiveIntegerField(primary_key=True)
@@ -32,3 +33,7 @@ class Session(models.Model):
     VenueName = models.CharField(max_length=255)
     StartDate = models.DateField(default=timezone.now)
     StartTime = models.TimeField(default=timezone.now)
+
+class SessionNote(models.Model):
+    note = models.OneToOneField(Note, on_delete=models.CASCADE, related_name="sessionNote", db_column="NoteID")
+    TypeID = models.ForeignKey(Session, on_delete=models.CASCADE, db_column="SessionID")
