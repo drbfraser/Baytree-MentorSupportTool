@@ -12,7 +12,11 @@ venues_base_url = views_base_url + "admin/valuelists/sessiongroup/venues"
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_venues_endpoint(request, headers):
+def get_venues_endpoint(request):
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/xml"
+    }
     return Response(get_venues(headers), 200)
 
 
