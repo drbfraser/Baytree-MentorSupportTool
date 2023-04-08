@@ -22,5 +22,5 @@ urlpatterns = [
     path("activities", get_activities_endpoint),
     path("volunteering-types", get_volunteering_types_endpoint),
     path("venues", get_venues_endpoint),
-    path("mentor-mentees", get_mentees_for_mentor),
+    path("mentor-mentees", get_mentees_for_mentor)
 ]

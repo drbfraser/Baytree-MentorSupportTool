@@ -13,6 +13,8 @@ from views_api.associations import get_mentee_ids_from_mentor
 import xml.etree.ElementTree as ET
 import threading
 from users.models import MentorUser
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework_xml.renderers import XMLRenderer
 
 extractedQuestionFields = ["QuestionID", "Question",
                            "inputType", "validation", "category", "enabled"]
@@ -42,11 +44,16 @@ questionnaire_translated_fields = [
 
 @api_view(("GET",))
 @permission_classes((AdminPermissions,))
-def get_questionnaires_endpoint(request, headers):
+def get_questionnaires_endpoint(request):
     """
     Controller that handles a request from the client browser and calls
     get_questionnaires to return its response to the client.
     """
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/json"
+    }
+
     id = request.GET.get("id", None)
 
     if id != None:
@@ -84,8 +91,6 @@ def get_questionnaires(
     # limit page size to prevent out of memory errors returned from Views
     if limit == None or limit > MAX_QUESTIONNAIRES_PAGE_SIZE:
         limit = MAX_QUESTIONNAIRES_PAGE_SIZE
-
-    headers["Accept"] = "application/json"
 
     if id != None:
         views_response = requests.get(
@@ -163,11 +168,14 @@ def getMentorWithRoleAndQuestionnaireByUserId(id):
 
 # GET /api/views-api/questionnaires/questions/
 @api_view(("GET",))
-def get_questions(request, headers):
+def get_questions(request):
     """
     Fetch the questionnaire assigned by the the mentor
     """
-
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/json"
+    }
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
     if mentor is None:
@@ -266,11 +274,16 @@ def get_questionnaire_value_lists(id, headers):
 
 # POST /api/views-api/questionnaires/answers/submit/
 @api_view(("POST",))
-def submit_answer_set(request, headers):
+@renderer_classes([XMLRenderer])
+def submit_answer_set(request):
     """
     Submit the answer to the remote Views database
     """
-    
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/xml"
+    }
+
     # Validate data existence
     data = request.data
     if data["questionnaireId"] is None \
@@ -278,7 +291,6 @@ def submit_answer_set(request, headers):
             or data["person"] is None:
         # todo: error Logging here
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
     # Find the questionnaire id from the requesting user
     mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
     if mentor is None:
@@ -286,15 +298,14 @@ def submit_answer_set(request, headers):
             f"Failed to submit answer set - Could not find mentor with id: {request.user.id}")
         response = Response(status=status.HTTP_404_NOT_FOUND)
         return response
-
     # Redundancy check, user won't submit answer set to the wrong question
     qid = mentor.mentorRole.viewsQuestionnaireId
-    if data["questionnaireId"] != qid:
+
+    if str(data["questionnaireId"]) != str(qid):
         FluentLoggingHandler.error(
             f"{request.user} is sending answer set to the wrong question")
         response = Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         return response
-
     # Construct answer XML format payload
     answerXMLFormat = (
         '<answer id="{0}">'
@@ -302,8 +313,10 @@ def submit_answer_set(request, headers):
         "<Answer>{1}</Answer>"
         "</answer>"
     )
+
+    parsedAnswerSet = json.loads(data['answerSet'])
     answersXML = [answerXMLFormat.format(
-        id, data["answerSet"][id]) for id in data["answerSet"]]
+        id, parsedAnswerSet[id]) for id in parsedAnswerSet]
 
     url = ""
 
@@ -360,9 +373,8 @@ def submit_answer_set(request, headers):
     # Construct dictionary response data
     responseData = {}
     responseData["questionnaireId"] = qid
-    answerSet = data["answerSet"]
-    responseData["mentor"] = list(answerSet.values())[0]
-    responseData["mentee"] = list(answerSet.values())[1]
+    responseData["mentor"] = list(parsedAnswerSet.values())[0]
+    responseData["mentee"] = list(parsedAnswerSet.values())[1]
     parsedXMLRoot = ET.fromstring(response.text)
     responseData["submissionId"] = parsedXMLRoot.get("id")
     responseData["viewsResponse"] = response.text

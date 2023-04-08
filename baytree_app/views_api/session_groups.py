@@ -146,11 +146,17 @@ def translate_session_group(parsed_session_group):
 
 @api_view(("GET",))
 @permission_classes((AdminPermissions,))
-def get_session_groups_endpoint(request, headers):
+def get_session_groups_endpoint(request):
     """
     Handles a request from the client browser and calls get_session_groups
     to return its response to the client.
     """
+
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/json"
+    }
+
     id = request.GET.get("id", None)
 
     if id != None:
