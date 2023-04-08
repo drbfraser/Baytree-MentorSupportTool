@@ -49,7 +49,7 @@ class Association(models.Model):
         null=True
     )
     MasterID = models.OneToOneField(
-        Participant, on_delete=models.CASCADE, related_name="master_association")
+        Person, on_delete=models.CASCADE, related_name="master_association")
     SlaveType = models.CharField(
         max_length=20,
         choices=PersonTypeEnum.choices,
@@ -57,7 +57,7 @@ class Association(models.Model):
         null=True
     )
     SlaveID = models.OneToOneField(
-        Volunteer, on_delete=models.CASCADE, related_name="slave_association")
+        Person, on_delete=models.CASCADE, related_name="slave_association")
     Association = models.CharField(max_length=20)
     Description = models.TextField()
     StartDate = models.DateField()
