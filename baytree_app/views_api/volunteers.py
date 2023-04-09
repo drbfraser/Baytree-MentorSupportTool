@@ -100,34 +100,19 @@ def join_views_volunteers_to_mentor_users(mentor_users, views_volunteers):
         inner_join_result = []
 
         for m_user in mentor_users:
-            if isinstance(m_user, MentorUser):
-                v_match = next(
-                    filter(
-                        lambda v: v["viewsPersonId"] == '5853',
-                        views_volunteers,
-                    ),
-                    None,
-                )
+            mentor_data = MentorSerializer(m_user).data
+            v_match = next(
+                filter(
+                    lambda v: v["viewsPersonId"] == mentor_data["viewsPersonId"],
+                    views_volunteers,
+                ),
+                None,
+            )
 
-                if v_match:
-                    m_user = MentorSerializer(m_user).data
-                    m_user["firstName"] = v_match["firstname"]
-                    m_user["lastName"] = v_match["surname"]
-                    inner_join_result.append(m_user)
-
-            else:
-                v_match = next(
-                    filter(
-                        lambda v: v["viewsPersonId"] == m_user["viewsPersonId"],
-                        views_volunteers,
-                    ),
-                    None,
-                )
-
-                if v_match:
-                    m_user["firstName"] = v_match["firstname"]
-                    m_user["lastName"] = v_match["surname"]
-                    inner_join_result.append(m_user)
+            if v_match:
+                mentor_data["firstName"] = v_match["firstname"]
+                mentor_data["lastName"] = v_match["surname"]
+                inner_join_result.append(mentor_data)
 
         return inner_join_result
 
