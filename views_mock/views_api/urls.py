@@ -1,10 +1,10 @@
 from django.urls import path
 from . import views
 from .contacts import search_participants
-from .valuelists import get_valuelists_type_name, get_valuelists_by_id
+from .valuelists import get_valuelists_by_type_and_name, get_valuelists_by_id
 
 urlpatterns = [
-    path('admin/valuelists/<str:typeOfValueList>/<str:name>', get_valuelists_type_name, name='valuelists_type_name'),
+    path('admin/valuelists/<str:typeOfValueList>/<str:name>', get_valuelists_by_type_and_name, name='valuelists_type_name'),
     path('admin/valuelists/<int:valueListID>', get_valuelists_by_id, name='valuelists_id'),
 
     path('contacts/staff/<int:staffId>/associations', views.get_staff_associations, name='staff_associations'),
