@@ -1,6 +1,6 @@
 import requests
 import xmltodict
-from baytree_app.constants import (VIEWS_BASE_URL)
+from baytree_app.constants import VIEWS_BASE_URL
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -84,13 +84,32 @@ def get_volunteers(request):
 
 class JointMentorsAndVolunteersData(APIView):
     def get(self, request):
-        request = request._request
+
+        """
+        Instead of using the limit query param to limit the number of volunteers fetched by get_volunteers, we will use it to
+        splice the array of joint volunteers and mentors data.
+        """
+        pageLimit = int(request.GET.get("limit", 5))
+
+        """
+        We want to fetch all volunteers and match them against existing mentors. However, the limit query param restricts the number of
+        volunteers fetched to the specified limit value. We'll pop the limit query param to remove this restriction.
+        """
+        get_copy = request.GET.copy()
+        get_copy.pop('limit')
+        updated_request = request._request
+        updated_request.GET = get_copy
+
         mentors_from_db = MentorUser.objects.all()
-        response = get_volunteers(request)
+        response = get_volunteers(updated_request)
         joined_data = join_views_volunteers_to_mentor_users(
             mentors_from_db,
             response.data["data"]
         )
+
+        if len(joined_data) > pageLimit:
+            joined_data = joined_data[0:pageLimit]
+
         return Response({
             "count": len(joined_data),
             "results": joined_data
