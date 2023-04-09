@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import CheckConstraint, Q, F
 
+
 class Person(models.Model):
     class TypeNameEnum(models.TextChoices):
         VOLUNTEER = 'volunteer'
@@ -34,6 +35,7 @@ class Volunteer(models.Model):
     Whatisyourfirstlanguage_V_19 = models.CharField(max_length=20)
     Ethnicity_V_15 = models.CharField(max_length=20)
 
+
 class Association(models.Model):
     class PersonTypeEnum(models.TextChoices):
         VOLUNTEER = 'volunteer'
@@ -48,7 +50,7 @@ class Association(models.Model):
         null=True
     )
     MasterID = models.ForeignKey(
-        Person, on_delete=models.CASCADE, related_name="master_association")
+        Person, on_delete=models.CASCADE, related_name="master_association", db_column="MasterID")
     SlaveType = models.CharField(
         max_length=20,
         choices=PersonTypeEnum.choices,
@@ -56,7 +58,7 @@ class Association(models.Model):
         null=True
     )
     SlaveID = models.ForeignKey(
-        Person, on_delete=models.CASCADE, related_name="slave_association")
+        Person, on_delete=models.CASCADE, related_name="slave_association", db_column="SlaveID")
     Association = models.CharField(max_length=20)
     Description = models.TextField(null=True)
     StartDate = models.DateField(auto_now_add=True)
