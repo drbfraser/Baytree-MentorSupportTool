@@ -1,14 +1,14 @@
 from users.permissions import MentorPermissions
 from .util import try_parse_int
 from users.permissions import AdminPermissions
-from .constants import views_base_url
+from baytree_app.constants import VIEWS_BASE_URL
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.response import Response
 from rest_framework import status
 import requests
 import xmltodict
 
-participants_base_url = views_base_url + "contacts/participants/"
+participants_base_url = VIEWS_BASE_URL + "contacts/participants/"
 
 participantFields = [
     "Forename",
@@ -40,11 +40,16 @@ These participant records in Views contain contact and general information about
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
-def get_participants_endpoint(request, headers):
+def get_participants_endpoint(request):
     """
     Handles a request from the client browser and calls get_participants
     to return its response to the client.
     """
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/xml"
+    }
+
     ids = request.GET.getlist("id")
     ids = None if ids == [] else ids
 

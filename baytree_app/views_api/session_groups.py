@@ -1,14 +1,14 @@
 from rest_framework.response import Response
 
 from .util import get_views_record_count_json
-from .constants import views_base_url
+from baytree_app.constants import VIEWS_BASE_URL
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework import status
 from users.permissions import AdminPermissions
 import requests
 import json
 
-session_groups_base_url = views_base_url + "work/sessiongroups/"
+session_groups_base_url = VIEWS_BASE_URL + "work/sessiongroups/"
 
 session_group_fields = [
     "SessionGroupID",
@@ -146,11 +146,17 @@ def translate_session_group(parsed_session_group):
 
 @api_view(("GET",))
 @permission_classes((AdminPermissions,))
-def get_session_groups_endpoint(request, headers):
+def get_session_groups_endpoint(request):
     """
     Handles a request from the client browser and calls get_session_groups
     to return its response to the client.
     """
+
+    headers = {
+        "Authorization": request.META["VIEWS_AUTHORIZATION"],
+        "Accept": "application/json"
+    }
+
     id = request.GET.get("id", None)
 
     if id != None:
