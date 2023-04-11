@@ -10,9 +10,9 @@ def get_questionnaire_by_id(request, questionnaireId: int):
   data = {}
   try:
     questionnaire = Questionnaire.objects.get(pk=questionnaireId)
-  except:
-    print(f"No questionnaire with id {str(questionnaireId)}")
-    return Response(data, status=404)
+  except Exception as e:
+    print(f"Exception: {e}")
+    return Response(data, status=200)
   
   data["QuestionnaireID"] = str(questionnaireId)
   data["Title"] = questionnaire.Title
