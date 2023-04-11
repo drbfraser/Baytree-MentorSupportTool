@@ -275,6 +275,6 @@ DATABASES = {
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND_URL", "")
 
-VIEWS_BASE_URL = os.environ["VIEWS_BASE_URL"]
+VIEWS_BASE_URL = os.environ.get("VIEWS_BASE_URL", "http://views-mock:5001/")
 VIEWS_USERNAME = os.environ["VIEWS_USERNAME"]
 VIEWS_PASSWORD = os.environ["VIEWS_PASSWORD"]

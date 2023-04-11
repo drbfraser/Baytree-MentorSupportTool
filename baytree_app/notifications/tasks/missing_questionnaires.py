@@ -7,7 +7,7 @@ import json
 import datetime
 from ..serializers import *
 from ..models import NotificationType
-from ..constants import VIEWS_USERNAME, VIEWS_PASSWORD, VIEWS_BASE_URL
+from baytree_app.constants import VIEWS_USERNAME, VIEWS_PASSWORD, VIEWS_BASE_URL
 
 # The identifier for mentee is inside the questionnaire. Its question ID is 24 for the questionnaire 10.
 # Change this in case questionnaire ID changes.
@@ -96,7 +96,7 @@ def handle_weekly_missing_questionnaire_reminder():
     today = datetime.now()
 
     mentors = MentorUser.objects.all()
-    notification_type = NotificationType.objects.get(type="MISSING_QUESTIONNARIE_WEEKLY_REMINDER") 
+    notification_type = NotificationType.objects.get(type="MISSING_QUESTIONNARIE_WEEKLY_REMINDER")
 
     for mentor in mentors.iterator():
         missingList = get_missing_questionnaires(mentor.viewsPersonId)
@@ -108,4 +108,4 @@ def handle_weekly_missing_questionnaire_reminder():
                 creation_date = today,
                 is_read = False,
                 content = notification_type.content.format(missingq[1], missingq[0]))
-            notif.save() 
+            notif.save()
