@@ -43,8 +43,8 @@ def get_questionnaire_by_id(request, questionnaireId: int):
 @api_view(("GET",))
 @permission_classes([AdminPermissions])
 def search_questionnaires(request):
-  limit = request.GET.get("pageFold", 100)
-  offset = request.GET.get("offset", 0)
+  limit = int(request.GET.get("pageFold", 100))
+  offset = int(request.GET.get("offset", 0))
   title = request.GET.get("Title", "")
 
   data = {}
