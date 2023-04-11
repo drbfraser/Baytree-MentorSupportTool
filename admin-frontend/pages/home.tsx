@@ -56,7 +56,7 @@ const Home: NextPage = () => {
 
       const volunteersRes = await getVolunteersFromViews()
       if (volunteersRes && volunteersRes.status === 200 && volunteersRes.data) {
-        const mentorsRes = (await getMentorUsers()) as MentorUser[] | null
+        const mentorsRes = (await getMentorUsers())?.results as MentorUser[] | null
         if (mentorsRes) {
           setMentors(
             mentorsRes.map((mentor) => {
