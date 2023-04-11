@@ -96,7 +96,7 @@ class JointMentorsAndVolunteersData(APIView):
         volunteers fetched to the specified limit value. We'll pop the limit query param to remove this restriction.
         """
         get_copy = request.GET.copy()
-        get_copy.pop('limit')
+        get_copy.pop('limit', None)
         updated_request = request._request
         updated_request.GET = get_copy
 

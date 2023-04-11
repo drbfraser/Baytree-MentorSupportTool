@@ -24,7 +24,7 @@ import { getMentorRoles, MentorRole } from '../api/backend/mentorRoles'
 const Mentors: NextPage = () => {
   const [showAddMentorModal, setShowAddMentorModal] = useState(false)
   const [dataGridKey, setDataGridKey] = useState<number>(1)
-  const PAGE_LIMIT = 10
+  const PAGE_LIMIT = 5
 
   const loadMentorUserDataRows: onLoadPagedDataRowsFunc = async ({
     searchText,
