@@ -38,7 +38,7 @@ export interface MentorUserViewsFields {
   lastName: string;
 }
 
-export const mentorsBackendEndpoint = 'users/mentors/'
+export const mentorsBackendEndpoint = 'views-api/mentors'
 
 export const getMentorUsers = async (options?: ApiOptions) => {
   const queryParams: Record<string, any> = {}
@@ -48,8 +48,7 @@ export const getMentorUsers = async (options?: ApiOptions) => {
       searchText,
       dataFieldsToSearch,
       limit,
-      offset,
-      includeDataFromViews,
+      offset
     } = options
     if (limit) {
       queryParams['limit'] = limit
@@ -81,10 +80,6 @@ export const getMentorUsers = async (options?: ApiOptions) => {
           queryParams[`${dataField}__icontains`] = searchText
         }
       })
-    }
-
-    if (includeDataFromViews) {
-      queryParams['joinViews'] = 'true'
     }
   }
 
