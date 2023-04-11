@@ -1,8 +1,7 @@
 from users.permissions import AdminPermissions
 from rest_framework.decorators import permission_classes, api_view
-from evidence.models import Questionnaire, Question, AnswerSet, Answer
+from evidence.models import Questionnaire, Question
 from rest_framework.response import Response
-from django.core.paginator import Paginator
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions])
