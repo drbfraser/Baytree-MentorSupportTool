@@ -8,14 +8,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from users.models import MentorUser
 
-from .constants import views_base_url
+from baytree_app.constants import VIEWS_BASE_URL
 from .participants import get_participants
 from .util import try_parse_int
 
 participant_associations_base_url = (
-    views_base_url + "contacts/participants/{}/associations"
+    VIEWS_BASE_URL + "contacts/participants/{}/associations"
 )
-staff_associations_base_url = views_base_url + "contacts/staff/{}/associations"
+staff_associations_base_url = VIEWS_BASE_URL + "contacts/staff/{}/associations"
 
 association_views_response_fields = [
     "AssociationID",

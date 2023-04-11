@@ -1,14 +1,14 @@
 from users.permissions import MentorPermissions
 from .util import try_parse_int
 from users.permissions import AdminPermissions
-from .constants import views_base_url
+from baytree_app.constants import VIEWS_BASE_URL
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.response import Response
 from rest_framework import status
 import requests
 import xmltodict
 
-participants_base_url = views_base_url + "contacts/participants/"
+participants_base_url = VIEWS_BASE_URL + "contacts/participants/"
 
 participantFields = [
     "Forename",

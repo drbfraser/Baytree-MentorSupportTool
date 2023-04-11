@@ -7,8 +7,7 @@ import requests
 import json
 from datetime import datetime, timezone
 from baytree_app.FluentLoggingHandler import FluentLoggingHandler
-from baytree_app.constants import (
-    VIEWS_BASE_URL)
+from baytree_app.constants import VIEWS_BASE_URL
 from views_api.associations import get_mentee_ids_from_mentor
 import xml.etree.ElementTree as ET
 import threading

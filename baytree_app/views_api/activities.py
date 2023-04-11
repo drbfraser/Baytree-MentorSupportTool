@@ -2,13 +2,12 @@ from rest_framework.response import Response
 from users.permissions import MentorPermissions
 import json
 
-from .constants import views_base_url
+from baytree_app.constants import VIEWS_BASE_URL
 from rest_framework.decorators import permission_classes, api_view
 from users.permissions import AdminPermissions
 import requests
 
-activities_base_url = views_base_url + "admin/valuelists/sessiongroup/agencyactivities"
-
+activities_base_url = VIEWS_BASE_URL + "admin/valuelists/sessiongroup/agencyactivities"
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions | MentorPermissions])
