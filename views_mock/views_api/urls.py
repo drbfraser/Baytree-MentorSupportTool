@@ -1,8 +1,7 @@
 from django.urls import path
 from . import views
-from .contacts import search_participants
+from .contacts import search_participants, search_volunteers
 from .valuelists import get_valuelists_by_type_and_name, get_valuelists_by_id
-from .volunteers import search_volunteers
 
 urlpatterns = [
     path('admin/valuelists/<str:typeOfValueList>/<str:name>', get_valuelists_by_type_and_name, name='valuelists_type_name'),

@@ -2,12 +2,13 @@ import requests
 import xmltodict
 from baytree_app.constants import VIEWS_BASE_URL
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework.response import Response
 from users.models import MentorUser
 from users.permissions import AdminPermissions
 from rest_framework.views import APIView
 from users.serializers import MentorSerializer
+from rest_framework_xml.renderers import XMLRenderer
 
 volunteers_base_url = VIEWS_BASE_URL + "contacts/volunteers"
 
@@ -18,10 +19,10 @@ volunteerFields = [
     "Email",
     "DateOfBirth",
     "Ethnicity_V_15",
-    "County",
+    "Countryofbirth_P_87",
     "Whatisyourfirstlanguage_V_19",
 ]
-volunteerTranslateFields = [
+volunteer_translate_fields = [
     "firstname",
     "surname",
     "viewsPersonId",
@@ -44,6 +45,7 @@ staff members since we could retrieve members that aren't actually mentors.
 # GET /api/volunteers
 @api_view(("GET",))
 @permission_classes((AdminPermissions,))
+@renderer_classes([XMLRenderer])
 def get_volunteers(request):
     """
     Handles a request from the client browser and calls get_volunteers
@@ -135,32 +137,31 @@ def join_views_volunteers_to_mentor_users(mentor_users, views_volunteers):
 
         return inner_join_result
 
-
 def parse_volunteers(response):
-    parsed = xmltodict.parse(response.text)
-
+    parsed_response = xmltodict.parse(response.text)
+    wrapped_xml = parsed_response.get("root", None)
+    parsed_xml = xmltodict.parse(wrapped_xml) if wrapped_xml else parsed_response
     # Check if no volunteers were returned from Views:
-    if parsed["contacts"]["volunteers"]["@count"] == "0":
+    if parsed_xml["contacts"]["volunteers"]["@count"] == "0":
         return {
             "total": 0,
             "data": [],
         }
 
     # Make sure the volunteers are wrapped in a list, if there is a single volunteer
-    volunteers = parsed["contacts"]["volunteers"]["volunteer"]
+    volunteers = parsed_xml["contacts"]["volunteers"]["volunteer"]
     if not isinstance(volunteers, list):
         volunteers = [volunteers]
 
     return {
-        "total": int(parsed["contacts"]["volunteers"]["@count"]),
+        "total": int(parsed_xml["contacts"]["volunteers"]["@count"]),
         "data": translate_volunteer_fields(volunteers),
     }
-
 
 def translate_volunteer_fields(volunteers):
     return [
         {
-            volunteerTranslateFields[i]: volunteer[field]
+            volunteer_translate_fields[i]: volunteer[field]
             for i, field in enumerate(volunteerFields)
         }
         for volunteer in volunteers
