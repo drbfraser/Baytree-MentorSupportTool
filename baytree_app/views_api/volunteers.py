@@ -8,7 +8,6 @@ from users.models import MentorUser
 from users.permissions import AdminPermissions
 from rest_framework.views import APIView
 from users.serializers import MentorSerializer
-from rest_framework_xml.renderers import XMLRenderer
 
 volunteers_base_url = VIEWS_BASE_URL + "contacts/volunteers"
 
@@ -19,7 +18,7 @@ volunteerFields = [
     "Email",
     "DateOfBirth",
     "Ethnicity_V_15",
-    "Countryofbirth_P_87",
+    "County",
     "Whatisyourfirstlanguage_V_19",
 ]
 volunteer_translate_fields = [
@@ -29,7 +28,7 @@ volunteer_translate_fields = [
     "email",
     "dateOfBirth",
     "ethnicity",
-    "country",
+    "county",
     "firstLanguage",
 ]
 
@@ -45,7 +44,6 @@ staff members since we could retrieve members that aren't actually mentors.
 # GET /api/volunteers
 @api_view(("GET",))
 @permission_classes((AdminPermissions,))
-@renderer_classes([XMLRenderer])
 def get_volunteers(request):
     """
     Handles a request from the client browser and calls get_volunteers

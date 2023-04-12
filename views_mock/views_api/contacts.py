@@ -11,18 +11,19 @@ PERSON_FIELDS = [
     "Surname",
     "TypeName",
     "Email",
-    "DateOfBirth",
-    "Countryofbirth_P_87",
+    "DateOfBirth"
 ]
 
 PARTICIPANT_FIELDS = [
     "FirstLanguage_P_88",
-    "Ethnicity"
+    "Ethnicity",
+    "Countryofbirth_P_87"
 ]
 
 VOLUNTEER_FIELDS = [
     "Whatisyourfirstlanguage_V_19",
-    "Ethnicity_V_15"
+    "Ethnicity_V_15",
+    "County"
 ]
 
 @api_view(("GET",))
@@ -31,7 +32,7 @@ VOLUNTEER_FIELDS = [
 def search_volunteers(request):
     person_ids = request.GET.getlist("PersonID[]")
     volunteer_objects = Volunteer.objects.filter(id__in=person_ids) if person_ids else Volunteer.objects.all()
-    xml_element = create_xml_element(volunteer_objects, "volunteers", VOLUNTEER_FIELDS)
+    xml_element = create_xml_element(volunteer_objects, "volunteer", VOLUNTEER_FIELDS)
     return Response(data=tostring(xml_element), status=200)
 
 @api_view(("GET",))
@@ -53,7 +54,7 @@ def create_xml_element(user_objects, user_type, user_fields):
             <participant>
             </participant>
           <participants/>
-        </contacts
+        </contacts>
     """
     root = Element("contacts")
     users = SubElement(root, user_type + "s", {"count": str(len(user_objects))})
