@@ -49,7 +49,7 @@ class ViewsAuthMiddleware:
 def authorize_mock_views(request):
   access_token = request.COOKIES.get("access_token")
   if (access_token):
-    request.META["VIEWS_AUTHORIZATION"] = "access_token=" + access_token
+    request.META["VIEWS_AUTHORIZATION"] = access_token
   else:
     FluentLoggingHandler.error("Cannot authorize a request to mock Views due to missing access token!")
     return HttpResponse('Access token is missing', status=401)

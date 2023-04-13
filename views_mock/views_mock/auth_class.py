@@ -4,7 +4,7 @@ class CookieJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
         header = None
         try:
-            header = request.COOKIES.get('access_token')
+            header = request.META['HTTP_AUTHORIZATION']
 
         except Exception as e:
           print(e)

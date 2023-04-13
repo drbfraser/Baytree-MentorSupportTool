@@ -75,7 +75,6 @@ class SessionsApiView(APIView):
 
 
         mentor_user = MentorUser.objects.filter(pk=request.user.id)
-        print("request", request)
 
         if id != None:
             if not userIsAdmin(request.user) and (
@@ -88,15 +87,10 @@ class SessionsApiView(APIView):
             response = get_session(id, headers)
 
         elif sessionGroupId != None:
-            print("get_sessions", sessionGroupId)
-
-            print("admin: ", userIsAdmin(request.user), "mentor" ,mentor_user.exists())
             if not userIsAdmin(request.user) and not mentor_user.exists():
                 return Response(
                     "You do not have permission to access this resource", 401
                 )
-
-
 
             response = get_sessions(
                 sessionGroupId=sessionGroupId,

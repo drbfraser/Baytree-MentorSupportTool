@@ -1,3 +1,5 @@
+import json
+
 def try_parse_int(string):
     try:
         return int(string)
@@ -16,3 +18,22 @@ def get_views_record_count_json(parsedJson):
     trim_after_count = trim_before_count[: trim_before_count.index('"')]
     total = int(trim_after_count)
     return total
+
+def parse_valuelist_items(response):
+    parsed = json.loads(response.text)
+
+    # Check if no items were returned from Views:
+    if "items" not in parsed or len(parsed["items"]) == 0:
+        return {
+            "count": 0,
+            "results": [],
+        }
+
+    return {
+        "count": len(parsed["items"]),
+        "results": translate_valuelist_items_fields(parsed["items"]),
+    }
+
+
+def translate_valuelist_items_fields(itemsList):
+    return [val for val in itemsList.values()]
