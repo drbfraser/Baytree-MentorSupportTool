@@ -74,6 +74,8 @@ test fluent-logger:
   image: python:3.9.1-buster
   tags:
     - docker
+  variables:
+    PYTHONPATH: "$CI_PROJECT_DIR/baytree_app"
   before_script:
     - cd baytree_app/baytree_app/testing
   script:
