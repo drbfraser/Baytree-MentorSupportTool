@@ -100,12 +100,7 @@ test fluent-logger:
     - cd baytree_app/testing
     - python -m unittest FluentLoggerTests.py
   after_script:
-    - cd baytree_app/baytree_app/testing
-    - |
-      if [[ "$CI_JOB_STATUS" == "failed" ]]; then
-        python test_failed_log.py
-      fi
-    - cd ../../server_logs
+    - cd baytree_app/server_logs
     - cat server_application.log
 
 build info:

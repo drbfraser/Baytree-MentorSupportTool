@@ -47,7 +47,7 @@ class TestFluentLoggingHandler(unittest.TestCase):
 
     def tearDown(self):
         result = self._outcome.result
-        if result.errors or result.failures:
+        if result.failures:
             test_case_name = self.id().split('.')[-1]
             FluentLoggingHandler.critical(
                 f"The following test case has failed: {test_case_name}")
