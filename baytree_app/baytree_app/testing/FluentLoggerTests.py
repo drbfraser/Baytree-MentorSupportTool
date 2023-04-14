@@ -50,7 +50,7 @@ class TestFluentLoggingHandler(unittest.TestCase):
         if result.failures:
             test_case_name = self.id().split('.')[-1]
             FluentLoggingHandler.critical(
-                f"The following test case has failed: {test_case_name}")
+                f"The following test case has failed: {test_case_name} with failure: {result.failures}")
 
     def test_logRequest(self):
         # mock request object
