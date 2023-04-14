@@ -45,6 +45,13 @@ class TestFluentLoggingHandler(unittest.TestCase):
         FluentLoggingHandler.requestLogger.removeHandler(
             cls.requestsFileHandler)
 
+    def tearDown(self):
+        result = self._outcome.result
+        if result.errors or result.failures:
+            test_case_name = self.id().split('.')[-1]
+            FluentLoggingHandler.critical(
+                f"The following test case has failed: {test_case_name}")
+
     def test_logRequest(self):
         # mock request object
         request = MagicMock()
