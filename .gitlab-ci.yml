@@ -77,8 +77,9 @@ test fluent-logger:
   variables:
     PYTHONPATH: "$CI_PROJECT_DIR/baytree_app"
   before_script:
+    - cd baytree_app
     - pip install -r requirements.txt
-    - cd baytree_app/baytree_app/testing
+    - cd baytree_app/testing
   script:
     - python -m unittest FluentLoggerTests.py
   after_script:
