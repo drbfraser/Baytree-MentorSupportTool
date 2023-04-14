@@ -8,7 +8,7 @@ formatter = logging.Formatter(
 # message logger setup
 FluentLoggingHandler.messageLogger.setLevel(logging.DEBUG)
 applicationFileHandler = logging.FileHandler(
-    "/code/server_logs/server_application.log")
+    "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_application.log")
 applicationFileHandler.setFormatter(formatter)
 FluentLoggingHandler.messageLogger.addHandler(applicationFileHandler)
 

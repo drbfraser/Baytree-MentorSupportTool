@@ -15,9 +15,9 @@ class TestFluentLoggingHandler(unittest.TestCase):
     def setUpClass(cls):
         # setting paths to log files
         cls.serverApplicationLogPath = os.path.abspath(
-            "/code/server_logs/server_application.log")
+            "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_application.log")
         cls.serverRequestsLogPath = os.path.abspath(
-            "/code/server_logs/server_requests.log")
+            "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_requests.log")
 
         # log file formatter
         formatter = logging.Formatter(
