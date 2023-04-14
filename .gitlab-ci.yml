@@ -75,7 +75,6 @@ test fluent-logger:
   tags:
     - docker
   variables:
-    PYTHONPATH: "$CI_PROJECT_DIR/baytree_app"
     DOMAIN: "example.com"
     SECRET_KEY: "test"
     MYSQL_HOST: baytree_database
@@ -105,6 +104,8 @@ test fluent-logger:
       if [[ "$CI_JOB_STATUS" == "failed" ]]; then
         python test_failed_log.py
       fi
+    - cd ../../server_logs
+    - cat server_application.log
 
 build info:
   # Always runs: allows pipeline execution to happen even if no other tasks run.
