@@ -69,6 +69,21 @@ test frontend-e2e:
       - frontend/.npm/
       - frontend/node_modules/
 
+test fluent-logger:
+  stage: test
+  image: python:3.9.1-buster
+  tags:
+    - docker
+  before_script:
+    - cd baytree_app/baytree_app/testing
+  script:
+    - python -m unittest FluentLoggerTests.py
+  after_script:
+    - |
+      if [[ "$CI_JOB_STATUS" == "failed" ]]; then
+        python test_failed_log.py
+      fi
+
 build info:
   # Always runs: allows pipeline execution to happen even if no other tasks run.
   stage: build
