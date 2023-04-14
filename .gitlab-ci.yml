@@ -75,7 +75,7 @@ test fluent-logger:
   tags:
     - docker
   variables:
-    PYTHONPATH: "$CI_PROJECT_DIR"
+    PYTHONPATH: "$CI_PROJECT_DIR/baytree_app"
     DOMAIN: "example.com"
     SECRET_KEY: "test"
     MYSQL_HOST: baytree_database
