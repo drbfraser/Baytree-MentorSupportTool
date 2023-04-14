@@ -76,6 +76,20 @@ test fluent-logger:
     - docker
   variables:
     PYTHONPATH: "$CI_PROJECT_DIR/baytree_app"
+    DOMAIN: "example.com"
+    SECRET_KEY: "test"
+    MYSQL_HOST: baytree_database
+    MYSQL_DATABASE: baytree
+    MYSQL_USER: theuser
+    MYSQL_PASSWORD: thepassword
+    EMAIL_HOST: ""
+    EMAIL_PORT: ""
+    EMAIL_USER: ""
+    EMAIL_PASSWORD: ""
+    VIEWS_USERNAME: ""
+    VIEWS_PASSWORD: ""
+    CELERY_BROKER_URL: ""
+    CELERY_BACKEND_URL: ""
   before_script:
     - cd shared-apps
     - python setup.py sdist
