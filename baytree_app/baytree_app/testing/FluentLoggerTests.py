@@ -9,15 +9,33 @@ from unittest.mock import MagicMock
 # without this setup, our logging system does not log anything to the log files
 # this behaviour seems to be unique to testcases only
 
+LOGGER_TEST_ENV = os.environ.get("LOGGER_TEST_ENV")
+
+if LOGGER_TEST_ENV == None or LOGGER_TEST_ENV == '':
+    raise ValueError(
+        "LOGGER_TEST_ENV environment variable is not set. Please set it to 'local' for running tests locally or create a GitLab CI/CD variable named 'LOGGER_TEST_ENV' and set it to 'gitlab' to run the tests in a GitLab CI-CD environment.")
+
+server_application_log_path = ""
+server_requests_log_path = ""
+if LOGGER_TEST_ENV == "gitlab":
+    server_application_log_path = "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_application.log"
+    server_requests_log_path = "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_requests.log"
+elif LOGGER_TEST_ENV == "local":
+    server_application_log_path = "/code/server_logs/server_application.log"
+    server_requests_log_path = "/code/server_logs/server_requests.log"
+else:
+    # throw error
+    raise ValueError(
+        f"'{LOGGER_TEST_ENV}' is not a valid value for the LOGGER_TEST_ENV environment variable. Please set it to 'local' for running these tests locally or 'gitlab' for running these tests in a GitLab CI-CD job.")
+
 
 class TestFluentLoggingHandler(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # setting paths to log files
         cls.serverApplicationLogPath = os.path.abspath(
-            "/code/server_logs/server_application.log")
-        cls.serverRequestsLogPath = os.path.abspath(
-            "/code/server_logs/server_requests.log")
+            server_application_log_path)
+        cls.serverRequestsLogPath = os.path.abspath(server_requests_log_path)
 
         # log file formatter
         formatter = logging.Formatter(
@@ -148,14 +166,7 @@ class TestFluentLoggingHandler(unittest.TestCase):
                       f"Expected log '{expected_log}' not found in log file")
 
 
-suite = unittest.TestSuite()
-suite.addTest(TestFluentLoggingHandler('test_logResponse'))
-suite.addTest(TestFluentLoggingHandler('test_logRequest'))
-suite.addTest(TestFluentLoggingHandler('test_info'))
-suite.addTest(TestFluentLoggingHandler('test_debug'))
-suite.addTest(TestFluentLoggingHandler('test_warning'))
-suite.addTest(TestFluentLoggingHandler('test_critical'))
-suite.addTest(TestFluentLoggingHandler('test_error'))
-
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestFluentLoggingHandler)
+    result = unittest.TestResult()
+    suite.run(result)
