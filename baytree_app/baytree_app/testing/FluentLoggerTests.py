@@ -9,15 +9,19 @@ from unittest.mock import MagicMock
 # without this setup, our logging system does not log anything to the log files
 # this behaviour seems to be unique to testcases only
 
+LOGGER_TESTS = os.environ.get("LOGGER_TESTS", "gitlab")
+
+server_application_log_path = "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_application.log" if LOGGER_TESTS == "gitlab" else "/code/server_logs/server_application.log"
+server_requests_log_path = "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_requests.log" if LOGGER_TESTS == "gitlab" else "/code/server_logs/server_requests.log"
+
 
 class TestFluentLoggingHandler(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # setting paths to log files
         cls.serverApplicationLogPath = os.path.abspath(
-            "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_application.log")
-        cls.serverRequestsLogPath = os.path.abspath(
-            "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_requests.log")
+            server_application_log_path)
+        cls.serverRequestsLogPath = os.path.abspath(server_requests_log_path)
 
         # log file formatter
         formatter = logging.Formatter(
