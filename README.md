@@ -35,6 +35,10 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    GRAFANA_USER=319402
    GRAFANA_API_KEY={your_Grafana_API_key}
    VIEWS_BASE_URL=base_url_for_views_apis
+
+   LOGGER_TESTS=gitlab
+
+   ENVIRONMENT=dev
    ```
 
    According to Google's new less-secure app policy, the gmail account must have 2-factor authentication enabled and an "app password" must be created which can be used with Django.
@@ -72,6 +76,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    docker exec views-mock python manage.py migrate
    docker exec -it baytree_server python manage.py createsuperuser
    ```
+
 7. install default preference:
 
    ```bash
@@ -89,10 +94,10 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
 - If new backend packages have been installed, run `docker compose build` prior to running the `up` commands above
 - If new frontend packages have been installed, run the following prior to running the `up` commands above:
 
-   ```bash
-   docker compose run --rm frontend npm install
-   docker compose run --rm admin-frontend npm install
-   ```
+  ```bash
+  docker compose run --rm frontend npm install
+  docker compose run --rm admin-frontend npm install
+  ```
 
 ### Commands Inside Container
 
@@ -122,12 +127,12 @@ docker exec <baytree_server/views-mock> python manage.py migrate
 
 To install default preference:
 
-   ```bash
-   docker exec baytree_server python manage.py loaddata defaultPreferences.json
-   docker exec baytree_server python manage.py loaddata goalCategories
-   docker exec baytree_server python manage.py loaddata ukHolidays
+```bash
+docker exec baytree_server python manage.py loaddata defaultPreferences.json
+docker exec baytree_server python manage.py loaddata goalCategories
+docker exec baytree_server python manage.py loaddata ukHolidays
 
-   ```
+```
 
 ### Creating a User
 
@@ -169,27 +174,27 @@ Run these commands to manage the depenedencies for containers `baytree_frontend`
 
 - Install packages as build dependenency, with the application running:
 
-   ```bash
-   docker exec [container_name] npm install [package_1] [package_2] ...
+  ```bash
+  docker exec [container_name] npm install [package_1] [package_2] ...
 
-   # Shorthand syntax
-   docker exec [container_name] npm i [package_1] [package_2] ...
-   ```
+  # Shorthand syntax
+  docker exec [container_name] npm i [package_1] [package_2] ...
+  ```
 
 - Install packages as a develeper dependency, run the commands above with `--save-dev` tag:
 
-   ```bash
-   docker exec [container_name] npm install --save-dev [package_1] [package_2] ...
+  ```bash
+  docker exec [container_name] npm install --save-dev [package_1] [package_2] ...
 
-   # Shorthand syntax
-   docker exec [container_name] npm i -D [package_1] [package_2] ...
-   ```
+  # Shorthand syntax
+  docker exec [container_name] npm i -D [package_1] [package_2] ...
+  ```
 
 - Unistall a package, with the application running
 
-   ```bash
-   docker exec [container_name] npm uninstall [package_1] [package_2] ...
-   ```
+  ```bash
+  docker exec [container_name] npm uninstall [package_1] [package_2] ...
+  ```
 
 ### Run Outside of Docker
 
