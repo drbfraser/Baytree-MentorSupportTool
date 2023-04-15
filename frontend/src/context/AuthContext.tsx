@@ -14,6 +14,7 @@ type AuthContextType = {
 };
 
 const AuthContext = createContext<AuthContextType>({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   signIn: async (_email: string, _password: string) => false,
   signOut: async () => true,
   verifyClient: async () => false

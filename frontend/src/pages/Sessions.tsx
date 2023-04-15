@@ -252,7 +252,7 @@ const SessionForm = () => {
         ) : menteesLoadError || venuesLoadError || activitiesLoadError ? (
           <Alert severity="error">
             <AlertTitle>
-              We're sorry, this page is not working at the moment.
+              We&apos;re sorry, this page is not working at the moment.
             </AlertTitle>
             Please refresh or contact your administrator. <br />
             Reason for error:
