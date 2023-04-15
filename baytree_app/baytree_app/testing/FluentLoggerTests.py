@@ -9,6 +9,7 @@ from unittest.mock import MagicMock
 # without this setup, our logging system does not log anything to the log files
 # this behaviour seems to be unique to testcases only
 
+# testing env
 LOGGER_TESTS = os.environ.get("LOGGER_TESTS", "gitlab")
 
 server_application_log_path = "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_application.log" if LOGGER_TESTS == "gitlab" else "/code/server_logs/server_application.log"
