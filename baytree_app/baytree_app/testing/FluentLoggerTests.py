@@ -9,11 +9,24 @@ from unittest.mock import MagicMock
 # without this setup, our logging system does not log anything to the log files
 # this behaviour seems to be unique to testcases only
 
-# testing env
-LOGGER_TESTS = os.environ.get("LOGGER_TESTS", "gitlab")
+LOGGER_TESTS = os.environ.get("LOGGER_TESTS")
 
-server_application_log_path = "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_application.log" if LOGGER_TESTS == "gitlab" else "/code/server_logs/server_application.log"
-server_requests_log_path = "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_requests.log" if LOGGER_TESTS == "gitlab" else "/code/server_logs/server_requests.log"
+if LOGGER_TESTS == None:
+    raise ValueError(
+        "LOGGER_TESTS environment variable is not set. Please set it to 'local' for running these tests locally or 'gitlab' for running these tests in a GitLab CI-CD job.")
+
+server_application_log_path = ""
+server_requests_log_path = ""
+if LOGGER_TESTS == "gitlab":
+    server_application_log_path = "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_application.log"
+    server_requests_log_path = "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_requests.log"
+elif LOGGER_TESTS == "local":
+    server_application_log_path = "/code/server_logs/server_application.log"
+    server_requests_log_path = "/code/server_logs/server_requests.log"
+else:
+    # throw error
+    raise ValueError(
+        f"'{LOGGER_TESTS}' is not a valid value for the LOGGER_TESTS environment variable. Please set it to 'local' for running these tests locally or 'gitlab' for running these tests in a GitLab CI-CD job.")
 
 
 class TestFluentLoggingHandler(unittest.TestCase):
