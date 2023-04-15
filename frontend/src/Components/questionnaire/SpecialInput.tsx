@@ -1,22 +1,10 @@
 import {
-  FormControlLabel, FormHelperText,
-  Radio,
-  RadioGroup, TextField,
-  useMediaQuery,
-  useTheme
+  FormHelperText,
+  TextField
 } from '@mui/material'
 import { useField } from 'formik'
 import type { FunctionComponent } from 'react'
 import type { Question } from '../../api/misc'
-
-const choices = [
-  'Strongly Disagree',
-  'Disagree',
-  'Neutral',
-  'Agree',
-  'Strongly Agree'
-]
-
 
 export const isSpecialQuestion = (question: Question) => {
   return question.inputType == 'phone_number' || question.validation == 'valid_postcode'
@@ -31,7 +19,6 @@ export const SpecialInput: FunctionComponent<{ question: Question }> = ({
 }) => {
   const [field, meta] = useField(question.QuestionID)
 
-  const error = field.value === '' && meta.touched
   // check for phone validation
   const matchUkPhoneNumber = (phoneNumber:string) =>{
     // https://regexlib.com/Search.aspx?k=uk%20telephone

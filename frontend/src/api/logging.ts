@@ -24,8 +24,10 @@ export class Logger {
   private getStackTrace() {
     try {
       throw new Error()
-    } catch (trace: any) {
-      return trace.stack
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return error.stack
+      }
     }
   }
 

@@ -8,14 +8,12 @@ import {
 import { useField } from 'formik'
 import type { FunctionComponent} from 'react'
 import type { Question } from '../../api/misc'
-import { useState } from 'react'
 
 export const isCheckBoxQuestion = (question: Question) => {
   return (
     question.inputType === 'checkselect'
   )
 }
-
 
 // Reponsive CheckBox question
 // Horizontal on large screen

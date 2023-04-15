@@ -29,10 +29,11 @@ const NavigationButton: FunctionComponent<NavigationButtonProps> = (props) => {
   return (
     <IconButton
       sx={{ display: { xs: 'none', sm: 'inherit' } }}
-      children={props.children}
       size="large"
       onClick={props.action}
-    />
+    >
+      {props.children}
+    </IconButton>
   )
 }
 
@@ -46,9 +47,11 @@ const NavigationBar: FunctionComponent<{
 
   useEffect(() => {
     // Fetch the number of unread notifications
-    fetchUnreadNotificationCountByUserId(user!.userId)
+    if (user) {
+      fetchUnreadNotificationCountByUserId(user.userId)
       .then(setNumNotifications)
       .catch((error) => console.error('Error:', error))
+    }
   }, [])
 
   const logout = async () => {

@@ -3,7 +3,6 @@ import {Icon} from '@mui/material'
 import { type FunctionComponent, useState } from 'react'
 import { MdDownload } from 'react-icons/md'
 import { toast } from 'react-toastify'
-import { exportGoals } from '../../api/goals'
 import useSessionDetail from '@hooks/useSessionDetail'
 
 
