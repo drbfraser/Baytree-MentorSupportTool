@@ -36,7 +36,7 @@ services:
       CELERY_BROKER_URL: ${CELERY_BROKER_URL}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
       VIEWS_BASE_URL: ${VIEWS_BASE_URL:-http://views-mock:5001/}
-      LOGGER_TESTS: ${LOGGER_TESTS}
+      LOGGER_TEST_ENV: ${LOGGER_TEST_ENV}
 
     depends_on:
       - database
