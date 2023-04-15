@@ -1,8 +1,12 @@
 import ChoiceInput, {
   isChoiceQuestion
 } from '@components/questionnaire/ChoiceInput'
-import CheckBoxInput, { isCheckBoxQuestion } from '@components/questionnaire/CheckBoxInput'
-import SelectorInput,{isSelectorQuestion} from '@components/questionnaire/SelectorInput'
+import CheckBoxInput, {
+  isCheckBoxQuestion
+} from '@components/questionnaire/CheckBoxInput'
+import SelectorInput, {
+  isSelectorQuestion
+} from '@components/questionnaire/SelectorInput'
 import InvalidQuestionnaire from '@components/questionnaire/InvalidQuestionnaire'
 import MenteesNameInput from '@components/questionnaire/MenteesNameInput'
 import MentorNameInput from '@components/questionnaire/MentorNameQuestion'
@@ -26,7 +30,9 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Logger, logLevel } from '../api/logging'
-import SpecialInput, {isSpecialQuestion} from '@components/questionnaire/SpecialInput'
+import SpecialInput, {
+  isSpecialQuestion
+} from '@components/questionnaire/SpecialInput'
 
 const Questionnaire = () => {
   const [canSeeAlert, setcanSeeAlert] = useState('none')
@@ -58,16 +64,13 @@ const Questionnaire = () => {
             setSubmitting(true)
             const menteeResult = await handleSubmitAnswerSet(answer, 'mentee')
             if (menteeResult) {
-              const mentorResult = await handleSubmitAnswerSet(
-                answer,
-                'mentor'
-              )
+              const mentorResult = await handleSubmitAnswerSet(answer, 'mentor')
               if (mentorResult) {
                 toast.success('Submitted successfully, thank you')
                 resetForm()
               } else {
                 const volunteerQuestionnaireSubmissionLoggerError =
-                  'Failed to submit Volunteer questionnaire. \nViews Volunteer and Participant questionnaires may now be inconsistent. \nPlease contact the administrator to manually remove inconsistent \nquestionnaire from Participant\'s profile before trying again.'
+                  "Failed to submit Volunteer questionnaire. \nViews Volunteer and Participant questionnaires may now be inconsistent. \nPlease contact the administrator to manually remove inconsistent \nquestionnaire from Participant's profile before trying again."
                 const menteeResultData = menteeResult.data
                 new Logger().sendLog(
                   `${volunteerQuestionnaireSubmissionLoggerError}\n Mentor: ${menteeResultData['mentor']}, Mentee: ${menteeResultData['mentee']}, Questionnaire ID: ${menteeResultData['questionnaireId']}, Submission ID: ${menteeResultData['submissionId']}`,
@@ -79,16 +82,14 @@ const Questionnaire = () => {
                     inconsistent.
                     <br />
                     Please contact the administrator to manually remove
-                    inconsistent questionnaire from Participant&apos;s profile before
-                    trying again.
+                    inconsistent questionnaire from Participant&apos;s profile
+                    before trying again.
                   </strong>
                 )
                 setSubmissionErrorTitle(
                   'Error: Failed to Submit Volunteer Questionnaire'
                 )
-                setSubmissionErrorMessage(
-                  volunteerQuestionnaireSubmissionError
-                )
+                setSubmissionErrorMessage(volunteerQuestionnaireSubmissionError)
                 setcanSeeAlert('block')
                 // TODO: implement server logging
                 setSubmitting(false)
@@ -125,9 +126,7 @@ const Questionnaire = () => {
                       sx={{ fontWeight: 'bold' }}
                       color="text.secondary"
                     >
-                      {`${question.Question} ${
-                        required ? '*' : ''
-                      }`}
+                      {`${question.Question} ${required ? '*' : ''}`}
                     </Typography>
                     {/* Question input */}
                     {isMentorQuestion(question) ? (
@@ -139,12 +138,12 @@ const Questionnaire = () => {
                       />
                     ) : isChoiceQuestion(question) ? (
                       <ChoiceInput question={question} />
-                    ) : isCheckBoxQuestion(question)? (
-                        <CheckBoxInput question={question}/>
-                    ) : isSelectorQuestion(question)?(
-                        <SelectorInput question = {question}/>
-                    ) : isSpecialQuestion(question)?(
-                        <SpecialInput question={question}/>
+                    ) : isCheckBoxQuestion(question) ? (
+                      <CheckBoxInput question={question} />
+                    ) : isSelectorQuestion(question) ? (
+                      <SelectorInput question={question} />
+                    ) : isSpecialQuestion(question) ? (
+                      <SpecialInput question={question} />
                     ) : (
                       <TextInput question={question} />
                     )}

@@ -3,15 +3,18 @@ import {
   Badge,
   Divider,
   Icon,
-  IconButton, ListItemText, Menu,
-  MenuItem, Typography
+  IconButton,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Typography
 } from '@mui/material'
 import { deepOrange, deepPurple, green } from '@mui/material/colors'
 import { useState } from 'react'
 import { MdMail } from 'react-icons/md'
 
 export default function Messages() {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement|null>()
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>()
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)

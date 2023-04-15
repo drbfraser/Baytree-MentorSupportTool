@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext'
 
 type Mentee = {
   user: {
-    first_name: string,
+    first_name: string
     last_name: string
   }
 }
@@ -14,13 +14,13 @@ type Mentee = {
 export default function MenteeInfo() {
   const { user } = useAuth()
   const [menteeInfo, setMenteeInfo] = useState([] as Mentee[])
-  const [currentMentee, ] = useState(0)
+  const [currentMentee] = useState(0)
 
   useEffect(() => {
     if (user) {
       fetchMenteeListByMentorId(user.userId)
-      .then(setMenteeInfo)
-      .catch((error: Error) => console.error('Error:', error))
+        .then(setMenteeInfo)
+        .catch((error: Error) => console.error('Error:', error))
     }
   }, [])
 

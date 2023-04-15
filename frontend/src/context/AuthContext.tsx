@@ -3,15 +3,15 @@ import { login, logout, verify } from '../api/auth'
 import useLocalStorage from '../hooks/useLocalStorage'
 
 type StorageInfo = {
-  userId: number;
-  viewsPersonId?: number;
-};
+  userId: number
+  viewsPersonId?: number
+}
 type AuthContextType = {
-  user?: StorageInfo;
-  signIn: (email: string, password: string) => Promise<boolean>;
-  signOut: () => Promise<boolean>;
-  verifyClient: () => Promise<boolean>;
-};
+  user?: StorageInfo
+  signIn: (email: string, password: string) => Promise<boolean>
+  signOut: () => Promise<boolean>
+  verifyClient: () => Promise<boolean>
+}
 
 const AuthContext = createContext<AuthContextType>({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

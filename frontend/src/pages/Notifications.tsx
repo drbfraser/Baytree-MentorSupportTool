@@ -22,27 +22,27 @@ import { useAuth } from '../context/AuthContext'
 import TitledContainer from '@components/shared/TitledContainer'
 
 interface NotificationType {
-  id: number;
-  title: string;
-  content: string;
-  type: string;
-  period_in_days:number;
+  id: number
+  title: string
+  content: string
+  type: string
+  period_in_days: number
 }
 
 type Notification = {
-  id: number;
-  creation_date: Date;
-  is_read: boolean;
-  mentor_id: number;
-  notification_type_id: number;
-  content: string;
+  id: number
+  creation_date: Date
+  is_read: boolean
+  mentor_id: number
+  notification_type_id: number
+  content: string
   notification_type: NotificationType
 }
 
 export default function Notifications() {
   const { user } = useAuth()
   const [notifications, setNotifications] = useState([] as Notification[])
-  const [expanded, setExpanded] = useState<boolean|number>()
+  const [expanded, setExpanded] = useState<boolean | number>()
 
   // Toggle when a notification is read
   const [readToggle, setReadToggle] = useState(false)
@@ -63,13 +63,15 @@ export default function Notifications() {
     }
   }
 
-  const handleChange1 = (panel: number) => (_event: React.SyntheticEvent<Element, Event>, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false)
+  const handleChange1 =
+    (panel: number) =>
+    (_event: React.SyntheticEvent<Element, Event>, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false)
 
-    if (isExpanded) {
-      handleNotificationComplete(panel)
+      if (isExpanded) {
+        handleNotificationComplete(panel)
+      }
     }
-  }
 
   return (
     <Grow in={true}>
@@ -131,4 +133,3 @@ export default function Notifications() {
     </Grow>
   )
 }
-

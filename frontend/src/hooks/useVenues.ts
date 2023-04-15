@@ -48,4 +48,3 @@ export type OnVenuesFailedToLoadReason =
   | 'An error has occurred'
 
 export default useVenues
-

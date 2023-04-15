@@ -8,9 +8,9 @@ export { API_BASE_URL, worker }
 declare global {
   interface Window {
     msw: {
-      worker: SetupWorkerApi;
-      rest: typeof rest;
-    };
+      worker: SetupWorkerApi
+      rest: typeof rest
+    }
   }
 }
 

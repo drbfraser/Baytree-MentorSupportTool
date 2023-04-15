@@ -1,19 +1,17 @@
 import { LoadingButton } from '@mui/lab'
-import {Icon} from '@mui/material'
+import { Icon } from '@mui/material'
 import { type FunctionComponent, useState } from 'react'
 import { MdDownload } from 'react-icons/md'
 import { toast } from 'react-toastify'
 import useSessionDetail from '@hooks/useSessionDetail'
 
-
 type Props = {
-  sessionId?: string | number;
-};
+  sessionId?: string | number
+}
 
-const RecordExportDetailButton:FunctionComponent<Props> = ({sessionId}) => {
+const RecordExportDetailButton: FunctionComponent<Props> = ({ sessionId }) => {
   const [loading, setLoading] = useState(false)
-  const { session} = useSessionDetail(sessionId)
-
+  const { session } = useSessionDetail(sessionId)
 
   const download = () => {
     try {
@@ -37,36 +35,45 @@ const RecordExportDetailButton:FunctionComponent<Props> = ({sessionId}) => {
     }
   }
 
-  const SessionDetailsToCSV = (session : string) =>{
+  const SessionDetailsToCSV = (session: string) => {
     // only takes the necessary data
-    if (session == null){
+    if (session == null) {
       return ''
     }
     // convert to json
     const sessionInfo = JSON.parse(session)
     const row: { [key: string]: string } = {}
     console.log(sessionInfo)
-    row.sessionName  = sessionInfo.name ? sessionInfo.name : ''
-    row.sessionGroup = sessionInfo.sessionGroup.name ? sessionInfo.sessionGroup.name : ''
-    row.mentor       = sessionInfo.mentor.name ? sessionInfo.mentor.name : sessionInfo.mentor.firstname +' '+sessionInfo.mentor.surname
-    row.mentee       = sessionInfo.mentee.name ? sessionInfo.mentee.name : sessionInfo.mentee.firstname + sessionInfo.mentee.surname
-    row.startDate    = sessionInfo.startDate ? sessionInfo.startDate : ''
-    row.startTime    = sessionInfo.startTime ? sessionInfo.startTime : ''
-    row.Duration     = sessionInfo.duration ? sessionInfo.duration : ''
-    row.notes        = sessionInfo.note ? sessionInfo.note : ''
+    row.sessionName = sessionInfo.name ? sessionInfo.name : ''
+    row.sessionGroup = sessionInfo.sessionGroup.name
+      ? sessionInfo.sessionGroup.name
+      : ''
+    row.mentor = sessionInfo.mentor.name
+      ? sessionInfo.mentor.name
+      : sessionInfo.mentor.firstname + ' ' + sessionInfo.mentor.surname
+    row.mentee = sessionInfo.mentee.name
+      ? sessionInfo.mentee.name
+      : sessionInfo.mentee.firstname + sessionInfo.mentee.surname
+    row.startDate = sessionInfo.startDate ? sessionInfo.startDate : ''
+    row.startTime = sessionInfo.startTime ? sessionInfo.startTime : ''
+    row.Duration = sessionInfo.duration ? sessionInfo.duration : ''
+    row.notes = sessionInfo.note ? sessionInfo.note : ''
     // convert back to string
     return JSON.stringify(row)
   }
 
-  return <LoadingButton
+  return (
+    <LoadingButton
       onClick={download}
       disabled={loading}
       startIcon={<Icon component={MdDownload} />}
       variant="outlined"
       loading={loading}
-      loadingPosition="start">
-    Export
-  </LoadingButton>
+      loadingPosition="start"
+    >
+      Export
+    </LoadingButton>
+  )
 }
 
 export default RecordExportDetailButton

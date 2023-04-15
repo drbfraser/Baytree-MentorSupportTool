@@ -3,7 +3,13 @@ import { useField } from 'formik'
 import type { Question } from '../../api/misc'
 import type { Participant } from '../../api/views'
 
-function MenteesNameInput({ question, menteeList}: {question: Question, menteeList: Participant[]}): JSX.Element {
+function MenteesNameInput({
+  question,
+  menteeList
+}: {
+  question: Question
+  menteeList: Participant[]
+}): JSX.Element {
   const [field, meta] = useField(question.QuestionID)
   const error = meta.touched && field.value === ''
 

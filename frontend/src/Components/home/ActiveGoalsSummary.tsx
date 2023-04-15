@@ -4,20 +4,35 @@ import GoalsMiniList from '../goals/GoalsMiniList'
 
 const ActiveGoalsSummary = () => {
   const navigate = useNavigate()
-  return <>
-    <Box sx={{ my: 2, display: 'flex', justifyContent: 'space-between', alignContent: 'center' }}>
-      <Typography
-        component="h2"
-        sx={{fontSize: 16}}
-        variant="button"
-        color="text.secondary"
+  return (
+    <>
+      <Box
+        sx={{
+          my: 2,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignContent: 'center'
+        }}
       >
-        Active Goals
-      </Typography>
-      <Button variant="outlined" color="secondary" onClick={() => navigate('/dashboard/goals')}>See more</Button>
-    </Box>
-    <GoalsMiniList />
-  </>
+        <Typography
+          component="h2"
+          sx={{ fontSize: 16 }}
+          variant="button"
+          color="text.secondary"
+        >
+          Active Goals
+        </Typography>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => navigate('/dashboard/goals')}
+        >
+          See more
+        </Button>
+      </Box>
+      <GoalsMiniList />
+    </>
+  )
 }
 
 export default ActiveGoalsSummary

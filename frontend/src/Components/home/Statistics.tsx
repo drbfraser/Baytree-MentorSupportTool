@@ -6,9 +6,9 @@ import { getSessionCount, type SessionsCount } from '../../api/mentorAccount'
 import { useAuth } from '../../context/AuthContext'
 
 const Count: FunctionComponent<{
-  title: string;
-  count: number;
-  color?: string;
+  title: string
+  count: number
+  color?: string
 }> = (props) => {
   return (
     <Grid item xs={12} sm={6} xl={6}>
@@ -25,7 +25,12 @@ const Count: FunctionComponent<{
           component="h6"
           color="text.secondary"
           // align="center"
-          sx={{marginLeft: '5%', width: '60%',display: 'flex', alignItems: 'center'}}
+          sx={{
+            marginLeft: '5%',
+            width: '60%',
+            display: 'flex',
+            alignItems: 'center'
+          }}
         >
           {props.title}
         </Typography>
@@ -33,7 +38,7 @@ const Count: FunctionComponent<{
           component="p"
           variant="h3"
           color={props.color || 'primary'}
-          sx={{ fontWeight: 'bold', width:'20%' }}
+          sx={{ fontWeight: 'bold', width: '20%' }}
         >
           {props.count}
         </Typography>
@@ -55,7 +60,6 @@ export default function Statistics() {
     if (user) {
       getSessionCount(user.userId).then((data) => data && setData(data))
     }
-
   }, [])
 
   return (
