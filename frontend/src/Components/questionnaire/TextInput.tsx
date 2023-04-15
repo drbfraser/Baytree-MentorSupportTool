@@ -15,17 +15,12 @@ const TextInput: FunctionComponent<{ question: Question }> = ({ question }) => {
         const pattern = /\d+/g
         const range = question.validation.match(pattern)
         let rangeError
-        let minNum:number
-        let maxNum:number
         if (range) {
-          minNum = parseInt(range[0])
-          maxNum = parseInt(range[0])
+          const minNum:number = parseInt(range[0])
+          const maxNum:number = parseInt(range[0])
           rangeError = (num:number) =>{
             return (minNum > num || num > maxNum) && meta.touched
           }
-        }
-
-        if (rangeError){
           return (
             <>
               <TextField
