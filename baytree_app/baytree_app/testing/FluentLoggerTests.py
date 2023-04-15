@@ -13,7 +13,7 @@ LOGGER_TEST_ENV = os.environ.get("LOGGER_TEST_ENV")
 
 if LOGGER_TEST_ENV == None or LOGGER_TEST_ENV == '':
     raise ValueError(
-        "LOGGER_TEST_ENV environment variable is not set. Please set it to 'local' for running these tests locally or 'gitlab' for running these tests in a GitLab CI-CD job.")
+        "LOGGER_TEST_ENV environment variable is not set. Please set it to 'local' for running tests locally or create a GitLab CI/CD variable named 'LOGGER_TEST_ENV' and set it to 'gitlab' to run the tests in a GitLab CI-CD environment.")
 
 server_application_log_path = ""
 server_requests_log_path = ""
