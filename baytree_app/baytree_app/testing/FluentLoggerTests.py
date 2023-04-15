@@ -111,7 +111,7 @@ class TestFluentLoggingHandler(unittest.TestCase):
         FluentLoggingHandler.info("Testing info level logs")
         with open(self.serverApplicationLogPath, 'r') as f:
             log_contents = f.read()
-        expected_log = "Arshdeep Chhokar"
+        expected_log = "Testing info level logs"
         self.assertIn(expected_log, log_contents,
                       f"Expected log '{expected_log}' not found in log file")
 
