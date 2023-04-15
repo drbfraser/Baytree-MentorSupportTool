@@ -41,7 +41,7 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    ENVIRONMENT=dev
    ```
 
-   Please set the LOGGER_TEST_ENV var to your desired testing environment which could be 'local' for running the fluent logger tests locally or create a GitLab CI/CD variable named `LOGGER_TEST_ENV` and set it to `gitlab` to run the tests in a GitLab CI-CD environment..
+   Please set the LOGGER_TEST_ENV var to your desired testing environment which could be 'local' for running the fluent logger tests locally or create a GitLab CI/CD variable named `LOGGER_TEST_ENV` and set it to `gitlab` to run the tests in a GitLab CI-CD environment.
 
    Please set the ENVIRONMENT variable based on your desired environment which may either 'dev','staging', or 'production'.
 
