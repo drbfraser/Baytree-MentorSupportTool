@@ -155,14 +155,11 @@ class TestFluentLoggingHandler(unittest.TestCase):
                       f"Expected log '{expected_log}' not found in log file")
 
 
-suite = unittest.TestSuite()
-suite.addTest(TestFluentLoggingHandler('test_logResponse'))
-suite.addTest(TestFluentLoggingHandler('test_logRequest'))
-suite.addTest(TestFluentLoggingHandler('test_info'))
-suite.addTest(TestFluentLoggingHandler('test_debug'))
-suite.addTest(TestFluentLoggingHandler('test_warning'))
-suite.addTest(TestFluentLoggingHandler('test_critical'))
-suite.addTest(TestFluentLoggingHandler('test_error'))
-
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestFluentLoggingHandler)
+    result = unittest.TestResult()
+    suite.run(result)
+
+    for test, error in result.failures:
+        FluentLoggingHandler.critical(
+            f"The following test case has failed: {test}")
