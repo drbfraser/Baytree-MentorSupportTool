@@ -4,6 +4,10 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { toast } from 'react-toastify'
 import { recordsApi, type SessionDetail } from '../api/records'
 
+type MutationResponse = {
+  statusCode: number
+}
+
 const generateMessage = (error: AxiosError, defaultMessage: string) => {
   const status = error.response?.status
   if (status === 404) return 'Session detail not found'
@@ -44,7 +48,7 @@ export const useSessionDetail = (sessionId: number | string = -1) => {
   }, [])
 
   const { mutateAsync: updateNote, isLoading: isSubmitting } = useMutation<
-    any,
+    MutationResponse,
     AxiosError,
     string
   >((note) => recordsApi.put(`${sessionId}/notes/`, { note }), {

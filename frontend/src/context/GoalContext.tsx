@@ -7,7 +7,8 @@ import useGoalStatistics from '../hooks/useGoalStatistics'
 type GoalEdit = {
   goal?: GoalDetail;
   open: boolean;
-};
+}
+
 type GoalContextType = {
   goals: Goal[];
   edit: GoalEdit;
@@ -23,8 +24,8 @@ type GoalContextType = {
   handleCompleteGoal: (goal: Goal) => Promise<boolean>;
   handleChangeQuery: (
     arg: GoalQuery | ((prev: GoalQuery) => GoalQuery)
-  ) => void;
-};
+  ) => void
+}
 
 export const PAGINATION_OPTIONS = [5, 10]
 export const DEFAULT_QUERY = {
@@ -36,17 +37,17 @@ export const DEFAULT_QUERY = {
 export const GoalContext = createContext<GoalContextType>({
   goals: [],
   edit: { open: false },
-  openEdit: (_) => {},
-  closeEdit: () => {},
+  openEdit: () => console.log('openEdit is not yet implemented'),
+  closeEdit: () => console.log('closeEdit is not yet implemented'),
   statistics: { active: 0, complete: 0 },
   loadingGoals: false,
   loadingStatistics: false,
   error: '',
   query: DEFAULT_QUERY,
   count: 0,
-  handleSubmitGoal: async (_input, _id) => true,
-  handleCompleteGoal: async (_goal) => true,
-  handleChangeQuery: (_arg) => {}
+  handleSubmitGoal: async () => true,
+  handleCompleteGoal: async () => true,
+  handleChangeQuery: () => console.log('handleChangeQuery is not yet implemented')
 })
 
 export const GoalProvider: React.FC<{ children: React.ReactNode }> = (

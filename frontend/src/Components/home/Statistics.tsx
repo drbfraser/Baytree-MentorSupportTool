@@ -52,7 +52,10 @@ export default function Statistics() {
   })
 
   useEffect(() => {
-    getSessionCount(user!.userId).then((data) => data && setData(data))
+    if (user) {
+      getSessionCount(user.userId).then((data) => data && setData(data))
+    }
+
   }, [])
 
   return (

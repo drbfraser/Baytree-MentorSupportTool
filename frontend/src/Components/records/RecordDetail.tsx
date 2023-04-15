@@ -19,7 +19,6 @@ import useSessionDetail from '../../hooks/useSessionDetail'
 import { TIMEZONE_ID } from '../../Utils/locale'
 import InfoTextField from '../shared/InfoTextField'
 import Loading from '../shared/Loading'
-import RecordExportDetailButton from '@components/records/RecordExportDetailButton'
 
 type Props = {
   sessionId?: string | number;

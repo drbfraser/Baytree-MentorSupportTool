@@ -4,15 +4,24 @@ import { useEffect, useState } from 'react'
 import { fetchMenteeListByMentorId } from '../../api/mentorAccount'
 import { useAuth } from '../../context/AuthContext'
 
+type Mentee = {
+  user: {
+    first_name: string,
+    last_name: string
+  }
+}
+
 export default function MenteeInfo() {
   const { user } = useAuth()
-  const [menteeInfo, setMenteeInfo] = useState([] as any[])
-  const [currentMentee, setCurrentMentee] = useState(0)
+  const [menteeInfo, setMenteeInfo] = useState([] as Mentee[])
+  const [currentMentee, ] = useState(0)
 
   useEffect(() => {
-    fetchMenteeListByMentorId(user!.userId)
+    if (user) {
+      fetchMenteeListByMentorId(user.userId)
       .then(setMenteeInfo)
-      .catch((error: any) => console.error('Error:', error))
+      .catch((error: Error) => console.error('Error:', error))
+    }
   }, [])
 
   return (
@@ -27,7 +36,7 @@ export default function MenteeInfo() {
         Mentee Information
       </Typography>
       {menteeInfo &&
-        Object.values(menteeInfo).map((data, index: number, arr) =>
+        Object.values(menteeInfo).map((data, index: number) =>
           index === currentMentee ? (
             <div key={index}>
               <Typography

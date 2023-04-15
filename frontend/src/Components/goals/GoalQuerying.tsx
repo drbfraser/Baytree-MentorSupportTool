@@ -85,7 +85,6 @@ export const GoalSearch = () => {
     }))
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(debounce(updateSearch, 500), [])
 
   return <TextField fullWidth defaultValue={query.search || ''} onChange={debouncedSearch} />
