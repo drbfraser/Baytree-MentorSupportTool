@@ -102,6 +102,7 @@ test fluent-logger:
   after_script:
     - cd baytree_app/server_logs
     - cat server_application.log
+    - cat server_requests.log
 
 build info:
   # Always runs: allows pipeline execution to happen even if no other tasks run.

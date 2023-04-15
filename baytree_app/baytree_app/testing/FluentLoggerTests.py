@@ -152,20 +152,3 @@ if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFluentLoggingHandler)
     result = unittest.TestResult()
     suite.run(result)
-
-    # log file formatter
-    formatter = logging.Formatter(
-        '%(asctime)s - %(levelname)s - %(message)s')
-
-    # message logger setup
-    FluentLoggingHandler.messageLogger.setLevel(logging.DEBUG)
-    applicationFileHandler = logging.FileHandler(
-        "/builds/415-baytree/mentorsupport/baytree_app/server_logs/server_application.log")
-    applicationFileHandler.setFormatter(formatter)
-    FluentLoggingHandler.messageLogger.addHandler(applicationFileHandler)
-
-    for test, error in result.failures:
-        FluentLoggingHandler.critical(
-            f"The following test case has failed: {test}")
-
-    FluentLoggingHandler.messageLogger.removeHandler(applicationFileHandler)
