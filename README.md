@@ -36,10 +36,14 @@ The Baytree App is designed to facilitate the tracking of each volunteers' progr
    GRAFANA_API_KEY={your_Grafana_API_key}
    VIEWS_BASE_URL=base_url_for_views_apis
 
-   LOGGER_TESTS=gitlab
+   LOGGER_TEST_ENV=gitlab
 
    ENVIRONMENT=dev
    ```
+
+   Please set the LOGGER_TEST_ENV var to your desired testing environment which could be 'local' for running the fluent logger tests locally or 'gitlab' for running these tests in a GitLab CI-CD job.
+
+   Please set the ENVIRONMENT variable based on your desired environment which may either 'dev','staging', or 'production'.
 
    According to Google's new less-secure app policy, the gmail account must have 2-factor authentication enabled and an "app password" must be created which can be used with Django.
 
