@@ -2,11 +2,11 @@ import { PagedDataRows } from '../../components/shared/datagrid/datagridTypes'
 import { ApiOptions, backendGet, backendPost } from './base'
 
 export interface MentorRole {
-  id: number;
-  name: string;
-  viewsQuestionnaireId: number;
-  viewsSessionGroupId: number;
-  activity: string[];
+  id: number
+  name: string
+  viewsQuestionnaireId: number
+  viewsSessionGroupId: number
+  activity: string[]
 }
 
 export const mentorRolesBackendEndpoint = 'users/mentor-roles/'

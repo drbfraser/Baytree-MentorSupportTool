@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { getSessionGroupsFromViews } from '../../../../../api/backend/views/sessionGroups'
 import {
   getSessionsFromViews,
-  Session as ViewsSession,
+  Session as ViewsSession
 } from '../../../../../api/backend/views/sessions'
 import { Mentor } from '../../../../../pages/home'
 import { PaginatedSelectOption } from '../../../../shared/paginatedSelect'
@@ -15,13 +15,13 @@ import {
   getCurYearEndDate,
   getCurYearStartDate,
   getMentorSessionCounts,
-  onExportButtonClick,
+  onExportButtonClick
 } from './Logic'
 
 interface MentorSessionTrackingCardProps {
-  mentors: Mentor[];
-  mentorFilter: string;
-  setMentorFilter: (newMentorFilter: string) => void;
+  mentors: Mentor[]
+  mentorFilter: string
+  setMentorFilter: (newMentorFilter: string) => void
 }
 
 const ERROR_MESSAGE =
@@ -81,7 +81,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
 
   const onSessionGroupSelectOptionChange = async ({
     id,
-    name,
+    name
   }: SessionGroup) => {
     setSelectedSessionGroupId(id)
     setSelectedSessionGroupName(name)
@@ -95,9 +95,7 @@ const MentorSessionTrackingCard: React.FunctionComponent<
         curYear={curYear}
         onExportButtonClick={() => {
           if (selectedSessionGroupName === null) {
-            toast.error(
-              'Please select a session group first before exporting!'
-            )
+            toast.error('Please select a session group first before exporting!')
             return
           }
           onExportButtonClick(
@@ -127,15 +125,15 @@ const CardLayout = styled(Paper)`
   grid-template-columns: 1fr;
   grid-template-rows: repeat(2, auto);
   grid-template-areas:
-    "Header"
-    "SessionTrackingTable";
+    'Header'
+    'SessionTrackingTable';
   grid-area: mentorSessionTrackingCard;
   padding: 1rem 2rem 1rem 2rem;
 `
 
 export interface SessionGroup {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 export default MentorSessionTrackingCard

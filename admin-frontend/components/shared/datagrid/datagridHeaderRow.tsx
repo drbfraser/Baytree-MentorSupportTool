@@ -7,11 +7,11 @@ import { someExpandableColumnExists } from './datagridRowLogic'
 import { DataGridColumn } from './datagridTypes'
 
 interface DataGridHeaderRowProps {
-  onSaveButtonClick?: () => void;
-  cols: DataGridColumn[];
-  enableSaveButton: boolean;
-  isDataGridSaveable: boolean;
-  hasDataRowActions: boolean;
+  onSaveButtonClick?: () => void
+  cols: DataGridColumn[]
+  enableSaveButton: boolean
+  isDataGridSaveable: boolean
+  hasDataRowActions: boolean
 }
 
 const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
@@ -42,7 +42,7 @@ const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
                       : someExpandableColumnExists(props.cols)
                       ? props.cols.filter((col) => col.expandableColumn).length
                       : props.cols.length)
-                  }%`,
+                  }%`
                 }}
               >
                 {col.header}
@@ -66,9 +66,9 @@ const DataGridHeaderRow: FC<DataGridHeaderRowProps> = (props) => {
 }
 
 interface DataGridSaveButtonHeaderCellProps {
-  onClick: () => void;
-  enableSaveButton: boolean;
-  width: string;
+  onClick: () => void
+  enableSaveButton: boolean
+  width: string
 }
 
 const DataGridSaveButtonHeaderCell: FC<DataGridSaveButtonHeaderCellProps> = (

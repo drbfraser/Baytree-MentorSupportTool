@@ -2,21 +2,21 @@ import { BackendGetFunction, generateBackendGetFunc } from '../base'
 import { API_BASE_URL } from '../url'
 
 interface VolunteerUnparsed {
-  firstname: string;
-  surname: string;
-  viewsPersonId: string;
-  email: string;
-  ethnicity: string;
-  country: string;
-  firstLanguage: string;
+  firstname: string
+  surname: string
+  viewsPersonId: string
+  email: string
+  ethnicity: string
+  country: string
+  firstLanguage: string
 }
 
 interface VolunteerResponse extends VolunteerUnparsed {
-  dateOfBirth: string;
+  dateOfBirth: string
 }
 
 export interface Volunteer extends VolunteerUnparsed {
-  dateOfBirth: Date | null;
+  dateOfBirth: Date | null
 }
 
 export const volunteersFromViewsBackendEndpoint = `${API_BASE_URL}/views-api/volunteers`
@@ -30,11 +30,7 @@ export const getVolunteersFromViews: BackendGetFunction<Volunteer> = async (
   offset?: number,
   filters?: Record<string, string>
 ) => {
-  const backendResponse = await getVolunteersBackendFunc(
-    limit,
-    offset,
-    filters
-  )
+  const backendResponse = await getVolunteersBackendFunc(limit, offset, filters)
 
   if (backendResponse && backendResponse.data) {
     return {
@@ -43,8 +39,8 @@ export const getVolunteersFromViews: BackendGetFunction<Volunteer> = async (
         ...volunteer,
         dateOfBirth: isNaN(Date.parse(volunteer.dateOfBirth)) // is valid date?
           ? null
-          : new Date(Date.parse(volunteer.dateOfBirth)),
-      })),
+          : new Date(Date.parse(volunteer.dateOfBirth))
+      }))
     }
   }
 

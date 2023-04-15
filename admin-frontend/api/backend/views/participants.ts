@@ -1,19 +1,19 @@
 interface ParticipantUnparsed {
-  firstName: string;
-  lastName: string;
-  viewsPersonId: number;
-  email: string;
-  ethnicity: string;
-  country: string;
-  firstLanguage: string;
+  firstName: string
+  lastName: string
+  viewsPersonId: number
+  email: string
+  ethnicity: string
+  country: string
+  firstLanguage: string
 }
 
 interface ParticipantResponse extends ParticipantUnparsed {
-  dateOfBirth: string;
+  dateOfBirth: string
 }
 
 export interface Participant extends ParticipantUnparsed {
-  dateOfBirth: Date | null;
+  dateOfBirth: Date | null
 }
 
 import { PagedDataRows } from '../../../components/shared/datagrid/datagridTypes'
@@ -22,9 +22,9 @@ import { backendGet } from '../base'
 export const participantsEndpoint = 'views-api/participants'
 
 export const getParticipantsFromViews = async (params?: {
-  limit?: number;
-  offset?: number;
-  filters?: Record<string, string>;
+  limit?: number
+  offset?: number
+  filters?: Record<string, string>
 }): Promise<PagedDataRows<Participant> | null> => {
   let queryParams: Record<string, any> = {}
   if (params) {
@@ -51,8 +51,8 @@ export const getParticipantsFromViews = async (params?: {
         ...participant,
         dateOfBirth: isNaN(Date.parse(participant.dateOfBirth)) // is valid date?
           ? null
-          : new Date(Date.parse(participant.dateOfBirth)),
-      })),
+          : new Date(Date.parse(participant.dateOfBirth))
+      }))
     }
   } else {
     return null

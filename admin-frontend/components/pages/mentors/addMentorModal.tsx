@@ -17,16 +17,16 @@ const AddMentorModal: ModalComponent = (props) => {
   const getVolunteerDataRows: onLoadPagedDataRowsFunc = async ({
     searchText,
     limit,
-    offset,
+    offset
   }) => {
     const mentorsData = await getVolunteersFromViews(limit, offset, {
-      searchEmail: searchText,
+      searchEmail: searchText
     })
 
     if (mentorsData && mentorsData.data !== null) {
       return {
         count: mentorsData.total,
-        results: mentorsData.data,
+        results: mentorsData.data
       }
     } else {
       throw HELP_MESSAGE
@@ -49,10 +49,10 @@ const AddMentorModal: ModalComponent = (props) => {
               header: 'Email',
               dataField: 'email',
               enableSearching: true,
-              keepColumnOnMobile: true,
+              keepColumnOnMobile: true
             },
             { header: 'First Name', dataField: 'firstname' },
-            { header: 'Last Name', dataField: 'surname' },
+            { header: 'Last Name', dataField: 'surname' }
           ]}
           dataRowActions={[
             {
@@ -61,7 +61,7 @@ const AddMentorModal: ModalComponent = (props) => {
 
                 if (!dataRow.email) {
                   setIsSendingMentorEmail(false)
-                  toast.error('Error: user doesn\'t have valid email in views!')
+                  toast.error("Error: user doesn't have valid email in views!")
                   return
                 }
 
@@ -89,8 +89,8 @@ const AddMentorModal: ModalComponent = (props) => {
                 setIsSendingMentorEmail(false)
               },
               name: 'Create',
-              icon: <MdCheck />,
-            },
+              icon: <MdCheck />
+            }
           ]}
           isDataGridDeleteable={false}
           pageSize={PAGE_LIMIT}

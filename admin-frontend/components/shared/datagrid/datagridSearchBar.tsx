@@ -2,15 +2,15 @@ import { TextField } from '@mui/material'
 import { Dispatch, FC, MutableRefObject, SetStateAction, useRef } from 'react'
 import {
   getSearchBarLabel,
-  onSearchTextChanged,
+  onSearchTextChanged
 } from './datagridSearchBarLogic'
 import { DataGridColumn } from './datagridTypes'
 
 interface DataGridSearchBarProps {
-  searchText: string;
-  setSearchText: Dispatch<SetStateAction<string>>;
-  isSearchingRef: MutableRefObject<number>;
-  cols: DataGridColumn[];
+  searchText: string
+  setSearchText: Dispatch<SetStateAction<string>>
+  isSearchingRef: MutableRefObject<number>
+  cols: DataGridColumn[]
 }
 
 const DataGridSearchBar: FC<DataGridSearchBarProps> = (props) => {

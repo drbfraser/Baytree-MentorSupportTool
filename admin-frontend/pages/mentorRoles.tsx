@@ -5,16 +5,16 @@ import styled from 'styled-components'
 import {
   getMentorRoles,
   MentorRole,
-  saveMentorRoles,
+  saveMentorRoles
 } from '../api/backend/mentorRoles'
 import { getActivitiesFromViews } from '../api/backend/views/activities'
 import {
   getQuestionnaireFromViews,
-  getQuestionnairesFromViews,
+  getQuestionnairesFromViews
 } from '../api/backend/views/questionnaires'
 import {
   getSessionGroupFromViews,
-  getSessionGroupsFromViews,
+  getSessionGroupsFromViews
 } from '../api/backend/views/sessionGroups'
 import { getVolunteeringTypesFromViews } from '../api/backend/views/volunteeringTypes'
 import DataGrid from '../components/shared/datagrid/datagrid'
@@ -22,17 +22,17 @@ import {
   onSaveDataRowsFunc,
   onLoadDataRowsFunc,
   OnLoadColumnValueOptionsFunc,
-  OnLoadPagedColumnValueOptionsFunc,
+  OnLoadPagedColumnValueOptionsFunc
 } from '../components/shared/datagrid/datagridTypes'
 
 const MentorRoles: NextPage = () => {
   const getMentorRoleData: onLoadDataRowsFunc = async ({
     searchText,
-    dataFieldsToSearch,
+    dataFieldsToSearch
   }) => {
     const mentorRolesPageRes = (await getMentorRoles({
       searchText,
-      dataFieldsToSearch,
+      dataFieldsToSearch
     })) as MentorRole[]
 
     if (mentorRolesPageRes) {
@@ -50,7 +50,7 @@ const MentorRoles: NextPage = () => {
     const result = await saveMentorRoles([
       ...createdRows,
       ...updatedRows,
-      ...deletedRows.map((row) => ({ ...row, isDeleted: true })),
+      ...deletedRows.map((row) => ({ ...row, isDeleted: true }))
     ])
     return !!result
   }
@@ -59,7 +59,7 @@ const MentorRoles: NextPage = () => {
     id,
     limit,
     offset,
-    searchText,
+    searchText
   }) => {
     if (id) {
       const sessionGroup = await getSessionGroupFromViews(id)
@@ -69,9 +69,9 @@ const MentorRoles: NextPage = () => {
           data: [
             {
               id: parseInt(sessionGroup.viewsSessionGroupId),
-              name: sessionGroup.name,
-            },
-          ],
+              name: sessionGroup.name
+            }
+          ]
         }
       } else {
         toast.error('Failed to retrieve initial session group option data')
@@ -81,7 +81,7 @@ const MentorRoles: NextPage = () => {
       const response = await getSessionGroupsFromViews({
         limit,
         offset,
-        name: searchText,
+        name: searchText
       })
       if (response) {
         const sessionGroups = response.data
@@ -89,8 +89,8 @@ const MentorRoles: NextPage = () => {
           total: response.total,
           data: sessionGroups.map((sessionGroup) => ({
             id: parseInt(sessionGroup.viewsSessionGroupId),
-            name: sessionGroup.name,
-          })),
+            name: sessionGroup.name
+          }))
         }
       } else {
         toast.error('Failed to retrieve session group option data.')
@@ -103,7 +103,7 @@ const MentorRoles: NextPage = () => {
     id,
     limit,
     offset,
-    searchText,
+    searchText
   }) => {
     if (id) {
       const questionnaire = await getQuestionnaireFromViews(id)
@@ -113,9 +113,9 @@ const MentorRoles: NextPage = () => {
           data: [
             {
               id: questionnaire.viewsQuestionnaireId,
-              name: questionnaire.title,
-            },
-          ],
+              name: questionnaire.title
+            }
+          ]
         }
       } else {
         toast.error('Failed to retrieve initial questionnaire option data')
@@ -125,7 +125,7 @@ const MentorRoles: NextPage = () => {
       const response = await getQuestionnairesFromViews({
         limit,
         offset,
-        title: searchText,
+        title: searchText
       })
       if (response) {
         const questionnaires = response.data
@@ -133,8 +133,8 @@ const MentorRoles: NextPage = () => {
           total: response.total,
           data: questionnaires.map((questionnaire) => ({
             id: questionnaire.viewsQuestionnaireId,
-            name: questionnaire.title,
-          })),
+            name: questionnaire.title
+          }))
         }
       } else {
         toast.error('Failed to retrieve questionnaires option data.')
@@ -148,7 +148,7 @@ const MentorRoles: NextPage = () => {
     if (activities) {
       return activities.results.map((activity) => ({
         id: activity,
-        name: activity,
+        name: activity
       }))
     } else {
       throw 'Failed to retrieve activities option data.'
@@ -160,7 +160,7 @@ const MentorRoles: NextPage = () => {
     if (volunteeringTypes) {
       return volunteeringTypes.results.map((volunteeringType) => ({
         id: volunteeringType,
-        name: volunteeringType,
+        name: volunteeringType
       }))
     } else {
       throw 'Failed to retrieve volunteering type option data.'
@@ -175,29 +175,29 @@ const MentorRoles: NextPage = () => {
           {
             header: 'Mentor Role',
             dataField: 'name',
-            keepColumnOnMobile: true,
+            keepColumnOnMobile: true
           },
           {
             header: 'Session Group',
             dataField: 'viewsSessionGroupId',
-            onLoadPagedValueOptions: getSessionGroupOptions,
+            onLoadPagedValueOptions: getSessionGroupOptions
           },
           {
             header: 'Questionnaire',
             dataField: 'viewsQuestionnaireId',
-            onLoadPagedValueOptions: getQuestionnaireOptions,
+            onLoadPagedValueOptions: getQuestionnaireOptions
           },
           {
             header: 'Activity',
             dataField: 'activity',
             onLoadValueOptions: getActivityOptions,
-            isMultiSelect: true,
+            isMultiSelect: true
           },
           {
             header: 'Volunteering',
             dataField: 'volunteeringType',
-            onLoadValueOptions: getVolunteeringOptions,
-          },
+            onLoadValueOptions: getVolunteeringOptions
+          }
         ]}
         onLoadDataRows={getMentorRoleData}
         onSaveDataRows={saveMentorRoleData}

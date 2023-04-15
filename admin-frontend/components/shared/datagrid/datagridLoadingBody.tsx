@@ -2,8 +2,8 @@ import { Skeleton, TableCell, TableRow } from '@mui/material'
 import { FC } from 'react'
 
 interface DataGridLoadingBodyProps {
-  numCols: number;
-  numLoadingRows?: number;
+  numCols: number
+  numLoadingRows?: number
 }
 
 const DataGridLoadingBody: FC<DataGridLoadingBodyProps> = (props) => {

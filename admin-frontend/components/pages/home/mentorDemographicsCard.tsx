@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import {
   COLORS,
   HELP_MESSAGE,
-  MOBILE_BREAKPOINT,
+  MOBILE_BREAKPOINT
 } from '../../../constants/constants'
 
 import React, { PureComponent, useEffect, useState } from 'react'
@@ -11,7 +11,7 @@ import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts'
 import { Button, ButtonGroup, Skeleton, Typography } from '@mui/material'
 import {
   getVolunteersFromViews,
-  Volunteer,
+  Volunteer
 } from '../../../api/backend/views/volunteers'
 import moment from 'moment'
 import { toast } from 'react-toastify'
@@ -19,17 +19,17 @@ import { stringify } from 'querystring'
 
 interface MentorDemographicsData {
   age: {
-    age15To19: number;
-    age20To30: number;
-    age30To40: number;
-    age40Plus: number;
-    notEntered: number;
-  };
-  ethnicity: Record<string, number>;
-  firstLanguage: Record<string, number>;
+    age15To19: number
+    age20To30: number
+    age30To40: number
+    age40Plus: number
+    notEntered: number
+  }
+  ethnicity: Record<string, number>
+  firstLanguage: Record<string, number>
 }
 
-type DemographicCategory = 'age' | 'ethnicity' | 'firstLanguage';
+type DemographicCategory = 'age' | 'ethnicity' | 'firstLanguage'
 
 const MentorDemographicsCard: React.FC<{}> = () => {
   const [loadingData, setLoadingData] = useState(false)
@@ -102,10 +102,10 @@ const MentorDemographicsCard: React.FC<{}> = () => {
             age20To30: getVolunteersInAgeRange(volunteers.data, 20, 30).length,
             age30To40: getVolunteersInAgeRange(volunteers.data, 30, 40).length,
             age40Plus: getVolunteersInAgeRange(volunteers.data, 40).length,
-            notEntered: getVolunteersAgeNotEntered(volunteers.data).length,
+            notEntered: getVolunteersAgeNotEntered(volunteers.data).length
           },
           ethnicity: getVolunteerEthnicityCounts(volunteers.data),
-          firstLanguage: getVolunteerFirstLanguageCounts(volunteers.data),
+          firstLanguage: getVolunteerFirstLanguageCounts(volunteers.data)
         }
 
         setData(mentorDemographicsData)
@@ -165,15 +165,15 @@ const StyledMentorDemographicsCard = styled(Paper)`
   grid-template-columns: 1.5fr 1fr;
   grid-template-rows: auto auto;
   grid-template-areas:
-    "header header"
-    "chart legend";
+    'header header'
+    'chart legend';
 `
 
 const Header: React.FC<{
-  selectedDemographicCategory: DemographicCategory;
+  selectedDemographicCategory: DemographicCategory
   setSelectedDemographicCategory: React.Dispatch<
     React.SetStateAction<DemographicCategory>
-  >;
+  >
 }> = (props) => {
   return (
     <StyledHeader>
@@ -195,8 +195,8 @@ const StyledHeader = styled.div`
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-template-areas:
-    "title moreInfo"
-    "options options";
+    'title moreInfo'
+    'options options';
 `
 
 const Title: React.FC<{}> = () => {
@@ -236,10 +236,10 @@ const StyledMoreInfoText = styled(Typography)`
 `
 
 const Options: React.FC<{
-  selectedDemographicCategory: DemographicCategory;
+  selectedDemographicCategory: DemographicCategory
   setSelectedDemographicCategory: React.Dispatch<
     React.SetStateAction<DemographicCategory>
-  >;
+  >
 }> = (props) => {
   return (
     <StyledOptions>
@@ -291,8 +291,8 @@ const StyledOptions = styled.div`
 `
 
 const Chart: React.FC<{
-  data: MentorDemographicsData | null;
-  selectedDemographicCategory: DemographicCategory;
+  data: MentorDemographicsData | null
+  selectedDemographicCategory: DemographicCategory
 }> = (props) => {
   // Pie Chart Example: https://recharts.org/en-US/examples/PieChartWithCustomizedLabel
 
@@ -311,25 +311,25 @@ const Chart: React.FC<{
           { name: 'Age20To30', value: demographicData.age.age20To30 },
           { name: 'Age30To40', value: demographicData.age.age30To40 },
           { name: 'Age40Plus', value: demographicData.age.age40Plus },
-          { name: 'AgeNotEntered', value: demographicData.age.notEntered },
+          { name: 'AgeNotEntered', value: demographicData.age.notEntered }
         ]
-        case 'firstLanguage':
-          const firstLanguageData: { name: string; value: number }[] = []
-  
-          for (const firstLanguage in demographicData.firstLanguage) {
-            firstLanguageData.push({
-              name: firstLanguage,
-              value: demographicData.firstLanguage[firstLanguage],
-            })
-          }
-          return firstLanguageData
+      case 'firstLanguage':
+        const firstLanguageData: { name: string; value: number }[] = []
+
+        for (const firstLanguage in demographicData.firstLanguage) {
+          firstLanguageData.push({
+            name: firstLanguage,
+            value: demographicData.firstLanguage[firstLanguage]
+          })
+        }
+        return firstLanguageData
       case 'ethnicity':
         const ethnicityData: { name: string; value: number }[] = []
 
         for (const ethnicity in demographicData.ethnicity) {
           ethnicityData.push({
             name: ethnicity,
-            value: demographicData.ethnicity[ethnicity],
+            value: demographicData.ethnicity[ethnicity]
           })
         }
         return ethnicityData
@@ -344,15 +344,15 @@ const Chart: React.FC<{
     innerRadius,
     outerRadius,
     percent,
-    index,
+    index
   }: {
-    cx: number;
-    cy: number;
-    midAngle: number;
-    innerRadius: number;
-    outerRadius: number;
-    percent: number;
-    index: number;
+    cx: number
+    cy: number
+    midAngle: number
+    innerRadius: number
+    outerRadius: number
+    percent: number
+    index: number
   }) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
     const x = cx + radius * Math.cos(-midAngle * RADIAN)
@@ -411,13 +411,13 @@ const StyledChart = styled.div`
 `
 
 interface LegendEntry {
-  title: string;
-  color: string;
+  title: string
+  color: string
 }
 
 const Legend: React.FC<{
-  selectedCategory: DemographicCategory;
-  data: MentorDemographicsData | null;
+  selectedCategory: DemographicCategory
+  data: MentorDemographicsData | null
 }> = (props) => {
   const getUniqueColor = (n: number) => {
     return COLORS[n % COLORS.length]

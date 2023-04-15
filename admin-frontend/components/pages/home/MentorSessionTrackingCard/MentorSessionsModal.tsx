@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Session as ViewsSession } from '../../../../api/backend/views/sessions'
 import {
   BAYTREE_PRIMARY_COLOR,
-  MOBILE_BREAKPOINT,
+  MOBILE_BREAKPOINT
 } from '../../../../constants/constants'
 import { Mentor } from '../../../../pages/home'
 import DataGrid from '../../../shared/datagrid/datagrid'
@@ -13,9 +13,9 @@ import Modal from '../../../shared/Modal'
 import MentorSessionsNotesModal from './MentorSessionsNotesModal'
 
 export interface MentorSessionsModalProps {
-  mentor: Mentor;
-  mentorSessions: ViewsSession[];
-  year: number;
+  mentor: Mentor
+  mentorSessions: ViewsSession[]
+  year: number
 }
 
 const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
@@ -25,12 +25,10 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
   const mentorSessions = props.mentorSessions
     .map((session) => ({
       ...session,
-      startDate: session.startDate.toDateString(),
+      startDate: session.startDate.toDateString()
     }))
     .sort((s1, s2) => {
-      return (
-        new Date(s2.startDate).getTime() - new Date(s1.startDate).getTime()
-      )
+      return new Date(s2.startDate).getTime() - new Date(s1.startDate).getTime()
     })
 
   return (
@@ -60,9 +58,9 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
             {
               header: 'Date',
               dataType: 'date',
-              dataField: 'startDate',
+              dataField: 'startDate'
             },
-            { header: 'Duration', dataField: 'duration' },
+            { header: 'Duration', dataField: 'duration' }
           ]}
           dataRowActions={[
             {
@@ -70,8 +68,8 @@ const MentorSessionsModal: React.FunctionComponent<MentorSessionsModalProps> = (
               name: 'See Notes',
               actionFunction: (dataRow) => {
                 setOpenedSession(dataRow as ViewsSession)
-              },
-            },
+              }
+            }
           ]}
           onLoadDataRows={async () => mentorSessions}
         ></DataGrid>
@@ -86,8 +84,8 @@ const MentorSessionsModalLayout = styled.div`
   grid-template-rows: auto auto;
   grid-row-gap: 1rem;
   grid-template-areas:
-    "name date email"
-    "sessionsGrid sessionsGrid sessionsGrid";
+    'name date email'
+    'sessionsGrid sessionsGrid sessionsGrid';
   grid-column-gap: 2rem;
 
   align-items: center;
@@ -96,10 +94,10 @@ const MentorSessionsModalLayout = styled.div`
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto auto;
     grid-template-areas:
-      "name"
-      "date"
-      "email"
-      "sessionsGrid";
+      'name'
+      'date'
+      'email'
+      'sessionsGrid';
   }
 `
 
