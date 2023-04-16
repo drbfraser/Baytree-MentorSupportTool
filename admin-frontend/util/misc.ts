@@ -23,7 +23,7 @@ export const MONTH_NAMES = [
   'September',
   'October',
   'November',
-  'December',
+  'December'
 ]
 
 export const padLeftString = (padChar: string, width: number, str: string) => {

@@ -39,30 +39,30 @@ const backendGetFetch = async (
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    credentials: 'include',
+    credentials: 'include'
   })
 }
 
 export type BackendGetResponse<ResponseObject> =
   | {
-      status: number;
-      total: number;
-      data: ResponseObject[];
+      status: number
+      total: number
+      data: ResponseObject[]
     }
   | {
-      total: number;
-      status: number;
-      data: null;
+      total: number
+      status: number
+      data: null
     }
-  | null;
+  | null
 
 export type BackendGetFunction<ResponseObject> = (
   limit?: number,
   offset?: number,
   filters?: Record<string, string>
-) => Promise<BackendGetResponse<ResponseObject>>;
+) => Promise<BackendGetResponse<ResponseObject>>
 
 /** Generates a strongly-typed function given a backendEndpoint that will allow
  * paginated get requests via backendGetFetch(). Information for how to
@@ -103,8 +103,8 @@ export const generateBackendGetFunc =
       }
 
       const res = (await apiRes.json()) as {
-        total: number;
-        data: ResponseObject[];
+        total: number
+        data: ResponseObject[]
       }
 
       const resWithStatus = { ...res, status: apiRes.status }
@@ -131,10 +131,10 @@ const backendPostFetch = async (
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     credentials: 'include',
-    body: JSON.stringify(requestObject),
+    body: JSON.stringify(requestObject)
   })
 
   return apiRes
@@ -165,7 +165,7 @@ export const generateBackendPostFunc =
       }
 
       const res = (await apiRes.json()) as {
-        ids: number[];
+        ids: number[]
       }
 
       const resWithStatus = { ...res, status: apiRes.status }
@@ -190,10 +190,10 @@ const backendPutFetch = async (backendEndpoint: string, body: any) => {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     credentials: 'include',
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   })
 
   return apiRes
@@ -247,9 +247,9 @@ const backendDeleteFetch = async (
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      credentials: 'include',
+      credentials: 'include'
     }
   )
 
@@ -308,7 +308,7 @@ export const generateBackendCrudFuncs = <
     create: generateBackendPostFunc<CreateObject>(backendEndpoint),
     read: generateBackendGetFunc<ResponseObject>(backendEndpoint),
     update: generateBackendPutFunc<UpdateObject>(backendEndpoint),
-    delete: generateBackendDeleteFunc(backendEndpoint),
+    delete: generateBackendDeleteFunc(backendEndpoint)
   }
 }
 
@@ -328,9 +328,9 @@ const backendFetch = async (
         body: JSON.stringify(body),
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        credentials: 'include',
+        credentials: 'include'
       }
     )
     return response
@@ -521,9 +521,9 @@ export const backendPut = async (relativeEndpointUrl: string, body: any) => {
 }
 
 export type ApiOptions = {
-  searchText?: string;
-  dataFieldsToSearch?: string[];
-  limit?: number;
-  offset?: number;
-  includeDataFromViews?: boolean;
-};
+  searchText?: string
+  dataFieldsToSearch?: string[]
+  limit?: number
+  offset?: number
+  includeDataFromViews?: boolean
+}

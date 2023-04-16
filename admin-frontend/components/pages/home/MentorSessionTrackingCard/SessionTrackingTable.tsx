@@ -11,14 +11,14 @@ import { Mentor } from '../../../../pages/home'
 import { MdSchedule } from 'react-icons/md'
 import {
   getMentorSessionCounts,
-  MentorSessionCount,
+  MentorSessionCount
 } from './MentorSessionTrackingCard/Logic'
 
 interface SessionTrackingTableProps {
-  sessionsForCurYear: ViewsSession[];
-  mentors: Mentor[];
-  isLoading: boolean;
-  year: number;
+  sessionsForCurYear: ViewsSession[]
+  mentors: Mentor[]
+  isLoading: boolean
+  year: number
 }
 
 const SessionTrackingTable: React.FunctionComponent<
@@ -61,56 +61,56 @@ const SessionTrackingTable: React.FunctionComponent<
             {
               header: 'Name',
               dataField: 'fullName',
-              keepColumnOnMobile: true,
+              keepColumnOnMobile: true
             },
             {
               header: 'Sep',
-              dataField: 'septemberSessions',
+              dataField: 'septemberSessions'
             },
             {
               header: 'Oct',
-              dataField: 'octoberSessions',
+              dataField: 'octoberSessions'
             },
             {
               header: 'Nov',
-              dataField: 'novemberSessions',
+              dataField: 'novemberSessions'
             },
             {
               header: 'Dec',
-              dataField: 'decemberSessions',
+              dataField: 'decemberSessions'
             },
             {
               header: 'Jan',
-              dataField: 'januarySessions',
+              dataField: 'januarySessions'
             },
             {
               header: 'Feb',
-              dataField: 'februarySessions',
+              dataField: 'februarySessions'
             },
             {
               header: 'Mar',
-              dataField: 'marchSessions',
+              dataField: 'marchSessions'
             },
             {
               header: 'Apr',
-              dataField: 'aprilSessions',
+              dataField: 'aprilSessions'
             },
             {
               header: 'May',
-              dataField: 'maySessions',
+              dataField: 'maySessions'
             },
             {
               header: 'Jun',
-              dataField: 'juneSessions',
+              dataField: 'juneSessions'
             },
             {
               header: 'Jul',
-              dataField: 'julySessions',
+              dataField: 'julySessions'
             },
             {
               header: 'Aug',
-              dataField: 'augustSessions',
-            },
+              dataField: 'augustSessions'
+            }
           ]}
           primaryKeyDataField="viewsPersonId"
           data={pagedMentorSessionCounts}
@@ -131,8 +131,8 @@ const SessionTrackingTable: React.FunctionComponent<
                 }
               },
               icon: <MdSchedule></MdSchedule>,
-              name: 'Sessions',
-            },
+              name: 'Sessions'
+            }
           ]}
           isDataGridDeleteable={false}
         ></DataGrid>
@@ -168,7 +168,7 @@ const SessionTrackingTable: React.FunctionComponent<
 }
 
 const SessionTrackingTableLayout = styled.div`
-  grid-area: "SessionTrackingTable";
+  grid-area: 'SessionTrackingTable';
   margin-top: 1rem;
 `
 

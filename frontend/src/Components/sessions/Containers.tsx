@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const inputContainerPropTypes = {
   label: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 }
 
 // Reponsive container for time
@@ -23,7 +23,7 @@ export const TimeInputContainer: React.FC<InputContainerProps> = (props) => {
 }
 
 type InputContainerProps = {
-  label: string,
+  label: string
   children: React.ReactNode
 }
 
@@ -43,5 +43,5 @@ export const SelectInputContainer: React.FC<InputContainerProps> = (props) => {
   )
 }
 
-SelectInputContainer.propTypes =  inputContainerPropTypes
+SelectInputContainer.propTypes = inputContainerPropTypes
 TimeInputContainer.propTypes = inputContainerPropTypes

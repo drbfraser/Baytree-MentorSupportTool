@@ -7,17 +7,17 @@ import {
   CalendarEvent,
   createCalendarEvent,
   updateCalendarEvent,
-  deleteCalendarEvent,
+  deleteCalendarEvent
 } from '../api/backend/calendarEvents'
 import {
   onSaveDataRowsFunc,
-  onLoadDataRowsFunc,
+  onLoadDataRowsFunc
 } from '../components/shared/datagrid/datagridTypes'
 
 const CalendarEvents: NextPage = () => {
   const getCalendarEventData: onLoadDataRowsFunc = async ({
     searchText,
-    dataFieldsToSearch,
+    dataFieldsToSearch
   }) => {
     const calendarEvents = await getCalendarEvents()
     if (!calendarEvents) {
@@ -60,27 +60,27 @@ const CalendarEvents: NextPage = () => {
           {
             header: 'Title',
             dataField: 'title',
-            keepColumnOnMobile: true,
+            keepColumnOnMobile: true
           },
           {
             header: 'Start Date',
             dataField: 'startDate',
-            dataType: 'date',
+            dataType: 'date'
           },
           {
             header: 'End Date',
             dataField: 'endDate',
-            dataType: 'date',
+            dataType: 'date'
           },
           {
             header: 'Is Annual',
             dataField: 'isAnnual',
-            dataType: 'boolean',
+            dataType: 'boolean'
           },
           {
             header: 'Note',
-            dataField: 'note',
-          },
+            dataField: 'note'
+          }
         ]}
         onLoadDataRows={getCalendarEventData}
         onSaveDataRows={saveCalendarEventData}

@@ -7,21 +7,30 @@ export const baseApi = axios.create({
   withCredentials: true
 })
 
-
 // Questionnaire
 export type Question = {
-  enabled: string;
-  Question: string;
-  QuestionID: string;
-  category: string;
-  inputType: 'text' | 'textarea' |'number' | 'date' | 'radio' | 'checkselect' | 'select' | 'selectother' | 'phone_number' |'time';
-  validation: string;
-  valueList: { items: string[]}
-};
+  enabled: string
+  Question: string
+  QuestionID: string
+  category: string
+  inputType:
+    | 'text'
+    | 'textarea'
+    | 'number'
+    | 'date'
+    | 'radio'
+    | 'checkselect'
+    | 'select'
+    | 'selectother'
+    | 'phone_number'
+    | 'time'
+  validation: string
+  valueList: { items: string[] }
+}
 
 export type AnswerSet = {
-  [key: string]: string | string[] |undefined;
-};
+  [key: string]: string | string[] | undefined
+}
 
 export const submitAnswerSetForQuestionnaire = async (
   answerSet: AnswerSet,
@@ -29,11 +38,14 @@ export const submitAnswerSetForQuestionnaire = async (
   person: string
 ) => {
   try {
-    const respond = await baseApi.post('views-api/questionnaires/answers/submit/', {
-      answerSet,
-      questionnaireId,
-      person
-    })
+    const respond = await baseApi.post(
+      'views-api/questionnaires/answers/submit/',
+      {
+        answerSet,
+        questionnaireId,
+        person
+      }
+    )
     if (respond.status === 200) return respond
     else throw Error
   } catch (error) {
@@ -61,14 +73,14 @@ export const fetchResourcesURL = async () => {
 // Sessions
 // TODO: Update the session based on the schema frontend
 export type Session = {
-  SessionID: number;
-  Title: string;
-  StartDate: string;
-  Duration: string;
-  Status: string;
-  Snippet: string;
-  Note: string;
-};
+  SessionID: number
+  Title: string
+  StartDate: string
+  Duration: string
+  Status: string
+  Snippet: string
+  Note: string
+}
 
 export const fetchSessionListByMentorId = async (id: number) => {
   return baseApi.get<Session[]>(`records/${id}`).then((res) => res.data)
@@ -76,20 +88,20 @@ export const fetchSessionListByMentorId = async (id: number) => {
 
 // Holidays
 export type SpecialEvent = {
-  id: number;
-  title: string;
-  startDate: string;
-  endDate: string;
-  isAnnual: boolean;
-  note?: string;
-};
+  id: number
+  title: string
+  startDate: string
+  endDate: string
+  isAnnual: boolean
+  note?: string
+}
 
 // UK Holidays
 export type UkHoliday = {
-  id: number;
-  name: string;
-  date: string;
-};
+  id: number
+  name: string
+  date: string
+}
 
 export const fetchUkHolidays = async () => {
   try {
@@ -112,7 +124,7 @@ export const fetchSpecialEvents = async () => {
     return { data: [] as SpecialEvent[], error: 'Cannot fetch holidays data' }
   }
 }
-export type Activity = string;
+export type Activity = string
 
 export const getActivitiesForMentor = async () => {
   try {
@@ -126,8 +138,8 @@ export const getActivitiesForMentor = async () => {
   }
 }
 export type Venue = {
-  viewsVenueId: number;
-};
+  viewsVenueId: number
+}
 
 export const fetchVenues = async () => {
   try {

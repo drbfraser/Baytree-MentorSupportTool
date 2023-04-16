@@ -7,7 +7,7 @@ import {
   ListItemText,
   Popover,
   TableCell,
-  Tooltip,
+  Tooltip
 } from '@mui/material'
 import { FC, useRef, useState } from 'react'
 import { MdMoreVert } from 'react-icons/md'
@@ -15,9 +15,9 @@ import styled from 'styled-components'
 import { DataRow, DataRowAction } from './datagridTypes'
 
 interface DataRowActionsCellProps {
-  actions: DataRowAction[];
-  dataRow: DataRow;
-  primaryKeyDataField: string;
+  actions: DataRowAction[]
+  dataRow: DataRow
+  primaryKeyDataField: string
 }
 
 const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
@@ -55,7 +55,7 @@ const DataRowActionsCell: FC<DataRowActionsCellProps> = (props) => {
             open={isActionsPopoverOpened}
             anchorOrigin={{
               vertical: 'bottom',
-              horizontal: 'left',
+              horizontal: 'left'
             }}
             onClose={() => setIsActionsPopoverOpened(false)}
             anchorEl={actionButtonRef.current}

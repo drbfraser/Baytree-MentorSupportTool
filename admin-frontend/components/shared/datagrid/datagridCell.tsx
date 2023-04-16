@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import {
   ColumnDataTypes,
   OnLoadPagedColumnValueOptionsFunc,
-  ValueOption,
+  ValueOption
 } from './datagridTypes'
 import useMobileLayout from '../../../hooks/useMobileLayout'
 import {
@@ -12,7 +12,7 @@ import {
   shouldRenderBoolComponent,
   shouldRenderDateComponent,
   shouldRenderSelectComponent,
-  shouldRenderTextInputComponent,
+  shouldRenderTextInputComponent
 } from './datagridCellLogic'
 import DataGridSelectComponent from './datagridSelectComponent'
 import DataGridDateComponent from './datagridDateComponent'
@@ -20,23 +20,23 @@ import DataGridBoolComponent from './datagridBoolComponent'
 import PaginatedSelect, { PaginatedSelectOption } from '../paginatedSelect'
 
 interface DataRowCellProps {
-  isSelectCell: boolean;
-  isMultiSelect?: boolean;
-  onLoadPagedColumnValueOptionsFunc?: OnLoadPagedColumnValueOptionsFunc;
-  selectPageSize?: number;
-  valueOptions?: ValueOption[];
-  value: any;
-  onChangedValue: (newValue: any) => void;
-  isCellChanged: boolean;
-  isCellDeleted: boolean;
-  primaryKeyVal: any;
-  dataField: string;
-  dataType?: ColumnDataTypes;
-  isDataGridSaveable: boolean;
-  isColumnEditable: boolean;
-  color?: string;
-  useDivInsteadOfTableCell?: boolean;
-  isCellInvalid?: boolean;
+  isSelectCell: boolean
+  isMultiSelect?: boolean
+  onLoadPagedColumnValueOptionsFunc?: OnLoadPagedColumnValueOptionsFunc
+  selectPageSize?: number
+  valueOptions?: ValueOption[]
+  value: any
+  onChangedValue: (newValue: any) => void
+  isCellChanged: boolean
+  isCellDeleted: boolean
+  primaryKeyVal: any
+  dataField: string
+  dataType?: ColumnDataTypes
+  isDataGridSaveable: boolean
+  isColumnEditable: boolean
+  color?: string
+  useDivInsteadOfTableCell?: boolean
+  isCellInvalid?: boolean
 }
 
 const DataRowCell: FC<DataRowCellProps> = (props) => {
@@ -108,7 +108,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
           defaultValue={props.value}
           onBlur={(event) => props.onChangedValue(event.target.value)}
           inputProps={{
-            style: { fontSize: '0.8rem' },
+            style: { fontSize: '0.8rem' }
           }}
         ></TextField>
       )
@@ -119,7 +119,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
           sx={{
             fontSize: '0.8rem',
             whiteSpace: 'nowrap',
-            wordBreak: 'break-word',
+            wordBreak: 'break-word'
           }}
         >
           {props.value}
@@ -152,7 +152,7 @@ const DataRowCell: FC<DataRowCellProps> = (props) => {
           ? 'lightgreen'
           : props.color
           ? props.color
-          : 'unset',
+          : 'unset'
       }}
     >
       {renderDataGridCell()}

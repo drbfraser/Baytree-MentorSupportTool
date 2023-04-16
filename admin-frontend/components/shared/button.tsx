@@ -5,10 +5,10 @@ import { ThemeState } from '../../reducers/theme'
 import { RootState } from '../../stores/store'
 
 interface ButtonWrapperProps {
-  backgroundColor?: string;
-  width?: string;
-  height?: string;
-  hoverColor?: string;
+  backgroundColor?: string
+  width?: string
+  height?: string
+  hoverColor?: string
 }
 
 const Button: React.FC<
@@ -26,8 +26,8 @@ const Button: React.FC<
 }
 
 interface StyledButtonWrapperProps {
-  backgroundColor: string;
-  hoverColor: string;
+  backgroundColor: string
+  hoverColor: string
 }
 
 const StyledButtonWrapper = styled(MatButton)<

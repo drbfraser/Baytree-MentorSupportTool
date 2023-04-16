@@ -1,20 +1,20 @@
 import { backendGet } from '../base'
 
 export interface Questionnaire {
-  viewsQuestionnaireId: number;
-  title: string;
-  description: string;
-  created: string;
-  updated: string;
-  createdBy: string;
-  updatedBy: string;
+  viewsQuestionnaireId: number
+  title: string
+  description: string
+  created: string
+  updated: string
+  createdBy: string
+  updatedBy: string
 }
 
 export const questionnairesFromViewsBackendEndpoint = 'views-api/questionnaires'
 export const getQuestionnairesFromViews = async (params?: {
-  limit?: number;
-  offset?: number;
-  title?: string;
+  limit?: number
+  offset?: number
+  title?: string
 }) => {
   const response = await backendGet<{ total: number; data: Questionnaire[] }>(
     questionnairesFromViewsBackendEndpoint,

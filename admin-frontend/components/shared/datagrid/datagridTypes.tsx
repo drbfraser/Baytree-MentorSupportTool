@@ -1,21 +1,21 @@
 import { ReactElement } from 'react'
 
 export type onLoadDataRowsFunc = (loadOptions: {
-  searchText: string;
-  dataFieldsToSearch: string[];
-}) => Promise<DataRow[]>;
+  searchText: string
+  dataFieldsToSearch: string[]
+}) => Promise<DataRow[]>
 
 export type onLoadPagedDataRowsFunc = (loadOptions: {
-  searchText: string;
-  dataFieldsToSearch: string[];
-  limit?: number;
-  offset?: number;
-}) => Promise<PagedDataRows<DataRow>>;
+  searchText: string
+  dataFieldsToSearch: string[]
+  limit?: number
+  offset?: number
+}) => Promise<PagedDataRows<DataRow>>
 
-export type DataRow = Record<string, any>;
+export type DataRow = Record<string, any>
 
 export type PagedDataRows<DataRowType> = {
-  count: number; // total record/object number in db table/model
+  count: number // total record/object number in db table/model
   results: DataRowType[] /* ex.
     [
       {
@@ -25,65 +25,65 @@ export type PagedDataRows<DataRowType> = {
           "activity": 2
       },
       ...
-    ]*/;
-};
+    ]*/
+}
 
 export type onSaveDataRowsFunc<DataRowType> = (
   createdRows: DataRowType[],
   updatedRows: DataRowType[],
   deletedRows: DataRowType[]
-) => Promise<boolean>;
+) => Promise<boolean>
 
 export interface DataGridColumn {
-  header: string;
-  dataField: string;
+  header: string
+  dataField: string
 
   // If column is "date" dataType, value format must be a string in "yyyy-mm-dd" (Javascript Date not working for now)
-  dataType?: ColumnDataTypes;
+  dataType?: ColumnDataTypes
 
-  valueOptions?: ValueOption[];
-  onLoadValueOptions?: OnLoadColumnValueOptionsFunc;
-  onLoadPagedValueOptions?: OnLoadPagedColumnValueOptionsFunc;
-  isMultiSelect?: boolean;
-  selectPageSize?: number;
+  valueOptions?: ValueOption[]
+  onLoadValueOptions?: OnLoadColumnValueOptionsFunc
+  onLoadPagedValueOptions?: OnLoadPagedColumnValueOptionsFunc
+  isMultiSelect?: boolean
+  selectPageSize?: number
 
-  disableEditing?: boolean;
-  enableSearching?: boolean;
-  keepColumnOnMobile?: boolean;
-  expandableColumn?: boolean;
-  isRequired?: boolean;
+  disableEditing?: boolean
+  enableSearching?: boolean
+  keepColumnOnMobile?: boolean
+  expandableColumn?: boolean
+  isRequired?: boolean
 }
 
-export type ColumnDataTypes = 'date' | 'boolean';
+export type ColumnDataTypes = 'date' | 'boolean'
 // If column is "date" dataType, value format must be a string in "yyyy-mm-dd" (Javascript Date not working for now)
 
-export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>;
+export type OnLoadColumnValueOptionsFunc = () => Promise<ValueOption[]>
 export type OnLoadPagedColumnValueOptionsFunc = (params: {
-  id?: any; // Used on initial load to populate paginated select box with label for id
-  searchText?: string;
-  limit?: number;
-  offset?: number;
-}) => Promise<{ total: number; data: ValueOption[] }>;
+  id?: any // Used on initial load to populate paginated select box with label for id
+  searchText?: string
+  limit?: number
+  offset?: number
+}) => Promise<{ total: number; data: ValueOption[] }>
 
 export interface ValueOption {
-  id: any;
-  name: string;
+  id: any
+  name: string
 }
 
 export interface DataRowAction {
-  icon: ReactElement;
-  name: string;
-  actionFunction: (dataRow: DataRow) => void;
+  icon: ReactElement
+  name: string
+  actionFunction: (dataRow: DataRow) => void
 }
 
-export type setCreatedDataRowFunc = (createdDataRow: DataRow) => void;
-export type setChangedDataRowFunc = (changedDataRow: DataRow) => void;
+export type setCreatedDataRowFunc = (createdDataRow: DataRow) => void
+export type setChangedDataRowFunc = (changedDataRow: DataRow) => void
 export type setDeletedDataRowFunc = (
   isDeleted: boolean,
   dataRow: DataRow
-) => void;
+) => void
 
 export interface InvalidCell {
-  primaryKey: string;
-  dataField: string;
+  primaryKey: string
+  dataField: string
 }

@@ -14,4 +14,3 @@ describe('authentication', () => {
     expect(mock.history.get[0].url).toEqual('/logout')
   })
 })
-

@@ -7,13 +7,27 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interationPlugin from '@fullcalendar/interaction'
 import rrulePlugin from '@fullcalendar/rrule'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import { Box, Checkbox, FormControlLabel, FormGroup, LinearProgress, Paper, useMediaQuery, useTheme } from '@mui/material'
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  LinearProgress,
+  Paper,
+  useMediaQuery,
+  useTheme
+} from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { type Id, toast } from 'react-toastify'
 import useEventDetailPopup from '../../hooks/useEventDetailPopup'
-import useSessionEvents, { EVENT_TYPE, type SessionFilter } from '../../hooks/useSessionEvents'
+import useSessionEvents, {
+  EVENT_TYPE,
+  type SessionFilter
+} from '../../hooks/useSessionEvents'
 import useSpecialEvents, { toCalendarEvent } from '../../hooks/useSpecialEvents'
-import useUkHolidays, { ukHolidayToCalendarEvent } from '../../hooks/useUkHolidays'
+import useUkHolidays, {
+  ukHolidayToCalendarEvent
+} from '../../hooks/useUkHolidays'
 import { TIMEZONE_ID } from '../../Utils/locale'
 import RecordDetail from '../records/RecordDetail'
 import SpecialEventDetail from '../records/SpecialEventDetail'
@@ -29,16 +43,17 @@ const Scheduler = () => {
     cancelled: true
   })
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(prev => ({
+    setFilter((prev) => ({
       ...prev,
-      [event.target.name]: event.target.checked,
+      [event.target.name]: event.target.checked
     }))
   }
 
   // Calandar states
   const calendarRef = useRef<FullCalendar | null>(null)
   const { loadingUkHolidays, ukHolidaysError, ukHolidays } = useUkHolidays()
-  const { loadingSpecialEvents, specialEventError, specialEvents } = useSpecialEvents()
+  const { loadingSpecialEvents, specialEventError, specialEvents } =
+    useSpecialEvents()
   const { fetchSessionEvents, error, loadingSession } = useSessionEvents(filter)
 
   useEffect(() => {
@@ -85,12 +100,19 @@ const Scheduler = () => {
   return (
     <>
       <Paper elevation={4} sx={{ mb: 2 }}>
-        {(loadingUkHolidays || loadingSpecialEvents || loadingSession) && <LinearProgress sx={{ mt: '-4px' }} />}
+        {(loadingUkHolidays || loadingSpecialEvents || loadingSession) && (
+          <LinearProgress sx={{ mt: '-4px' }} />
+        )}
         <Box sx={{ pt: 2, px: 2 }}>
           {/* Calender */}
           <FullCalendar
             ref={calendarRef}
-            plugins={[dayGridPlugin, timeGridPlugin, interationPlugin, rrulePlugin]}
+            plugins={[
+              dayGridPlugin,
+              timeGridPlugin,
+              interationPlugin,
+              rrulePlugin
+            ]}
             initialView="dayGridMonth"
             headerToolbar={headerToolbar}
             nowIndicator
@@ -110,16 +132,42 @@ const Scheduler = () => {
         <FormGroup row sx={{ px: 2 }}>
           <FormControlLabel
             label="Attended sessions"
-            control={<Checkbox checked={filter.attended} onChange={handleCheckboxChange} name="attended" />} />
+            control={
+              <Checkbox
+                checked={filter.attended}
+                onChange={handleCheckboxChange}
+                name="attended"
+              />
+            }
+          />
           <FormControlLabel
             label="Cancelled sessions"
-            control={<Checkbox checked={filter.cancelled} onChange={handleCheckboxChange} name="cancelled" />} />
+            control={
+              <Checkbox
+                checked={filter.cancelled}
+                onChange={handleCheckboxChange}
+                name="cancelled"
+              />
+            }
+          />
         </FormGroup>
       </Paper>
-      {event.type === EVENT_TYPE.SESSION &&
-        <RecordDetail sessionId={event.id} open={open} handleClose={handleClose} />}
-      {event.type === EVENT_TYPE.HOLIDAY &&
-        <SpecialEventDetail specialEvent={specialEvents.find(selected => selected.id === event.id)} open={open} handleClose={handleClose} />}
+      {event.type === EVENT_TYPE.SESSION && (
+        <RecordDetail
+          sessionId={event.id}
+          open={open}
+          handleClose={handleClose}
+        />
+      )}
+      {event.type === EVENT_TYPE.HOLIDAY && (
+        <SpecialEventDetail
+          specialEvent={specialEvents.find(
+            (selected) => selected.id === event.id
+          )}
+          open={open}
+          handleClose={handleClose}
+        />
+      )}
     </>
   )
 }

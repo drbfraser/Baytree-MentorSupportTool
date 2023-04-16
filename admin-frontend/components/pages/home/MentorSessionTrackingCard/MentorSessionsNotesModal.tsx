@@ -4,7 +4,7 @@ import { Session } from '../../../../api/backend/views/sessions'
 import useSessionDetails from '../../../../hooks/useSessionDetails'
 
 export interface MentorSessionsNotesModalProps {
-  session: Session;
+  session: Session
 }
 
 const MentorSessionsNotesModal: React.FunctionComponent<

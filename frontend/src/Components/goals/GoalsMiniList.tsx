@@ -15,20 +15,26 @@ const GoalsMiniList = () => {
 
   if (loadingGoals) return <Loading />
   if (goalError) return <Alert severity="error">{goalError}</Alert>
-  if (goals.length === 0) return <Alert severity="success">All goals achieved!</Alert>
+  if (goals.length === 0)
+    return <Alert severity="success">All goals achieved!</Alert>
 
-  return <Box>
-    {goals.map((goal) => {
-      const expanded = id === goal.id
-      const handleClick = () => expanded ? setId(undefined) : setId(goal.id)
-      return <GoalListItem
-        key={goal.id}
-        expanded={expanded}
-        handleClick={handleClick}
-        goal={goal}
-        minified />
-    })}
-  </Box>
+  return (
+    <Box>
+      {goals.map((goal) => {
+        const expanded = id === goal.id
+        const handleClick = () => (expanded ? setId(undefined) : setId(goal.id))
+        return (
+          <GoalListItem
+            key={goal.id}
+            expanded={expanded}
+            handleClick={handleClick}
+            goal={goal}
+            minified
+          />
+        )
+      })}
+    </Box>
+  )
 }
 
 export default GoalsMiniList

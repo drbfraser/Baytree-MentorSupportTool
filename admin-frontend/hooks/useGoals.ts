@@ -29,7 +29,8 @@ export const useGoals = (query: GoalQuery = DEFAULT_QUERY) => {
           setCount(data.count)
           setGoals(data.results)
         }
-      }).catch(() => setError('Cannot fetch goals'))
+      })
+      .catch(() => setError('Cannot fetch goals'))
       .finally(() => setLoading(false))
     return cleanup
   }, [query])

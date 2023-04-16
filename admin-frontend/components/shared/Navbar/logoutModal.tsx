@@ -16,7 +16,7 @@ const LogoutModal: NavbarModalComponent = (props) => {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: '100%',
+        height: '100%'
       }}
     >
       <Typography variant="h5" style={{ textAlign: 'center' }}>
@@ -27,7 +27,7 @@ const LogoutModal: NavbarModalComponent = (props) => {
           display: 'flex',
           flexDirection: onMobileDevice ? 'column' : 'row',
           justifyContent: 'space-around',
-          paddingTop: '3rem',
+          paddingTop: '3rem'
         }}
       >
         <Button

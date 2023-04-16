@@ -4,8 +4,8 @@ import { backendGet } from '../base'
 export const venuesEndpoint = 'views-api/venues'
 
 export interface Venue {
-  id: number;
-  name: string;
+  id: number
+  name: string
 }
 
 export const getVenuesFromViews =

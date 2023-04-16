@@ -1,6 +1,18 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Dashboard, PrivateRoute, PublicLayout, PublicRoute } from './layouts'
-import { CreateAccount, Goals, Home, Login, Notifications, Profile, Questionnaire, Records, ResetPassword, ResetPasswordRequest, Sessions } from './pages'
+import {
+  CreateAccount,
+  Goals,
+  Home,
+  Login,
+  Notifications,
+  Profile,
+  Questionnaire,
+  Records,
+  ResetPassword,
+  ResetPasswordRequest,
+  Sessions
+} from './pages'
 
 function App() {
   return (
@@ -11,7 +23,10 @@ function App() {
             <Route path="" element={<ResetPasswordRequest />} />
             <Route path=":resetPasswordId" element={<ResetPassword />} />
           </Route>
-          <Route path="/createAccount/:accountCreationId" element={<CreateAccount />} />
+          <Route
+            path="/createAccount/:accountCreationId"
+            element={<CreateAccount />}
+          />
           <Route element={<PublicRoute />}>
             <Route path="/login" element={<Login />} />
           </Route>

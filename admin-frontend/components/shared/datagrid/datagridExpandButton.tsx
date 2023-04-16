@@ -4,9 +4,9 @@ import { MdExpandLess, MdExpandMore } from 'react-icons/md'
 import styled from 'styled-components'
 
 interface ExpandButtonCellProps {
-  backgroundColor: string;
-  setIsRowExpanded: Dispatch<SetStateAction<boolean>>;
-  isRowExpanded: boolean;
+  backgroundColor: string
+  setIsRowExpanded: Dispatch<SetStateAction<boolean>>
+  isRowExpanded: boolean
 }
 
 const ExpandButtonCell: FC<ExpandButtonCellProps> = (props) => {

@@ -4,9 +4,9 @@ import { MdAdd } from 'react-icons/md'
 import styled from 'styled-components'
 
 interface DataGridAddRowProps {
-  numColumns: number;
-  onAddRow: () => void;
-  enableAddButton: boolean;
+  numColumns: number
+  onAddRow: () => void
+  enableAddButton: boolean
 }
 
 const DataGridAddRow: FC<DataGridAddRowProps> = (props) => {

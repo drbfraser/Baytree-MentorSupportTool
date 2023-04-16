@@ -3,18 +3,18 @@ import { Session } from '../../../../../api/backend/views/sessions'
 import { downloadCsv, objectsToCsv } from '../../../../../util/misc'
 
 export interface MentorSessionCount extends Mentor {
-  januarySessions: number;
-  februarySessions: number;
-  marchSessions: number;
-  aprilSessions: number;
-  maySessions: number;
-  juneSessions: number;
-  julySessions: number;
-  augustSessions: number;
-  septemberSessions: number;
-  octoberSessions: number;
-  novemberSessions: number;
-  decemberSessions: number;
+  januarySessions: number
+  februarySessions: number
+  marchSessions: number
+  aprilSessions: number
+  maySessions: number
+  juneSessions: number
+  julySessions: number
+  augustSessions: number
+  septemberSessions: number
+  octoberSessions: number
+  novemberSessions: number
+  decemberSessions: number
 }
 
 export const getMentorSessionCounts = (
@@ -42,7 +42,7 @@ export const getMentorSessionCounts = (
       septemberSessions: 0,
       octoberSessions: 0,
       novemberSessions: 0,
-      decemberSessions: 0,
+      decemberSessions: 0
     })
   )
 
@@ -134,7 +134,7 @@ export const onExportButtonClick = (
     { title: 'May', field: 'maySessions' },
     { title: 'Jun', field: 'juneSessions' },
     { title: 'Jul', field: 'julySessions' },
-    { title: 'Aug', field: 'augustSessions' },
+    { title: 'Aug', field: 'augustSessions' }
   ]
 
   const csvFileContent = objectsToCsv(mentorSessionCounts, exportedFields)

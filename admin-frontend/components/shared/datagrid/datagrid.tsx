@@ -10,7 +10,7 @@ import {
   onLoadDataRowsFunc,
   onLoadPagedDataRowsFunc,
   onSaveDataRowsFunc,
-  DataRowAction,
+  DataRowAction
 } from './datagridTypes'
 import useLoading from './hooks/useLoading'
 import useData from './hooks/useData'
@@ -18,15 +18,15 @@ import useSearch from './hooks/useSearch'
 import usePagination from './hooks/usePagination'
 
 export interface DataGridProps {
-  onLoadDataRows?: onLoadDataRowsFunc | onLoadPagedDataRowsFunc;
-  onSaveDataRows?: onSaveDataRowsFunc<any>;
-  disableDataRowCreation?: boolean;
-  cols: DataGridColumn[];
-  primaryKeyDataField?: string; // default primary key is "id"
-  pageSize?: number;
-  dataRowActions?: DataRowAction[];
-  isDataGridDeleteable?: boolean;
-  data?: DataRow[];
+  onLoadDataRows?: onLoadDataRowsFunc | onLoadPagedDataRowsFunc
+  onSaveDataRows?: onSaveDataRowsFunc<any>
+  disableDataRowCreation?: boolean
+  cols: DataGridColumn[]
+  primaryKeyDataField?: string // default primary key is "id"
+  pageSize?: number
+  dataRowActions?: DataRowAction[]
+  isDataGridDeleteable?: boolean
+  data?: DataRow[]
 }
 
 const DataGrid: FC<DataGridProps> = (props) => {
@@ -36,7 +36,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
     isLoadingColValueOptions,
     setIsLoadingColValueOptions,
     isSavingDataRows,
-    setIsSavingDataRows,
+    setIsSavingDataRows
   } = useLoading()
 
   const {
@@ -44,7 +44,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
     setCurrentPage,
     maxPageNumber,
     setMaxPageNumber,
-    clearPagerFuncRef,
+    clearPagerFuncRef
   } = usePagination()
 
   const { isSearchingRef, searchText, setSearchText } = useSearch()
@@ -67,7 +67,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
     setCreatedDataRow,
     createDataRow,
     isAnyColumnSearchable,
-    invalidCells,
+    invalidCells
   } = useData(
     props.cols,
     currentPage,
@@ -101,7 +101,7 @@ const DataGrid: FC<DataGridProps> = (props) => {
       )}
       <Table
         sx={{
-          tableLayout: 'fixed',
+          tableLayout: 'fixed'
         }}
       >
         <DataGridHeaderRow

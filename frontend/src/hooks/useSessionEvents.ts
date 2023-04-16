@@ -12,9 +12,9 @@ export enum EVENT_TYPE {
 export const EVENT_ID_REGEX = /(?<type>\w+)-(?<id>[0-9]+)/
 
 export type SessionFilter = {
-  attended: boolean;
-  cancelled: boolean;
-};
+  attended: boolean
+  cancelled: boolean
+}
 
 const sessionToEvent = (session: SessionRecord) => {
   const [start, end] = convertSessionDate(session)

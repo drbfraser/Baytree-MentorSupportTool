@@ -1,4 +1,4 @@
-import "@testing-library/cypress/add-commands";
+import '@testing-library/cypress/add-commands'
 
 // ***********************************************
 // This example commands.ts shows you how to

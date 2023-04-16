@@ -13,11 +13,11 @@ import { SidebarLink } from './sidebarLinks'
 import { TopbarAction } from './topbarActions'
 
 interface SidebarProps {
-  links: SidebarLink[];
-  topbarActions: TopbarAction[];
-  useMobileLayout: boolean;
-  setSidebarActive: (active: boolean) => void;
-  Ref: React.MutableRefObject<any>;
+  links: SidebarLink[]
+  topbarActions: TopbarAction[]
+  useMobileLayout: boolean
+  setSidebarActive: (active: boolean) => void
+  Ref: React.MutableRefObject<any>
 }
 
 const Sidebar: React.FC<SidebarProps> = (props) => {
@@ -72,17 +72,17 @@ const StyledSidebar = styled.div`
 `
 
 interface SidebarItemProps {
-  text: string;
-  icon: React.FC<IconBaseProps>;
-  iconColor?: string;
-  url?: string;
-  modalComponent?: ModalComponent;
-  enableModalCloseButton?: boolean;
-  modalWidth?: string;
-  modalHeight?: string;
-  setSidebarActive: (active: boolean) => void;
-  useMobileLayout: boolean;
-  isSelected?: boolean;
+  text: string
+  icon: React.FC<IconBaseProps>
+  iconColor?: string
+  url?: string
+  modalComponent?: ModalComponent
+  enableModalCloseButton?: boolean
+  modalWidth?: string
+  modalHeight?: string
+  setSidebarActive: (active: boolean) => void
+  useMobileLayout: boolean
+  isSelected?: boolean
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = (props) => {
@@ -110,7 +110,7 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
         <SidebarItemIcon>
           {React.createElement(props.icon, {
             color: props.iconColor ?? primaryColor,
-            size: NAVBAR_ICON_SIZE,
+            size: NAVBAR_ICON_SIZE
           })}
         </SidebarItemIcon>
         <SidebarItemText>{props.text}</SidebarItemText>
@@ -121,7 +121,7 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
           modalComponent={React.createElement(props.modalComponent, {
             onOutsideClick: () => {
               setShowModal(false)
-            },
+            }
           })}
           onOutsideClick={() => {
             setShowModal(false)
@@ -134,8 +134,8 @@ const SidebarItem: React.FC<SidebarItemProps> = (props) => {
 }
 
 const StyledSidebarItem = styled.div<{
-  isSelected?: boolean;
-  iconColor: string | undefined;
+  isSelected?: boolean
+  iconColor: string | undefined
 }>`
   display: flex;
   justify-content: left;
