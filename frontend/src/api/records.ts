@@ -11,28 +11,28 @@ export const recordsApi = axios.create({
 })
 
 export type SessionRecord = {
-  viewsSessionId: string;
-  name: string;
-  startDate: string;
-  startTime: string;
-  duration: string;
-  cancelled: string;
-};
+  viewsSessionId: string
+  name: string
+  startDate: string
+  startTime: string
+  duration: string
+  cancelled: string
+}
 
 type Params = {
-  startDateFrom?: string;
-  startDateTo?: string;
-  limit?: number;
-  offset?: number;
-  sessionGroupId?: number;
-  descending?: 0 | 1;
-};
+  startDateFrom?: string
+  startDateTo?: string
+  limit?: number
+  offset?: number
+  sessionGroupId?: number
+  descending?: 0 | 1
+}
 
 export const fetchSessions = async (params: Params = { descending: 0 }) => {
   try {
     const response = await recordsApi.get<{
-      count: number;
-      results: SessionRecord[];
+      count: number
+      results: SessionRecord[]
     }>('', { params })
     if (response.status === 200) return { data: response.data, error: '' }
     if (response.status === 404)
@@ -44,16 +44,16 @@ export const fetchSessions = async (params: Params = { descending: 0 }) => {
 }
 
 export type SessionDetail = SessionRecord & {
-  activity: string;
+  activity: string
   sessionGroup?: {
-    name: string;
-    description: string;
-  };
+    name: string
+    description: string
+  }
   mentee?: {
-    menteeId: string;
-    name: string;
-  };
-  note?: string;
-  created: Date;
-  updated: Date;
-};
+    menteeId: string
+    name: string
+  }
+  note?: string
+  created: Date
+  updated: Date
+}

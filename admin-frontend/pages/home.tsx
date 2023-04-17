@@ -11,11 +11,11 @@ import { toast } from 'react-toastify'
 import { getMentorUsers, MentorUser } from '../api/backend/mentorUsers'
 
 export interface Mentor {
-  viewsPersonId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  fullName: string;
+  viewsPersonId: string
+  firstName: string
+  lastName: string
+  email: string
+  fullName: string
 }
 
 const Home: NextPage = () => {
@@ -56,7 +56,9 @@ const Home: NextPage = () => {
 
       const volunteersRes = await getVolunteersFromViews()
       if (volunteersRes && volunteersRes.status === 200 && volunteersRes.data) {
-        const mentorsRes = (await getMentorUsers())?.results as MentorUser[] | null
+        const mentorsRes = (await getMentorUsers())?.results as
+          | MentorUser[]
+          | null
         if (mentorsRes) {
           setMentors(
             mentorsRes.map((mentor) => {
@@ -71,7 +73,7 @@ const Home: NextPage = () => {
                 lastName: matchingVolunteer ? matchingVolunteer.surname : '',
                 fullName: matchingVolunteer
                   ? `${matchingVolunteer.firstname} ${matchingVolunteer.surname}`
-                  : '',
+                  : ''
               }
             })
           )
@@ -109,18 +111,18 @@ const HomePageLayout = styled.div`
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(3, auto);
   grid-template-areas:
-    "mentorSessionTrackingCard mentorSessionTrackingCard"
-    "mentorQuestionnaireTrackingCard mentorQuestionnaireTrackingCard"
-    "mentorDemographicsCard menteeDemographicsCard";
+    'mentorSessionTrackingCard mentorSessionTrackingCard'
+    'mentorQuestionnaireTrackingCard mentorQuestionnaireTrackingCard'
+    'mentorDemographicsCard menteeDemographicsCard';
 
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(4, auto);
     grid-template-areas:
-      "mentorSessionTrackingCard"
-      "mentorQuestionnaireTrackingCard"
-      "mentorDemographicsCard"
-      "menteeDemographicsCard";
+      'mentorSessionTrackingCard'
+      'mentorQuestionnaireTrackingCard'
+      'mentorDemographicsCard'
+      'menteeDemographicsCard';
   }
 `
 

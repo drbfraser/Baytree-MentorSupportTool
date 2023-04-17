@@ -5,34 +5,34 @@ const theme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         sizeMedium: {
-          color: 'success',
-        },
-      },
+          color: 'success'
+        }
+      }
     },
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          color: 'success',
-        },
-      },
+          color: 'success'
+        }
+      }
     },
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: 'success',
-        },
-      },
-    },
+          color: 'success'
+        }
+      }
+    }
   },
   palette: {
     primary: {
       main: '#5ab801',
-      contrastText: '#fff',
+      contrastText: '#fff'
     },
     secondary: {
-      main: '#ff1e89',
-    },
-  },
+      main: '#ff1e89'
+    }
+  }
 })
 
 export default theme

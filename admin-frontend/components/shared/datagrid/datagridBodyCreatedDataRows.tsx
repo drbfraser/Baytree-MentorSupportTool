@@ -6,19 +6,19 @@ import {
   setChangedDataRowFunc,
   setCreatedDataRowFunc,
   setDeletedDataRowFunc,
-  InvalidCell,
+  InvalidCell
 } from './datagridTypes'
 
 interface DataGridBodyCreatedDataRowsProps {
-  primaryKeyDataField: string;
-  getChangedDataRow: (dataRow: DataRow) => DataRow | undefined;
-  setCreatedDataRow: setCreatedDataRowFunc;
-  setChangedDataRow: setChangedDataRowFunc;
-  setDeletedDataRow: setDeletedDataRowFunc;
-  removeCreatedDataRow: (createdDataRow: DataRow) => void;
-  cols: DataGridColumn[];
-  createdDataRows: DataRow[];
-  invalidCells: InvalidCell[];
+  primaryKeyDataField: string
+  getChangedDataRow: (dataRow: DataRow) => DataRow | undefined
+  setCreatedDataRow: setCreatedDataRowFunc
+  setChangedDataRow: setChangedDataRowFunc
+  setDeletedDataRow: setDeletedDataRowFunc
+  removeCreatedDataRow: (createdDataRow: DataRow) => void
+  cols: DataGridColumn[]
+  createdDataRows: DataRow[]
+  invalidCells: InvalidCell[]
 }
 
 const DataGridBodyCreatedDataRows: FC<DataGridBodyCreatedDataRowsProps> = (

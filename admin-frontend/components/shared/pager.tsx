@@ -5,10 +5,10 @@ import { toast } from 'react-toastify'
 import useMobileLayout from '../../hooks/useMobileLayout'
 
 export interface PagerProps {
-  onChangePage: (newPage: number) => void;
-  currentPageNumber: number;
-  maxPageNumber: number;
-  clearPagerFuncRef?: MutableRefObject<(() => void) | null>;
+  onChangePage: (newPage: number) => void
+  currentPageNumber: number
+  maxPageNumber: number
+  clearPagerFuncRef?: MutableRefObject<(() => void) | null>
 }
 
 const Pager: React.FC<PagerProps> = (props) => {
@@ -33,7 +33,7 @@ const Pager: React.FC<PagerProps> = (props) => {
             margin: '0 1rem',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <Typography>Page Number:</Typography>
@@ -49,7 +49,7 @@ const Pager: React.FC<PagerProps> = (props) => {
             margin: '0 1rem',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <Typography>of {props.maxPageNumber}</Typography>
@@ -59,7 +59,7 @@ const Pager: React.FC<PagerProps> = (props) => {
             style={{
               padding: '0.8rem 0.6rem',
               height: 'fit-content',
-              margin: '0.6rem 0.6rem 0px 0px',
+              margin: '0.6rem 0.6rem 0px 0px'
             }}
             color="primary"
             variant="contained"
@@ -102,7 +102,7 @@ const Pager: React.FC<PagerProps> = (props) => {
           width: '100%',
           alignItems: 'center',
           justifyContent: 'center',
-          display: 'flex',
+          display: 'flex'
         }}
       >
         <Tooltip title="Previous Page">
@@ -111,7 +111,7 @@ const Pager: React.FC<PagerProps> = (props) => {
               style={{
                 padding: '0 0.6rem',
                 height: 'fit-content',
-                margin: '0.6rem 0.6rem 0px 0px',
+                margin: '0.6rem 0.6rem 0px 0px'
               }}
               color="primary"
               variant="contained"
@@ -137,7 +137,7 @@ const Pager: React.FC<PagerProps> = (props) => {
               style={{
                 padding: '0 0.6rem',
                 height: 'fit-content',
-                margin: '0.6rem 0.6rem 0px 0px',
+                margin: '0.6rem 0.6rem 0px 0px'
               }}
               color="primary"
               variant="contained"
@@ -165,7 +165,7 @@ const Pager: React.FC<PagerProps> = (props) => {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            display: 'flex',
+            display: 'flex'
           }}
         >
           {renderPageNumberPicker()}

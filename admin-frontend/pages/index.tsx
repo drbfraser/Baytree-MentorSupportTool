@@ -43,7 +43,7 @@ const Login: NextPage = () => {
         background: mobileLayout ? 'white' : BODY_BACKGROUND,
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
       }}
     >
       {mobileLayout ? (
@@ -52,7 +52,7 @@ const Login: NextPage = () => {
             display: 'flex',
             flexDirection: 'column',
             width: '100%',
-            height: '100vh',
+            height: '100vh'
           }}
         >
           <BackgroundPhoto></BackgroundPhoto>
@@ -74,7 +74,7 @@ const Login: NextPage = () => {
             height: '95vh',
             background: 'white',
             borderRadius: '20px',
-            boxShadow: '0 0 0.3rem grey',
+            boxShadow: '0 0 0.3rem grey'
           }}
         >
           <Grid
@@ -85,7 +85,7 @@ const Login: NextPage = () => {
               alignItems: 'center',
               height: '100%',
               width: '100%',
-              padding: '2rem',
+              padding: '2rem'
             }}
           >
             <img
@@ -96,7 +96,7 @@ const Login: NextPage = () => {
                 height: 'auto',
                 width: '100%',
                 borderRadius: '20px',
-                boxShadow: '0 0 0.3rem grey',
+                boxShadow: '0 0 0.3rem grey'
               }}
               alt="Login background photo"
             ></img>
@@ -106,7 +106,7 @@ const Login: NextPage = () => {
               style={{
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'center',
+                alignItems: 'center'
               }}
             >
               <img
@@ -218,12 +218,12 @@ const StyledBaytreeLogo = styled.img`
 `
 
 interface LoginFormProps {
-  errors: boolean;
-  email: string;
-  setEmail: (email: string) => void;
-  password: string;
-  setPassword: (password: string) => void;
-  onSignIn: () => void;
+  errors: boolean
+  email: string
+  setEmail: (email: string) => void
+  password: string
+  setPassword: (password: string) => void
+  onSignIn: () => void
 }
 
 const LoginForm: React.FC<LoginFormProps> = (props) => {

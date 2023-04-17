@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 
 interface LogoProps {
-  width: string;
-  height?: string;
-  padding?: string;
+  width: string
+  height?: string
+  padding?: string
 }
 
 const Logo = styled.img<LogoProps>`

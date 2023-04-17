@@ -9,8 +9,8 @@ import { ThemeState } from '../reducers/theme'
 let store: Store<any, Action<any>> | undefined
 
 export interface RootState {
-  auth: AuthState;
-  theme: ThemeState;
+  auth: AuthState
+  theme: ThemeState
 }
 
 function initStore(initialState: any) {
@@ -29,7 +29,7 @@ export const initializeStore = (preloadedState: any) => {
   if (preloadedState && store) {
     _store = initStore({
       ...store.getState(),
-      ...preloadedState,
+      ...preloadedState
     })
     // Reset the current store
     store = undefined

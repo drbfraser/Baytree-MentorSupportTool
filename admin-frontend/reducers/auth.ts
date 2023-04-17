@@ -2,13 +2,13 @@ import { Action } from 'redux'
 import { AuthAction } from '../actions/auth/actionTypes'
 
 export interface AuthState {
-  isAuthenticated: boolean;
-  isVerifyInProgress: boolean;
+  isAuthenticated: boolean
+  isVerifyInProgress: boolean
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
-  isVerifyInProgress: true,
+  isVerifyInProgress: true
 }
 
 const authReducer = (

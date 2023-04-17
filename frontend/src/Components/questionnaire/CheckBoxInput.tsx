@@ -3,19 +3,15 @@ import {
   useMediaQuery,
   useTheme,
   Checkbox,
-  FormGroup,
+  FormGroup
 } from '@mui/material'
 import { useField } from 'formik'
-import type { FunctionComponent} from 'react'
+import type { FunctionComponent } from 'react'
 import type { Question } from '../../api/misc'
-import { useState } from 'react'
 
 export const isCheckBoxQuestion = (question: Question) => {
-  return (
-    question.inputType === 'checkselect'
-  )
+  return question.inputType === 'checkselect'
 }
-
 
 // Reponsive CheckBox question
 // Horizontal on large screen
@@ -23,20 +19,18 @@ export const isCheckBoxQuestion = (question: Question) => {
 export const CheckBoxInput: FunctionComponent<{ question: Question }> = ({
   question
 }) => {
-
   const theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'))
   const [field] = useField(question.QuestionID)
   const ValueList = question.valueList.items
 
-  let choices:string[] = []
+  let choices: string[] = []
 
   const handleChoicesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked){
+    if (event.target.checked) {
       choices = [...choices, event.target.value]
-    }
-    else{
-      choices = choices.filter( c => c !== event.target.value)
+    } else {
+      choices = choices.filter((c) => c !== event.target.value)
     }
   }
   return (
@@ -50,7 +44,13 @@ export const CheckBoxInput: FunctionComponent<{ question: Question }> = ({
         <FormControlLabel
           key={`${index}`}
           value={`${choices.toString()}`}
-          control={<Checkbox onChange={handleChoicesChange} name={question.QuestionID} value={value}/>}
+          control={
+            <Checkbox
+              onChange={handleChoicesChange}
+              name={question.QuestionID}
+              value={value}
+            />
+          }
           label={value}
           labelPlacement={isLargeScreen ? 'top' : 'end'}
         />
@@ -59,4 +59,3 @@ export const CheckBoxInput: FunctionComponent<{ question: Question }> = ({
   )
 }
 export default CheckBoxInput
-

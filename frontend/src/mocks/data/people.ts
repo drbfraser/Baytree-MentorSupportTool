@@ -7,7 +7,7 @@ export const mentors: User[] = [
     surname: 'Mulligan',
     dateOfBirth: '1992-07-02',
     email: 'dumulligan20@yopmail.com',
-    viewsPersonId: 1,
+    viewsPersonId: 1
   },
   {
     firstname: 'Daisy',
@@ -26,8 +26,7 @@ export const mentees: Participant[] = [
     email: 'jtportana19@yopmail.com',
     ethnicity: '',
     country: 'Ecuador',
-    viewsPersonId: 3,
-
+    viewsPersonId: 3
   },
   {
     firstName: 'Nancy',
@@ -36,7 +35,7 @@ export const mentees: Participant[] = [
     email: 'esiturain18@yopmail.com',
     ethnicity: '',
     country: 'Peru',
-    viewsPersonId: 4,
+    viewsPersonId: 4
   },
   {
     firstName: 'Anali',
@@ -45,6 +44,6 @@ export const mentees: Participant[] = [
     email: 'aqgarros16@yopmail.com',
     ethnicity: '',
     country: 'Haiti',
-    viewsPersonId: 5,
+    viewsPersonId: 5
   }
 ]

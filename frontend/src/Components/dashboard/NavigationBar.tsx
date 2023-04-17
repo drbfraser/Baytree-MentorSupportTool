@@ -1,19 +1,16 @@
 import {
   AppBar,
   Badge,
-  Box, Icon, IconButton,
+  Box,
+  Icon,
+  IconButton,
   Stack,
   Toolbar,
   Typography
 } from '@mui/material'
 import type { FunctionComponent, MouseEventHandler } from 'react'
 import { useEffect, useState } from 'react'
-import {
-  MdAccountBox,
-  MdLogout,
-  MdMenu,
-  MdNotifications
-} from 'react-icons/md'
+import { MdAccountBox, MdLogout, MdMenu, MdNotifications } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import { fetchUnreadNotificationCountByUserId } from '../../api/notification'
 import Logo from '../../Assets/baytree.png'
@@ -21,7 +18,7 @@ import { useAuth } from '../../context/AuthContext'
 import MobileMenu from './MobileMenu'
 
 type NavigationButtonProps = {
-  action?: MouseEventHandler<HTMLButtonElement>,
+  action?: MouseEventHandler<HTMLButtonElement>
   children: React.ReactNode
 }
 
@@ -29,16 +26,17 @@ const NavigationButton: FunctionComponent<NavigationButtonProps> = (props) => {
   return (
     <IconButton
       sx={{ display: { xs: 'none', sm: 'inherit' } }}
-      children={props.children}
       size="large"
       onClick={props.action}
-    />
+    >
+      {props.children}
+    </IconButton>
   )
 }
 
 const NavigationBar: FunctionComponent<{
-  drawerWidth: number;
-  openDrawer: () => void;
+  drawerWidth: number
+  openDrawer: () => void
 }> = ({ drawerWidth, openDrawer }) => {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
@@ -46,9 +44,11 @@ const NavigationBar: FunctionComponent<{
 
   useEffect(() => {
     // Fetch the number of unread notifications
-    fetchUnreadNotificationCountByUserId(user!.userId)
-      .then(setNumNotifications)
-      .catch((error) => console.error('Error:', error))
+    if (user) {
+      fetchUnreadNotificationCountByUserId(user.userId)
+        .then(setNumNotifications)
+        .catch((error) => console.error('Error:', error))
+    }
   }, [])
 
   const logout = async () => {

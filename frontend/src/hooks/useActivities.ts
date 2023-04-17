@@ -36,4 +36,3 @@ export type OnActivitiesFailedToLoadReason =
   | 'An error has occurred'
 
 export default useActivities
-

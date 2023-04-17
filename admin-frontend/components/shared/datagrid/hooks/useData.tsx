@@ -4,7 +4,7 @@ import {
   SetStateAction,
   useEffect,
   useRef,
-  useState,
+  useState
 } from 'react'
 import {
   DataGridColumn,
@@ -12,7 +12,7 @@ import {
   InvalidCell,
   onLoadDataRowsFunc,
   onLoadPagedDataRowsFunc,
-  onSaveDataRowsFunc,
+  onSaveDataRowsFunc
 } from '../datagridTypes'
 import {
   loadColumnValueOptions,
@@ -26,7 +26,7 @@ import {
   setDeletedDataRow,
   createDataRow,
   isAnyColumnSearchable,
-  loadDataRows,
+  loadDataRows
 } from './useDataLogic'
 
 /** Responsible for loading, accessing, deleting data state and saving it */
@@ -93,8 +93,8 @@ const useData = (
             pageSize: pageSize,
             currentPageNum: currentPage,
             setCurrentPageNum: setCurrentPage,
-            setMaxPageNum: setMaxPageNumber,
-          },
+            setMaxPageNum: setMaxPageNumber
+          }
         }
       )
     } else {
@@ -232,7 +232,7 @@ const useData = (
     setDeletedDataRow: _setDeletedDataRow,
     createDataRow: _createDataRow,
     isAnyColumnSearchable: _isAnyColumnSearchable,
-    invalidCells,
+    invalidCells
   }
 }
 

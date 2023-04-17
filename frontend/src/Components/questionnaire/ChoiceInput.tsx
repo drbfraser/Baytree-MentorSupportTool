@@ -10,9 +10,7 @@ import type { FunctionComponent } from 'react'
 import type { Question } from '../../api/misc'
 
 export const isChoiceQuestion = (question: Question) => {
-  return (
-    question.inputType === 'radio'
-  )
+  return question.inputType === 'radio'
 }
 
 // Reponsive choice question
@@ -25,7 +23,6 @@ export const ChoiceInput: FunctionComponent<{ question: Question }> = ({
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'))
   const [field] = useField(question.QuestionID)
   const Choices = question.valueList.items
-
 
   return (
     <RadioGroup

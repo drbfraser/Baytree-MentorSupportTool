@@ -9,31 +9,28 @@ import {
   Button,
   Skeleton,
   InputLabel,
-  FormControl,
+  FormControl
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { MdOutlineFileDownload, MdSearch } from 'react-icons/md'
 import { toast } from 'react-toastify'
 import styled from 'styled-components'
-import {
-  getMentorRoles,
-  MentorRole,
-} from '../../../../api/backend/mentorRoles'
+import { getMentorRoles, MentorRole } from '../../../../api/backend/mentorRoles'
 import { getSessionGroupFromViews } from '../../../../api/backend/views/sessionGroups'
 import { MOBILE_BREAKPOINT } from '../../../../constants/constants'
 import PaginatedSelect from '../../../shared/paginatedSelect'
 import { SessionGroup } from './MentorSessionTrackingCard/MentorSessionTrackingCard'
 
 interface HeaderProps {
-  onSessionGroupSelectOptionChange: (newSessionGroupId: any) => void;
+  onSessionGroupSelectOptionChange: (newSessionGroupId: any) => void
 
-  onSetYear: (year: number) => void;
-  curYear: number;
+  onSetYear: (year: number) => void
+  curYear: number
 
-  mentorFilter: string;
-  setMentorFilter: (newMentorFilter: string) => void;
+  mentorFilter: string
+  setMentorFilter: (newMentorFilter: string) => void
 
-  onExportButtonClick: () => void;
+  onExportButtonClick: () => void
 }
 
 const Header: React.FunctionComponent<HeaderProps> = (props) => {
@@ -71,23 +68,23 @@ const Header: React.FunctionComponent<HeaderProps> = (props) => {
 const HeaderLayout = styled.div`
   display: grid;
   flex-wrap: wrap;
-  grid-area: "Header";
+  grid-area: 'Header';
   grid-template-columns: auto 1fr auto;
   grid-template-rows: auto auto;
   grid-row-gap: 1rem;
   grid-template-areas:
-    "title selectSessionGroup settingsButton"
-    "selectDate searchBox exportButton";
+    'title selectSessionGroup settingsButton'
+    'selectDate searchBox exportButton';
 
   @media all and (max-width: ${MOBILE_BREAKPOINT}) {
     grid-template-columns: auto auto;
     grid-template-rows: auto auto auto auto;
     grid-template-areas:
-      "title settingsButton"
-      "selectSessionGroup selectSessionGroup"
-      "selectDate selectDate"
-      "searchBox searchBox"
-      "exportButton exportButton";
+      'title settingsButton'
+      'selectSessionGroup selectSessionGroup'
+      'selectDate selectDate'
+      'searchBox searchBox'
+      'exportButton exportButton';
   }
 `
 
@@ -103,15 +100,15 @@ const StyledHeaderTitle = styled.div`
   grid-area: title;
 `
 interface SelectSessionGroupProps {
-  onSessionGroupSelectOptionChange: (newSessionGroup: SessionGroup) => void;
+  onSessionGroupSelectOptionChange: (newSessionGroup: SessionGroup) => void
 }
 
 const SelectSessionGroup: React.FunctionComponent<SelectSessionGroupProps> = (
   props
 ) => {
   interface sessionGroupOption {
-    id: number;
-    name: string;
+    id: number
+    name: string
   }
   const [sessionGroupOptions, setSessionGroupOptions] = useState<
     sessionGroupOption[] | null
@@ -133,7 +130,7 @@ const SelectSessionGroup: React.FunctionComponent<SelectSessionGroupProps> = (
               // For each mentor role session group, we will need the id and name for select options
               return {
                 id: sessionGroup.viewsSessionGroupId,
-                name: sessionGroup.name,
+                name: sessionGroup.name
               }
             } else {
               toast.error(
@@ -174,7 +171,7 @@ const SelectSessionGroup: React.FunctionComponent<SelectSessionGroupProps> = (
             onChange={(event) =>
               props.onSessionGroupSelectOptionChange({
                 id: event.target.value,
-                name: event.target.name,
+                name: event.target.name
               })
             }
           >
@@ -207,8 +204,8 @@ const SelectDate = styled.div`
 `
 
 interface SelectYearProps {
-  onSetYear: (year: number) => void;
-  curYear: number;
+  onSetYear: (year: number) => void
+  curYear: number
 }
 
 const SelectYear: React.FunctionComponent<SelectYearProps> = (props) => {
@@ -251,8 +248,8 @@ const StyledSelectYear = styled.div`
 `
 
 interface SearchBoxProps {
-  mentorFilter: string;
-  setMentorFilter: (newMentorFilter: string) => void;
+  mentorFilter: string
+  setMentorFilter: (newMentorFilter: string) => void
 }
 
 const SearchBox: React.FunctionComponent<SearchBoxProps> = (props) => {
@@ -274,7 +271,7 @@ const SearchBox: React.FunctionComponent<SearchBoxProps> = (props) => {
                 <MdSearch />
               </IconButton>
             </InputAdornment>
-          ),
+          )
         }}
       />
     </StyledSearchBox>

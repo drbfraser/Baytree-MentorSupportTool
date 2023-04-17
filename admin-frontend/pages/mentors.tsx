@@ -10,14 +10,14 @@ import {
   MentorUser,
   MentorUserBackendFields,
   MentorUserViewsFields,
-  saveMentorUsers,
+  saveMentorUsers
 } from '../api/backend/mentorUsers'
 import { deleteUsers } from '../api/backend/users'
 import DataGrid from '../components/shared/datagrid/datagrid'
 import {
   OnLoadColumnValueOptionsFunc,
   onLoadPagedDataRowsFunc,
-  onSaveDataRowsFunc,
+  onSaveDataRowsFunc
 } from '../components/shared/datagrid/datagridTypes'
 import { getMentorRoles, MentorRole } from '../api/backend/mentorRoles'
 
@@ -30,14 +30,14 @@ const Mentors: NextPage = () => {
     searchText,
     dataFieldsToSearch,
     limit,
-    offset,
+    offset
   }) => {
     const mentorsData = await getMentorUsers({
       searchText,
       dataFieldsToSearch,
       limit,
       offset,
-      includeDataFromViews: true,
+      includeDataFromViews: true
     })
 
     if (mentorsData) {
@@ -51,8 +51,8 @@ const Mentors: NextPage = () => {
           email: mentor.user.email,
           firstName: mentor.firstName,
           lastName: mentor.lastName,
-          mentorRole_id: mentor.mentorRole ? mentor.mentorRole.id : '',
-        })),
+          mentorRole_id: mentor.mentorRole ? mentor.mentorRole.id : ''
+        }))
       }
     } else {
       throw 'Failed to get mentor user data'
@@ -64,7 +64,7 @@ const Mentors: NextPage = () => {
     if (mentorRoles) {
       return mentorRoles.map((mentorRole) => ({
         id: mentorRole.id,
-        name: mentorRole.name,
+        name: mentorRole.name
       }))
     } else {
       throw 'Failed to get mentor role options'
@@ -108,7 +108,7 @@ const Mentors: NextPage = () => {
             style={{
               padding: '0.3rem 0.6rem 0.3rem 0.6rem',
               height: 'fit-content',
-              margin: '0.6rem 0.6rem 0 0',
+              margin: '0.6rem 0.6rem 0 0'
             }}
             onClick={() => {
               setShowAddMentorModal(true)
@@ -127,25 +127,25 @@ const Mentors: NextPage = () => {
               header: 'Email',
               dataField: 'email',
               disableEditing: true,
-              keepColumnOnMobile: true,
+              keepColumnOnMobile: true
             },
             {
               header: 'First Name',
               dataField: 'firstName',
               disableEditing: true,
-              enableSearching: true,
+              enableSearching: true
             },
             {
               header: 'Last Name',
               dataField: 'lastName',
               disableEditing: true,
-              enableSearching: true,
+              enableSearching: true
             },
             {
               header: 'Mentor Role',
               dataField: 'mentorRole_id',
-              onLoadValueOptions: onLoadMentorRoleOptions,
-            },
+              onLoadValueOptions: onLoadMentorRoleOptions
+            }
           ]}
           pageSize={PAGE_LIMIT}
           disableDataRowCreation={true}

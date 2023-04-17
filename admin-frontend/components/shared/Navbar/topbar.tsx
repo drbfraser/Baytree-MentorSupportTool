@@ -13,14 +13,14 @@ import { NavbarModalComponent, NAVBAR_ICON_SIZE } from './navbar'
 import { TopbarAction } from './topbarActions'
 
 interface TopBarProps {
-  logoUrl: string;
-  logoPadding?: string;
-  sloganImageUrl: string;
-  title: string;
-  actions: TopbarAction[];
-  useMobileLayout: boolean;
-  toggleSidebarMenu: () => void;
-  hamburgerMenuRef: React.RefObject<HTMLDivElement>;
+  logoUrl: string
+  logoPadding?: string
+  sloganImageUrl: string
+  title: string
+  actions: TopbarAction[]
+  useMobileLayout: boolean
+  toggleSidebarMenu: () => void
+  hamburgerMenuRef: React.RefObject<HTMLDivElement>
 }
 
 const Topbar: React.FC<TopBarProps> = (props) => {
@@ -41,7 +41,7 @@ const Topbar: React.FC<TopBarProps> = (props) => {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              paddingLeft: '1rem',
+              paddingLeft: '1rem'
             }}
           >
             {!props.useMobileLayout && (
@@ -85,14 +85,14 @@ const StyledTopBar = styled.div`
 `
 
 interface TopbarActionProps {
-  icon: React.FC<IconBaseProps>;
-  onClick?: () => void;
-  modalComponent?: NavbarModalComponent;
-  enableModalCloseButton?: boolean;
-  modalWidth?: string;
-  modalHeight?: string;
-  color?: string;
-  Ref?: React.RefObject<HTMLDivElement>;
+  icon: React.FC<IconBaseProps>
+  onClick?: () => void
+  modalComponent?: NavbarModalComponent
+  enableModalCloseButton?: boolean
+  modalWidth?: string
+  modalHeight?: string
+  color?: string
+  Ref?: React.RefObject<HTMLDivElement>
 }
 
 const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
@@ -116,7 +116,7 @@ const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
       >
         {React.createElement(props.icon, {
           color: props.color ?? primaryColor,
-          size: NAVBAR_ICON_SIZE,
+          size: NAVBAR_ICON_SIZE
         })}
       </StyledTopbarActionButton>
       {props.modalComponent && (
@@ -124,7 +124,7 @@ const TopbarActionButton: React.FC<TopbarActionProps> = (props) => {
           isOpen={isModalOpen}
           onOutsideClick={onOutsideModalClick}
           modalComponent={React.createElement(props.modalComponent, {
-            onOutsideClick: onOutsideModalClick,
+            onOutsideClick: onOutsideModalClick
           })}
           width={props.modalWidth}
           height={props.modalHeight}

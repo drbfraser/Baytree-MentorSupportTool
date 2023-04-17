@@ -6,7 +6,7 @@ import {
   setChangedDataRowFunc,
   setCreatedDataRowFunc,
   setDeletedDataRowFunc,
-  InvalidCell,
+  InvalidCell
 } from './datagridTypes'
 
 export const changeDataRowValue = (
@@ -19,21 +19,21 @@ export const changeDataRowValue = (
   createdDataRow?: DataRow
 ) => {
   if (createdDataRow) {
-    createdDataRow = cloneDataRow(createdDataRow);
-    (createdDataRow as DataRow)[dataField] = newValue;
-    (setCreatedDataRow as setCreatedDataRowFunc)(createdDataRow as DataRow)
+    createdDataRow = cloneDataRow(createdDataRow)
+    ;(createdDataRow as DataRow)[dataField] = newValue
+    ;(setCreatedDataRow as setCreatedDataRowFunc)(createdDataRow as DataRow)
   } else if (changedDataRow) {
-    changedDataRow = cloneDataRow(changedDataRow);
-    (changedDataRow as DataRow)[dataField] = newValue;
-    (setChangedDataRow as setChangedDataRowFunc)(changedDataRow as DataRow)
+    changedDataRow = cloneDataRow(changedDataRow)
+    ;(changedDataRow as DataRow)[dataField] = newValue
+    ;(setChangedDataRow as setChangedDataRowFunc)(changedDataRow as DataRow)
   } else {
     if ((dataRow as DataRow)[dataField] === newValue) {
       return
     }
 
-    dataRow = cloneDataRow(dataRow);
-    (dataRow as DataRow)[dataField] = newValue;
-    (setChangedDataRow as setChangedDataRowFunc)(dataRow as DataRow)
+    dataRow = cloneDataRow(dataRow)
+    ;(dataRow as DataRow)[dataField] = newValue
+    ;(setChangedDataRow as setChangedDataRowFunc)(dataRow as DataRow)
   }
 }
 
@@ -58,10 +58,7 @@ export const isCellChanged = (
     return true
   } else if (originalDataRow && changedDataRow) {
     if (Array.isArray(originalDataRow[dataField])) {
-      return !arraysEqual(
-        originalDataRow[dataField],
-        changedDataRow[dataField]
-      )
+      return !arraysEqual(originalDataRow[dataField], changedDataRow[dataField])
     } else {
       return originalDataRow[dataField] !== changedDataRow[dataField]
     }
@@ -106,8 +103,8 @@ export const getDataRowActions = (
           ) : (
             <MdDelete color="red"></MdDelete>
           ),
-          name: isDeleted ? 'Restore' : 'Delete',
-        },
+          name: isDeleted ? 'Restore' : 'Delete'
+        }
       ]
     : dataRowActions
 

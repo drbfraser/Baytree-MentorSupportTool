@@ -1,21 +1,18 @@
 import { Select, MenuItem, Checkbox, Skeleton } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 import PaginatedSelect, { PaginatedSelectOption } from '../paginatedSelect'
-import {
-  OnLoadPagedColumnValueOptionsFunc,
-  ValueOption,
-} from './datagridTypes'
+import { OnLoadPagedColumnValueOptionsFunc, ValueOption } from './datagridTypes'
 
 export interface DataGridSelectComponentProps {
-  primaryKeyVal: any;
-  dataField: string;
-  idNumber: number;
-  value: any;
-  onLoadPagedColumnValueOptionsFunc?: OnLoadPagedColumnValueOptionsFunc;
-  selectPageSize?: number;
-  onChangedValue: (newValue: any) => void;
-  valueOptions: ValueOption[];
-  isMultiSelect?: boolean;
+  primaryKeyVal: any
+  dataField: string
+  idNumber: number
+  value: any
+  onLoadPagedColumnValueOptionsFunc?: OnLoadPagedColumnValueOptionsFunc
+  selectPageSize?: number
+  onChangedValue: (newValue: any) => void
+  valueOptions: ValueOption[]
+  isMultiSelect?: boolean
 }
 
 const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
@@ -37,7 +34,7 @@ const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
               const fetchedDefaultValue = defaultValue.data[0]
               setDefaultValue({
                 value: fetchedDefaultValue.id,
-                label: fetchedDefaultValue.name,
+                label: fetchedDefaultValue.name
               })
             }
           }
@@ -91,15 +88,15 @@ const DataGridSelectComponent: FC<DataGridSelectComponentProps> = (props) => {
     const options = await props.onLoadPagedColumnValueOptionsFunc!({
       searchText: search,
       limit: pageSize,
-      offset: prevOptions.length,
+      offset: prevOptions.length
     })
 
     const selectboxOptions = {
       options: options.data.map((option) => ({
         value: option.id,
-        label: option.name,
+        label: option.name
       })),
-      hasMore: prevOptions.length + pageSize < options.total,
+      hasMore: prevOptions.length + pageSize < options.total
     }
 
     return selectboxOptions
