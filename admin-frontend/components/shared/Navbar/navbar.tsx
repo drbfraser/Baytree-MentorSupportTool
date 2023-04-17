@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
   baytreeLogoUrl,
-  changingAspirationsUrl,
+  changingAspirationsUrl
 } from '../../../public/images/imageUrls'
 import Sidebar from './sidebar'
 import { SidebarLink } from './sidebarLinks'
@@ -11,16 +11,16 @@ import { TopbarAction } from './topbarActions'
 export const NAVBAR_ICON_SIZE = '1.6rem'
 
 export type NavbarModalComponent = React.FC<{
-  onOutsideClick: () => void;
-}>;
+  onOutsideClick: () => void
+}>
 
 interface NavbarProps {
-  useMobileLayout: boolean;
-  sidebarActive: boolean;
-  setSidebarActive: (active: boolean) => void;
-  sidebarLinks?: SidebarLink[];
-  topbarActions?: TopbarAction[];
-  pageContentDivRef: React.RefObject<HTMLDivElement>;
+  useMobileLayout: boolean
+  sidebarActive: boolean
+  setSidebarActive: (active: boolean) => void
+  sidebarLinks?: SidebarLink[]
+  topbarActions?: TopbarAction[]
+  pageContentDivRef: React.RefObject<HTMLDivElement>
 }
 
 const Navbar: React.FC<NavbarProps> = (props) => {

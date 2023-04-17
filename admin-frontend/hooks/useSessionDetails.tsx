@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   getSessionDetails,
-  SessionDetails,
+  SessionDetails
 } from '../api/backend/views/sessions'
 
 const useSessionDetails = (viewsSessionId: number) => {

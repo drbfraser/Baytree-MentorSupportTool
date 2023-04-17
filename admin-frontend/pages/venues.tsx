@@ -7,7 +7,7 @@ import DataGrid from '../components/shared/datagrid/datagrid'
 import {
   onSaveDataRowsFunc,
   onLoadDataRowsFunc,
-  OnLoadColumnValueOptionsFunc,
+  OnLoadColumnValueOptionsFunc
 } from '../components/shared/datagrid/datagridTypes'
 
 const MentorRoles: NextPage = () => {
@@ -17,7 +17,7 @@ const MentorRoles: NextPage = () => {
     if (venuesRes) {
       return venuesRes.map((venue) => ({
         id: venue.viewsVenueId, // need a separate id field for the grid primary key
-        viewsVenueId: venue.viewsVenueId,
+        viewsVenueId: venue.viewsVenueId
       }))
     } else {
       throw 'Failed to retrieve venue data. Please refresh the page or contact IT if the issue persists.'
@@ -25,7 +25,7 @@ const MentorRoles: NextPage = () => {
   }
 
   // Necessary since the venue primary key is editable and the grid won't work
-  type venueWithIdPrimaryKey = { id: number } & Venue;
+  type venueWithIdPrimaryKey = { id: number } & Venue
   const saveVenueData: onSaveDataRowsFunc<venueWithIdPrimaryKey> = async (
     createdRows: venueWithIdPrimaryKey[],
     updatedRows: venueWithIdPrimaryKey[],
@@ -39,9 +39,9 @@ const MentorRoles: NextPage = () => {
       ...updatedRows.map((row) => ({
         id: row.id,
         viewsVenueId: row.id,
-        isDeleted: true,
+        isDeleted: true
       })),
-      ...deletedRows.map((row) => ({ ...row, isDeleted: true })),
+      ...deletedRows.map((row) => ({ ...row, isDeleted: true }))
     ])
     return !!result
   }
@@ -51,7 +51,7 @@ const MentorRoles: NextPage = () => {
     if (viewsVenues) {
       return viewsVenues.results.map((viewsVenue) => ({
         id: viewsVenue.id,
-        name: viewsVenue.name,
+        name: viewsVenue.name
       }))
     } else {
       throw 'Failed to retrieve venue data from views. Please refresh the page or contact IT if the issue persists.'
@@ -66,8 +66,8 @@ const MentorRoles: NextPage = () => {
           {
             header: 'Venue',
             dataField: 'viewsVenueId',
-            onLoadValueOptions: getVenueOptions,
-          },
+            onLoadValueOptions: getVenueOptions
+          }
         ]}
         onLoadDataRows={getVenueData}
         onSaveDataRows={saveVenueData}

@@ -1,11 +1,13 @@
 import { Container, Divider, Grow, Typography } from '@mui/material'
 
 type TitledContainerProps = {
-  title: string,
+  title: string
   children: React.ReactNode
 }
 
-const TitledContainer: React.FC<TitledContainerProps> = (props: TitledContainerProps) => {
+const TitledContainer: React.FC<TitledContainerProps> = (
+  props: TitledContainerProps
+) => {
   return (
     <Grow in>
       <Container maxWidth="md" sx={{ boxShadow: 5, borderRadius: 5, p: 2 }}>

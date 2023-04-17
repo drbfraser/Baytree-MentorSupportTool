@@ -12,13 +12,13 @@ import {
 import { NavbarModalComponent } from './navbar'
 
 export interface SidebarLink {
-  url?: string;
-  title: string;
-  icon: React.FC<IconBaseProps>;
-  modalComponent?: NavbarModalComponent;
-  enableModalCloseButton?: boolean;
-  modalWidth?: string;
-  modalHeight?: string;
+  url?: string
+  title: string
+  icon: React.FC<IconBaseProps>
+  modalComponent?: NavbarModalComponent
+  enableModalCloseButton?: boolean
+  modalWidth?: string
+  modalHeight?: string
 }
 
 const sidebarLinks: SidebarLink[] = [
@@ -29,7 +29,7 @@ const sidebarLinks: SidebarLink[] = [
   { url: '/mentorRoles', title: 'Settings', icon: MdSupervisorAccount },
   { url: '/venues', title: 'Venues', icon: MdLocationOn },
   { url: '/calendarEvents', title: 'Calendar', icon: MdEditCalendar },
-  { url: '/preferences', title: 'Preferences', icon: MdSettings },
+  { url: '/preferences', title: 'Preferences', icon: MdSettings }
 ]
 
 export default sidebarLinks

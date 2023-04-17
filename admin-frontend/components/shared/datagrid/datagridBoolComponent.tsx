@@ -2,12 +2,12 @@ import { Checkbox } from '@mui/material'
 import { FC, useState } from 'react'
 
 export interface DataGridBoolComponentProps {
-  isDataGridSaveable?: boolean;
-  isColumnEditable?: boolean;
-  primaryKeyVal?: any;
-  dataField: string;
-  onChangedValue: (newValue: any) => void;
-  value?: any;
+  isDataGridSaveable?: boolean
+  isColumnEditable?: boolean
+  primaryKeyVal?: any
+  dataField: string
+  onChangedValue: (newValue: any) => void
+  value?: any
 }
 
 const DataGridBoolComponent: FC<DataGridBoolComponentProps> = (props) => {

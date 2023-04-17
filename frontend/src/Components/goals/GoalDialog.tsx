@@ -231,4 +231,3 @@ const GoalDialog = () => {
 }
 
 export default GoalDialog
-

@@ -45,4 +45,3 @@ export type OnMenteesFailedToLoadReason =
   | 'An error has occurred'
 
 export default useMentees
-

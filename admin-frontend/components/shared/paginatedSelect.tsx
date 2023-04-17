@@ -6,14 +6,14 @@ import { RootState } from '../../stores/store'
 let G_PAGINATED_SELECT_NUMBER = 0
 
 export interface PaginatedSelectOption<ValueType> {
-  value: ValueType;
-  label: string;
+  value: ValueType
+  label: string
 }
 
 export interface PaginatedSelectProps
   extends React.ComponentProps<typeof AsyncPaginate> {
-  fontSize?: string;
-  zIndex?: string;
+  fontSize?: string
+  zIndex?: string
 }
 
 const PaginatedSelect: React.FC<PaginatedSelectProps> = (props) => {
@@ -26,7 +26,7 @@ const PaginatedSelect: React.FC<PaginatedSelectProps> = (props) => {
   useEffect(() => {
     const func = async () => {
       const { options } = (await props.loadOptions('', {
-        length: 0,
+        length: 0
       } as any)) as any
       setOptions(options)
       setKey(key + 'loaded')
@@ -45,7 +45,7 @@ const PaginatedSelect: React.FC<PaginatedSelectProps> = (props) => {
         container: (base: any) => ({
           ...base,
           width: '100%',
-          zIndex: props.zIndex,
+          zIndex: props.zIndex
         }),
         control: (base: any) => ({
           ...base,
@@ -54,9 +54,9 @@ const PaginatedSelect: React.FC<PaginatedSelectProps> = (props) => {
             borderColor: themeColors.primaryColor,
             color: themeColors.primaryColor,
             boxShadow: `0 0 3px 1.5px ${themeColors.primaryColor}`,
-            fontSize: props.fontSize,
-          },
-        }),
+            fontSize: props.fontSize
+          }
+        })
       }}
       {...props}
     />

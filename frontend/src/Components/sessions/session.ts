@@ -4,14 +4,14 @@ import { toast } from 'react-toastify'
 import { API_BASE_URL } from '../../api/url'
 
 export type SessionFormData = {
-  cancelled: boolean;
-  date: Date;
-  clockIn: Date;
-  clockOut: Date;
-  notes: string;
-  viewsVenueId: string | number;
-  menteeViewsPersonId: string | number;
-  activity: string;
+  cancelled: boolean
+  date: Date
+  clockIn: Date
+  clockOut: Date
+  notes: string
+  viewsVenueId: string | number
+  menteeViewsPersonId: string | number
+  activity: string
 }
 
 export const getInitialFormValues = () =>
@@ -27,8 +27,8 @@ export const getInitialFormValues = () =>
   } as SessionFormData)
 
 export type Mentee = {
-  id: number;
-  name: string;
+  id: number
+  name: string
 }
 
 const formatHM = (hours: number, minutes: number) => {

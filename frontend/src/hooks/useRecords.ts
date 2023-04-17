@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { fetchSessions, type SessionRecord } from '../api/records'
 
 const useRecords = (query: {
-  page: number;
-  limit: number;
-  descending: boolean;
+  page: number
+  limit: number
+  descending: boolean
 }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')

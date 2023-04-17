@@ -7,12 +7,12 @@ import {
   LogoutSuccessfulActionType,
   VerifyFailureActionType,
   VerifyInProgressActionType,
-  VerifySuccessActionType,
+  VerifySuccessActionType
 } from './actionTypes'
 
 interface AuthResponse {
-  is_admin: boolean;
-  is_superuser: boolean;
+  is_admin: boolean
+  is_superuser: boolean
 }
 
 type LoginResponse = AuthResponse
@@ -32,22 +32,19 @@ export const login =
   ) => {
     const body = JSON.stringify({
       email,
-      password,
+      password
     })
 
     try {
-      const apiRes = await fetch(
-        `${API_BASE_URL}/token/`,
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: body,
-        }
-      )
+      const apiRes = await fetch(`${API_BASE_URL}/token/`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: body
+      })
 
       const data: LoginResponse = await apiRes.json()
 
@@ -76,17 +73,14 @@ export const logout =
     dispatch: Dispatch<LogoutSuccessfulActionType | LogoutFailureActionType>
   ) => {
     try {
-      const apiRes = await fetch(
-        `${API_BASE_URL}/token/logout/`,
-        {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        }
-      )
+      const apiRes = await fetch(`${API_BASE_URL}/token/logout/`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      })
       if (apiRes.status === 200) {
         dispatch({ type: 'LOGOUT_SUCCESSFUL' })
         return true
@@ -107,17 +101,14 @@ export const logout =
  this function will return null, and they will not be able to access the site. */
 export const refreshAccessToken = async () => {
   try {
-    const apiRes = await fetch(
-      `${API_BASE_URL}/token/refresh/`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      }
-    )
+    const apiRes = await fetch(`${API_BASE_URL}/token/refresh/`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    })
 
     const data: RefreshResponse = await apiRes.json()
 
@@ -132,17 +123,14 @@ export const refreshAccessToken = async () => {
  response which contains more information about the user, like is_admin and is_superuser. */
 export const verifyFetch = async () => {
   try {
-    const apiRes = await fetch(
-      `${API_BASE_URL}/token/verify/`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      }
-    )
+    const apiRes = await fetch(`${API_BASE_URL}/token/verify/`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    })
 
     const data: VerifyResponse = await apiRes.json()
 

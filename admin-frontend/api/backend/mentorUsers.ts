@@ -7,14 +7,14 @@ export type MentorUserStatus =
   | 'Temporarily Withdrawn'
   | 'Future Leaver'
   | 'Staff'
-  | 'Inactive';
+  | 'Inactive'
 
 export type User = {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-};
+  id: number
+  email: string
+  first_name: string
+  last_name: string
+}
 
 import { PagedDataRows } from '../../components/shared/datagrid/datagridTypes'
 import { ApiOptions, backendGet, backendPost } from './base'
@@ -22,20 +22,20 @@ import { MentorRole } from './mentorRoles'
 
 export type MentorUser =
   | (MentorUserBackendFields & MentorUserViewsFields) // if includeDataFromViews == true
-  | MentorUserBackendFields;
+  | MentorUserBackendFields
 
 export interface MentorUserBackendFields {
-  user_id: number;
-  user: User;
-  status: MentorUserStatus;
-  menteeUsers: any[];
-  viewsPersonId: string;
-  mentorRole: MentorRole | null;
+  user_id: number
+  user: User
+  status: MentorUserStatus
+  menteeUsers: any[]
+  viewsPersonId: string
+  mentorRole: MentorRole | null
 }
 
 export interface MentorUserViewsFields {
-  firstName: string;
-  lastName: string;
+  firstName: string
+  lastName: string
 }
 
 export const mentorsBackendEndpoint = 'views-api/mentors'
@@ -44,12 +44,7 @@ export const getMentorUsers = async (options?: ApiOptions) => {
   const queryParams: Record<string, any> = {}
 
   if (options) {
-    const {
-      searchText,
-      dataFieldsToSearch,
-      limit,
-      offset
-    } = options
+    const { searchText, dataFieldsToSearch, limit, offset } = options
     if (limit) {
       queryParams['limit'] = limit
     }
@@ -105,15 +100,15 @@ export const sendMentorAccountCreationEmail = async (
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         credentials: 'include',
         body: JSON.stringify({
           viewsPersonId,
           mentorFirstName,
           email,
-          accountType: 'Mentor',
-        }),
+          accountType: 'Mentor'
+        })
       }
     )
 

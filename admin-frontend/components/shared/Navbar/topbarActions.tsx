@@ -4,13 +4,13 @@ import LogoutModal from './logoutModal'
 import { NavbarModalComponent } from './navbar'
 
 export interface TopbarAction {
-  icon: React.FC<IconBaseProps>;
-  title: string;
-  iconColor?: string;
-  modalComponent: NavbarModalComponent;
-  enableModalCloseButton?: boolean;
-  modalWidth?: string;
-  modalHeight?: string;
+  icon: React.FC<IconBaseProps>
+  title: string
+  iconColor?: string
+  modalComponent: NavbarModalComponent
+  enableModalCloseButton?: boolean
+  modalWidth?: string
+  modalHeight?: string
 }
 
 const topbarActions: TopbarAction[] = [
@@ -20,8 +20,8 @@ const topbarActions: TopbarAction[] = [
     modalComponent: LogoutModal,
     enableModalCloseButton: false,
     modalHeight: 'auto',
-    iconColor: '#ff0000',
-  },
+    iconColor: '#ff0000'
+  }
 ]
 
 export default topbarActions

@@ -7,7 +7,8 @@ import './index.css'
 import { theme } from './Utils/theme'
 
 import { createRoot } from 'react-dom/client'
-const root = createRoot(document.getElementById('root')!)
+const root = createRoot(document.getElementById('root') as Element)
+
 root.render(
   <AuthProvider>
     <ThemeProvider theme={theme}>

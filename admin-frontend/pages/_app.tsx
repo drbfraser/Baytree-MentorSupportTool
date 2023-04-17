@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import {
   BODY_BACKGROUND,
   SIDEBAR_WIDTH,
-  TOPBAR_HEIGHT,
+  TOPBAR_HEIGHT
 } from '../constants/constants'
 import sidebarLinks from '../components/shared/Navbar/sidebarLinks'
 import topbarActions from '../components/shared/Navbar/topbarActions'
@@ -45,8 +45,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 }
 
 const PageChooser: React.FC<{
-  pageProps: any;
-  component: NextComponentType<NextPageContext, any, {}>;
+  pageProps: any
+  component: NextComponentType<NextPageContext, any, {}>
 }> = ({ pageProps, component }) => {
   const router = useRouter()
   const dispatch = useDispatch()
@@ -109,8 +109,8 @@ const PageChooser: React.FC<{
 }
 
 const NonLoginPage: React.FC<{
-  component: NextComponentType<NextPageContext, any, {}>;
-  pageProps: any;
+  component: NextComponentType<NextPageContext, any, {}>
+  pageProps: any
 }> = ({ component, pageProps }) => {
   const pageContentDivRef = useRef<HTMLDivElement>(null)
   const mobileLayout = useMobileLayout()
@@ -122,7 +122,7 @@ const NonLoginPage: React.FC<{
         style={{
           background: BODY_BACKGROUND,
           width: '100%',
-          height: '100%',
+          height: '100%'
         }}
       >
         <Navbar
@@ -136,7 +136,7 @@ const NonLoginPage: React.FC<{
         <div style={{ display: 'flex', justifyContent: 'left' }}>
           <div
             style={{
-              width: sidebarActive && !mobileLayout ? SIDEBAR_WIDTH : '0',
+              width: sidebarActive && !mobileLayout ? SIDEBAR_WIDTH : '0'
             }}
           ></div>
           <PageContent ref={pageContentDivRef}>
@@ -158,8 +158,8 @@ const PageContent = styled.div`
 `
 
 const LoginPage: React.FC<{
-  component: NextComponentType<NextPageContext, any, {}>;
-  pageProps: any;
+  component: NextComponentType<NextPageContext, any, {}>
+  pageProps: any
 }> = ({ component, pageProps }) => {
   return React.createElement(component, { ...pageProps })
 }

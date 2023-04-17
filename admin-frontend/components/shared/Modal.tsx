@@ -6,16 +6,16 @@ import styled from 'styled-components'
 import useMobileLayout from '../../hooks/useMobileLayout'
 
 export type ModalComponent = React.FC<{
-  onOutsideClick: () => void;
-  useMobileLayout?: boolean;
-}>;
+  onOutsideClick: () => void
+  useMobileLayout?: boolean
+}>
 interface ModalProps {
-  isOpen: boolean;
-  onOutsideClick: () => void;
-  modalComponent: React.ReactElement;
-  width?: string;
-  height?: string;
-  enableCloseButton?: boolean;
+  isOpen: boolean
+  onOutsideClick: () => void
+  modalComponent: React.ReactElement
+  width?: string
+  height?: string
+  enableCloseButton?: boolean
 }
 
 const Modal: React.FC<ModalProps> = (props) => {
@@ -81,7 +81,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                   style={{
                     padding: '0.3rem 0.6rem 0.3rem 0.6rem',
                     height: 'fit-content',
-                    margin: '0.6rem 0.6rem 0 0',
+                    margin: '0.6rem 0.6rem 0 0'
                   }}
                   onClick={() => props.onOutsideClick()}
                 >
@@ -109,9 +109,9 @@ const Overlay = styled.div`
 `
 
 interface StyledModalProps {
-  width?: string;
-  height?: string;
-  useMobileLayout?: boolean;
+  width?: string
+  height?: string
+  useMobileLayout?: boolean
 }
 
 const StyledModal = styled.div<StyledModalProps>`

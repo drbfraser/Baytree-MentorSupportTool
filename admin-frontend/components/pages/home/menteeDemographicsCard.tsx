@@ -9,21 +9,21 @@ import moment from 'moment'
 import { toast } from 'react-toastify'
 import {
   getParticipantsFromViews,
-  Participant,
+  Participant
 } from '../../../api/backend/views/participants'
 interface MenteeDemographicsData {
   age: {
-    age8To9: number;
-    age10To12: number;
-    age13To20: number;
-    age20Plus: number;
-    notEntered: number;
-  };
-  ethnicity: Record<string, number>;
-  firstLanguage: Record<string, number>;
+    age8To9: number
+    age10To12: number
+    age13To20: number
+    age20Plus: number
+    notEntered: number
+  }
+  ethnicity: Record<string, number>
+  firstLanguage: Record<string, number>
 }
 
-type DemographicCategory = 'age' | 'ethnicity' | 'firstLanguage';
+type DemographicCategory = 'age' | 'ethnicity' | 'firstLanguage'
 
 const MenteeDemographicsCard: React.FC<{}> = () => {
   const [loadingData, setLoadingData] = useState(false)
@@ -101,10 +101,10 @@ const MenteeDemographicsCard: React.FC<{}> = () => {
             age20Plus: getParticipantsInAgeRange(participants.results, 20)
               .length,
             notEntered: getParticipantsAgeNotEntered(participants.results)
-              .length,
+              .length
           },
           ethnicity: getParticipantEthnicityCounts(participants.results),
-          firstLanguage: getParticipantFirstLanguageCounts(participants.results),
+          firstLanguage: getParticipantFirstLanguageCounts(participants.results)
         }
 
         setData(menteeDemographicsData)
@@ -164,15 +164,15 @@ const StyledMenteeDemographicsCard = styled(Paper)`
   grid-template-columns: 1.5fr 1fr;
   grid-template-rows: auto auto;
   grid-template-areas:
-    "header header"
-    "chart legend";
+    'header header'
+    'chart legend';
 `
 
 const Header: React.FC<{
-  selectedDemographicCategory: DemographicCategory;
+  selectedDemographicCategory: DemographicCategory
   setSelectedDemographicCategory: React.Dispatch<
     React.SetStateAction<DemographicCategory>
-  >;
+  >
 }> = (props) => {
   return (
     <StyledHeader>
@@ -194,8 +194,8 @@ const StyledHeader = styled.div`
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-template-areas:
-    "title moreInfo"
-    "options options";
+    'title moreInfo'
+    'options options';
 `
 
 const Title: React.FC<{}> = () => {
@@ -228,10 +228,10 @@ const StyledMoreInfoButton = styled.div`
 `
 
 const Options: React.FC<{
-  selectedDemographicCategory: DemographicCategory;
+  selectedDemographicCategory: DemographicCategory
   setSelectedDemographicCategory: React.Dispatch<
     React.SetStateAction<DemographicCategory>
-  >;
+  >
 }> = (props) => {
   return (
     <StyledOptions>
@@ -283,8 +283,8 @@ const StyledOptions = styled.div`
 `
 
 const Chart: React.FC<{
-  data: MenteeDemographicsData | null;
-  selectedDemographicCategory: DemographicCategory;
+  data: MenteeDemographicsData | null
+  selectedDemographicCategory: DemographicCategory
 }> = (props) => {
   // Pie Chart Example: https://recharts.org/en-US/examples/PieChartWithCustomizedLabel
 
@@ -303,7 +303,7 @@ const Chart: React.FC<{
           { name: 'Age10To12', value: demographicData.age.age10To12 },
           { name: 'Age13To20', value: demographicData.age.age13To20 },
           { name: 'Age20Plus', value: demographicData.age.age20Plus },
-          { name: 'AgeNotEntered', value: demographicData.age.notEntered },
+          { name: 'AgeNotEntered', value: demographicData.age.notEntered }
         ]
       case 'firstLanguage':
         const firstLanguageData: { name: string; value: number }[] = []
@@ -311,7 +311,7 @@ const Chart: React.FC<{
         for (const firstLanguage in demographicData.firstLanguage) {
           firstLanguageData.push({
             name: firstLanguage,
-            value: demographicData.firstLanguage[firstLanguage],
+            value: demographicData.firstLanguage[firstLanguage]
           })
         }
         return firstLanguageData
@@ -321,7 +321,7 @@ const Chart: React.FC<{
         for (const ethnicity in demographicData.ethnicity) {
           ethnicityData.push({
             name: ethnicity,
-            value: demographicData.ethnicity[ethnicity],
+            value: demographicData.ethnicity[ethnicity]
           })
         }
         return ethnicityData
@@ -336,15 +336,15 @@ const Chart: React.FC<{
     innerRadius,
     outerRadius,
     percent,
-    index,
+    index
   }: {
-    cx: number;
-    cy: number;
-    midAngle: number;
-    innerRadius: number;
-    outerRadius: number;
-    percent: number;
-    index: number;
+    cx: number
+    cy: number
+    midAngle: number
+    innerRadius: number
+    outerRadius: number
+    percent: number
+    index: number
   }) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
     const x = cx + radius * Math.cos(-midAngle * RADIAN)
@@ -403,13 +403,13 @@ const StyledChart = styled.div`
 `
 
 interface LegendEntry {
-  title: string;
-  color: string;
+  title: string
+  color: string
 }
 
 const Legend: React.FC<{
-  selectedCategory: DemographicCategory;
-  data: MenteeDemographicsData | null;
+  selectedCategory: DemographicCategory
+  data: MenteeDemographicsData | null
 }> = (props) => {
   const getUniqueColor = (n: number) => {
     return COLORS[n % COLORS.length]

@@ -16,8 +16,8 @@ const CardLayout = styled(Paper)`
   grid-template-columns: 1fr;
   grid-template-rows: 0.1fr 0.9fr;
   grid-template-areas:
-    "Header"
-    "Body";
+    'Header'
+    'Body';
   grid-area: mentorQuestionnaireTrackingCard;
   padding: 1rem 2rem 1rem 2rem;
 `
@@ -34,7 +34,7 @@ const Header: React.FunctionComponent<{}> = () => {
 const HeaderLayout = styled.div`
   display: flex;
   justify-content: space-between;
-  grid-area: "Header";
+  grid-area: 'Header';
 `
 
 const HeaderTitle: React.FunctionComponent<{}> = () => {
@@ -54,7 +54,7 @@ const Body: React.FunctionComponent<{}> = () => {
 }
 
 const BodyLayout = styled.div`
-  grid-area: "Body";
+  grid-area: 'Body';
 `
 
 export default MentorQuestionnaireTrackingCard

@@ -1,10 +1,14 @@
 import {
   Box,
   Divider,
-  Drawer, Icon, List,
+  Drawer,
+  Icon,
+  List,
   ListItem,
   ListItemIcon,
-  ListItemText, Toolbar, useMediaQuery
+  ListItemText,
+  Toolbar,
+  useMediaQuery
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { type FunctionComponent, useEffect, useState } from 'react'
@@ -40,9 +44,9 @@ const navigationLinkItems = [
 ]
 
 type SideMenuProps = {
-  drawerWidth: number;
-  mobileDrawerOpened: boolean;
-  closeDrawer: () => void;
+  drawerWidth: number
+  mobileDrawerOpened: boolean
+  closeDrawer: () => void
 }
 
 const SideMenu: FunctionComponent<SideMenuProps> = ({
@@ -100,9 +104,20 @@ const SideMenu: FunctionComponent<SideMenuProps> = ({
                 to={path}
                 style={{ textDecoration: 'none', color: 'inherit' }}
               >
-                <ListItem button onClick={closeDrawer} sx={{ backgroundColor: active ? 'rgba(90, 184, 1, 0.15)' : 'transparent' }}>
+                <ListItem
+                  button
+                  onClick={closeDrawer}
+                  sx={{
+                    backgroundColor: active
+                      ? 'rgba(90, 184, 1, 0.15)'
+                      : 'transparent'
+                  }}
+                >
                   <ListItemIcon>
-                    <Icon color={active ? 'secondary' : 'primary'} component={icon} />
+                    <Icon
+                      color={active ? 'secondary' : 'primary'}
+                      component={icon}
+                    />
                   </ListItemIcon>
                   <ListItemText>{title}</ListItemText>
                 </ListItem>

@@ -19,14 +19,13 @@ class Person(models.Model):
     Surname = models.CharField(max_length=30)
     Email = models.EmailField(null=True)
     DateOfBirth = models.DateField(null=False)
-    Country = models.CharField(max_length=50, null=True)
-
 
 class Participant(models.Model):
     person = models.OneToOneField(
         Person, on_delete=models.CASCADE, related_name="participant", db_column="PersonID")
     FirstLanguage_P_88 = models.CharField(max_length=20)
     Ethnicity = models.CharField(max_length=20)
+    Countryofbirth_P_87 = models.CharField(max_length=50, null=True)
 
 
 class Volunteer(models.Model):
@@ -34,6 +33,7 @@ class Volunteer(models.Model):
         Person, on_delete=models.CASCADE, related_name="volunteer", db_column="PersonID")
     Whatisyourfirstlanguage_V_19 = models.CharField(max_length=20)
     Ethnicity_V_15 = models.CharField(max_length=20)
+    County = models.CharField(max_length=50, null=True)
 
 class Note(models.Model):
     class Visibility(models.IntegerChoices):

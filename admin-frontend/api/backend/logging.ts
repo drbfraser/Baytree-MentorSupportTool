@@ -16,7 +16,7 @@ export enum logLevel {
   debug = 'debug',
   warning = 'warning',
   critical = 'critical',
-  error = 'error',
+  error = 'error'
 }
 
 // Custom Logger class to create logs that will be sent to /logging
@@ -38,12 +38,11 @@ export class Logger {
     this.createJsonLog()
     try {
       this.sendLog()
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error)
     }
   }
-  
+
   getStackTrace() {
     try {
       throw new Error()
@@ -52,15 +51,15 @@ export class Logger {
     }
   }
 
- createJsonLog () {
+  createJsonLog() {
     const jsonLog = {
-      message: this.message, 
+      message: this.message,
       level: this.logLevel,
       timeStamp: this.timeStamp,
-      stackTrace: this.displayStackTrace ? this.stackTrace : '',
+      stackTrace: this.displayStackTrace ? this.stackTrace : ''
     }
     this.jsonLog = JSON.stringify(jsonLog)
- }
+  }
 
   sendLog = () => {
     return loggingApi.post('', this.jsonLog)

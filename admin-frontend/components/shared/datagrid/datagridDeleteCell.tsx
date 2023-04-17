@@ -5,9 +5,9 @@ import styled from 'styled-components'
 import useMobileLayout from '../../../hooks/useMobileLayout'
 
 interface DataRowDeleteCellProps {
-  onDeleteRow: (isDeleted: boolean) => void;
-  isRowDeleted?: boolean;
-  useDivInsteadOfTableCell?: boolean;
+  onDeleteRow: (isDeleted: boolean) => void
+  isRowDeleted?: boolean
+  useDivInsteadOfTableCell?: boolean
 }
 
 const DataRowDeleteCell: FC<DataRowDeleteCellProps> = (props) => {

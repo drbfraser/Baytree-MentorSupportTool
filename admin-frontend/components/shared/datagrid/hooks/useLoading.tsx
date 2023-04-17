@@ -13,7 +13,7 @@ const useLoading = () => {
     isLoadingColValueOptions,
     setIsLoadingColValueOptions,
     isSavingDataRows,
-    setIsSavingDataRows,
+    setIsSavingDataRows
   }
 }
 

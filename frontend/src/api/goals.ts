@@ -12,69 +12,69 @@ export const goalsApi = axios.create({
 })
 
 type paramsType = {
-  limit?: number,
-  offset?: number,
-  status?: string,
-  categories?: string,
-  ordering?: string,
+  limit?: number
+  offset?: number
+  status?: string
+  categories?: string
+  ordering?: string
   search?: string
 }
 
 type goalDataType = {
-  title?: string,
-  goal_review_date?: string,
-  description?: string,
-  categories?: number[],
+  title?: string
+  goal_review_date?: string
+  description?: string
+  categories?: number[]
   mentee_id?: number
 }
 
 export type GoalCategory = {
-  id: number;
-  name: string;
-};
+  id: number
+  name: string
+}
 
 export type Goal = {
-  id: number;
-  title: string;
-  creation_date: string;
-  goal_review_date: string;
-  last_update_date: string;
-  status: 'IN PROGRESS' | 'RECALIBRATED' | 'ACHIEVED';
-  description: string;
-  categories: GoalCategory[];
-};
+  id: number
+  title: string
+  creation_date: string
+  goal_review_date: string
+  last_update_date: string
+  status: 'IN PROGRESS' | 'RECALIBRATED' | 'ACHIEVED'
+  description: string
+  categories: GoalCategory[]
+}
 
 export type GoalDetail = Goal & {
-  mentee?: Participant;
-};
+  mentee?: Participant
+}
 
 export type GoalInput = {
-  title: string;
-  goal_review_date: Date;
-  mentee_id?: number | string;
-  description: string;
-  categories: GoalCategory[];
-};
+  title: string
+  goal_review_date: Date
+  mentee_id?: number | string
+  description: string
+  categories: GoalCategory[]
+}
 
 export type OrderingDate =
   | 'creation_date'
   | 'goal_review_date'
-  | 'last_update_date';
+  | 'last_update_date'
 
 export type GoalQuery = {
-  limit: number;
-  offset: number;
-  status?: Goal['status'];
-  categoryIds?: number[];
-  orderingDate: OrderingDate;
-  ascending?: boolean;
-  search?: string;
-};
+  limit: number
+  offset: number
+  status?: Goal['status']
+  categoryIds?: number[]
+  orderingDate: OrderingDate
+  ascending?: boolean
+  search?: string
+}
 
 export type GoalResult = {
-  count: number;
-  results: Goal[];
-};
+  count: number
+  results: Goal[]
+}
 
 export const fetchGoals = async (
   query: GoalQuery = { limit: 5, offset: 0, orderingDate: 'creation_date' }
@@ -99,9 +99,9 @@ export const fetchGoals = async (
 }
 
 export type GoalStatistics = {
-  active: number;
-  complete: number;
-};
+  active: number
+  complete: number
+}
 
 export const fetchGoalStatistics = async () => {
   try {

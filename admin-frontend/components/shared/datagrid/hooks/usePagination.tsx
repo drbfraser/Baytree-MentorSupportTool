@@ -11,7 +11,7 @@ const usePagination = () => {
     setCurrentPage,
     maxPageNumber,
     setMaxPageNumber,
-    clearPagerFuncRef,
+    clearPagerFuncRef
   }
 }
 

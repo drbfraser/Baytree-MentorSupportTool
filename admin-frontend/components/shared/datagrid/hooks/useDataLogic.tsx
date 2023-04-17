@@ -433,4 +433,3 @@ export const createDataRow = (
 export const isAnyColumnSearchable = (cols: DataGridColumn[]) => {
   return cols.some((col) => col.enableSearching)
 }
-

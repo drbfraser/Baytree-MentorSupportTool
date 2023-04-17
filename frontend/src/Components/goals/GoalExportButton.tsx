@@ -27,15 +27,18 @@ const GoalExportButton = () => {
     }
   }
 
-  return <LoadingButton
-    onClick={download}
-    disabled={loading}
-    startIcon={<Icon component={MdDownload} />}
-    variant="outlined"
-    loading={loading}
-    loadingPosition="start">
-    Export
-  </LoadingButton>
+  return (
+    <LoadingButton
+      onClick={download}
+      disabled={loading}
+      startIcon={<Icon component={MdDownload} />}
+      variant="outlined"
+      loading={loading}
+      loadingPosition="start"
+    >
+      Export
+    </LoadingButton>
+  )
 }
 
 export default GoalExportButton

@@ -10,21 +10,21 @@ import {
   Legend,
   YAxis,
   XAxis,
-  LabelList,
+  LabelList
 } from 'recharts'
 import styled from 'styled-components'
 import { getSessionGroupsFromViews } from '../../../api/backend/views/sessionGroups'
 import {
   getSessionsFromViews,
-  Session,
+  Session
 } from '../../../api/backend/views/sessions'
 import {
   COLORS,
   HELP_MESSAGE,
-  MOBILE_BREAKPOINT,
+  MOBILE_BREAKPOINT
 } from '../../../constants/constants'
 import PaginatedSelect, {
-  PaginatedSelectOption,
+  PaginatedSelectOption
 } from '../../shared/paginatedSelect'
 
 const SessionStatsCard: React.FC<{}> = () => {
@@ -34,14 +34,14 @@ const SessionStatsCard: React.FC<{}> = () => {
   >([])
 
   interface DataEntryFormat {
-    name: string;
-    [key: string]: string | number;
+    name: string
+    [key: string]: string | number
   }
 
   const initialData = [
     {
-      name: 'Please select a session group(s) above.',
-    },
+      name: 'Please select a session group(s) above.'
+    }
   ]
 
   const [data, setData] = useState<DataEntryFormat[]>(initialData)
@@ -52,18 +52,18 @@ const SessionStatsCard: React.FC<{}> = () => {
     const sessionGroups = await getSessionGroupsFromViews({
       limit: SESSION_GROUPS_SELECT_PAGE_SIZE,
       offset: prevOptions.length,
-      name: search,
+      name: search
     })
 
     if (sessionGroups && sessionGroups.data) {
       const selectboxOptions = {
         options: sessionGroups.data.map((sessionGroup) => ({
           value: sessionGroup.viewsSessionGroupId,
-          label: sessionGroup.name,
+          label: sessionGroup.name
         })),
         hasMore:
           prevOptions.length + SESSION_GROUPS_SELECT_PAGE_SIZE <
-          sessionGroups.total,
+          sessionGroups.total
       }
 
       return selectboxOptions
@@ -117,9 +117,7 @@ const SessionStatsCard: React.FC<{}> = () => {
 
     const sessionDataResponses = []
     for (const sessionGroup of selectedSessionGroups) {
-      const sessionDataResponse = await getSessionsFromViews(
-        sessionGroup.value
-      )
+      const sessionDataResponse = await getSessionsFromViews(sessionGroup.value)
 
       if (!sessionDataResponse) {
         setLoadingData(false)
@@ -129,7 +127,7 @@ const SessionStatsCard: React.FC<{}> = () => {
 
       sessionDataResponses.push({
         name: sessionGroup.label,
-        data: sessionDataResponse.results,
+        data: sessionDataResponse.results
       })
     }
 
@@ -152,20 +150,20 @@ const SessionStatsCard: React.FC<{}> = () => {
     setData([
       {
         name: 'Completed',
-        ...completedSessionsForSessionGroups,
+        ...completedSessionsForSessionGroups
       },
       {
         name: 'Upcoming',
-        ...upcomingSessionsForSessionGroups,
+        ...upcomingSessionsForSessionGroups
       },
       {
         name: 'Pending to Report',
-        ...pendingSessionsForSessionGroups,
+        ...pendingSessionsForSessionGroups
       },
       {
         name: 'Cancelled',
-        ...cancelledSessionsForSessionGroups,
-      },
+        ...cancelledSessionsForSessionGroups
+      }
     ])
 
     setLoadingData(false)
@@ -197,8 +195,8 @@ const StyledSessionStatsCard = styled(Paper)`
   grid-template-columns: 1fr;
   grid-template-rows: auto auto;
   grid-template-areas:
-    "header"
-    "chart";
+    'header'
+    'chart';
 `
 
 interface HeaderProps {
@@ -207,13 +205,13 @@ interface HeaderProps {
     prevOptions: any
   ) => Promise<{
     options: {
-      value: string;
-      label: string;
-    }[];
-    hasMore: boolean;
-  }>;
+      value: string
+      label: string
+    }[]
+    hasMore: boolean
+  }>
 
-  onSessionGroupSelectOptionChange: (newSessionGroupId: any) => void;
+  onSessionGroupSelectOptionChange: (newSessionGroupId: any) => void
 }
 
 const Header: React.FC<HeaderProps> = (props) => {
@@ -252,9 +250,9 @@ const HeaderTitle = styled(Typography)`
 `
 
 const Chart: React.FC<{
-  data: any;
-  loading: boolean;
-  selectedSessionGroups: PaginatedSelectOption<string>[];
+  data: any
+  loading: boolean
+  selectedSessionGroups: PaginatedSelectOption<string>[]
 }> = (props) => {
   const getUniqueColor = (n: number) => {
     return COLORS[n % COLORS.length]

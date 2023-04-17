@@ -1,4 +1,4 @@
-import ResetPassword from "@pages/ResetPassword";
+import ResetPassword from '@pages/ResetPassword'
 
 describe('Reset Password Page', () => {
   beforeEach(() => {
@@ -6,7 +6,7 @@ describe('Reset Password Page', () => {
   })
 
   it('should render title', () => {
-    cy.contains('reset password', {matchCase: false})
+    cy.contains('reset password', { matchCase: false })
   })
 
   it('should render disabled button', () => {

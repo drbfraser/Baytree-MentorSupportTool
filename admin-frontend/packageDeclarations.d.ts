@@ -1,2 +1,2 @@
-declare module 'loglevel-plugin-remote';
-declare module 'react-toastify';
+declare module 'loglevel-plugin-remote'
+declare module 'react-toastify'

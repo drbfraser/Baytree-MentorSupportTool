@@ -3,34 +3,34 @@ import { PagedDataRows } from '../../../components/shared/datagrid/datagridTypes
 import { backendGet } from '../base'
 
 export interface SessionResponse {
-  viewsSessionId: string;
-  viewsSessionGroupId: string;
-  name: string;
-  startDate: string;
-  startTime: string;
-  duration: string;
-  cancelled: string;
-  activity: string;
-  leadStaff: string;
-  venueId: string;
-  created: string;
-  updated: string;
-  venueName: string;
+  viewsSessionId: string
+  viewsSessionGroupId: string
+  name: string
+  startDate: string
+  startTime: string
+  duration: string
+  cancelled: string
+  activity: string
+  leadStaff: string
+  venueId: string
+  created: string
+  updated: string
+  venueName: string
 }
 
 export interface Session {
-  name: string;
-  activity: string;
-  leadStaff: string;
-  venueName: string;
-  viewsSessionId: string;
-  viewsSessionGroupId: string;
-  startDate: Date;
-  durationInMinutes: number;
-  cancelled: boolean;
-  venueId: number;
-  createdDate: Date;
-  updatedDate: Date;
+  name: string
+  activity: string
+  leadStaff: string
+  venueName: string
+  viewsSessionId: string
+  viewsSessionGroupId: string
+  startDate: Date
+  durationInMinutes: number
+  cancelled: boolean
+  venueId: number
+  createdDate: Date
+  updatedDate: Date
 }
 
 export const sessionsEndpoint = 'views-api/sessions'
@@ -38,15 +38,15 @@ export const sessionsEndpoint = 'views-api/sessions'
 export const getSessionsFromViews = async (
   viewsSessionGroupId: string,
   params?: {
-    limit?: number;
-    offset?: number;
-    filters?: Record<string, string>;
-    startDateFrom?: string;
-    startDateTo?: string;
+    limit?: number
+    offset?: number
+    filters?: Record<string, string>
+    startDateFrom?: string
+    startDateTo?: string
   }
 ): Promise<PagedDataRows<Session> | null> => {
   const queryParams: Record<string, any> = {
-    sessionGroupId: viewsSessionGroupId,
+    sessionGroupId: viewsSessionGroupId
   }
 
   if (params) {
@@ -89,8 +89,8 @@ export const getSessionsFromViews = async (
         cancelled: session.cancelled === '1',
         venueId: parseInt(session.venueId),
         createdDate: new Date(Date.parse(`${session.created}`)),
-        updatedDate: new Date(Date.parse(`${session.created}`)),
-      })),
+        updatedDate: new Date(Date.parse(`${session.created}`))
+      }))
     }
   } else {
     return null
@@ -98,46 +98,46 @@ export const getSessionsFromViews = async (
 }
 
 export interface SessionDetails {
-  viewsSessionId: string;
-  viewsSessionGroupId: string;
-  name: string;
-  startDate: string;
-  startTime: string;
-  duration: string;
-  cancelled: string;
-  activity: string;
-  leadStaff: string;
-  venueId: string;
-  created: string;
-  updated: string;
-  venueName: string;
-  sessionGroup: SessionGroup;
-  mentor: Mentor | null;
-  mentee: Mentee | null;
-  note: string | null;
+  viewsSessionId: string
+  viewsSessionGroupId: string
+  name: string
+  startDate: string
+  startTime: string
+  duration: string
+  cancelled: string
+  activity: string
+  leadStaff: string
+  venueId: string
+  created: string
+  updated: string
+  venueName: string
+  sessionGroup: SessionGroup
+  mentor: Mentor | null
+  mentee: Mentee | null
+  note: string | null
 }
 
 interface SessionGroup {
-  viewsSessionGroupId: string;
-  name: string;
-  description: string;
-  leadStaff: string;
-  otherStaff: string;
+  viewsSessionGroupId: string
+  name: string
+  description: string
+  leadStaff: string
+  otherStaff: string
 }
 
 interface Mentor {
-  firstname: string;
-  surname: string;
-  viewsPersonId: string;
-  email: string;
-  dateOfBirth: string;
-  ethnicity: string;
-  country: string;
+  firstname: string
+  surname: string
+  viewsPersonId: string
+  email: string
+  dateOfBirth: string
+  ethnicity: string
+  country: string
 }
 
 interface Mentee {
-  menteeId: string;
-  name: string;
+  menteeId: string
+  name: string
 }
 
 /** EXAMPLE RESPONSE FROM getSessionDetails()

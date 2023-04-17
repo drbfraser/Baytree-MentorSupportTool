@@ -11,7 +11,7 @@ import {
   getDataRowActions,
   isCellChanged,
   shouldKeepColumnOnMobile,
-  someExpandableColumnExists,
+  someExpandableColumnExists
 } from './datagridRowLogic'
 import {
   DataRow,
@@ -20,25 +20,25 @@ import {
   setChangedDataRowFunc,
   setCreatedDataRowFunc,
   setDeletedDataRowFunc,
-  InvalidCell,
+  InvalidCell
 } from './datagridTypes'
 
 interface DataGridRowProps {
-  dataRow?: DataRow;
-  cols: DataGridColumn[];
-  originalDataRow?: DataRow;
-  changedDataRow?: DataRow;
-  createdDataRow?: DataRow;
-  isDataRowDeleted?: boolean;
-  setCreatedDataRow?: setCreatedDataRowFunc;
-  setChangedDataRow?: setChangedDataRowFunc;
-  setDeletedDataRow: setDeletedDataRowFunc;
-  primaryKeyDataField: string;
-  isCreatedDataGridRow?: boolean;
-  isDataGridSaveable: boolean;
-  dataRowActions?: DataRowAction[];
-  isDataGridDeleteable?: boolean;
-  invalidCells: InvalidCell[];
+  dataRow?: DataRow
+  cols: DataGridColumn[]
+  originalDataRow?: DataRow
+  changedDataRow?: DataRow
+  createdDataRow?: DataRow
+  isDataRowDeleted?: boolean
+  setCreatedDataRow?: setCreatedDataRowFunc
+  setChangedDataRow?: setChangedDataRowFunc
+  setDeletedDataRow: setDeletedDataRowFunc
+  primaryKeyDataField: string
+  isCreatedDataGridRow?: boolean
+  isDataGridSaveable: boolean
+  dataRowActions?: DataRowAction[]
+  isDataGridDeleteable?: boolean
+  invalidCells: InvalidCell[]
 }
 
 const DataGridRow: FC<DataGridRowProps> = (props) => {
@@ -300,7 +300,7 @@ const ColHeader: FC<ColHeaderProps> = (props) => {
       style={{
         marginTop: '0.5rem',
         display: 'flex',
-        justifyContent: isOnMobileDevice ? 'left' : 'center',
+        justifyContent: isOnMobileDevice ? 'left' : 'center'
       }}
     >
       <Typography sx={{ fontSize: '0.8rem' }}>{props.header}</Typography>
@@ -309,7 +309,7 @@ const ColHeader: FC<ColHeaderProps> = (props) => {
 }
 
 interface ColHeaderProps {
-  header: string;
+  header: string
 }
 
 export default DataGridRow

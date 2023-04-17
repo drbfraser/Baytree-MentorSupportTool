@@ -11,20 +11,20 @@ import { generateBackendCrudFuncs } from './base'
 import { API_BASE_URL } from './url'
 
 export interface UserCreate {
-  email: string;
-  first_name: string;
-  last_name: string;
-  password: string;
+  email: string
+  first_name: string
+  last_name: string
+  password: string
 }
 
 export interface UserResponse {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
+  id: number
+  email: string
+  first_name: string
+  last_name: string
 }
 
-export type UserUpdate = Partial<UserCreate> & { id: number };
+export type UserUpdate = Partial<UserCreate> & { id: number }
 
 export const usersBackendEndpoint = `${API_BASE_URL}/users/`
 
@@ -32,7 +32,7 @@ export const {
   create: addUsers,
   read: getUsers,
   update: updateUsers,
-  delete: deleteUsers,
+  delete: deleteUsers
 } = generateBackendCrudFuncs<UserCreate, UserResponse, UserUpdate>(
   usersBackendEndpoint
 )

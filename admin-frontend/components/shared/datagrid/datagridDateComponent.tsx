@@ -6,10 +6,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 export interface DataGridDateComponentProps {
-  primaryKeyVal: any;
-  dataField: string;
-  onChangedValue: (newValue: any) => void;
-  value: any;
+  primaryKeyVal: any
+  dataField: string
+  onChangedValue: (newValue: any) => void
+  value: any
 }
 
 const DataGridDateComponent: FC<DataGridDateComponentProps> = (props) => {
@@ -61,7 +61,7 @@ const DataGridDateComponent: FC<DataGridDateComponentProps> = (props) => {
             inputProps={{
               ...params.inputProps,
               readOnly: true,
-              style: { fontSize: '0.8rem' },
+              style: { fontSize: '0.8rem' }
             }}
           />
         )}
