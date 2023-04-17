@@ -4,7 +4,7 @@ import { COLORS, HELP_MESSAGE } from '../../../constants/constants'
 
 import React, { useEffect, useState } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
-import { Button, ButtonGroup, Skeleton, Typography } from '@mui/material'
+import { Button, ButtonGroup, CircularProgress, Typography } from '@mui/material'
 import moment from 'moment'
 import { toast } from 'react-toastify'
 import {
@@ -121,20 +121,7 @@ const MenteeDemographicsCard: React.FC<{}> = () => {
   return (
     <StyledMenteeDemographicsCard>
       {loadingData ? (
-        <>
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-        </>
+        <CircularProgress/>
       ) : (
         <>
           <Header

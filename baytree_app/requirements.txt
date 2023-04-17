@@ -30,3 +30,4 @@ redis==4.3.4
 fluent-logger
 python-json-logger==2.0.4
 djangorestframework-xml==2.0.0
+aiohttp==3.8.4
