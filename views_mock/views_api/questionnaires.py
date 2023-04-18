@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework_xml.renderers import XMLRenderer
 from evidence.models import AnswerSet, Answer
 import xmltodict
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 ANSWER_SET_FIELDS = [
    "EntityType",
@@ -88,28 +89,35 @@ def search_questionnaires(request):
 @api_view(("POST",))
 @renderer_classes([XMLRenderer])
 def submit_mentee_answer_set(request, menteeId, qid):
-    parsedBody = xmltodict.parse(request.body)
-    submittedAnswers = parsedBody["answer"]
-    if not isinstance(submittedAnswers, list):
-       submittedAnswers = [submittedAnswers]
-
-    for submittedAnswer in submittedAnswers:
-       answerSet = AnswerSet(QuestionID=submittedAnswer["QuestionID"],
-                             EntityType=parsedBody["EntityType"],
-                             EntityID=parsedBody["EntityID"],
-                             Date=parsedBody["Date"]
-                             )
-       answerSet.save()
-
-       answer = Answer(AnswerSetID=answerSet.AnswerSetID,
-                       QuestionnaireID=qid,
-                       QuestionID=submittedAnswer["QuestionID"],
-                       Answer=submittedAnswer["Answer"])
-       answer.save()
-
-    return Response({}, status=201)
+  return createAnswerSetWithAnswers(request, qid)
 
 @api_view(("POST",))
 @renderer_classes([XMLRenderer])
 def submit_mentor_answer_set(request, qid):
-    return Response({}, status=201)
+  return createAnswerSetWithAnswers(request, qid)
+
+def createAnswerSetWithAnswers(request, qid):
+  parsedBody = xmltodict.parse(request.body)
+  submittedAnswers = parsedBody["answer"]
+  if not isinstance(submittedAnswers, list):
+    submittedAnswers = [submittedAnswers]
+
+  answerSet = AnswerSet(QuestionnaireID=qid,
+                      EntityType=parsedBody["EntityType"],
+                      EntityID=parsedBody["EntityID"],
+                      Date=parsedBody["Date"])
+  answerSet.save()
+
+  for submittedAnswer in submittedAnswers:
+    answer = Answer(AnswerSetID=answerSet.AnswerSetID,
+                    QuestionnaireID=qid,
+                    QuestionID=submittedAnswer["QuestionID"],
+                    Answer=submittedAnswer["Answer"])
+    answer.save()
+
+  root = Element('answerset', {
+    "questionnaireid": qid,
+    "id": answerSet.AnswerSetID.__str__()
+  })
+
+  return Response(tostring(root), status=201)
