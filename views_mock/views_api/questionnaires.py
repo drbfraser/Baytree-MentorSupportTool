@@ -1,7 +1,23 @@
 from users.permissions import AdminPermissions
-from rest_framework.decorators import permission_classes, api_view
+from rest_framework.decorators import permission_classes, api_view, renderer_classes
 from evidence.models import Questionnaire, Question
 from rest_framework.response import Response
+from rest_framework_xml.renderers import XMLRenderer
+from evidence.models import AnswerSet, Answer
+import xmltodict
+
+ANSWER_SET_FIELDS = [
+   "EntityType",
+   "EntityID", 
+   "Date",
+   "answer"
+]
+
+ANSWER_FIELDS = [
+   "@id",
+   "QuestionID",
+   "Answer"
+]
 
 @api_view(("GET",))
 @permission_classes([AdminPermissions])
@@ -68,3 +84,32 @@ def search_questionnaires(request):
   data[f"questionnaires count=\"{count}\""] = dataQuestionnaire
 
   return Response(data, 200)
+
+@api_view(("POST",))
+@renderer_classes([XMLRenderer])
+def submit_mentee_answer_set(request, menteeId, qid):
+    parsedBody = xmltodict.parse(request.body)
+    submittedAnswers = parsedBody["answer"]
+    if not isinstance(submittedAnswers, list):
+       submittedAnswers = [submittedAnswers]
+
+    for submittedAnswer in submittedAnswers:
+       answerSet = AnswerSet(QuestionID=submittedAnswer["QuestionID"],
+                             EntityType=parsedBody["EntityType"],
+                             EntityID=parsedBody["EntityID"],
+                             Date=parsedBody["Date"]
+                             )
+       answerSet.save()
+
+       answer = Answer(AnswerSetID=answerSet.AnswerSetID,
+                       QuestionnaireID=qid,
+                       QuestionID=submittedAnswer["QuestionID"],
+                       Answer=submittedAnswer["Answer"])
+       answer.save()
+
+    return Response({}, status=201)
+
+@api_view(("POST",))
+@renderer_classes([XMLRenderer])
+def submit_mentor_answer_set(request, qid):
+    return Response({}, status=201)
