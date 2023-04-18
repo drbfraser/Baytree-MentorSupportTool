@@ -22,7 +22,7 @@ class Question(models.Model):
 
 class AnswerSet(models.Model):
     AnswerSetID = models.AutoField(primary_key=True)
-    QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE, db_column="QuestionID")
+    QuestionnaireID = models.ForeignKey(Questionnaire, on_delete=models.CASCADE, db_column="QuestionnaireID")
     EntityType = models.CharField(max_length=100, null=False)
     EntityID = models.IntegerField(null=False)
     Date = models.DateTimeField(auto_now_add=True, null=False)
