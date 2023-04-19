@@ -1,0 +1,12 @@
+[
+    {
+        "model": "views_sessions.SessionGroup",
+        "pk": 1,
+        "fields": {
+            "Title": "Literacy Junior",
+            "Description": "To provide afterschool support for girls in years 5-6 who need some additional help with academic work",
+            "LeadStaff": 12,
+            "OtherStaff": null
+        }
+    }
+]
