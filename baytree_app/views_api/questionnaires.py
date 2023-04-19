@@ -20,6 +20,8 @@ extractedQuestionFields = ["QuestionID", "Question",
 
 questionnaires_search_url = VIEWS_BASE_URL + "evidence/questionnaires/search"
 questionnaires_id_url = VIEWS_BASE_URL + "evidence/questionnaires/{}"
+mentor_answer_submit_url = VIEWS_BASE_URL + "evidence/questionnaires/{}/answers"
+mentee_answer_submit_url = VIEWS_BASE_URL + "contacts/participants/{}/questionnaires/{}"
 
 questionnaire_views_response_fields = [
     "QuestionnaireID",
@@ -341,6 +343,7 @@ def submit_answer_set(request):
         menteeIds = get_mentee_ids_from_mentor(mentor_user, headers=headers)
 
         menteeId = menteeIds[0]
+        
         # Construct Mentee the answer set XML payload
         answerSetXML = (
             "<answer>"
@@ -351,19 +354,19 @@ def submit_answer_set(request):
             "</answer>"
         )
         # Construct Mentee URL
-        url = f"{VIEWS_BASE_URL}contacts/participants/{menteeId}/questionnaires/{qid}"
+        url = mentee_answer_submit_url.format(menteeId, qid)
     else:
         # Construct Mentor the answer set XML payload
         answerSetXML = (
             "<answer>"
             "<EntityType>Volunteer</EntityType>"
-            f"<EntityID>{mentor.viewsPersonId}</EntityID>"
+            f"<EntityID>1</EntityID>"
             f"<Date>{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')}</Date>"
             f"{''.join(answersXML)}"
             "</answer>"
         )
         # Construct Mentor URL
-        url = f"{VIEWS_BASE_URL}evidence/questionnaires/{qid}/answers"
+        url = mentor_answer_submit_url.format(qid)
 
     # Send the answer set to View database
     response = requests.post(url=url, data=answerSetXML, headers=headers)

@@ -22,7 +22,7 @@ class Question(models.Model):
 
 class AnswerSet(models.Model):
     AnswerSetID = models.AutoField(primary_key=True)
-    QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE, db_column="QuestionID")
+    QuestionnaireID = models.ForeignKey(Questionnaire, on_delete=models.CASCADE, db_column="QuestionnaireID")
     EntityType = models.CharField(max_length=100, null=False)
     EntityID = models.IntegerField(null=False)
     Date = models.DateTimeField(auto_now_add=True, null=False)
@@ -30,6 +30,6 @@ class AnswerSet(models.Model):
 class Answer(models.Model):
     AnswerID = models.AutoField(primary_key=True)
     AnswerSetID = models.ForeignKey(AnswerSet, on_delete=models.CASCADE, db_column="AnswerSetID")
-    QuestionnaireID = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
+    QuestionnaireID = models.ForeignKey(Questionnaire, on_delete=models.CASCADE, db_column="QuestionnaireID")
     QuestionID = models.ForeignKey(Question, on_delete=models.CASCADE, db_column="QuestionID")
     Answer = models.CharField(max_length=1000)
