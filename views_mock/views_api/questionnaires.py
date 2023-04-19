@@ -98,26 +98,27 @@ def submit_mentor_answer_set(request, qid):
 
 def createAnswerSetWithAnswers(request, qid):
   parsedBody = xmltodict.parse(request.body)
-  submittedAnswers = parsedBody["answer"]
+  answerSetInfo = parsedBody["answer"]
+  submittedAnswers = answerSetInfo["answer"]
   if not isinstance(submittedAnswers, list):
     submittedAnswers = [submittedAnswers]
 
-  answerSet = AnswerSet(QuestionnaireID=qid,
-                      EntityType=parsedBody["EntityType"],
-                      EntityID=parsedBody["EntityID"],
-                      Date=parsedBody["Date"])
+  answerSet = AnswerSet(QuestionnaireID=Questionnaire.objects.get(QuestionnaireID=qid),
+                      EntityType=answerSetInfo["EntityType"],
+                      EntityID=answerSetInfo["EntityID"],
+                      Date=answerSetInfo["Date"])
   answerSet.save()
 
   for submittedAnswer in submittedAnswers:
-    answer = Answer(AnswerSetID=answerSet.AnswerSetID,
-                    QuestionnaireID=qid,
-                    QuestionID=submittedAnswer["QuestionID"],
+    answer = Answer(AnswerSetID=answerSet,
+                    QuestionnaireID=Questionnaire.objects.get(QuestionnaireID=qid),
+                    QuestionID=Question.objects.get(QuestionID=submittedAnswer["QuestionID"]),
                     Answer=submittedAnswer["Answer"])
     answer.save()
 
   root = Element('answerset', {
-    "questionnaireid": qid,
-    "id": answerSet.AnswerSetID.__str__()
+    "questionnaireid": str(qid),
+    "id": str(answerSet.AnswerSetID)
   })
 
   return Response(tostring(root), status=201)
