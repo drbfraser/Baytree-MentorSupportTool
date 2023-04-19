@@ -293,15 +293,14 @@ def submit_answer_set(request):
         # todo: error Logging here
         return Response(status=status.HTTP_400_BAD_REQUEST)
     # Find the questionnaire id from the requesting user
-    # mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
-    # if mentor is None:
-    #     FluentLoggingHandler.error(
-    #         f"Failed to submit answer set - Could not find mentor with id: {request.user.id}")
-    #     response = Response(status=status.HTTP_404_NOT_FOUND)
-    #     return response
-    # # Redundancy check, user won't submit answer set to the wrong question
-    # qid = mentor.mentorRole.viewsQuestionnaireId
-    qid = "1"
+    mentor = getMentorWithRoleAndQuestionnaireByUserId(request.user.id)
+    if mentor is None:
+        FluentLoggingHandler.error(
+            f"Failed to submit answer set - Could not find mentor with id: {request.user.id}")
+        response = Response(status=status.HTTP_404_NOT_FOUND)
+        return response
+    # Redundancy check, user won't submit answer set to the wrong question
+    qid = mentor.mentorRole.viewsQuestionnaireId
 
     if str(data["questionnaireId"]) != str(qid):
         FluentLoggingHandler.error(
@@ -329,22 +328,22 @@ def submit_answer_set(request):
     if person == "mentee":
         # Find the Mentee's ID
         # menteeUser = MentorUser.objects.filter(pk=request.user.id)
-        # mentor_user = MentorUser.objects.filter(pk=request.user.id)
-        # if not mentor_user.exists():
-        #     FluentLoggingHandler.error(
-        #         f"Failed to submit answer set - Requesting user with id {request.user.id} is not a mentor")
-        #     response = Response(
-        #         "The current requesting user is not a mentor!",
-        #         status=status.HTTP_401_UNAUTHORIZED,
-        #     )
-        #     return response
+        mentor_user = MentorUser.objects.filter(pk=request.user.id)
+        if not mentor_user.exists():
+            FluentLoggingHandler.error(
+                f"Failed to submit answer set - Requesting user with id {request.user.id} is not a mentor")
+            response = Response(
+                "The current requesting user is not a mentor!",
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+            return response
 
-        # mentor_user = mentor_user.first()
+        mentor_user = mentor_user.first()
 
-        # menteeIds = get_mentee_ids_from_mentor(mentor_user, headers=headers)
+        menteeIds = get_mentee_ids_from_mentor(mentor_user, headers=headers)
 
-        # menteeId = menteeIds[0]
-        menteeId = "1"
+        menteeId = menteeIds[0]
+        
         # Construct Mentee the answer set XML payload
         answerSetXML = (
             "<answer>"
