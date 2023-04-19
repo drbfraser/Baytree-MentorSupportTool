@@ -40,8 +40,7 @@ These participant records in Views contain contact and general information about
 @permission_classes([AdminPermissions | MentorPermissions])
 async def get_participants(request):
     """
-    Handles a request from the client browser and calls get_participants
-    to return its response to the client.
+    GET - Retrieve all volunteers from Views API
     """
     headers = {
         "Authorization": request.META["VIEWS_AUTHORIZATION"],
