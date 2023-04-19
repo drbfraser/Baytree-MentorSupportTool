@@ -122,18 +122,10 @@ const MenteeDemographicsCard: React.FC<{}> = () => {
     <StyledMenteeDemographicsCard>
       {loadingData ? (
         <>
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
+          <Skeleton/>
+          <Skeleton/>
+          <Skeleton/>
+          <Skeleton/>
         </>
       ) : (
         <>
